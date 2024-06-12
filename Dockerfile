@@ -1,8 +1,8 @@
-# ベースイメージとしてNode.jsを使用
+# ベースイメージはNode,バージョンはコンテナ構築時の最新
 FROM node:20
 
 # 作業ディレクトリを設定
-WORKDIR /usr/src/app
+WORKDIR /
 
 # 必要なファイルをコピー
 COPY package*.json ./

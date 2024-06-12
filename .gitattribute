@@ -1,0 +1,3 @@
+# テキストファイルにおける文字の改行コードを全てLFに設定
+# git add時のwarning回避のため
+* text=auto eol=lf
