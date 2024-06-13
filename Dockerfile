@@ -18,3 +18,5 @@ EXPOSE 3000
 
 # 開発サーバーを起動
 CMD ["npm", "run", "dev"]
+# CMD ["npx", "chokidar", ".", "-c", "node app.js", "-i", "node_modules"]
+# CMD ["npx", "nodemon", "--watch", ".", "app.js"]
