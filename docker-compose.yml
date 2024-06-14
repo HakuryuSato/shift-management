@@ -1,13 +1,29 @@
 version: '3'                    # Docker Composeファイルのバージョンを指定します。
 services:                       # ここからサービスの定義を始めます。
-  web:                          # 'web'という名前のサービスを定義します。
-    build: .                    # 現在のディレクトリからDockerfileを使ってイメージをビルドします。
+  web:
+    build: .
+    command: npm run dev #本番時はnpm run start
+    develop:
+      watch:
+        - action: sync
+          path: ./src/app
+          target: /web/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
     ports:                      # ポートマッピングを設定します。
       - "3000:3000"             # ホストのポート3000をコンテナのポート3000にマッピングします。
-    volumes:                    # ボリュームを設定します。ホストとコンテナ間でファイルを共有します。
-      - .:/usr/src/app          # ホストの現在のディレクトリをコンテナの/usr/src/appにマウントします。
-      - /usr/src/app/node_modules # コンテナ内のnode_modulesディレクトリを匿名ボリュームとして扱い、ホストからの影響を避けます。
-    command: npm run dev        # コンテナが起動したときに実行するコマンドを指定します。ここでは開発サーバーを起動します。
-    environment: #本番運用時は削除する
-    - NODE_ENV=development #開発者モード
-    - CHOKIDAR_USEPOLLING=true
+    # volumes:
+    #   - ./src/app:/src/web
+    # volumes:
+      # バインドボリューム
+      # - .:/usr/src/app
+      # 永続化ボリューム
+      # - /usr/src/app/node_modules
+
+    # command: npm run dev
+    # command: npm run start:watch
+    # environment: #本番運用時は削除する
+    # - NODE_ENV=development #開発者モード
+    # - CHOKIDAR_USEPOLLING=true

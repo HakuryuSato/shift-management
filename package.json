@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:watch": "nodemon --watch src --exec 'npm start'",
     "lint": "next lint"
+    
   },
   "dependencies": {
     "chokidar-cli": "^3.0.0",
