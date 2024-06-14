@@ -1,0 +1,5 @@
+{
+    "components": [
+        "./src/components/login.tsx"
+    ]
+}
