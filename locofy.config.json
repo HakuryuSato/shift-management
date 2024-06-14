@@ -1,5 +1,5 @@
 {
     "components": [
-        "./src/components/login.tsx"
+        "./src/components/button.tsx"
     ]
 }
