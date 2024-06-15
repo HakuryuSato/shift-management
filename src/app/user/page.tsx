@@ -1,10 +1,8 @@
-// src/app/user/page.tsx
-import Login from './login';
+import UserLoginPage from "@pages/UserLoginPage";
+
 
 export default function Page() {
   return (
-    <div>
-      <Login />
-    </div>
+    <UserLoginPage />
   );
 }
