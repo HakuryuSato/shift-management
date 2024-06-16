@@ -22,8 +22,8 @@
       "@/*": ["./src/*"],
       "@pages/*": ["./src/pages/*"],
       "@components/*": ["./src/components/*"],
-      "@ui/*": ["./src/ui/*"],
-      "@forms/*": ["./src/forms/*"],
+      "@ui/*": ["./src/components/ui/*"],
+      "@forms/*": ["./src/components/forms/*"],
       "@app/*": ["./src/app/*"],
     }
   },

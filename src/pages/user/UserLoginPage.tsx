@@ -1,3 +1,4 @@
+'use cliant';
 import LoginForm from "@components/forms/LoginForm";
 
 

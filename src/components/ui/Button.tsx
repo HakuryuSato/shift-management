@@ -7,11 +7,12 @@ interface ButtonProps {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const MyButton: React.FC<ButtonProps> = ({ text, onClick }) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
   return (
     <button
+      value={text}
       className="
-      bg-blue-500
+      bg-blue
       text-white
       px-4
       py-2
@@ -20,9 +21,8 @@ const MyButton: React.FC<ButtonProps> = ({ text, onClick }) => {
       "
       onClick={onClick}
     >
-      {text}
     </button>
   );
 };
 
-export default MyButton;
+export default Button;

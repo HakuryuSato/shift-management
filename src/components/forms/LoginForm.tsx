@@ -1,10 +1,9 @@
-import Button from "../MyButton";
+'use cliant';
+import Button from "@ui/Button";
 
 const LoginForm = () => {
     return (
-        <div>
-            <Button text="ログイン" onClick={() => {}}/>
-        </div>
+        <Button text="ログイン" onClick={() => { console.log('Button clicked'); }}/>
     );
 };
 

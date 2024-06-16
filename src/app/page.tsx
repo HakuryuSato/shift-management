@@ -1,9 +1,18 @@
-import UserLoginPage from "../pages/UserLoginPage";
+'use client'
+import UserLoginPage from "@pages/user/UserLoginPage";
 
 
 export default function Page() {
   return (
-    // <UserLoginPage />
-    <a>aaa</a>
+    <UserLoginPage />
   );
 }
+
+
+// const HomePage: React.FC = () => {
+//   return (
+
+//       <UserLoginPage />
+
+//   );
+// };
