@@ -10,7 +10,6 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
   return (
     <button
-      value={text}
       className="
       bg-blue
       text-white
@@ -18,9 +17,11 @@ const Button: React.FC<ButtonProps> = ({ text, onClick }) => {
       py-2
       rounded
       cursor-pointer
+      
       "
       onClick={onClick}
     >
+      {text}
     </button>
   );
 };

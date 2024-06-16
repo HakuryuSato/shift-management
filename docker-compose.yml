@@ -6,8 +6,8 @@ services:                       # ここからサービスの定義を始めま�
     develop:
       watch:
         - action: sync
-          path: ./src/app
-          target: /web/src/app
+          path: ./src/
+          target: /web/src/
           ignore:
             - node_modules/
         - action: rebuild
