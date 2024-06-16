@@ -1,9 +1,9 @@
 'use cliant';
-import LoginForm from "@components/forms/LoginForm";
+import UserLoginForm from "@components/forms/UserLoginForm";
 
 
 export default function UserLoginPage() {
     return (
-        <LoginForm/>
+        <UserLoginForm/>
     );
 }

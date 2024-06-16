@@ -7,12 +7,3 @@ export default function Page() {
     <UserLoginPage />
   );
 }
-
-
-// const HomePage: React.FC = () => {
-//   return (
-
-//       <UserLoginPage />
-
-//   );
-// };
