@@ -17,11 +17,11 @@ const AdminLoginForm = () => {
 
             <div>
                 <h3 className="mt-4">管理者パスワード</h3>
-                <Input inputText={""} placeholder=""></Input>
+                <Input inputText={""} placeholder=""/>
             </div>
 
             <div>
-                <Button text="ログイン" onClick={() => { }}></Button>
+                <Button text="ログイン" onClick={() => { }}/>
             </div>
 
 
