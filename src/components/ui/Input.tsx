@@ -4,7 +4,7 @@ import React from 'react';
 
 interface InputProps {
   inputText: string;
-  placeholder: string;
+  placeholder: string
 }
 
 const Input: React.FC<InputProps> = ({ inputText, placeholder }) => {

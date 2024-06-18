@@ -11,9 +11,12 @@
     "start": "next start",
     "start:watch": "nodemon --watch src --exec 'npm start'",
     "lint": "next lint"
-    
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.14",
+    "@fullcalendar/daygrid": "^6.1.14",
+    "@fullcalendar/react": "^6.1.14",
+    "@fullcalendar/timegrid": "^6.1.14",
     "chokidar-cli": "^3.0.0",
     "next": "14.2.4",
     "react": "^18",
