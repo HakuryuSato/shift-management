@@ -6,6 +6,6 @@ import AdminShiftPage from "@/pages/admin/AdminShiftPage"
 
 export default function Page() {
   return (
-    <AdminShiftPage />
+    <UserShiftPage />
   );
 }

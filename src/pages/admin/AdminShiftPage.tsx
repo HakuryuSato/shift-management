@@ -1,8 +1,8 @@
 'use cliant'
-import timeGridCalendar from "@ui/timeGridCalendar"
+import TimeGridCalendar from "@ui/TimeGridCalendar"
 
 export default function AdminShiftPage() {
     return (
-        <timeGridCalendar/>
+        <TimeGridCalendar/>
     );
 }
