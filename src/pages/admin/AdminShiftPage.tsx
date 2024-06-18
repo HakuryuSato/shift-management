@@ -1,9 +1,8 @@
 'use cliant'
-import AdminShiftCalender from "@forms/AdminShiftCalendar"
+import timeGridCalendar from "@ui/timeGridCalendar"
 
 export default function AdminShiftPage() {
     return (
-        
-        <AdminShiftCalender shifts={[]} dates={[]} />
+        <timeGridCalendar/>
     );
 }
