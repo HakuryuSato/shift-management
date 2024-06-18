@@ -1,9 +1,8 @@
 'use cliant'
-import UserShiftCalender from "@forms/UserShiftCalender"
+import DayGridCalendar from "@forms/DayGridCalendar"
 
 export default function UserShiftPage() {
     return (
-        
-        <UserShiftCalender/>
+        <DayGridCalendar/>
     );
 }
