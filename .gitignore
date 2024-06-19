@@ -9,6 +9,7 @@
 # testing
 /coverage
 Dockerfile
+docker-compose.yml
 
 # next.js
 /.next/
