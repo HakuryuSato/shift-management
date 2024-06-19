@@ -14,6 +14,7 @@ services:                       # ここからサービスの定義を始めま�
           path: package.json
     ports:                      # ポートマッピングを設定します。
       - "3000:3000"             # ホストのポート3000をコンテナのポート3000にマッピングします。
+
     # volumes:
     #   - ./src/app:/src/web
     # volumes:
