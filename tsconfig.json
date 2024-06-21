@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "types": ["node", "react", "react-dom"],
     "jsx": "preserve",
@@ -25,8 +26,11 @@
       "@ui/*": ["./src/components/ui/*"],
       "@forms/*": ["./src/components/forms/*"],
       "@app/*": ["./src/app/*"],
+      "@api/*": ["./src/api/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/page.jsx"],
   "exclude": ["node_modules"]
 }
