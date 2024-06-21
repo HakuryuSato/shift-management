@@ -1,5 +1,3 @@
-
-import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import React, { useEffect, useRef } from 'react';
 import jaLocale from '@fullcalendar/core/locales/ja';
@@ -46,23 +44,5 @@ const DayGridCalendar: React.FC = () => {
 }
 
 
-
-
-//   const calendarRef = useRef<HTMLDivElement>(null);
-
-//   useEffect(() => {
-//     if (calendarRef.current) {
-//       const calendar = new Calendar(calendarRef.current, {
-//         plugins: [dayGridPlugin],
-//         initialView: 'dayGridMonth',
-//         locale: {jaLocale}
-//       });
-//       calendar.updateSize
-//       calendar.render();
-//     }
-//   }, []);
-
-//   return <div ref={calendarRef}></div>;
-// };
 
 export default DayGridCalendar;
