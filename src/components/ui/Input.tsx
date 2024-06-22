@@ -13,10 +13,13 @@ const Input: React.FC<InputProps> = ({ inputText, placeholder }) => {
       className="
       bg-gray-light
       inline-block
+      border
+      border-gray
+      p-2
       "
       placeholder={placeholder}
-      
-      >
+
+    >
     </input>
   );
 };
