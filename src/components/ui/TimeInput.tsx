@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 
 interface TimeInputProps {
   initialValue?: string;
+  onReturn: (time: string) => void;
 }
 
-const TimeInput: React.FC<TimeInputProps> = ({ initialValue }) => {
+const TimeInput: React.FC<TimeInputProps> = ({ initialValue, onReturn}) => {
   const [selectedTime, setSelectedTime] = useState(initialValue || '');
 
   // 固定の時間オプションリスト
@@ -15,9 +16,12 @@ const TimeInput: React.FC<TimeInputProps> = ({ initialValue }) => {
     '16:00', '16:30', '17:00', '17:30', '18:00'
   ];
 
+  // 変更時にselectedTimeへ値をセットし、onReturnで親へ返す
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTime(event.target.value);
+    onReturn(selectedTime)
   };
+
 
   return (
     <>
