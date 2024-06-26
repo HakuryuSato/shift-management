@@ -1,8 +1,20 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "react", "react-dom"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ],
+    "typeRoots": [
+      "src/customTypes",
+      "./node_modules/@types"
+    ],
     "jsx": "preserve",
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,19 +30,47 @@
       {
         "name": "next"
       }
-    ],  
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@components/*": ["./src/components/*"],
-      "@ui/*": ["./src/components/ui/*"],
-      "@forms/*": ["./src/components/forms/*"],
-      "@app/*": ["./src/app/*"],
-      "@api/*": ["./src/api/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/types/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@pages/*": [
+        "./src/pages/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@ui/*": [
+        "./src/components/ui/*"
+      ],
+      "@forms/*": [
+        "./src/components/forms/*"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@api/*": [
+        "./src/api/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@customTypes/*": [
+        "./src/customTypes/*"
+      ]
+    },
+
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/page.tsx", "src/app/user/shift/page.jsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/page.tsx",
+    "src/app/user/shift/page.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
