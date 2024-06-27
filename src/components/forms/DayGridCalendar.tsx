@@ -57,6 +57,9 @@ const DayGridCalendar: React.FC = () => { //以下コンポーネント---------
   useEffect(() => {
     // fetch関数実行
     updateEventData().catch(console.error);
+
+
+
   }, []);
 
 
@@ -86,10 +89,12 @@ const DayGridCalendar: React.FC = () => { //以下コンポーネント---------
   // モーダル非表示
   const closeModal = () => {
     setIsModalOpen(false);
+    updateEventData()
   };
 
   // DBに変更があった際に呼ばれるハンドラ
   const handleShiftChange = () => {
+    console.log('handleShiftChangehandleShiftChangehandleShiftChangehandleShiftChangehandleShiftChange')
     // const fetchData = async () => {
     //   const context = createContext(userId, 2024, 6);
     //   const response = await getShift(context);
