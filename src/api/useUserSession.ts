@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@utils/supabase/supabase';
 
-// Define a type for the user object
+
 interface User {
   user_id: string;
   user_name: string;
