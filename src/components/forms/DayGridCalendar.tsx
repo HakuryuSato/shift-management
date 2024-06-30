@@ -37,7 +37,7 @@ function formatEvents(data: any[]) {
 function createContext(userId: number, year: number, month: number) {
   const context: InterFaceShiftQuery = {
     query: {
-      user_id: userId, // *****仮データ*****
+      user_id: userId,
       year: year,
       month: month,
     },
