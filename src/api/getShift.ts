@@ -25,13 +25,19 @@ const getShifts = async (context: InterFaceShiftQuery) => {
 
 
 
-    const { data, error } = await supabase
+    // クエリの設定
+    let query = supabase
         .from('shifts')
         .select('start_time, end_time')
-        .eq('user_id', user_id)
         .gte('start_time', startDateISOString)
         .lte('end_time', endDateISOString);
 
+    // user_idが指定されている場合のみ絞り込み
+    if (user_id && user_id !== '*') {
+        query = query.eq('user_id', user_id);
+    }
+
+    const { data, error } = await query;
     // console.log('startDate',startDate)
     // console.log('endDate',endDate)
 
