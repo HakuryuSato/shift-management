@@ -1,28 +1,46 @@
 "use cliant";
 import Button from "@ui/Button";
 import Input from "@ui/Input";
+import Cookies from "js-cookie";
 import { useState } from "react";
-import { supabase } from "@utils/supabase/supabase";
+import { supabase } from "@/utils/supabase";
+import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
 
-const UserLoginForm = () => {
-    const [email, setEmail] = useState("");
+const UserLoginForm = (
+    { onLoginSuccess }: {
+        onLoginSuccess: (userData: InterFaceTableUsers) => void;
+    },
+) => {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async () => {
-        const { error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password,
-        });
-
-        // console.log(email, password);
-        // console.log("Login error:", error);
-
-        if (error) {
-            setError(error.message);
-        } else {
-            setError(null);
+        if (password !== process.env.NEXT_PUBLIC_SUPABASE_SITE_PASSWORD) {
+            alert("サイトパスワードが間違っています");
+            return;
         }
+
+        const { data, error } = await supabase
+            .from("users") // ユーザー情報が保存されているテーブル
+            .select("user_id")
+            .eq("user_name", username);
+
+        if (error || !data.length) {
+            alert("ユーザーが存在しません");
+            // console.log(error,data)
+            return;
+        }
+
+        const userData: InterFaceTableUsers = {
+            user_id: data[0].user_id,
+            user_name: username,
+        };
+
+        // ログイン成功
+        Cookies.set("loggedIn", "true", { expires: 365 }); // 365日維持
+        Cookies.set("userInfo", JSON.stringify(userData), { expires: 365 }); // ユーザー情報をクッキーに保存
+        onLoginSuccess(userData);
     };
 
     return (
@@ -38,8 +56,8 @@ const UserLoginForm = () => {
             <div>
                 <h3>お名前</h3>
                 <Input
-                    inputText={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    inputText={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     placeholder="山田太郎"
                 />
 
