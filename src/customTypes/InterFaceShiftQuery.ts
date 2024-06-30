@@ -1,3 +1,4 @@
+// DBのshiftsテーブルと同じ型
 export interface InterFaceShiftQuery {
     query: {
         user_id: number,

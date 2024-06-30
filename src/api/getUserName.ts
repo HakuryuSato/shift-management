@@ -1,8 +1,8 @@
-import { supabase } from '@utils/supabase/supabase';
+import { supabase } from '@/utils/supabase';
 
 export const getServerSideProps = async () => {
     let { data: user, error } = await supabase
-        .from('user')
+        .from('users')
         .select('user_name');
 
     return {

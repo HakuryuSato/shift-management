@@ -1,4 +1,4 @@
-import { supabase } from '@utils/supabase/supabase';
+import { supabase } from '@/utils/supabase';
 import type { InterFaceShiftQuery } from '@/customTypes/InterFaceShiftQuery';
 
 const sendShift = async (context: InterFaceShiftQuery) => {

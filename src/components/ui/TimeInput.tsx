@@ -18,8 +18,9 @@ const TimeInput: React.FC<TimeInputProps> = ({ initialValue, onReturn}) => {
 
   // 変更時にselectedTimeへ値をセットし、onReturnで親へ返す
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTime(event.target.value);
-    onReturn(selectedTime)
+    const newTime = event.target.value;
+    setSelectedTime(newTime);
+    onReturn(newTime);
   };
 
 

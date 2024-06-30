@@ -17,8 +17,6 @@ COPY . .
 
 # ポート3000を公開
 EXPOSE 3000
-# ENV NEXT_PUBLIC_SUPABASE_URL="https://ixwfsfgjvipedpzpxiwv.supabase.co"
-# ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4d2ZzZmdqdmlwZWRwenB4aXd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg3MTQyNTYsImV4cCI6MjAzNDI5MDI1Nn0._ZoEqO1VxgiC_hMZZ7jcwd1e5ehK0Ac7bac6S2wgdkk"
 
 # 開発サーバーを起動
 # CMD [ "npm", "run", "dev:watch" ]

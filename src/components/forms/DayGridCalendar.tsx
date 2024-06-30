@@ -1,26 +1,31 @@
-'use client'
+"use client";
 
-// 一旦ユーザー用として使用予定
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import jaLocale from '@fullcalendar/core/locales/ja';
-import interactionPlugin from '@fullcalendar/interaction';
-import React, { useEffect, useRef, useState } from 'react';
-import { EventClickArg } from '@fullcalendar/core';
+// 基盤
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import jaLocale from "@fullcalendar/core/locales/ja";
+import interactionPlugin from "@fullcalendar/interaction";
+import React, { useEffect, useRef, useState } from "react";
+import { EventClickArg } from "@fullcalendar/core";
 
-import UserShiftRegisterForm from '@forms/UserShiftRegisterForm'
-import { userShiftListener } from '@/api/userShiftListener';
-
-import getShift from '@api/getShift'
-import type { InterFaceShiftQuery } from '@/customTypes/InterFaceShiftQuery';
-import { PostgrestResponse } from '@supabase/supabase-js';
+// オリジナル
+import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
 
 
-const userId: number = 1 // テスト用
+// API
+import getShift from "@api/getShift";
 
+// 型宣言
+import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
+import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
 
+// Props
+interface DayGridCalendarProps {
+  onLogout: () => void;
+  user: InterFaceTableUsers;
+}
 
-// FullCalendar用にデータ整形
+// 関数: FullCalendar用にデータ整形
 function formatEvents(data: any[]) {
   return data.map((shift) => ({
     start: shift.start_time,
@@ -28,142 +33,142 @@ function formatEvents(data: any[]) {
   }));
 }
 
+// 関数: 送信用クエリ作成
 function createContext(userId: number, year: number, month: number) {
   const context: InterFaceShiftQuery = {
     query: {
       user_id: userId, // *****仮データ*****
       year: year,
-      month: month
-    }
+      month: month,
+    },
   };
 
-  return context
+  return context;
 }
 
-
-const DayGridCalendar: React.FC = () => { //以下コンポーネント--------------------------------------------------------------------------------------------
+const DayGridCalendar: React.FC<DayGridCalendarProps> = (
+  { onLogout, user },
+) => { //以下コンポーネント--------------------------------------------------------------------------------------------
+  // 以下定数---------------------------------------------------------------------------------------------------------
   // const calendarRef = useRef(null);
+  const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
-  // ---State---
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [shiftEvents, setShiftEvents] = useState<{ start: string; end: string }[]>([]);
-
-
-
-
-
-  // コンポーネントレンダー時にイベント取得
-  useEffect(() => {
-    // fetch関数実行
-    updateEventData().catch(console.error);
-
-
-
-  }, []);
-
-
-  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
-  const updateEventData = async () => {
-    const context = createContext(userId, 2024, 6);
-    const response = await getShift(context);
-    const formattedEvents = formatEvents(response.props.data ?? []); // 戻り値ないなら空データ
-    setShiftEvents(formattedEvents);
-  };
-
-
-  // イベント(予定)クリック時、入力用フォームをモーダルで表示
-  const handleEventClick = (arg: EventClickArg) => {
-    // setSelectedDate(arg.dateStr);
-    // setIsModalOpen(true); // 削除ボタンのついた別のモーダルを表示する
-  };
-
-
-
-  // 日付クリック時、入力用フォームをモーダルで表示
-  const handleDateClick = (info: { dateStr: string }) => {
-    setSelectedDate(info.dateStr);
-    setIsModalOpen(true);
-  };
-
+  // 以下コンポーネント関数---------------------------------------------------------------------------------------------------------
   // モーダル非表示
   const closeModal = () => {
     setIsModalOpen(false);
-    updateEventData()
+    updateEventData();
   };
 
-  // DBに変更があった際に呼ばれるハンドラ
-  const handleShiftChange = () => {
-    console.log('handleShiftChangehandleShiftChangehandleShiftChangehandleShiftChangehandleShiftChange')
-    // const fetchData = async () => {
-    //   const context = createContext(userId, 2024, 6);
-    //   const response = await getShift(context);
-    //   const formattedEvents = formatEvents(response.props.data ?? []); // 戻り値ないなら空データ
-    //   setShiftEvents(formattedEvents);
-    // };
-    // fetchData().catch(console.error);
-    updateEventData();
-  }
-
-
-  // FullCalendarのイベントの表示方法を変更するためのメソッド
+  // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
-    const startTime = eventInfo.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTime = eventInfo.event.end?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const startTime = eventInfo.event.start.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTime = eventInfo.event.end?.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     return (
       <div>
-        <b>{startTime} - {endTime}</b><br />
+        <b>{startTime} - {endTime}</b>
+        <br />
         <i>{eventInfo.event.title}</i>
       </div>
     );
   };
 
+  // 以下フック-------------------------------------------------------------------------------------------------------
+  // state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [shiftEvents, setShiftEvents] = useState<
+    { start: string; end: string }[]
+  >([]);
+  const [currentYear, setCurrentYear] = useState<number>(
+    new Date().getFullYear(),
+  );
+  const [currentMonth, setCurrentMonth] = useState<number>(
+    new Date().getMonth(),
+  );
 
+  // effect
+  // コンポーネントレンダー時にイベント取得
+  useEffect(() => {
+    updateEventData(); // 月が切り替わったら全データ再取得
+  }, [currentMonth]);
 
+  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
+  const updateEventData = async () => {
+    const context = createContext(userId, currentYear, currentMonth);
+    const response = await getShift(context);
+    if (response.props.data) {
+      const formattedEvents = formatEvents(response.props.data);
+      setShiftEvents(formattedEvents);
+    }
+  };
 
+  // 以下ハンドラー-------------------------------------------------------------------------------------------------------
+  // イベント(予定)クリック
+  const handleEventClick = (arg: EventClickArg) => {
+    // setSelectedDate(arg.dateStr);
+    // setIsModalOpen(true); // 削除ボタンのついた別のモーダルを表示する
+  };
 
-  // DB変更時、自動でシフトデータ取得
-  userShiftListener(userId, handleShiftChange);
+  // 日付クリック
+  const handleDateClick = (info: { dateStr: string }) => {
+    setSelectedDate(info.dateStr);
+    setIsModalOpen(true);
+  };
 
+ 
 
+  // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
+      <button onClick={onLogout}>ログアウト</button>
+
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         // ref={calendarRef}
         initialView="dayGridMonth"
         dateClick={handleDateClick}
         eventClick={handleEventClick}
-
         height="auto"
         locale={jaLocale}
-        dayCellContent={(e) => e.dayNumberText.replace('日', '')} // x日 の表記を消す
+        dayCellContent={(e) => e.dayNumberText.replace("日", "")} // x日 の表記を消す
         events={shiftEvents}
         eventContent={renderEventContent}
-
-
         headerToolbar={{
-          left: '',
-          center: 'title',
-          right: 'prev,next',
+          left: "",
+          center: "title",
+          right: "prev,next",
         }}
         dayCellClassNames={(arg) => { // 今月の日曜日だけ色を少し薄くする
           const today = new Date();
           return (
-            arg.date.getDay() === 0 &&
-            arg.date.getMonth() === today.getMonth()
-          ) ? 'text-gray' : '';
+              arg.date.getDay() === 0 &&
+              arg.date.getMonth() === today.getMonth()
+            )
+            ? "text-gray"
+            : "";
         }}
-
+        datesSet={(dateInfo) => { // 年数と月数を取得
+          setCurrentYear(dateInfo.start.getFullYear());
+          setCurrentMonth(dateInfo.start.getMonth() + 1);
+        }}
       />
 
-
-      <UserShiftRegisterForm isOpen={isModalOpen} onClose={closeModal} selectedDate={selectedDate} />
-
+      <UserShiftRegisterForm
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        selectedDate={selectedDate}
+        user_id={user.user_id!}
+      />
+      <h1>{user.user_name}</h1>
     </div>
   );
-}
-
-
+};
 
 export default DayGridCalendar;

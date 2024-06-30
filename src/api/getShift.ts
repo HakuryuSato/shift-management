@@ -1,4 +1,4 @@
-import { supabase } from '@utils/supabase/supabase';
+import { supabase } from '@/utils/supabase';
 import type { InterFaceShiftQuery } from '@customTypes/InterFaceShiftQuery';
 
 // サーバーからシフト情報を取得するサーバーサイドコンポーネント
@@ -6,8 +6,9 @@ const getShifts = async (context: InterFaceShiftQuery) => {
     const { user_id, year, month, start_time, end_time } = context.query;
 
     // 取得したい年月の情報がなければ今月として処理する
-    const queryYear = year ?? new Date().getFullYear();
-    const queryMonth = month ?? new Date().getMonth() + 1;
+    const now = new Date();
+    const queryYear = year ?? now.getFullYear();
+    const queryMonth = month! + 1 ?? now.getMonth() + 1;
 
     // 取得したい日付範囲の指定がなければ今月または渡された年の月として処理する
     const defaultStartDate = new Date(queryYear, queryMonth - 1, 1); // monthは1から始まるため、-1する
@@ -16,19 +17,26 @@ const getShifts = async (context: InterFaceShiftQuery) => {
     // 月の開始と終了日時を計算 (先月から翌月までになる予定)
     const startDate = start_time ? new Date(start_time) : defaultStartDate;
     const endDate = end_time ? new Date(end_time) : defaultEndDate;
-    // console.log('startDate',startDate)
-    // console.log('endDate',endDate)
+
+
+    // 開始日と終了日をUTCのISO形式で設定
+    const startDateISOString = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())).toISOString();
+    const endDateISOString = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59)).toISOString();
+
 
 
     const { data, error } = await supabase
         .from('shifts')
         .select('start_time, end_time')
         .eq('user_id', user_id)
-        .gte('start_time', startDate.toISOString())
-        .lte('end_time', endDate.toISOString());
+        .gte('start_time', startDateISOString)
+        .lte('end_time', endDateISOString);
 
-    console.log(data)
-    console.log(error)
+    // console.log('startDate',startDate)
+    // console.log('endDate',endDate)
+
+    // console.log(data)
+    // console.log(error)
 
     return {
         props: {
