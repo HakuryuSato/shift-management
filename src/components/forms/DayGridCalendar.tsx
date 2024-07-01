@@ -10,13 +10,14 @@ import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
 import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
-
+import { formatEvents } from "@/utils/formatEvents";
+import { createContext } from "@/utils/createContext";
 
 // API
 import getShift from "@api/getShift";
 
 // 型宣言
-import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
+// import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
 import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
 
 // Props
@@ -25,26 +26,6 @@ interface DayGridCalendarProps {
   user: InterFaceTableUsers;
 }
 
-// 関数: FullCalendar用にデータ整形
-function formatEvents(data: any[]) {
-  return data.map((shift) => ({
-    start: shift.start_time,
-    end: shift.end_time,
-  }));
-}
-
-// 関数: 送信用クエリ作成
-function createContext(userId: number, year: number, month: number) {
-  const context: InterFaceShiftQuery = {
-    query: {
-      user_id: userId,
-      year: year,
-      month: month,
-    },
-  };
-
-  return context;
-}
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
@@ -101,7 +82,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = async () => {
-    const context = createContext(userId, currentYear, currentMonth);
+    const context = createContext({
+      user_id: userId,
+      year: currentYear,
+      month: currentMonth,
+    });
     const response = await getShift(context);
     if (response.props.data) {
       const formattedEvents = formatEvents(response.props.data);
@@ -121,8 +106,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setSelectedDate(info.dateStr);
     setIsModalOpen(true);
   };
-
- 
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
