@@ -20,6 +20,9 @@ import getShift from "@api/getShift";
 // import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
 import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
 
+// スタイル
+import "@styles/custom-fullcalendar-styles.css" // FullCalendarのボタン色変更
+
 // Props
 interface DayGridCalendarProps {
   onLogout: () => void;

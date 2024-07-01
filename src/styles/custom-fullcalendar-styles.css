@@ -1,0 +1,3 @@
+.fc .fc-button{
+  @apply bg-blue text-white border-blue m-5;
+}

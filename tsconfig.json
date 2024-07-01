@@ -58,7 +58,11 @@
       ],
       "@customTypes/*": [
         "./src/customTypes/*"
-      ]
+      ],
+      "@styles/*": [
+        "./src/styles/*"
+      ],
+
     },
 
   },
