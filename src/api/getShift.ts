@@ -3,7 +3,7 @@ import type { InterFaceShiftQuery } from '@customTypes/InterFaceShiftQuery';
 
 // サーバーからシフト情報を取得するサーバーサイドコンポーネント
 const getShifts = async (context: InterFaceShiftQuery) => {
-    const { user_id, year, month, start_time, end_time } = context.query;
+    const { user_id = '*', year, month, start_time, end_time } = context.query;
 
     // 取得したい年月の情報がなければ今月として処理する
     const now = new Date();
@@ -28,21 +28,20 @@ const getShifts = async (context: InterFaceShiftQuery) => {
     // クエリの設定
     let query = supabase
         .from('shifts')
-        .select('start_time, end_time')
+        .select('shift_id,user_id,user_name,start_time, end_time,is_approved')
         .gte('start_time', startDateISOString)
         .lte('end_time', endDateISOString);
 
-    // user_idが指定されている場合のみ絞り込み
-    if (user_id && user_id !== '*') {
-        query = query.eq('user_id', user_id);
-    }
+        if (user_id && user_id !== '*') { // 指定なければデフォルトの*となり全取得
+            query = query.eq('user_id', user_id);
+        }
 
     const { data, error } = await query;
     // console.log('startDate',startDate)
     // console.log('endDate',endDate)
 
-    // console.log(data)
-    // console.log(error)
+    console.log(data)
+    console.log(error)
 
     return {
         props: {
