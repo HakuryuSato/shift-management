@@ -1,5 +1,5 @@
 import { supabase } from '@/utils/supabase';
-import type { InterFaceShiftQuery } from '@/customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@/customTypes/InterFaceShiftQuery';
 
 const sendApproval = async (shiftId: number) => {
     const { data: currentData, error: currentError } = await supabase

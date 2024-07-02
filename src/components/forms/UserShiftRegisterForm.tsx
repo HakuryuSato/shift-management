@@ -16,8 +16,8 @@ import {
 } from "@/utils/userOptions";
 
 // 型
-import type { InterFaceShiftQuery } from "@customTypes/InterFaceShiftQuery";
-import type { InterFaceUserOptions } from "@customTypes/InterFaceUserOptions";
+import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
+import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
 
 type ModalProps = {
   isOpen: boolean;

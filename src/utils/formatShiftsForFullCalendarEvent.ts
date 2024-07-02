@@ -1,5 +1,5 @@
 // FullCalendar用にイベントを整形
-export function formatEvents(data: any[], useUserNameAsTitle: boolean = false) {
+export default function formatShiftsForFullCalendarEvent(data: any[], useUserNameAsTitle: boolean = false) {
 
 
   return data.map((shift) => ({

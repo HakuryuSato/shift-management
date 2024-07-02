@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 // 独自
-import AdminSelectPage from "@forms/AdminSelectPage";
+// import AdminSelectPage from "@forms/AdminSelectPage";
+import AdminShiftTable from "@forms/AdminShiftTable"
 import AdminLoginForm from "@components/forms/AdminLoginForm";
 import TimeGridCalendar from "@forms/TimeGridCalendar";
 
@@ -29,7 +30,7 @@ export default function AdminPage() {
     setIsLoggedIn(false);
   };
 
-  const handleButtonClick = (page: string) => {
+  const handleBackButtonClick = (page: string) => {
     if (page === "Logout") {
       handleLogout();
     } else {
@@ -41,16 +42,16 @@ export default function AdminPage() {
     <>
       {isLoggedIn
         ? (
-          currentPage === "AdminSelectPage"
+          currentPage === "AdminShiftTable"
             ? (
-              <AdminSelectPage
-                onButtonClick={() => handleButtonClick("TimeGridCalendar")}
+              <AdminShiftTable
+              onButtonClickBackToShiftApproval={() => handleBackButtonClick("TimeGridCalendar")}
               />
             )
             : (
               <TimeGridCalendar
                 onLogout={handleLogout}
-                onBack={() => handleButtonClick("AdminSelectPage")}
+                onBack={() => handleBackButtonClick("AdminShiftTable")}
               />
             )
         )

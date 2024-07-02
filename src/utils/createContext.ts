@@ -1,7 +1,7 @@
-import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
+import type InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 
 // 送信用クエリ作成
-export function createContext(params: InterFaceShiftQuery['query']): InterFaceShiftQuery {
+export default function createContext(params: InterFaceShiftQuery['query']): InterFaceShiftQuery {
     const query: InterFaceShiftQuery['query'] = {};
     
     if (params.user_id !== undefined) query.user_id = params.user_id;
@@ -11,6 +11,7 @@ export function createContext(params: InterFaceShiftQuery['query']): InterFaceSh
     if (params.is_approved !== undefined) query.is_approved = params.is_approved;
     if (params.start_time !== undefined) query.start_time = params.start_time;
     if (params.end_time !== undefined) query.end_time = params.end_time;
+    // console.log(query)
 
     return { query };
 }

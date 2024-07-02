@@ -1,5 +1,5 @@
 import { supabase } from '@/utils/supabase';
-import type { InterFaceShiftQuery } from '@/customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@/customTypes/InterFaceShiftQuery';
 
 const sendShift = async (context: InterFaceShiftQuery) => {
     const { user_id, start_time, end_time } = context.query;

@@ -1,10 +1,11 @@
-'use client'
-import DayGridCalendar from "@forms/DayGridCalendar"
+"use client";
+import AdminShiftTable from "@forms/AdminShiftTable";
 
 export default function HomePage() {
+  
   return (
-    <div>
-      <DayGridCalendar />
-    </div>
-  )
+    <AdminShiftTable
+      onButtonClick={() => handleButtonClick("TimeGridCalendar")}
+    />
+  );
 }
