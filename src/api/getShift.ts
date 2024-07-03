@@ -1,9 +1,9 @@
 import { supabase } from '@/utils/supabase';
-import type { InterFaceShiftQuery } from '@customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 
 // サーバーからシフト情報を取得するサーバーサイドコンポーネント
 const getShifts = async (context: InterFaceShiftQuery) => {
-    const { user_id = '*', year, month, start_time, end_time } = context.query;
+    const { user_id = '*', year, month, start_time, end_time, is_approved } = context.query;
 
     // 取得したい年月の情報がなければ今月として処理する
     const now = new Date();
@@ -18,12 +18,9 @@ const getShifts = async (context: InterFaceShiftQuery) => {
     const startDate = start_time ? new Date(start_time) : defaultStartDate;
     const endDate = end_time ? new Date(end_time) : defaultEndDate;
 
-
     // 開始日と終了日をUTCのISO形式で設定
     const startDateISOString = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())).toISOString();
     const endDateISOString = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59)).toISOString();
-
-
 
     // クエリの設定
     let query = supabase
@@ -32,16 +29,19 @@ const getShifts = async (context: InterFaceShiftQuery) => {
         .gte('start_time', startDateISOString)
         .lte('end_time', endDateISOString);
 
-        if (user_id && user_id !== '*') { // 指定なければデフォルトの*となり全取得
-            query = query.eq('user_id', user_id);
+    const conditions = {
+        user_id: user_id !== '*' ? user_id : null,
+        is_approved: is_approved !== undefined ? is_approved : null,
+        // 追加の条件があればここに追加
+    };
+
+    Object.entries(conditions).forEach(([key, value]) => {
+        if (value !== null) {
+            query = query.eq(key, value);
         }
+    });
 
     const { data, error } = await query;
-    // console.log('startDate',startDate)
-    // console.log('endDate',endDate)
-
-    console.log(data)
-    console.log(error)
 
     return {
         props: {

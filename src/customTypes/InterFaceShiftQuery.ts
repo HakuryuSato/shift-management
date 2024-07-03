@@ -1,5 +1,5 @@
 // DBのshiftsテーブルと同じ型
-export interface InterFaceShiftQuery {
+export default interface InterFaceShiftQuery {
     query: {
         user_id?: string | number, // idは必須要素
         shift_id?: number,

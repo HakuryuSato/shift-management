@@ -9,7 +9,7 @@ import DayGridCalendar from "@forms/DayGridCalendar";
 import UserLoginForm from "@components/forms/UserLoginForm";
 
 // 型
-import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
+import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 
 export default function UserPage() {

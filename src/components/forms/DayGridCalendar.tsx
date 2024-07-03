@@ -10,15 +10,15 @@ import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
 import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
-import { formatEvents } from "@/utils/formatEvents";
-import { createContext } from "@/utils/createContext";
+import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
+import createContext from "@/utils/createContext";
 
 // API
 import getShift from "@api/getShift";
 
 // 型宣言
 // import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
-import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
+import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // スタイル
 import "@styles/custom-fullcalendar-styles.css" // FullCalendarのボタン色変更
@@ -92,7 +92,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     });
     const response = await getShift(context);
     if (response.props.data) {
-      const formattedEvents = formatEvents(response.props.data);
+      const formattedEvents = formatShiftsForFullCalendarEvent(response.props.data);
       setShiftEvents(formattedEvents);
     }
   };

@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/supabase';
 
-export const getServerSideProps = async () => {
+const getUserNames = async () => {
     let { data: user, error } = await supabase
         .from('users')
         .select('user_name');
@@ -12,3 +12,5 @@ export const getServerSideProps = async () => {
         },
     };
 };
+
+export default getUserNames

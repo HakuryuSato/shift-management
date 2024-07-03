@@ -10,8 +10,8 @@ import { EventClickArg } from "@fullcalendar/core";
 // 独自
 import getShift from "@api/getShift";
 import sendShiftApproval from "@api/sendShiftApproval";
-import { formatEvents } from "@/utils/formatEvents";
-import { createContext } from "@/utils/createContext";
+import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
+import createContext from "@/utils/createContext";
 import Button from "@ui/Button";
 
 // 型宣言
@@ -36,8 +36,8 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       if (response.props.data) {
         // console.log("Raw data from getShift:", response.props.data);
 
-        const formattedEvents = formatEvents(response.props.data, true);
-        console.log("Formatted events:", formattedEvents); // デバッグ用ログ
+        const formattedEvents = formatShiftsForFullCalendarEvent(response.props.data, true);
+        // console.log("Formatted events:", formattedEvents); // デバッグ用ログ
         setShiftEvents(formattedEvents);
       }
     };
@@ -51,6 +51,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     const [endDate, setEndDate] = useState<Date>(new Date());
     const [currentView, setCurrentView] = useState("timeGridWeek");
     const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
+    
 
     // effect
     useEffect(() => { // 初回用
@@ -103,7 +104,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           customButtons={{ // FullCalendar内に埋め込む独自ボタン
             backToMenuButton: {
-              text: "Select画面へ戻る",
+              text: "承認済みシフト画面",
               click: onBack,
             },
           }}

@@ -4,7 +4,7 @@ import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { supabase } from "@/utils/supabase";
-import type { InterFaceTableUsers } from "@customTypes/InterFaceTableUsers";
+import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 const UserLoginForm = (
     { onLoginSuccess }: {
