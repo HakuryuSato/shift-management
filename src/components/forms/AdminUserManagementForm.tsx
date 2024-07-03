@@ -26,6 +26,7 @@ const AdminUserManagementForm: React.FC<ModalProps> = ({ isOpen, onClose, mode }
     } else if (mode === "delete") {
       deleteUser(userName);
     }
+    setUserName("")
     onClose();
   };
 

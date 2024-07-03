@@ -1,12 +1,14 @@
 import { supabase } from '@/utils/supabase';
 
 
-const deleteUser = async (userId: string) => {
+const deleteUser = async (userName: string) => {
+    // console.log('before_delete', userName);
     const { data, error } = await supabase
         .from('users')
         .delete()
-        .eq('id', userId);
+        .eq('user_name', userName);
 
+    // console.log('after_delete', data, error);
     return {
         props: {
             data,

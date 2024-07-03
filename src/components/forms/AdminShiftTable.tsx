@@ -53,7 +53,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
       userNames,
     );
 
-    console.log(table);
+    // console.log(table);
     setTable(table);
   };
 
