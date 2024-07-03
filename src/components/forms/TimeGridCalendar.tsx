@@ -58,6 +58,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       const initialStartDate = new Date();
       const initialEndDate = new Date();
       initialEndDate.setDate(initialStartDate.getDate() + 7); // 1週間後の日付を設定
+      
       setStartDate(initialStartDate);
       setEndDate(initialEndDate);
       updateEventData(initialStartDate, initialEndDate);

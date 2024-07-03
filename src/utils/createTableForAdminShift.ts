@@ -21,6 +21,7 @@ function generateDateList(currentMonth: number, currentYear: number): string[] {
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(currentYear, currentMonth, day);
     dates.push(date.toLocaleDateString('ja-JP'));
+    // dates.push(date.toLocaleDateString('ja-JP',{ month: 'numeric', day: 'numeric', weekday: 'short' }));    
   }
   return dates;
 }
@@ -93,7 +94,7 @@ export default function createTableForAdminShift(
   const dailyTotals = calculateDailyTotals(currentMonth, currentYear, formatedShifts);
   
   const headerRow = [`${currentMonth + 1}月`, "名前"].concat(userNames.map(user => user.user_name ?? ""));
-  const totalRow = ["日付", "合計"].concat(userTotals.map(total => total.toString()));
+  const totalRow = ["日付", "合計(H)"].concat(userTotals.map(total => total.toString()));
 
   const table: (string | number)[][] = [headerRow];
 
