@@ -103,7 +103,9 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   const [table, setTable] = useState<any>(!null);
 
   useEffect(() => { // シフトデータ更新
+    // console.log(shift)
     updateTable();
+
   }, []);
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
@@ -150,7 +152,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
           <div className="m-4">
             <Button
-              text="csvダウンロード"
+              text="Excelダウンロード"
               onClick={handleCsvDownloadClick}
               className="bg-orange"
             />
