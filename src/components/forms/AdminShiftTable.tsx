@@ -18,6 +18,7 @@ import createContext from "@utils/createContext";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
 import AdminUserManagementForm from "@forms/AdminUserManagementForm";
+import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx"
 
 interface AdminShiftTableProps {
   onButtonClickBackToShiftApproval: () => void;
@@ -117,6 +118,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   };
 
   const handleCsvDownloadClick = () => {
+    downloadShiftTableXlsx(table,currentYear,currentMonth)
   };
 
   return (
