@@ -13,12 +13,13 @@ import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
+import sendShift from "@/api/sendShift";
 
 // API
 import getShift from "@api/getShift";
 
-// 型宣言
-// import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
+// 型
+import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // スタイル
@@ -39,16 +40,16 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // 関数---------------------------------------------------------------------------------------------------------
   // シフト登録モーダル非表示
-  const closeModal = () => {
+  const closeRegisterModal = async () => { // 関数名変更、async 追加
     setIsModalOpen(false);
-    updateEventData();
+    await updateEventData(); // 更新処理を確実に待つ
   };
 
   // シフト削除モーダル非表示
-  const closeDeleteModal = () => {
+  const closeDeleteModal = async () => { // async に変更
     setIsDeleteModalOpen(false);
     setSelectedShiftId(null);
-    updateEventData();
+    await updateEventData(); // 更新処理を確実に待つ
   };
 
   // FullCalendarのイベントの表示方法を変更する
@@ -111,9 +112,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-    console.log()
     setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null); // 追加
     setIsDeleteModalOpen(true); // 追加
+  };
+
+  // シフト登録
+  const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+    await sendShift(shiftData); 
+    await updateEventData(); 
   };
 
   // 日付クリック
@@ -160,10 +166,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       <UserShiftRegisterForm
         isOpen={isModalOpen}
-        onClose={closeModal}
+        onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
+        onRegister={handleRegister} 
       />
+
       <h1>{user.user_name}</h1>
       {selectedShiftId !== null && (
         <UserShiftDeleteForm

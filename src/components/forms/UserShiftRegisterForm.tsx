@@ -1,8 +1,9 @@
 "use client";
+// モーダルウィンドウとして表示される
 
 // 基盤
 import TimeInput from "@ui/TimeInput";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 // 独自
@@ -11,53 +12,24 @@ import sendShift from "@api/sendShift";
 import {
   getUserOptions,
   setUserOptions,
-  updateOptionsIfNeeded,
 } from "@/utils/userOptions";
-
+import Modal from "@/components/common/Modal"; // Modal インポート追加
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
 
-type ModalProps = {
+type UserShiftRegisterFormProps = {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: string;
   user_id: number;
+  onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
 };
 
-// コンポーネント------------------------------------------------------------------------------------------------------------------------
-const Modal: React.FC<ModalProps> = (
-  { isOpen, onClose, selectedDate, user_id },
+const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
+  { isOpen, onClose, selectedDate, user_id, onRegister }
 ) => {
   // 定数-----------------------------------
-
-  // 関数------------------------------------------------------------
-  // シフトデータ送信メソッド
-  const sendShiftData = () => {
-    // 送信用に日付のテキスト整形
-    const formattedStartTime = `${selectedDate} ${startTime}`;
-    const formattedEndTime = `${selectedDate} ${endTime}`;
-
-    // 送信用データの定義
-    const context: InterFaceShiftQuery = {
-      query: {
-        user_id: userId,
-        start_time: formattedStartTime,
-        end_time: formattedEndTime,
-      },
-    };
-
-    // contextをsupabaseへ送信
-    sendShift(context)
-      .then((response: any) => {
-        // console.log(response);
-      })
-      .catch((error: any) => {
-        // console.error(error);
-      });
-  };
-
   // フック--------------------------------------------------------------------------------------------------
   // State
   const [userId, setuserId] = useState<number>(user_id);
@@ -68,8 +40,24 @@ const Modal: React.FC<ModalProps> = (
     const { start_time, end_time } = getUserOptions();
     setStartTime(start_time);
     setEndTime(end_time);
-    setUserOptions({start_time:startTime , end_time:endTime})
+    setUserOptions({ start_time: startTime, end_time: endTime });
   }, []);
+
+  // 関数------------------------------------------------------------
+  const sendShiftData = async () => { // async 追加
+    const formattedStartTime = `${selectedDate} ${startTime}`;
+    const formattedEndTime = `${selectedDate} ${endTime}`;
+
+    const context: InterFaceShiftQuery = {
+      query: {
+        user_id: userId,
+        start_time: formattedStartTime,
+        end_time: formattedEndTime,
+      },
+    };
+
+    await onRegister(context); 
+  };
 
   // ハンドラー---------------------------------------------------------------------------
   // 背景クリック時にモーダル非表示
@@ -89,10 +77,7 @@ const Modal: React.FC<ModalProps> = (
 
   return (
     // ↓モーダル用の黒塗り背景
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-      onClick={handleOverlayClick}
-    >
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">{selectedDate}</h2>
@@ -103,7 +88,7 @@ const Modal: React.FC<ModalProps> = (
             シフトを希望する時間を入力してください
           </h3>
           <div className="flex justify-center items-center space-x-2">
-          <TimeInput initialValue={startTime} onReturn={(selectedTime) => setStartTime(selectedTime)} />
+            <TimeInput initialValue={startTime} onReturn={(selectedTime) => setStartTime(selectedTime)} />
             <a className="pt-3">-</a>
             <TimeInput initialValue={endTime} onReturn={(selectedTime) => setEndTime(selectedTime)} />
           </div>
@@ -116,8 +101,8 @@ const Modal: React.FC<ModalProps> = (
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
-export default Modal;
+export default UserShiftRegisterForm;
