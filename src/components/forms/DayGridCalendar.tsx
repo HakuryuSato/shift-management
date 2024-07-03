@@ -12,6 +12,7 @@ import { EventClickArg } from "@fullcalendar/core";
 import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import createContext from "@/utils/createContext";
+import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
 
 // API
 import getShift from "@api/getShift";
@@ -21,14 +22,13 @@ import getShift from "@api/getShift";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // スタイル
-import "@styles/custom-fullcalendar-styles.css" // FullCalendarのボタン色変更
+import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更
 
 // Props
 interface DayGridCalendarProps {
   onLogout: () => void;
   user: InterFaceTableUsers;
 }
-
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
@@ -37,10 +37,17 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // const calendarRef = useRef(null);
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
-  // 以下コンポーネント関数---------------------------------------------------------------------------------------------------------
-  // モーダル非表示
+  // 関数---------------------------------------------------------------------------------------------------------
+  // シフト登録モーダル非表示
   const closeModal = () => {
     setIsModalOpen(false);
+    updateEventData();
+  };
+
+  // シフト削除モーダル非表示
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedShiftId(null);
     updateEventData();
   };
 
@@ -76,6 +83,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth(),
   );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // 追加
 
   // effect
   // コンポーネントレンダー時にイベント取得
@@ -92,7 +101,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     });
     const response = await getShift(context);
     if (response.props.data) {
-      const formattedEvents = formatShiftsForFullCalendarEvent(response.props.data);
+      const formattedEvents = formatShiftsForFullCalendarEvent(
+        response.props.data,
+      );
       setShiftEvents(formattedEvents);
     }
   };
@@ -100,8 +111,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-    // setSelectedDate(arg.dateStr);
-    // setIsModalOpen(true); // 削除ボタンのついた別のモーダルを表示する
+    console.log()
+    setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null); // 追加
+    setIsDeleteModalOpen(true); // 追加
   };
 
   // 日付クリック
@@ -153,6 +165,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         user_id={user.user_id!}
       />
       <h1>{user.user_name}</h1>
+      {selectedShiftId !== null && (
+        <UserShiftDeleteForm
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          shiftId={selectedShiftId}
+        />
+      )}
     </div>
   );
 };

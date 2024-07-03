@@ -1,5 +1,4 @@
 "use client";
-// モーダルウィンドウとして表示される
 
 // 基盤
 import TimeInput from "@ui/TimeInput";
@@ -14,6 +13,7 @@ import {
   setUserOptions,
   updateOptionsIfNeeded,
 } from "@/utils/userOptions";
+
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -79,8 +79,8 @@ const Modal: React.FC<ModalProps> = (
     }
   };
 
-  const handleRegisterClick = () => {
-    sendShiftData();
+  const handleRegisterClick = async () => {
+    await sendShiftData();
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
