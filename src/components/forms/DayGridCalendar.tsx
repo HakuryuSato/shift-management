@@ -12,23 +12,24 @@ import { EventClickArg } from "@fullcalendar/core";
 import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import createContext from "@/utils/createContext";
+import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
+import sendShift from "@/api/sendShift";
 
 // API
 import getShift from "@api/getShift";
 
-// 型宣言
-// import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
+// 型
+import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // スタイル
-import "@styles/custom-fullcalendar-styles.css" // FullCalendarのボタン色変更
+import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更
 
 // Props
 interface DayGridCalendarProps {
   onLogout: () => void;
   user: InterFaceTableUsers;
 }
-
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
@@ -37,11 +38,18 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // const calendarRef = useRef(null);
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
-  // 以下コンポーネント関数---------------------------------------------------------------------------------------------------------
-  // モーダル非表示
-  const closeModal = () => {
+  // 関数---------------------------------------------------------------------------------------------------------
+  // シフト登録モーダル非表示
+  const closeRegisterModal = async () => { // 関数名変更、async 追加
     setIsModalOpen(false);
-    updateEventData();
+    await updateEventData(); // 更新処理を確実に待つ
+  };
+
+  // シフト削除モーダル非表示
+  const closeDeleteModal = async () => { // async に変更
+    setIsDeleteModalOpen(false);
+    setSelectedShiftId(null);
+    await updateEventData(); // 更新処理を確実に待つ
   };
 
   // FullCalendarのイベントの表示方法を変更する
@@ -76,6 +84,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth(),
   );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // 追加
 
   // effect
   // コンポーネントレンダー時にイベント取得
@@ -92,7 +102,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     });
     const response = await getShift(context);
     if (response.props.data) {
-      const formattedEvents = formatShiftsForFullCalendarEvent(response.props.data);
+      const formattedEvents = formatShiftsForFullCalendarEvent(
+        response.props.data,
+      );
       setShiftEvents(formattedEvents);
     }
   };
@@ -100,8 +112,17 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-    // setSelectedDate(arg.dateStr);
-    // setIsModalOpen(true); // 削除ボタンのついた別のモーダルを表示する
+    console.log("handleEventClick",arg)
+    setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
+    setIsDeleteModalOpen(true);
+  };
+
+
+
+  // シフト登録
+  const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+    await sendShift(shiftData); 
+    await updateEventData(); 
   };
 
   // 日付クリック
@@ -110,10 +131,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsModalOpen(true);
   };
 
+
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
-      <button onClick={onLogout}>ログアウト</button>
+      {/* <button onClick={onLogout}>ログアウト</button> */}
 
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -148,11 +170,20 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       <UserShiftRegisterForm
         isOpen={isModalOpen}
-        onClose={closeModal}
+        onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
+        onRegister={handleRegister} 
       />
+
       <h1>{user.user_name}</h1>
+      {selectedShiftId !== null && (
+        <UserShiftDeleteForm
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          shiftId={selectedShiftId}
+        />
+      )}
     </div>
   );
 };
