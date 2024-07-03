@@ -9,10 +9,7 @@ import Cookies from "js-cookie";
 // 独自
 import Button from "@ui/Button";
 import sendShift from "@api/sendShift";
-import {
-  getUserOptions,
-  setUserOptions,
-} from "@/utils/userOptions";
+import { getUserOptions, setUserOptions } from "@/utils/userOptions";
 import Modal from "@/components/common/Modal"; // Modal インポート追加
 
 // 型
@@ -27,7 +24,7 @@ type UserShiftRegisterFormProps = {
 };
 
 const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
-  { isOpen, onClose, selectedDate, user_id, onRegister }
+  { isOpen, onClose, selectedDate, user_id, onRegister },
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
@@ -56,7 +53,7 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
       },
     };
 
-    await onRegister(context); 
+    await onRegister(context);
   };
 
   // ハンドラー---------------------------------------------------------------------------
@@ -78,27 +75,31 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
   return (
     // ↓モーダル用の黒塗り背景
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">{selectedDate}</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-bold">{selectedDate}</h2>
+      </div>
+
+      <div className="p-4">
+        <h3 className="mb-4 flex justify-center ">
+          シフトを希望する時間を入力してください
+        </h3>
+        <div className="flex justify-center items-center space-x-2">
+          <TimeInput
+            initialValue={startTime}
+            onReturn={(selectedTime) => setStartTime(selectedTime)}
+          />
+          <a className="pt-3">-</a>
+          <TimeInput
+            initialValue={endTime}
+            onReturn={(selectedTime) => setEndTime(selectedTime)}
+          />
         </div>
 
-        <div className="p-4">
-          <h3 className="mb-4 flex justify-center ">
-            シフトを希望する時間を入力してください
-          </h3>
-          <div className="flex justify-center items-center space-x-2">
-            <TimeInput initialValue={startTime} onReturn={(selectedTime) => setStartTime(selectedTime)} />
-            <a className="pt-3">-</a>
-            <TimeInput initialValue={endTime} onReturn={(selectedTime) => setEndTime(selectedTime)} />
-          </div>
-
-          <div className="pt-10 flex justify-center ">
-            <Button
-              text="登録"
-              onClick={handleRegisterClick}
-            />
-          </div>
+        <div className="pt-10 flex justify-center ">
+          <Button
+            text="登録"
+            onClick={handleRegisterClick}
+          />
         </div>
       </div>
     </Modal>
