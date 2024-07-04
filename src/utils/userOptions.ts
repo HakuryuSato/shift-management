@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import type { InterFaceUserOptions } from "@customTypes/InterFaceUserOptions";
+import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
 
 // クッキーからユーザーオプションを取得
 export const getUserOptions = (): InterFaceUserOptions => {
