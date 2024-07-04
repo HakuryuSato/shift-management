@@ -14,6 +14,7 @@ import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalenda
 import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
 import sendShift from "@/api/sendShift";
+import Button from "@ui/Button";
 
 // API
 import getShift from "@api/getShift";
@@ -35,10 +36,26 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
 ) => { //以下コンポーネント--------------------------------------------------------------------------------------------
   // 以下定数---------------------------------------------------------------------------------------------------------
-  // const calendarRef = useRef(null);
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
   // 関数---------------------------------------------------------------------------------------------------------
+  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
+  const updateEventData = async () => {
+    const context = createContext({
+      user_id: userId,
+      year: currentYear,
+      month: currentMonth,
+      is_approved: isApprovedView ? true : undefined, // 承認済みシフトのフィルターを追加
+    });
+    const response = await getShift(context);
+    if (response.props.data) {
+      const formattedEvents = formatShiftsForFullCalendarEvent(
+        response.props.data,
+      );
+      setShiftEvents(formattedEvents);
+    }
+  };
+
   // シフト登録モーダル非表示
   const closeRegisterModal = async () => { // 関数名変更、async 追加
     setIsModalOpen(false);
@@ -71,6 +88,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     );
   };
 
+  // シフトの表示方法を切り替える
+  const toggleShiftView = () => {
+    setIsApprovedView(!isApprovedView);
+  };
+
   // 以下フック-------------------------------------------------------------------------------------------------------
   // state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,57 +107,49 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     new Date().getMonth(),
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
-  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // 追加
+  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
+  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用
 
   // effect
   // コンポーネントレンダー時にイベント取得
-  useEffect(() => {
-    updateEventData(); // 月が切り替わったら全データ再取得
-  }, [currentMonth]);
+  // useEffect(()=>{ // 初回起動時用
+  //   setIsApprovedView(false)
+  // })
 
-  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
-  const updateEventData = async () => {
-    const context = createContext({
-      user_id: userId,
-      year: currentYear,
-      month: currentMonth,
-    });
-    const response = await getShift(context);
-    if (response.props.data) {
-      const formattedEvents = formatShiftsForFullCalendarEvent(
-        response.props.data,
-      );
-      setShiftEvents(formattedEvents);
-    }
-  };
+  useEffect(() => { // 月が切り替わったら全データ再取得
+    updateEventData();
+  }, [currentMonth, isApprovedView]);
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
-  // イベント(予定)クリック
-  const handleEventClick = (arg: EventClickArg) => {
-    console.log("handleEventClick",arg)
-    setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-    setIsDeleteModalOpen(true);
-  };
-
-
-
-  // シフト登録
-  const handleRegister = async (shiftData: InterFaceShiftQuery) => {
-    await sendShift(shiftData); 
-    await updateEventData(); 
-  };
-
   // 日付クリック
   const handleDateClick = (info: { dateStr: string }) => {
     setSelectedDate(info.dateStr);
     setIsModalOpen(true);
   };
 
+  // イベント(予定)クリック
+  const handleEventClick = (arg: EventClickArg) => {
+    console.log("handleEventClick", arg);
+    setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
+    setIsDeleteModalOpen(true);
+  };
+
+  // シフト登録
+  const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+    await sendShift(shiftData);
+    await updateEventData();
+  };
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
       {/* <button onClick={onLogout}>ログアウト</button> */}
+      {
+        /* <Button
+        text={isApprovedView ? "シフト希望画面へ" : "確定シフト画面へ"}
+        onClick={toggleShiftView}
+      /> */
+      }
 
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -149,9 +163,15 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         events={shiftEvents}
         eventContent={renderEventContent}
         headerToolbar={{
-          left: "",
+          left: "toggleShiftViewButton",
           center: "title",
           right: "prev,next",
+        }}
+        customButtons={{
+          toggleShiftViewButton: {
+            text: isApprovedView ? "シフト希望画面へ" : "確定シフト画面へ",
+            click: toggleShiftView,
+          },
         }}
         dayCellClassNames={(arg) => { // 今月の日曜日だけ色を少し薄くする
           const today = new Date();
@@ -173,7 +193,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
-        onRegister={handleRegister} 
+        onRegister={handleRegister}
       />
 
       <h1>{user.user_name}</h1>
