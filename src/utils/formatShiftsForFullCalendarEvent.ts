@@ -7,12 +7,14 @@ export default function formatShiftsForFullCalendarEvent(data: any[], useUserNam
     start: shift.start_time,
     end: shift.end_time,
     // useUserNameAsTitleがtrueならshift.user_name、falseならshift.title、どちらも無ければ空文字
-    title: useUserNameAsTitle ? shift.user_name || '' : shift.title || '', 
+    title: useUserNameAsTitle ? shift.user_name || '' : shift.title || '',
     display: 'block',
 
-    // description: `${shift.start_time} - ${shift.end_time}`, // 時間を2行で表示するためのdescriptionフィールド
-    // classNames: shift.is_approved ? ['green']:'',
 
     backgroundColor: shift.is_approved ? 'green' : '',
+
+    extendedProps: {
+      is_approved: shift.is_approved // ここでカスタムプロパティを追加
+    },
   }));
 }

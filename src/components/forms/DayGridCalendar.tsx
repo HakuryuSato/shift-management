@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import interactionPlugin from "@fullcalendar/interaction";
-import React, { useEffect, useRef, useState ,useCallback} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
@@ -38,7 +38,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下定数---------------------------------------------------------------------------------------------------------
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
-    // State -------------------------------------------------------------------------------------------------------
+  // State -------------------------------------------------------------------------------------------------------
   // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -55,11 +55,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
   const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用
 
- 
-
-
-
-
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
@@ -70,6 +65,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       is_approved: isApprovedView ? true : undefined,
     });
     const response = await getShift(context);
+
     if (response.props.data) {
       const formattedEvents = formatShiftsForFullCalendarEvent(
         response.props.data,
@@ -116,26 +112,37 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsApprovedView(!isApprovedView);
   };
 
-
   // effect  -------------------------------------------------
   useEffect(() => {
     updateEventData();
-  }, [updateEventData,currentMonth, isApprovedView]);
-  
-
+  }, [updateEventData, currentMonth, isApprovedView]);
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
-  const handleDateClick = (info: { dateStr: string }) => {
-    setSelectedDate(info.dateStr);
-    setIsModalOpen(true);
+  const handleDateClick = (info: { dateStr: string }) => { // 日付クリック時に条件で絞っている
+    const isSunday = new Date(info.dateStr).getDay() === 0;
+    const isThisMonth = (new Date(info.dateStr).getMonth()) === currentMonth
+  
+    if (!isApprovedView && !isSunday && isThisMonth) { // 確定シフト画面でなく、日曜日でなく、今月であるなら、イベントが存在するか
+      const clickedDate = info.dateStr;
+      const sortedShifts = shiftEvents.map(event => event.start.split("T")[0]).sort();
+      const eventExists = sortedShifts.some((date) => {return date === clickedDate;});
+
+      if (!eventExists) { // イベントが存在しないなら
+        setSelectedDate(clickedDate);
+        setIsModalOpen(true);
+        // console.log("handleRegister true");
+      }
+
+    }
   };
 
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-    console.log("handleEventClick", arg);
-    setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-    setIsDeleteModalOpen(true);
+    if (!isApprovedView && !arg.event.extendedProps.is_approved) { // 確定シフト画面でなく、シフトが承認済みでないなら
+      setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
+      setIsDeleteModalOpen(true);
+    }
   };
 
   // シフト登録
@@ -147,14 +154,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
-      {/* <button onClick={onLogout}>ログアウト</button> */}
-      {
-        /* <Button
-        text={isApprovedView ? "シフト希望画面へ" : "確定シフト画面へ"}
-        onClick={toggleShiftView}
-      /> */
-      }
-
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         // ref={calendarRef}
@@ -167,9 +166,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         events={shiftEvents}
         eventContent={renderEventContent}
         headerToolbar={{
-          left: "toggleShiftViewButton",
+          left: "",
           center: "title",
-          right: "prev,next",
+          right: "",
+        }}
+        footerToolbar={{
+          left: "prev",
+          center: "toggleShiftViewButton",
+          right: "next",
         }}
         customButtons={{
           toggleShiftViewButton: {
