@@ -167,9 +167,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         events={shiftEvents}
         eventContent={renderEventContent}
         headerToolbar={{
-          left: "toggleShiftViewButton",
+          left: "",
           center: "title",
-          right: "prev,next",
+          right: "",
+        }}
+        footerToolbar={{
+          left: "prev",
+          center: "toggleShiftViewButton",
+          right: "next",
         }}
         customButtons={{
           toggleShiftViewButton: {
