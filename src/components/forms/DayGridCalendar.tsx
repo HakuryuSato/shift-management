@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import interactionPlugin from "@fullcalendar/interaction";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState ,useCallback} from "react";
 import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
@@ -38,14 +38,36 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下定数---------------------------------------------------------------------------------------------------------
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
+    // State -------------------------------------------------------------------------------------------------------
+  // state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [shiftEvents, setShiftEvents] = useState<
+    { start: string; end: string }[]
+  >([]);
+  const [currentYear, setCurrentYear] = useState<number>(
+    new Date().getFullYear(),
+  );
+  const [currentMonth, setCurrentMonth] = useState<number>(
+    new Date().getMonth(),
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
+  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用
+
+ 
+
+
+
+
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
-  const updateEventData = async () => {
+  const updateEventData = useCallback(async () => {
     const context = createContext({
       user_id: userId,
       year: currentYear,
       month: currentMonth,
-      is_approved: isApprovedView ? true : undefined, // 承認済みシフトのフィルターを追加
+      is_approved: isApprovedView ? true : undefined,
     });
     const response = await getShift(context);
     if (response.props.data) {
@@ -54,7 +76,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       );
       setShiftEvents(formattedEvents);
     }
-  };
+    // console.log("ループ監視ループ監視ループ監視ループ監視ループ監視ループ監視ループ監視")
+  }, [userId, currentYear, currentMonth, isApprovedView]);
 
   // シフト登録モーダル非表示
   const closeRegisterModal = async () => { // 関数名変更、async 追加
@@ -93,32 +116,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsApprovedView(!isApprovedView);
   };
 
-  // 以下フック-------------------------------------------------------------------------------------------------------
-  // state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [shiftEvents, setShiftEvents] = useState<
-    { start: string; end: string }[]
-  >([]);
-  const [currentYear, setCurrentYear] = useState<number>(
-    new Date().getFullYear(),
-  );
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    new Date().getMonth(),
-  );
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
-  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
-  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用
 
-  // effect
-  // コンポーネントレンダー時にイベント取得
-  // useEffect(()=>{ // 初回起動時用
-  //   setIsApprovedView(false)
-  // })
-
-  useEffect(() => { // 月が切り替わったら全データ再取得
+  // effect  -------------------------------------------------
+  useEffect(() => {
     updateEventData();
-  }, [currentMonth, isApprovedView]);
+  }, [updateEventData,currentMonth, isApprovedView]);
+  
+
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック

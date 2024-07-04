@@ -106,7 +106,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
     // console.log(shift)
     updateTable();
 
-  }, []);
+  });
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
   const userRegistrationClick = () => {

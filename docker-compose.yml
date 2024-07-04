@@ -16,16 +16,3 @@ services:                       # ここからサービスの定義を始めま�
       - "3000:3000"             # ホストのポート3000をコンテナのポート3000にマッピングします。
     env_file:
       - .env.local
-    # volumes:
-    #   - ./src/app:/src/web
-    # volumes:
-      # バインドボリューム
-      # - .:/usr/src/app
-      # 永続化ボリューム
-      # - /usr/src/app/node_modules
-
-    # command: npm run dev
-    # command: npm run start:watch
-    # environment: #本番運用時は削除する
-    # - NODE_ENV=development #開発者モード
-    # - CHOKIDAR_USEPOLLING=true
