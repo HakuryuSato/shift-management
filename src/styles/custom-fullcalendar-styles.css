@@ -1,3 +1,24 @@
 .fc .fc-button{
   @apply bg-blue text-white border-blue m-5;
+  
+}
+
+.fc .fc-button:hover {
+  @apply bg-blue text-white border-blue;
+}
+
+
+.fc .fc-button:active {
+  @apply bg-blue text-white border-blue;
+}
+
+.fc .fc-button:focus {
+  outline: none;
+  box-shadow: none;  /* フォーカス時の線を無効にする */
+}
+
+.fc-event {
+  white-space: normal !important; /* 文字の折り返しを有効にする */
+  height: auto !important; /* 高さを自動調整 */
+  min-height: 40px; /* 最小の高さを設定 */
 }
