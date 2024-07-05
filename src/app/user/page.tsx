@@ -11,6 +11,10 @@ import UserLoginForm from "@components/forms/UserLoginForm";
 // 型
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
+const COOKIE_USER_LOGGED_IN = "userLoggedIn"
+const COOKIE_USER_INFO = "userInfo"
+const COOKIE_USER_OPTIONS ="userOptions"
+
 
 export default function UserPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,8 +24,8 @@ export default function UserPage() {
   });
 
   useEffect(() => { // ページ表示時にログイン状態とクッキーを確認
-    const loggedIn = Cookies.get("loggedIn");
-    const userInfo = Cookies.get("userInfo");
+    const loggedIn = Cookies.get(COOKIE_USER_LOGGED_IN);
+    const userInfo = Cookies.get(COOKIE_USER_INFO);
 
     setIsLoggedIn(!!loggedIn);
     if (userInfo) { // クッキーにユーザー情報があるなら
@@ -35,9 +39,9 @@ export default function UserPage() {
   };
 
   const handleLogout = () => { // デバッグ用 ログアウト
-    Cookies.remove("loggedIn");
-    Cookies.remove("userInfo");
-    Cookies.remove(("userOptions"));
+    Cookies.remove(COOKIE_USER_LOGGED_IN);
+    Cookies.remove(COOKIE_USER_INFO);
+    Cookies.remove(COOKIE_USER_OPTIONS);
     setIsLoggedIn(false);
     setUser({ user_id: 0, user_name: "" });
   };
