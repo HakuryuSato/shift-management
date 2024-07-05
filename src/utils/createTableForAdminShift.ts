@@ -78,6 +78,18 @@ function calculateDailyTotals(
   return dailyTotals;
 }
 
+// 日付の書式を変更("2024/07/01" => "7/1(月)"")
+function changeDateFormat(input:any) {
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  const output = [...input];
+  for (let i = 2; i < input.length; i++) {
+      const date = new Date(input[i][0]);
+      const dayOfWeek = days[date.getDay()];
+      output[i][0] = `${date.getMonth() + 1}/${date.getDate()}(${dayOfWeek})`;
+  }
+  return output;
+}
+
 // Main function to generate the 2D array
 export default function createTableForAdminShift(
   currentMonth: number,
@@ -112,6 +124,11 @@ export default function createTableForAdminShift(
   });
 
   table.splice(1, 0, totalRow); // Insert the totalRow after the header row
+  
 
-  return table;
+  const result = changeDateFormat(table);
+
+
+
+  return result;
 }
