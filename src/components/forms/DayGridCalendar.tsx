@@ -213,7 +213,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         />
       )}
 
-      <Button text="ログアウト" onClick={onLogout}/>
+      {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
 
 
