@@ -53,7 +53,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
-  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用
+  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用 //使用しなければ削除？
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
@@ -120,18 +120,28 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
   const handleDateClick = (info: { dateStr: string }) => { // 日付クリック時に条件で絞っている
+    const parsedDate = new Date(info.dateStr.replace(/-/g, '/'));
+    console.log(parsedDate.getMonth());
+    console.log(currentMonth)
+
+
     const isSunday = new Date(info.dateStr).getDay() === 0;
     const isThisMonth = (new Date(info.dateStr).getMonth()) === currentMonth
+
+    // console.log(isSunday,isThisMonth,isApprovedView)
+    // console.log(new Date(info.dateStr).getMonth())
+    // console.log(currentMonth)
   
     if (!isApprovedView && !isSunday && isThisMonth) { // 確定シフト画面でなく、日曜日でなく、今月であるなら、イベントが存在するか
       const clickedDate = info.dateStr;
       const sortedShifts = shiftEvents.map(event => event.start.split("T")[0]).sort();
       const eventExists = sortedShifts.some((date) => {return date === clickedDate;});
 
+
       if (!eventExists) { // イベントが存在しないなら
         setSelectedDate(clickedDate);
         setIsModalOpen(true);
-        // console.log("handleRegister true");
+        console.log("handleRegister true");
       }
 
     }
@@ -139,6 +149,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
+
     if (!isApprovedView && !arg.event.extendedProps.is_approved) { // 確定シフト画面でなく、シフトが承認済みでないなら
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
       setIsDeleteModalOpen(true);
@@ -191,8 +202,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             : "";
         }}
         datesSet={(dateInfo) => { // 年数と月数を取得
-          setCurrentYear(dateInfo.start.getFullYear());
-          setCurrentMonth(dateInfo.start.getMonth() + 1);
+
+          const fullCalendarDate=new Date(dateInfo.start)
+          fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
+
+          setCurrentYear(fullCalendarDate.getFullYear());
+          setCurrentMonth(fullCalendarDate.getMonth());
+
         }}
       />
 

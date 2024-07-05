@@ -11,7 +11,7 @@ import UserLoginForm from "@components/forms/UserLoginForm";
 // 型
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
-const COOKIE_USER_LOGGED_IN = "userLoggedIn"
+const COOKIE_USER_LOGGED_IN = "loggedIn"
 const COOKIE_USER_INFO = "userInfo"
 const COOKIE_USER_OPTIONS ="userOptions"
 
