@@ -1,6 +1,10 @@
 import Cookies from "js-cookie";
 import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
 
+// 定数
+const deffault_work_start_time: string = "08:30";
+const deffault_work_end_time: string = "18:00";
+
 // クッキーからユーザーオプションを取得
 export const getUserOptions = (): InterFaceUserOptions => {
   const savedOptions = Cookies.get("userOptions");
@@ -9,10 +13,10 @@ export const getUserOptions = (): InterFaceUserOptions => {
       return JSON.parse(savedOptions);
     } catch (error) {
       console.error("Error parsing userOptions cookie:", error);
-      return { start_time: "", end_time: "" };
+      return { start_time: deffault_work_start_time, end_time: deffault_work_end_time };
     }
   }
-  return { start_time: "", end_time: "" };
+  return { start_time: deffault_work_start_time, end_time: deffault_work_end_time };
 };
 
 // ユーザーオプションをクッキーに保存

@@ -19,12 +19,12 @@ export default function UserPage() {
     user_name: "",
   });
 
-  useEffect(() => { // ページ表示時にログイン状態かクッキーを確認
+  useEffect(() => { // ページ表示時にログイン状態とクッキーを確認
     const loggedIn = Cookies.get("loggedIn");
     const userInfo = Cookies.get("userInfo");
 
     setIsLoggedIn(!!loggedIn);
-    if (userInfo) {
+    if (userInfo) { // クッキーにユーザー情報があるなら
       setUser(JSON.parse(userInfo)); // クッキーからユーザー情報を取得
     }
   }, []);
