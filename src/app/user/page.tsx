@@ -37,6 +37,7 @@ export default function UserPage() {
   const handleLogout = () => { // デバッグ用 ログアウト
     Cookies.remove("loggedIn");
     Cookies.remove("userInfo");
+    Cookies.remove(("userOptions"));
     setIsLoggedIn(false);
     setUser({ user_id: 0, user_name: "" });
   };
