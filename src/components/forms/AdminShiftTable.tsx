@@ -18,7 +18,7 @@ import createContext from "@utils/createContext";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
 import AdminUserManagementForm from "@forms/AdminUserManagementForm";
-import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx"
+import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
 
 interface AdminShiftTableProps {
   onButtonClickBackToShiftApproval: () => void;
@@ -92,7 +92,9 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
   // フック ---------------------------------------------------------------------------------------------------
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [managementModalMode, setManagementModalMode] = useState<"register" | "delete">("register");
+  const [managementModalMode, setManagementModalMode] = useState<
+    "register" | "delete"
+  >("register");
 
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear(),
@@ -105,8 +107,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   useEffect(() => { // シフトデータ更新
     // console.log(shift)
     updateTable();
-
-  });
+  }, []);
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
   const userRegistrationClick = () => {
@@ -120,7 +121,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   };
 
   const handleCsvDownloadClick = () => {
-    downloadShiftTableXlsx(table,currentYear,currentMonth)
+    downloadShiftTableXlsx(table, currentYear, currentMonth);
   };
 
   return (
@@ -170,13 +171,14 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
                   {row.map((cell: string, cellIndex: number) => (
                     <td
                       key={cellIndex}
-                      className={`border p-1 text-xs text-black 
+                      className={`border p-1 text-xs text-black text-center
                   ${rowIndex === 1 ? "border-b-2 border-double" : "border-gray"}
                   ${
                         cellIndex === 1
                           ? "border-r-2 border-double border-gray"
                           : "border-gray"
                       }
+                
                   `}
                       style={{ width: "80px" }} // 固定幅を設定
                     >
