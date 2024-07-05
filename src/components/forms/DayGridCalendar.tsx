@@ -28,7 +28,7 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 
 // Props
 interface DayGridCalendarProps {
-  onLogout: () => void;
+  onLogout: () => void; // デバッグ用
   user: InterFaceTableUsers;
 }
 
