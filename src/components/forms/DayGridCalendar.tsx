@@ -212,7 +212,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
           shiftId={selectedShiftId}
         />
       )}
+
+      <Button text="ログアウト" onClick={onLogout}/>
     </div>
+
+
   );
 };
 
