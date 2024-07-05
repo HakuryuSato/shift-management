@@ -166,15 +166,15 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         events={shiftEvents}
         eventContent={renderEventContent}
         headerToolbar={{
-          left: "",
-          center: "title",
-          right: "",
-        }}
-        footerToolbar={{
           left: "prev",
-          center: "toggleShiftViewButton",
+          center: "title",
           right: "next",
         }}
+        // footerToolbar={{
+        //   left: "",
+        //   center: "",
+        //   right: "",
+        // }}
         customButtons={{
           toggleShiftViewButton: {
             text: isApprovedView ? "シフト希望画面へ" : "確定シフト画面へ",
@@ -204,7 +204,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onRegister={handleRegister}
       />
 
-      <h1>{user.user_name}</h1>
+      <h1>{user.user_name}としてログインしています</h1>
       {selectedShiftId !== null && (
         <UserShiftDeleteForm
           isOpen={isDeleteModalOpen}
@@ -213,7 +213,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         />
       )}
 
-      <Button text="ログアウト" onClick={onLogout}/>
+      {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
 
 
