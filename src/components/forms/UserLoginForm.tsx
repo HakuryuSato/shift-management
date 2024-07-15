@@ -6,6 +6,13 @@ import { useState } from "react";
 import { supabase } from "@/utils/supabase";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
+const COOKIE_USER_LOGGED_IN = process.env
+  .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
+const COOKIE_USER_INFO = process.env.NEXT_PUBLIC_COOKIE_USER_INFO as string;
+const COOKIE_USER_OPTIONS = process.env
+  .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
+
+
 const UserLoginForm = (
     { onLoginSuccess }: {
         onLoginSuccess: (userData: InterFaceTableUsers) => void;
@@ -38,8 +45,8 @@ const UserLoginForm = (
         };
 
         // ログイン成功
-        Cookies.set("loggedIn", "true", { expires: 365 }); // 365日維持
-        Cookies.set("userInfo", JSON.stringify(userData), { expires: 365 }); // ユーザー情報をクッキーに保存
+        Cookies.set(COOKIE_USER_LOGGED_IN, "true", { expires: 365 }); // 365日維持
+        Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), { expires: 365 }); // ユーザー情報をクッキーに保存
         onLoginSuccess(userData);
     };
 
