@@ -5,9 +5,13 @@ import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
 const deffault_work_start_time: string = "08:30";
 const deffault_work_end_time: string = "18:00";
 
+// クッキー
+const COOKIE_USER_OPTIONS = process.env.NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
+
+
 // クッキーからユーザーオプションを取得
 export const getUserOptions = (): InterFaceUserOptions => {
-  const savedOptions = Cookies.get("userOptions");
+  const savedOptions = Cookies.get(COOKIE_USER_OPTIONS);
   if (savedOptions) {
     try {
       return JSON.parse(savedOptions);
@@ -21,7 +25,7 @@ export const getUserOptions = (): InterFaceUserOptions => {
 
 // ユーザーオプションをクッキーに保存
 export const setUserOptions = (options: InterFaceUserOptions) => {
-  Cookies.set("userOptions", JSON.stringify(options), { expires: 365 });
+  Cookies.set(COOKIE_USER_OPTIONS, JSON.stringify(options), { expires: 365 });
   // console.log("User options updated:", options);
 };
 

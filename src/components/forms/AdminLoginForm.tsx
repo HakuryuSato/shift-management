@@ -4,7 +4,7 @@ import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
 
-
+const COOKIE_ADMIN_ISLOGGEDIN = process.env.NEXT_PUBLIC_COOKIE_ADMIN_ISLOGGEDIN as string
 
 const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
     const [adminpassword, setAdminPassword] = useState("");
@@ -23,8 +23,8 @@ const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
         }
 
         // ログイン成功
-        Cookies.set("loggedIn", "true", { expires: 365 }); // 365日維持
-        onLoginSuccess()
+        Cookies.set(COOKIE_ADMIN_ISLOGGEDIN, "true", { expires: 365 }); // 365日維持
+        onLoginSuccess();
     };
 
     return (
@@ -42,7 +42,6 @@ const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
                 <Input
                     inputText={password}
                     onChange={(e) => setPassword(e.target.value)}
-
                     type="password" // Ensure the password field is type="password"
                 />
 
@@ -50,7 +49,6 @@ const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
                 <Input
                     inputText={adminpassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-
                     type="password" // Ensure the password field is type="password"
                 />
             </div>

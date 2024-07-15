@@ -11,10 +11,12 @@ import UserLoginForm from "@components/forms/UserLoginForm";
 // 型
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
-const COOKIE_USER_LOGGED_IN = "loggedIn"
-const COOKIE_USER_INFO = "userInfo"
-const COOKIE_USER_OPTIONS ="userOptions"
-
+// クッキー名称
+const COOKIE_USER_LOGGED_IN = process.env
+  .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
+const COOKIE_USER_INFO = process.env.NEXT_PUBLIC_COOKIE_USER_INFO as string;
+const COOKIE_USER_OPTIONS = process.env
+  .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
 
 export default function UserPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
