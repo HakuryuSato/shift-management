@@ -66,11 +66,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
     // console.log(context);
     const response = await getShift(context);
-    console.log("UPDATE EVENT DATA")
+    console.log("UPDATE EVENT DATA");
     if (response.props.data) {
       const formattedEvents = formatShiftsForFullCalendarEvent(
         response.props.data,
-        isApprovedView
+        isApprovedView,
       );
       setShiftEvents(formattedEvents);
     }
@@ -101,13 +101,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       minute: "2-digit",
     });
     // if (isApprovedView) { // もし
-      return (
-        <div>
-          <b>{startTime} - {endTime}</b>
-          <br />
-          <i>{eventInfo.event.title}</i>
-        </div>
-      );
+    return (
+      <div>
+        <b>{startTime} - {endTime}</b>
+        <br />
+        <i>{eventInfo.event.title}</i>
+      </div>
+    );
     // } else {
     //   // return (
     //   //   <div>
@@ -132,7 +132,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
   const handleDateClick = (info: { dateStr: string }) => { // 日付クリック時に条件で絞っている
-    const parsedDate = new Date(info.dateStr.replace(/-/g, "/"));
+    // const parsedDate = new Date(info.dateStr.replace(/-/g, "/"));
     // console.log(parsedDate.getMonth());
     // console.log(currentMonth);
 
@@ -161,7 +161,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-    if (!isApprovedView && !arg.event.extendedProps.is_approved) { // 確定シフト画面でなく、シフトが承認済みでないなら
+    // 確定シフト画面でなく、シフトが承認済みでなく、ユーザーidが自分と一致するなら
+    // if (!isApprovedView && !arg.event.extendedProps.is_approved) {
+    if (
+      !arg.event.extendedProps.is_approved &&
+      arg.event.extendedProps.user_id == userId
+    ) {
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
       setIsDeleteModalOpen(true);
     }
