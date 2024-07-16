@@ -4,7 +4,7 @@ import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 // サーバーからシフト情報を取得するサーバーサイドコンポーネント
 const getShifts = async (context: InterFaceShiftQuery) => {
     const { user_id = '*', year, month, start_time, end_time, is_approved } = context.query;
-
+   
     // 取得したい年月の情報がなければ今月として処理する
     const now = new Date();
     const queryYear = year ?? now.getFullYear();
@@ -21,6 +21,8 @@ const getShifts = async (context: InterFaceShiftQuery) => {
     // 開始日と終了日をUTCのISO形式で設定
     const startDateISOString = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())).toISOString();
     const endDateISOString = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59)).toISOString();
+
+
 
     // クエリの設定
     let query = supabase

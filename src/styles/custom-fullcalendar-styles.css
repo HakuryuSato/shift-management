@@ -1,20 +1,35 @@
-.fc .fc-button{
-  @apply bg-blue text-white border-blue m-5;
-  
+/* fc = Full Calendar */
+.fc .fc-button {
+  @apply bg-blue text-white border-blue;
+  margin:0.75rem;
 }
 
 .fc .fc-button:hover {
   @apply bg-blue text-white border-blue;
 }
 
-
 .fc .fc-button:active {
   @apply bg-blue text-white border-blue;
 }
 
+/* ボタンを押した後、フォーカス時の線を無効にする */
 .fc .fc-button:focus {
   outline: none;
-  box-shadow: none;  /* フォーカス時の線を無効にする */
+  box-shadow: none; 
+}
+
+/* ツルーバーヘッダーフッターの余白を削除 */
+.fc .fc-toolbar.fc-header-toolbar {
+  @apply m-0;
+}
+.fc .fc-toolbar.fc-footer-toolbar {
+  @apply m-0;
+}
+
+/* YYYY年MM月 というフルカレンダーのテキスト */
+.fc .fc-toolbar-title {
+  /* @apply m-3; */
+  margin:0.75rem
 }
 
 .fc-event {

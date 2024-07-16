@@ -13,8 +13,10 @@ export default function formatShiftsForFullCalendarEvent(data: any[], useUserNam
 
     backgroundColor: shift.is_approved ? 'green' : '',
 
-    extendedProps: {
-      is_approved: shift.is_approved // ここでカスタムプロパティを追加
+    extendedProps: {// カスタムプロパティを追加
+      is_approved: shift.is_approved,
+      user_name:shift.user_name,
+      user_id:shift.user_id,
     },
   }));
 }

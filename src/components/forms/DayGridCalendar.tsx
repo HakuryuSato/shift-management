@@ -39,7 +39,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
   // State -------------------------------------------------------------------------------------------------------
-  // state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [shiftEvents, setShiftEvents] = useState<
@@ -53,22 +52,25 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
-  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用 //使用しなければ削除？
+  const [isApprovedView, setIsApprovedView] = useState(true); // シフト表示切替用 true:シフト確認 false:シフト希望提出
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
     const context = createContext({
-      user_id: userId,
+      user_id: isApprovedView ? "*" : userId,
       year: currentYear,
       month: currentMonth,
-      is_approved: isApprovedView ? true : undefined,
+      // is_approved: isApprovedView ? true : undefined,
     });
-    const response = await getShift(context);
 
+    // console.log(context);
+    const response = await getShift(context);
+    // console.log("UPDATE EVENT DATA");
     if (response.props.data) {
       const formattedEvents = formatShiftsForFullCalendarEvent(
         response.props.data,
+        isApprovedView,
       );
       setShiftEvents(formattedEvents);
     }
@@ -98,6 +100,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       hour: "2-digit",
       minute: "2-digit",
     });
+
     return (
       <div>
         <b>{startTime} - {endTime}</b>
@@ -112,45 +115,44 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsApprovedView(!isApprovedView);
   };
 
-  // effect  -------------------------------------------------
+  // Effect  -------------------------------------------------
   useEffect(() => {
     updateEventData();
   }, [updateEventData, currentMonth, isApprovedView]);
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
-  const handleDateClick = (info: { dateStr: string }) => { // 日付クリック時に条件で絞っている
-    const parsedDate = new Date(info.dateStr.replace(/-/g, '/'));
-    console.log(parsedDate.getMonth());
-    console.log(currentMonth)
+  const handleDateClick = (info: { dateStr: string }) => { // 日付クリック
+    function checkUserAndDate(array: any[], userId: number, date: string) {
+      array.sort((a, b) => a.start.localeCompare(b.start));
 
+      return !array.some((obj) =>
+        obj.extendedProps.user_id === userId &&
+        obj.start.split("T")[0] === date
+      );
+    }
 
-    const isSunday = new Date(info.dateStr).getDay() === 0;
-    const isThisMonth = (new Date(info.dateStr).getMonth()) === currentMonth
+    const clickedDate = info.dateStr;
+    const isSunday = new Date(clickedDate).getDay() === 0;
+    const isThisMonth = (new Date(clickedDate).getMonth()) === currentMonth;
 
-    // console.log(isSunday,isThisMonth,isApprovedView)
-    // console.log(new Date(info.dateStr).getMonth())
-    // console.log(currentMonth)
-  
-    if (!isApprovedView && !isSunday && isThisMonth) { // 確定シフト画面でなく、日曜日でなく、今月であるなら、イベントが存在するか
-      const clickedDate = info.dateStr;
-      const sortedShifts = shiftEvents.map(event => event.start.split("T")[0]).sort();
-      const eventExists = sortedShifts.some((date) => {return date === clickedDate;});
-
-
-      if (!eventExists) { // イベントが存在しないなら
-        setSelectedDate(clickedDate);
-        setIsModalOpen(true);
-        console.log("handleRegister true");
-      }
-
+    if (
+      !isSunday &&
+      isThisMonth &&
+      checkUserAndDate(shiftEvents, userId, clickedDate)
+    ) { // 日曜日でなく、今月であり、自分のイベントが存在しないなら
+      setSelectedDate(clickedDate);
+      setIsModalOpen(true);
     }
   };
 
   // イベント(予定)クリック
   const handleEventClick = (arg: EventClickArg) => {
-
-    if (!isApprovedView && !arg.event.extendedProps.is_approved) { // 確定シフト画面でなく、シフトが承認済みでないなら
+    // シフトが承認済みでなく、ユーザーidが自分と一致するなら
+    if (
+      !arg.event.extendedProps.is_approved &&
+      arg.event.extendedProps.user_id == userId
+    ) {
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
       setIsDeleteModalOpen(true);
     }
@@ -177,18 +179,18 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         events={shiftEvents}
         eventContent={renderEventContent}
         headerToolbar={{
+          left: "toggleShiftViewButton",
+          center: "",
+          right: "title",
+        }}
+        footerToolbar={{
           left: "prev",
-          center: "title",
+          center: "",
           right: "next",
         }}
-        // footerToolbar={{
-        //   left: "",
-        //   center: "",
-        //   right: "",
-        // }}
         customButtons={{
           toggleShiftViewButton: {
-            text: isApprovedView ? "シフト希望画面へ" : "確定シフト画面へ",
+            text: isApprovedView ? "個人シフト画面へ" : "全員のシフト画面へ",
             click: toggleShiftView,
           },
         }}
@@ -202,13 +204,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             : "";
         }}
         datesSet={(dateInfo) => { // 年数と月数を取得
-
-          const fullCalendarDate=new Date(dateInfo.start)
+          const fullCalendarDate = new Date(dateInfo.start);
           fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
 
           setCurrentYear(fullCalendarDate.getFullYear());
           setCurrentMonth(fullCalendarDate.getMonth());
-
         }}
       />
 
@@ -231,8 +231,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
-
-
   );
 };
 
