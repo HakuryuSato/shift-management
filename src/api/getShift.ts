@@ -4,9 +4,7 @@ import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 // サーバーからシフト情報を取得するサーバーサイドコンポーネント
 const getShifts = async (context: InterFaceShiftQuery) => {
     const { user_id = '*', year, month, start_time, end_time, is_approved } = context.query;
-
-    
-
+   
     // 取得したい年月の情報がなければ今月として処理する
     const now = new Date();
     const queryYear = year ?? now.getFullYear();
