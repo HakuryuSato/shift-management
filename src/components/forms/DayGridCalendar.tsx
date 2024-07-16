@@ -36,8 +36,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
 ) => { //以下コンポーネント--------------------------------------------------------------------------------------------
   // 以下定数---------------------------------------------------------------------------------------------------------
-  const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
-
   // State -------------------------------------------------------------------------------------------------------
   // state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +52,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
   const [isApprovedView, setIsApprovedView] = useState(true); // シフト表示切替用 true:シフト確認 false:シフト希望提出
+  const [userId, setUserID] = useState(user.user_id!)
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
@@ -110,6 +109,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // シフトの表示方法を切り替える
   const toggleShiftView = () => {
     setIsApprovedView(!isApprovedView);
+    if(isApprovedView){ // もしTrue:全員 なら
+      setUserI
+
+    }
   };
 
   // effect  -------------------------------------------------
