@@ -123,33 +123,26 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
   const handleDateClick = (info: { dateStr: string }) => { // 日付クリック
-    // 
-    function checkUserAndDate(array: any[], userId: any, date: string | number | Date) {
-      return !array.some(obj => 
-          obj.extendedProps.user_id === userId && 
-          new Date(obj.start).toDateString() === new Date(date).toDateString()
+    function checkUserAndDate(array: any[], userId: number, date: string) {
+      array.sort((a, b) => a.start.localeCompare(b.start));
+
+      return !array.some((obj) =>
+        obj.extendedProps.user_id === userId &&
+        obj.start.split("T")[0] === date
       );
-  }
-    const isSunday = new Date(info.dateStr).getDay() === 0;
-    const isThisMonth = (new Date(info.dateStr).getMonth()) === currentMonth;
+    }
 
-    if (!isSunday && isThisMonth) { // 日曜日でなく、今月であるなら、イベントが存在するか
-      const clickedDate = info.dateStr;
-      const sortedShifts = shiftEvents.map((event) => event.start.split("T")[0])
-        .sort();
-      const eventExists = sortedShifts.some((date) => {
-        console.log(date)
-        return date === clickedDate;
-      });
-      // 自分のイベントが存在するか？
-      
+    const clickedDate = info.dateStr;
+    const isSunday = new Date(clickedDate).getDay() === 0;
+    const isThisMonth = (new Date(clickedDate).getMonth()) === currentMonth;
 
-      console.log(clickedDate,)
-
-      if (!eventExists) { // イベントが存在するなら、自分のイベントが存在するか
-        setSelectedDate(clickedDate);
-        setIsModalOpen(true);
-      }
+    if (
+      !isSunday &&
+      isThisMonth &&
+      checkUserAndDate(shiftEvents, userId, clickedDate)
+    ) { // 日曜日でなく、今月であり、自分のイベントが存在しないなら
+      setSelectedDate(clickedDate);
+      setIsModalOpen(true);
     }
   };
 
