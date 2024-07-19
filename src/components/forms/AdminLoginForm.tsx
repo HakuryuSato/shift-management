@@ -12,12 +12,12 @@ const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async () => {
-        if (password !== process.env.NEXT_PUBLIC_SUPABASE_SITE_PASSWORD) {
+        if (password !== process.env.NEXT_PUBLIC_SITE_PASSWORD) {
             alert("サイトパスワードが間違っています");
             return;
         }
 
-        if (adminpassword !== process.env.NEXT_PUBLIC_SUPABASE_ADMIN_PASSWORD) {
+        if (adminpassword !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
             alert("管理者パスワードが間違っています");
             return;
         }

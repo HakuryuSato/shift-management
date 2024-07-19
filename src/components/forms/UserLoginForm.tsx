@@ -23,7 +23,7 @@ const UserLoginForm = (
     const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async () => {
-        if (password !== process.env.NEXT_PUBLIC_SUPABASE_SITE_PASSWORD) {
+        if (password !== process.env.NEXT_PUBLIC_SITE_PASSWORD) {
             alert("サイトパスワードが間違っています");
             return;
         }
