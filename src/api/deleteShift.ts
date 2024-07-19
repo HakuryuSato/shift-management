@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabase';
+import { supabase } from '@api/supabase';
 
 const deleteShift = async (shiftId: number) => {
     const { data, error } = await supabase

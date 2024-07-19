@@ -3,7 +3,7 @@ import Button from "@ui/Button";
 import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@api/supabase";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 const COOKIE_USER_LOGGED_IN = process.env

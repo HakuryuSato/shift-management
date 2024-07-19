@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabase';
+import { supabase } from '@api/supabase';
 
 
 const sendUser = async (userName: string) => {

@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabase';
+import { supabase } from '@api/supabase';
 
 const getUserNames = async () => {
     let { data: user, error } = await supabase
