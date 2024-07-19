@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Next.js: Full Stack Debug",
+      "name": "ServerSide",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
@@ -15,13 +15,79 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "Launch Chrome against localhost",
+      "name": "ClientSide",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}\\src",
+      "webRoot": "${workspaceFolder}/src",
       "sourceMaps": true,
-      "trace": true
+      "trace": true,
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${webRoot}/*"
+      }
     }
   ]
 }
+
+// route ugoku 
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "UGOKU Next.js: Full Stack Debug",
+//       "type": "node",
+//       "request": "launch",
+//       "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+//       "args": ["dev"],
+//       "runtimeArgs": ["--inspect"],
+//       "sourceMaps": true,
+//       "restart": true,
+//       "console": "integratedTerminal",
+//       "internalConsoleOptions": "neverOpen",
+//       "skipFiles": ["<node_internals>/**"]
+//     },
+//     {
+//       "name": "Launch Chrome against localhost",
+//       "type": "chrome",
+//       "request": "launch",
+//       "url": "http://localhost:3000",
+//       "webRoot": "${workspaceFolder}\\src\\*",
+//       "sourceMaps": true,
+//       "trace": true
+//     }
+//   ]
+// }
+
+// next official
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "Next.js: debug server-side",
+//       "type": "node-terminal",
+//       "request": "launch",
+//       "command": "npm run dev"
+//     },
+//     {
+//       "name": "Next.js: debug client-side",
+//       "type": "chrome",
+//       "request": "launch",
+//       "url": "http://localhost:3000"
+//     },
+//     {
+//       "name": "Next.js: debug full stack",
+//       "type": "node-terminal",
+//       "request": "launch",
+//       "command": "npm run dev",
+//       "serverReadyAction": {
+//         "pattern": "- Local:.+(https?://.+)",
+//         "uriFormat": "%s",
+//         "action": "debugWithChrome"
+//       },
+
+//       // 追加
+//       "cwd": "${workspaceFolder}/src",
+//       // "port": 9229
+//     }
+//   ]
+// }
