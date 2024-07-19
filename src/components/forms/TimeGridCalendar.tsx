@@ -126,10 +126,11 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             setEndDate(newEndDate);
             setCurrentView(dateInfo.view.type);
           }}
-          dateClick={(info) => {
-            const calendarApi = info.view.calendar;
-            calendarApi.changeView("timeGridDay", info.date);
-          }}
+          allDaySlot={false}
+          // dateClick={(info) => {
+          //   const calendarApi = info.view.calendar;
+          //   calendarApi.changeView("timeGridDay", info.date);
+          // }}
         />
         {/* <button onClick={onLogout}>ログアウト</button> */}
       </div>
