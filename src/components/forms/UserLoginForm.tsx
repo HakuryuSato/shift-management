@@ -3,15 +3,33 @@ import Button from "@ui/Button";
 import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { supabase } from "@api/supabase";
+// import { supabase } from "@api/supabase";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 const COOKIE_USER_LOGGED_IN = process.env
-  .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
+    .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
 const COOKIE_USER_INFO = process.env.NEXT_PUBLIC_COOKIE_USER_INFO as string;
 const COOKIE_USER_OPTIONS = process.env
-  .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
+    .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
 
+const fetchUserData = async (username: string) => { //ユーザー名確認
+    try {
+        const response = await fetch(`/api/getIsUser?username=${username}`);
+        if (!response.ok) {
+            throw new Error(
+                `Network response was not ok: ${response.statusText}`,
+            );
+        }
+        const data = await response.json();
+        return { data, error: null };
+    } catch (error) {
+        if (error instanceof Error) {
+            return { data: null, error: error.message };
+        } else {
+            return { data: null, error: "An unknown error occurred" };
+        }
+    }
+};
 
 const UserLoginForm = (
     { onLoginSuccess }: {
@@ -28,10 +46,7 @@ const UserLoginForm = (
             return;
         }
 
-        const { data, error } = await supabase
-            .from("users") // ユーザー情報が保存されているテーブル
-            .select("user_id")
-            .eq("user_name", username);
+        const { data, error } = await fetchUserData(username);
 
         if (error || !data.length) {
             alert("ユーザーが存在しません");
@@ -46,7 +61,9 @@ const UserLoginForm = (
 
         // ログイン成功
         Cookies.set(COOKIE_USER_LOGGED_IN, "true", { expires: 365 }); // 365日維持
-        Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), { expires: 365 }); // ユーザー情報をクッキーに保存
+        Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), {
+            expires: 365,
+        }); // ユーザー情報をクッキーに保存
         onLoginSuccess(userData);
     };
 
