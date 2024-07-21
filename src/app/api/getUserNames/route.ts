@@ -1,16 +1,18 @@
 import { supabase } from '@api/supabase';
+// import { NextApiRequestCookies } from 'next/dist/server/api-utils';
+import { NextRequest, NextResponse } from 'next/server';
 
-const getUserNames = async () => {
-    let { data: user, error } = await supabase
+
+export async function GET(req: NextRequest, res: NextResponse) {
+
+    const { data, error } = await supabase
         .from('users')
-        .select('user_name');
+        .select('user_name')
 
-    return {
-        props: {
-            user,
-            error,
-        },
-    };
-};
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } else {
+        return NextResponse.json({ data }, { status: 200 });
+    }
 
-export default getUserNames
+}

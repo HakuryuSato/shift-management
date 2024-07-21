@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@api/supabase';
 
 export async function DELETE(req: NextRequest) {
-    const userName = req.nextUrl.searchParams.get('userName');
+    const userName = req.nextUrl.searchParams.get('user_name');
 
     const { data, error } = await supabase
         .from('users')
