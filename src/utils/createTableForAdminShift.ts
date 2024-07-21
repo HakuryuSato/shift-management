@@ -99,6 +99,8 @@ export default function createTableForAdminShift(
 ): (string | number)[][] {
   userNames.sort((a, b) => (a.user_name ?? '').localeCompare(b.user_name ?? ''));
 
+  console.log("userNames",userNames) //デバッグ用
+
 
   const dateList = generateDateList(currentMonth, currentYear);
   
@@ -127,6 +129,8 @@ export default function createTableForAdminShift(
   
 
   const result = changeDateFormat(table);
+
+  console.log("result:",result) // デバッグ用
 
 
 
