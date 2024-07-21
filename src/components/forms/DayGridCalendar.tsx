@@ -15,8 +15,8 @@ import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
 import Button from "@ui/Button";
 
-// API
-// import getShift from "@api/getShift";
+// fetch関数
+import fetchSendShift from "@utils/fetchSendShift"
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -31,19 +31,7 @@ interface DayGridCalendarProps {
   user: InterFaceTableUsers;
 }
 
-// 以下API ---------------------------------------------------------------------------------------------------
-// シフト送信
-export async function fetchSendShift(shiftData: InterFaceShiftQuery) {
-  const response = await fetch("/api/sendShift", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(shiftData),
-  });
 
-  return await response.json();
-}
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },

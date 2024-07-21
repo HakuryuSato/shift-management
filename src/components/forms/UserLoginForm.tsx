@@ -6,30 +6,16 @@ import { useState } from "react";
 // import { supabase } from "@api/supabase";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
+// API呼び出し
+import fetchGetIsUser from "@utils/fetchGetIsUser"
+
 const COOKIE_USER_LOGGED_IN = process.env
     .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
 const COOKIE_USER_INFO = process.env.NEXT_PUBLIC_COOKIE_USER_INFO as string;
 const COOKIE_USER_OPTIONS = process.env
     .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
 
-const fetchUserData = async (username: string) => { //ユーザー名確認
-    try {
-        const response = await fetch(`/api/getIsUser?username=${username}`);
-        if (!response.ok) {
-            throw new Error(
-                `Network response was not ok: ${response.statusText}`,
-            );
-        }
-        const data = await response.json();
-        return { data, error: null };
-    } catch (error) {
-        if (error instanceof Error) {
-            return { data: null, error: error.message };
-        } else {
-            return { data: null, error: "An unknown error occurred" };
-        }
-    }
-};
+
 
 const UserLoginForm = (
     { onLoginSuccess }: {
@@ -46,16 +32,17 @@ const UserLoginForm = (
             return;
         }
 
-        const { data, error } = await fetchUserData(username);
+        const { data, error } = await fetchGetIsUser(username);
+        const innerData = data.data;
 
-        if (error || !data.length) {
+        if (error || !innerData.length) {
             alert("ユーザーが存在しません");
             // console.log(error,data)
             return;
         }
 
         const userData: InterFaceTableUsers = {
-            user_id: data[0].user_id,
+            user_id: innerData[0].user_id,
             user_name: username,
         };
 
