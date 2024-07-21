@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "@/components/common/Modal";
 import Button from "@ui/Button";
-import deleteShift from "@api/deleteShift";
 
 type ShiftDeleteModalProps = {
   isOpen: boolean;
@@ -9,14 +8,32 @@ type ShiftDeleteModalProps = {
   shiftId: number;
 };
 
-const ShiftDeleteModal: React.FC<ShiftDeleteModalProps> = ({ isOpen, onClose, shiftId }) => {
+// deleteShiftAPI呼び出し
+async function fetchDeleteShift(shiftId: number) {
+  const response = await fetch(`/api/deleteShift?shiftId=${shiftId}`, {
+    method: "DELETE",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.error);
+  }
+
+  return result.data;
+}
+
+// コンポーネント ---------------------------------------------------------------------------------------------------
+const ShiftDeleteModal: React.FC<ShiftDeleteModalProps> = (
+  { isOpen, onClose, shiftId },
+) => {
   const handleDeleteClick = () => {
-    deleteShift(shiftId)
-      .then((response: any) => {
+    fetchDeleteShift(shiftId)
+      .then((response) => {
         console.log(response);
         onClose();
       })
-      .catch((error: any) => console.error(error));
+      .catch((error) => console.error(error));
   };
 
   return (

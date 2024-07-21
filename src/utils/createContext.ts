@@ -1,8 +1,8 @@
 import type InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 
 // 送信用クエリ作成
-export default function createContext(params: InterFaceShiftQuery['query']): InterFaceShiftQuery {
-    const query: InterFaceShiftQuery['query'] = {};
+export default function createContext(params: InterFaceShiftQuery): InterFaceShiftQuery {
+    const query: InterFaceShiftQuery = {};
     
     if (params.user_id !== undefined) query.user_id = params.user_id;
     if (params.shift_id !== undefined) query.shift_id = params.shift_id;
