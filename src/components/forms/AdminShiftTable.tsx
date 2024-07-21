@@ -70,11 +70,6 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
   // シフトデータ取得
   const fetchGetShifts = async () => { // 納期の都合でfetch関数化断念
-    const context = createContext({
-      year: currentYear,
-      month: currentMonth,
-    });
-
 
     try {
       // APIからシフトデータを取得
