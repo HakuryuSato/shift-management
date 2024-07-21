@@ -18,6 +18,8 @@ import createTableForAdminShift from "@utils/createTableForAdminShift";
 import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
 
+// API fetch
+import fetchUserNames from "@utils/fetchUserNames"
 
 
 interface AdminShiftTableProps {
@@ -32,6 +34,8 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 2次元のテーブルを作成する
   const updateTable = async () => {
     const userNames = await fetchUserNames();
+    console.log("35 userNames:",userNames) // デバッグ用
+
     const shifts = await fetchGetShifts();
     const formattedData = formatShiftsForTable(shifts);
 
@@ -42,31 +46,12 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
       userNames,
     );
 
-    // console.log(table);
+    console.log("table:",table);
     setTable(table);
   };
 
-  // ユーザー名取得
-  const fetchUserNames = async () => {
 
 
-    try {
-      // APIからシフトデータを取得
-      const response = await fetch(
-        `/api/getUserNames`,
-      );
-
-      const responseData = await response.json();
-      const data = responseData.data; // dataキーの値を使用
-      return data
-
-    } catch (error) {
-      console.error("Failed to fetch shifts:", error);
-      return [];
-    }
-
-
-  };
 
   // シフトデータ取得
   const fetchGetShifts = async () => { // 納期の都合でfetch関数化断念
