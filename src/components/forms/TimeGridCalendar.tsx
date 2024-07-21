@@ -8,17 +8,15 @@ import jaLocale from "@fullcalendar/core/locales/ja";
 import { EventClickArg } from "@fullcalendar/core";
 
 // 独自
-import getShift from "@api/getShift";
-import sendShiftApproval from "@api/sendShiftApproval";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-import createContext from "@/utils/createContext";
-import Button from "@ui/Button";
+// import createContext from "@/utils/createContext";
+// import Button from "@ui/Button";
 
-// 型宣言
-// import type { InterFaceShiftQuery } from "@/customTypes/InterFaceShiftQuery";
 
 // スタイル
 import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更
+
+
 
 // コンポーネント----------------------------------------------------------------------------------------------------------------------------------------------
 const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
@@ -27,18 +25,24 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // 関数 -----------------------------------------------------------------------------------------------------------------------
     // イベントデータを取得しFullCalendarのStateにセットする関数
-    const updateEventData = async (start: Date, end: Date) => {
-      const context = createContext({
-        start_time: start.getTime(),
-        end_time: end.getTime(),
-      });
-      const response = await getShift(context);
-      if (response.props.data) {
-        // console.log("Raw data from getShift:", response.props.data);
+    const updateEventData = async (start_time: Date, end_time: Date) => {
 
-        const formattedEvents = formatShiftsForFullCalendarEvent(response.props.data, true);
-        // console.log("Formatted events:", formattedEvents); // デバッグ用ログ
+      try {
+        // APIからシフトデータを取得
+        const response = await fetch(
+          `/api/getShift?user_id=${'*'}&start_time=${start_time}&end_time=${end_time}`,
+        );
+  
+        const responseData = await response.json();
+        const data = responseData.data; // dataキーの値を使用
+        const formattedEvents = formatShiftsForFullCalendarEvent(
+          data,
+          true // イベント名に名前を表示
+          
+        );
         setShiftEvents(formattedEvents);
+      } catch (error) {
+        console.error("Failed to fetch shifts:", error);
       }
     };
 
@@ -74,16 +78,8 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
     const handleEventClick = async (clickInfo: EventClickArg) => {
-      const eventId = clickInfo.event.id;
-      if (operationMode === "approval") {
-        const response = await sendShiftApproval(Number(eventId)); // eventIdをnumberに変換
-        if (response.props.error) {
-          // alert("Failed to send approval.");
-        } else {
-          // alert("Approval sent successfully!");
-          updateEventData(startDate, endDate);
-        }
-      }
+      // ここにイベント削除を実装する
+
     };
 
     return (
@@ -127,7 +123,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             setCurrentView(dateInfo.view.type);
           }}
           allDaySlot={false}
-          // dateClick={(info) => {
+          // dateClick={(info) => { // ここにシフト追加を実装する必要がある
           //   const calendarApi = info.view.calendar;
           //   calendarApi.changeView("timeGridDay", info.date);
           // }}

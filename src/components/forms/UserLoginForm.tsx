@@ -3,14 +3,18 @@ import Button from "@ui/Button";
 import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { supabase } from "@/utils/supabase";
+// import { supabase } from "@api/supabase";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
+// API呼び出し
+import fetchGetIsUser from "@utils/fetchGetIsUser"
+
 const COOKIE_USER_LOGGED_IN = process.env
-  .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
+    .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
 const COOKIE_USER_INFO = process.env.NEXT_PUBLIC_COOKIE_USER_INFO as string;
 const COOKIE_USER_OPTIONS = process.env
-  .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
+    .NEXT_PUBLIC_COOKIE_USER_OPTIONS as string;
+
 
 
 const UserLoginForm = (
@@ -28,25 +32,25 @@ const UserLoginForm = (
             return;
         }
 
-        const { data, error } = await supabase
-            .from("users") // ユーザー情報が保存されているテーブル
-            .select("user_id")
-            .eq("user_name", username);
+        const { data, error } = await fetchGetIsUser(username);
+        const innerData = data.data;
 
-        if (error || !data.length) {
+        if (error || !innerData.length) {
             alert("ユーザーが存在しません");
             // console.log(error,data)
             return;
         }
 
         const userData: InterFaceTableUsers = {
-            user_id: data[0].user_id,
+            user_id: innerData[0].user_id,
             user_name: username,
         };
 
         // ログイン成功
         Cookies.set(COOKIE_USER_LOGGED_IN, "true", { expires: 365 }); // 365日維持
-        Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), { expires: 365 }); // ユーザー情報をクッキーに保存
+        Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), {
+            expires: 365,
+        }); // ユーザー情報をクッキーに保存
         onLoginSuccess(userData);
     };
 

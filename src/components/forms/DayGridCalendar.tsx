@@ -11,13 +11,12 @@ import { EventClickArg } from "@fullcalendar/core";
 // オリジナル
 import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-import createContext from "@/utils/createContext";
+// import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
-import sendShift from "@/api/sendShift";
 import Button from "@ui/Button";
 
-// API
-import getShift from "@api/getShift";
+// fetch関数
+import fetchSendShift from "@utils/fetchSendShift"
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -31,6 +30,8 @@ interface DayGridCalendarProps {
   onLogout: () => void; // デバッグ
   user: InterFaceTableUsers;
 }
+
+
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
@@ -56,25 +57,26 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
+  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
-    const context = createContext({
-      user_id: isApprovedView ? "*" : userId,
-      year: currentYear,
-      month: currentMonth,
-      // is_approved: isApprovedView ? true : undefined,
-    });
+    const user_id = isApprovedView ? "*" : userId;
 
-    // console.log(context);
-    const response = await getShift(context);
-    // console.log("UPDATE EVENT DATA");
-    if (response.props.data) {
+    try {
+      // APIからシフトデータを取得
+      const response = await fetch(
+        `/api/getShift?user_id=${user_id}&year=${currentYear}&month=${currentMonth}`,
+      );
+
+      const responseData = await response.json();
+      const data = responseData.data; // dataキーの値を使用
       const formattedEvents = formatShiftsForFullCalendarEvent(
-        response.props.data,
+        data,
         isApprovedView,
       );
       setShiftEvents(formattedEvents);
+    } catch (error) {
+      console.error("Failed to fetch shifts:", error);
     }
-    // console.log("ループ監視ループ監視ループ監視ループ監視ループ監視ループ監視ループ監視")
   }, [userId, currentYear, currentMonth, isApprovedView]);
 
   // シフト登録モーダル非表示
@@ -160,7 +162,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // シフト登録
   const handleRegister = async (shiftData: InterFaceShiftQuery) => {
-    await sendShift(shiftData);
+    await await fetchSendShift(shiftData);
     await updateEventData();
   };
 

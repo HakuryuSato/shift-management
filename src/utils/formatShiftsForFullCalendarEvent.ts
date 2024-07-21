@@ -2,6 +2,7 @@
 export default function formatShiftsForFullCalendarEvent(data: any[], useUserNameAsTitle: boolean = false) {
 
 
+
   return data.map((shift) => ({
     id: String(shift.shift_id),
     start: shift.start_time,

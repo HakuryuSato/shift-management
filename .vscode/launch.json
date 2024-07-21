@@ -1,8 +1,15 @@
-{
+
+{ // client ugoku
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Full Stack Debug",
+      "configurations": ["ServerSide", "ClientSide"]
+    }
+  ],
   "configurations": [
     {
-      "name": "Next.js: Full Stack Debug",
+      "name": "ServerSide",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
@@ -15,13 +22,16 @@
       "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "Launch Chrome against localhost",
+      "name": "ClientSide",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}\\src",
+      "webRoot": "${workspaceFolder}/src",
       "sourceMaps": true,
-      "trace": true
+      "trace": true,
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${webRoot}/*"
+      }
     }
   ]
 }

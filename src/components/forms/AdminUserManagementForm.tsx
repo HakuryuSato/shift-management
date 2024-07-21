@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import Button from "@ui/Button";
 import Input from "@ui/Input";
-import sendUser from "@api/sendUser";
-import deleteUser from "@api/deleteUser";
+
+// API呼び出しfetch関数
+import fetchSendUserName from "@utils/fetchSendUser"
+import fetchDeleteUser from "@utils/fetchDeleteUser"
 
 type ModalProps = {
   isOpen: boolean;
@@ -20,11 +22,11 @@ const AdminUserManagementForm: React.FC<ModalProps> = ({ isOpen, onClose, mode }
     }
   };
 
-  const handleActionClick = () => {
+  const handleActionClick = async () => {
     if (mode === "register") {
-      sendUser(userName);
+      await fetchSendUserName(userName);
     } else if (mode === "delete") {
-      deleteUser(userName);
+      await fetchDeleteUser(userName);
     }
     setUserName("")
     onClose();

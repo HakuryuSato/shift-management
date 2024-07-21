@@ -12,13 +12,13 @@ import type InterFaceAdminShiftTable from "@customTypes/InterFaceAdminShiftTable
 
 // 独自
 import Button from "@ui/Button";
-import getUserNames from "@api/getUserNames";
-import getShift from "@api/getShift";
-import createContext from "@utils/createContext";
+// import createContext from "@utils/createContext";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
 import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
+
+
 
 interface AdminShiftTableProps {
   onButtonClickBackToShiftApproval: () => void;
@@ -32,20 +32,8 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 2次元のテーブルを作成する
   const updateTable = async () => {
     const userNames = await fetchUserNames();
-    const shifts = await fetchShifts();
+    const shifts = await fetchGetShifts();
     const formattedData = formatShiftsForTable(shifts);
-
-    // console.log( //デバッグ用
-    //   "BEFORE CREATE TABLE:",
-    //   "Current Month:",
-    //   currentMonth,
-    //   "Current Year:",
-    //   currentYear,
-    //   "Formatted Data:",
-    //   formattedData,
-    //   "User Names:",
-    //   userNames,
-    // );
 
     const table = createTableForAdminShift(
       currentMonth,
@@ -60,28 +48,46 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
   // ユーザー名取得
   const fetchUserNames = async () => {
-    const result = await getUserNames();
-    if (result.props.user) {
-      // console.log(result.props.user);
-      return result.props.user;
+
+
+    try {
+      // APIからシフトデータを取得
+      const response = await fetch(
+        `/api/getUserNames`,
+      );
+
+      const responseData = await response.json();
+      const data = responseData.data; // dataキーの値を使用
+      return data
+
+    } catch (error) {
+      console.error("Failed to fetch shifts:", error);
+      return [];
     }
-    return [];
+
+
   };
 
   // シフトデータ取得
-  const fetchShifts = async () => {
-    const context = createContext({
-      year: currentYear,
-      month: currentMonth,
-      is_approved: true,
-    });
+  const fetchGetShifts = async () => { // 納期の都合でfetch関数化断念
 
-    const result = await getShift(context);
+    try {
+      // APIからシフトデータを取得
+      const response = await fetch(
+        `/api/getShift?user_id=${'*'}&year=${currentYear}&month=${currentMonth}`,
+      );
+      const responseData = await response.json();
+      const data = responseData.data; // dataキーの値を使用
+      const formattedEvents = formatShiftsForTable(
+        data,
+      );
 
-    if (result.props.data) {
-      return result.props.data;
+      return formattedEvents
+    } catch (error) {
+      console.error("Failed to fetch shifts:", error);
+      return [];
     }
-    return [];
+
   };
 
   // モーダル閉じる
