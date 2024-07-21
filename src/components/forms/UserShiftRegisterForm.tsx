@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 // 独自
 import Button from "@ui/Button";
-import sendShift from "@api/sendShift";
+// import sendShift from "@api/sendShift";
 import { getUserOptions, setUserOptions } from "@/utils/userOptions";
 import Modal from "@/components/common/Modal"; // Modal インポート追加
 
@@ -20,7 +20,7 @@ type UserShiftRegisterFormProps = {
   onClose: () => void;
   selectedDate: string;
   user_id: number;
-  onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
+  onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>; 
 };
 
 const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
@@ -46,11 +46,9 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
     const formattedEndTime = `${selectedDate} ${endTime}`;
 
     const context: InterFaceShiftQuery = {
-      query: {
-        user_id: userId,
-        start_time: formattedStartTime,
-        end_time: formattedEndTime,
-      },
+      user_id: userId,
+      start_time: formattedStartTime,
+      end_time: formattedEndTime,
     };
 
     await onRegister(context);
@@ -66,6 +64,8 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
 
   const handleRegisterClick = async () => {
     await sendShiftData();
+
+    
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
