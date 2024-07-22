@@ -2,6 +2,9 @@ import { supabase } from '@api/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 
+// Vercelのデータキャッシュ無効化(AdminShiftPageでユーザー名一覧がビルドしなおさないと更新されないため)
+export const fetchCache = 'force-no-store';
+
 export async function GET(req: NextRequest, res: NextResponse) {
     // const { user_id = '*', year, month, start_time, end_time } = req.nextUrl.searchParams as InterFaceShiftQuery;
     // const { user_id, year, month, start_time, end_time } = req.nextUrl.searchParams as InterFaceShiftQuery;
