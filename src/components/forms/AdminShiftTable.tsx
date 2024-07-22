@@ -1,9 +1,5 @@
 "use client";
 
-// Vercelのデータキャッシュ無効化(AdminShiftPageでユーザー名一覧がビルドしなおさないと更新されないため)
-// export const fetchCache = 'force-no-store';
-
-
 // 基盤
 import React, { useEffect, useState } from "react";
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
