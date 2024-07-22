@@ -34,7 +34,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 2次元のテーブルを作成する
   const updateTable = async () => {
     const userNames = await fetchUserNames();
-    console.log("35 userNames:",userNames) // デバッグ用
+
 
     const shifts = await fetchGetShifts();
     const formattedData = formatShiftsForTable(shifts);
@@ -46,7 +46,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
       userNames,
     );
 
-    console.log("table:",table);
+
     setTable(table);
   };
 
@@ -96,7 +96,6 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   const [table, setTable] = useState<any>(!null);
 
   useEffect(() => { // シフトデータ更新
-    // console.log(shift)
     updateTable();
   }, []);
 
