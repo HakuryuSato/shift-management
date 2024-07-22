@@ -3,7 +3,7 @@ import { supabase } from '@api/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 
 // // Vercelのデータキャッシュ無効化(AdminShiftPageでユーザー名一覧がビルドしなおさないと更新されないため)
-export const fetchCache = 'force-no-store';
+// export const fetchCache = 'force-no-store';
 
 export const runtime = 'edge';
 
