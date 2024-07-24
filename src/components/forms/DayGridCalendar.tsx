@@ -12,7 +12,7 @@ import { EventClickArg } from "@fullcalendar/core";
 import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
-import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
+import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import Button from "@ui/Button";
 
 // fetch関数
@@ -225,6 +225,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       />
 
       <h1>{user.user_name}としてログインしています</h1>
+
+      
       {selectedShiftId !== null && (
         <UserShiftDeleteForm
           isOpen={isDeleteModalOpen}
