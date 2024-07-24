@@ -13,6 +13,7 @@ import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalenda
 // import Button from "@ui/Button";
 import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
+import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
@@ -53,11 +54,11 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     };
 
     // シフト削除モーダル非表示
-    // const closeDeleteModal = async () => { // async に変更
-    //   setIsDeleteModalOpen(false);
-    //   setSelectedShiftId(null);
-    //   await updateEventData(startDate, endDate);
-    // };
+    const closeDeleteModal = async () => { // async に変更
+      setIsDeleteModalOpen(false);
+      setSelectedShiftId(null);
+      await updateEventData(startDate, endDate);
+    };
 
     // フック--------------------------------------------------------------------------------------------------------------
     // state
@@ -69,7 +70,10 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     const [currentView, setCurrentView] = useState("timeGridWeek");
     // const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
     const [selectedDate, setSelectedDate] = useState<string>("");
+    const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
+    // モーダル
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
 
     // effect
     useEffect(() => { // 初回用
@@ -91,8 +95,10 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
-    const handleEventClick = async (clickInfo: EventClickArg) => {
+    const handleEventClick = async (arg: EventClickArg) => {
       // ここにイベント削除を実装する
+      setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
+      setIsDeleteModalOpen(true);
     };
 
     // 日付クリック
@@ -133,7 +139,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           customButtons={{ // FullCalendar内に埋め込む独自ボタン
             backToMenuButton: {
-              text: "承認済みシフト画面",
+              text: "月間画面",
               click: onBack,
             },
           }}
@@ -155,10 +161,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           allDaySlot={false}
           dateClick={handleDateClick}
-          // dateClick={(info) => { // ここにシフト追加を実装する必要がある
-          //   const calendarApi = info.view.calendar;
-          //   calendarApi.changeView("timeGridDay", info.date);
-          // }}
         />
 
         {/* <button onClick={onLogout}>ログアウト</button> */}
@@ -171,6 +173,14 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           onRegister={handleRegister}
           isAdmin={true}
         />
+
+        {selectedShiftId !== null && (
+          <ShiftDeleteForm
+            isOpen={isDeleteModalOpen}
+            onClose={closeDeleteModal}
+            shiftId={selectedShiftId}
+          />
+        )}
       </div>
     );
   };
