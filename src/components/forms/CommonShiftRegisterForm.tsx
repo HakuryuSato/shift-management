@@ -8,36 +8,50 @@ import Cookies from "js-cookie";
 
 // 独自
 import Button from "@ui/Button";
-// import sendShift from "@api/sendShift";
 import { getUserOptions, setUserOptions } from "@/utils/userOptions";
-import Modal from "@/components/common/Modal"; // Modal インポート追加
+import Modal from "@/components/common/Modal";
+import fetchUserData from "@/utils/fetchUserData";
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 
-type UserShiftRegisterFormProps = {
+type CommonShiftRegisterFormProps = {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: string;
   user_id: number;
-  onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>; 
+  onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
+  isAdmin: boolean;
 };
 
-const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
-  { isOpen, onClose, selectedDate, user_id, onRegister },
+const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
+  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin },
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
   // State
-  const [userId, setuserId] = useState<number>(user_id);
+  const [userId, setUserId] = useState<number>(user_id);
   const [startTime, setStartTime] = useState<string>("08:30");
   const [endTime, setEndTime] = useState<string>("18:00");
+  const [userData, setUserData] = useState<
+    { user_name: string; user_id: Number }[]
+  >([]);
+  // const [userForAdmin, setUserForAdmin] = useState<
+  //   { user_name: string; user_id: number } | undefined
+  // >(undefined);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
     const { start_time, end_time } = getUserOptions();
     setStartTime(start_time);
     setEndTime(end_time);
     setUserOptions({ start_time: startTime, end_time: endTime });
+
+    if (isAdmin) { // 管理者の場合、ユーザー名一覧を取得
+      fetchUserData().then((data) => {
+        setUserData(data);
+        setUserId(Number(data[0].user_id));
+      });
+    }
   }, []);
 
   // 関数------------------------------------------------------------
@@ -55,17 +69,11 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
   };
 
   // ハンドラー---------------------------------------------------------------------------
-  // 背景クリック時にモーダル非表示
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
 
+  // 登録ボタン
   const handleRegisterClick = async () => {
     await sendShiftData();
 
-    
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
@@ -78,6 +86,31 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">{selectedDate}</h2>
       </div>
+
+      {isAdmin && (
+        <div className="mb-4">
+          <h3 className="mb-4 pb-2 flex justify-center ">
+            シフトを追加するユーザーを選択してください
+          </h3>
+          <select
+            id="user-select"
+            className="p-2 border mx-auto block w-30"
+            onChange={(e) => {
+              setUserId(Number(e.target.value));
+            }}
+            value={Number(userId)}
+          >
+            {userData.map((user) => (
+              <option
+                key={user.user_id.toString()}
+                value={Number(user.user_id)}
+              >
+                {user.user_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="p-4">
         <h3 className="mb-4 flex justify-center ">
@@ -106,4 +139,4 @@ const UserShiftRegisterForm: React.FC<UserShiftRegisterFormProps> = (
   );
 };
 
-export default UserShiftRegisterForm;
+export default CommonShiftRegisterForm;

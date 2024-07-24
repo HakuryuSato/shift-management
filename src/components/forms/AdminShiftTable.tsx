@@ -19,7 +19,7 @@ import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
 
 // API fetch
-import fetchUserNames from "@utils/fetchUserNames"
+import fetchUserData from "@utils/fetchUserData"
 
 
 interface AdminShiftTableProps {
@@ -33,7 +33,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 関数 ---------------------------------------------------------------------------------------------------
   // 2次元のテーブルを作成する
   const updateTable = async () => {
-    const userNames = await fetchUserNames();
+    const userNames = await fetchUserData();
 
 
     const shifts = await fetchGetShifts();
@@ -120,7 +120,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
         <div id="header-left" className="flex">
           <div className="m-4">
             <Button
-              text="シフト承認画面"
+              text="１週間の画面へ"
               onClick={onButtonClickBackToShiftApproval}
             />
           </div>

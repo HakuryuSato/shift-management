@@ -9,14 +9,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
-import UserShiftRegisterForm from "@forms/UserShiftRegisterForm";
+import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
-import UserShiftDeleteForm from "@forms/UserShiftDeleteForm";
+import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import Button from "@ui/Button";
 
 // fetch関数
-import fetchSendShift from "@utils/fetchSendShift"
+import fetchSendShift from "@utils/fetchSendShift";
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -31,8 +31,6 @@ interface DayGridCalendarProps {
   user: InterFaceTableUsers;
 }
 
-
-
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { onLogout, user },
 ) => { //以下コンポーネント--------------------------------------------------------------------------------------------
@@ -40,7 +38,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
 
   // State -------------------------------------------------------------------------------------------------------
+  // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [shiftEvents, setShiftEvents] = useState<
     { start: string; end: string }[]
@@ -51,7 +52,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth(),
   );
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
   const [isApprovedView, setIsApprovedView] = useState(true); // シフト表示切替用 true:シフト確認 false:シフト希望提出
 
@@ -214,15 +215,18 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
       />
 
-      <UserShiftRegisterForm
+      <CommonShiftRegisterForm
         isOpen={isModalOpen}
         onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
         onRegister={handleRegister}
+        isAdmin={false}
       />
 
       <h1>{user.user_name}としてログインしています</h1>
+
+      
       {selectedShiftId !== null && (
         <UserShiftDeleteForm
           isOpen={isDeleteModalOpen}

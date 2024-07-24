@@ -11,12 +11,15 @@ import { EventClickArg } from "@fullcalendar/core";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
 // import Button from "@ui/Button";
+import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
+import fetchSendShift from "@utils/fetchSendShift";
+import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 
+// 型
+import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 
 // スタイル
 import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更
-
-
 
 // コンポーネント----------------------------------------------------------------------------------------------------------------------------------------------
 const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
@@ -26,24 +29,35 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // 関数 -----------------------------------------------------------------------------------------------------------------------
     // イベントデータを取得しFullCalendarのStateにセットする関数
     const updateEventData = async (start_time: Date, end_time: Date) => {
-
       try {
         // APIからシフトデータを取得
         const response = await fetch(
-          `/api/getShift?user_id=${'*'}&start_time=${start_time}&end_time=${end_time}`,
+          `/api/getShift?user_id=${"*"}&start_time=${start_time}&end_time=${end_time}`,
         );
-  
+
         const responseData = await response.json();
         const data = responseData.data; // dataキーの値を使用
         const formattedEvents = formatShiftsForFullCalendarEvent(
           data,
-          true // イベント名に名前を表示
-          
+          true, // イベント名に名前を表示
         );
         setShiftEvents(formattedEvents);
       } catch (error) {
         console.error("Failed to fetch shifts:", error);
       }
+    };
+
+    // シフト登録モーダル非表示
+    const closeRegisterModal = async () => { // 関数名変更、async 追加
+      setIsRegisterModalOpen(false);
+      await updateEventData(startDate, endDate);
+    };
+
+    // シフト削除モーダル非表示
+    const closeDeleteModal = async () => { // async に変更
+      setIsDeleteModalOpen(false);
+      setSelectedShiftId(null);
+      await updateEventData(startDate, endDate);
     };
 
     // フック--------------------------------------------------------------------------------------------------------------
@@ -54,8 +68,12 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
     const [currentView, setCurrentView] = useState("timeGridWeek");
-    const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
-    
+    // const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
+    const [selectedDate, setSelectedDate] = useState<string>("");
+    const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
+    // モーダル
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
 
     // effect
     useEffect(() => { // 初回用
@@ -63,7 +81,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       const initialEndDate = new Date();
       initialStartDate.setDate(initialStartDate.getDate() - 7); // 1週間前の日付を設定
       initialEndDate.setDate(initialEndDate.getDate() + 7); // 1週間後の日付を設定
-      
+
       setStartDate(initialStartDate);
       setEndDate(initialEndDate);
       updateEventData(initialStartDate, initialEndDate);
@@ -77,9 +95,28 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
-    const handleEventClick = async (clickInfo: EventClickArg) => {
+    const handleEventClick = async (arg: EventClickArg) => {
       // ここにイベント削除を実装する
+      setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
+      setIsDeleteModalOpen(true);
+    };
 
+    // 日付クリック
+    const handleDateClick = (info: { dateStr: string }) => { // 日付クリック
+      const clickedDate = info.dateStr;
+      const formattedClickedDate = clickedDate.split("T")[0];
+      const isSunday = new Date(clickedDate).getDay() === 0;
+
+      if (!isSunday) { // 日曜日でないなら
+        setSelectedDate(formattedClickedDate);
+        setIsRegisterModalOpen(true);
+      }
+    };
+
+    // シフト登録
+    const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+      await await fetchSendShift(shiftData);
+      await updateEventData(startDate, endDate);
     };
 
     return (
@@ -102,7 +139,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           customButtons={{ // FullCalendar内に埋め込む独自ボタン
             backToMenuButton: {
-              text: "承認済みシフト画面",
+              text: "１ヶ月の画面へ",
               click: onBack,
             },
           }}
@@ -123,12 +160,27 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             setCurrentView(dateInfo.view.type);
           }}
           allDaySlot={false}
-          // dateClick={(info) => { // ここにシフト追加を実装する必要がある
-          //   const calendarApi = info.view.calendar;
-          //   calendarApi.changeView("timeGridDay", info.date);
-          // }}
+          dateClick={handleDateClick}
         />
+
         {/* <button onClick={onLogout}>ログアウト</button> */}
+
+        <CommonShiftRegisterForm
+          isOpen={isRegisterModalOpen}
+          onClose={closeRegisterModal}
+          selectedDate={selectedDate}
+          user_id={0}
+          onRegister={handleRegister}
+          isAdmin={true}
+        />
+
+        {selectedShiftId !== null && (
+          <ShiftDeleteForm
+            isOpen={isDeleteModalOpen}
+            onClose={closeDeleteModal}
+            shiftId={selectedShiftId}
+          />
+        )}
       </div>
     );
   };

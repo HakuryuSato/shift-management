@@ -1,9 +1,9 @@
-export default async function fetchUserNames() {
+export default async function fetchUserData() {
 
     try {
         // APIからシフトデータを取得
         const response = await fetch(
-            `/api/getUserNames`,
+            `/api/getUserData`,
         );
 
         const responseData = await response.json();
