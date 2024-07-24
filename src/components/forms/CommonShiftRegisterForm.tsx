@@ -49,7 +49,7 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
     if (isAdmin) { // 管理者の場合、ユーザー名一覧を取得
       fetchUserData().then((data) => {
         setUserData(data);
-        setUserId(Number(data[0].user_id))
+        setUserId(Number(data[0].user_id));
       });
     }
   }, []);
@@ -58,7 +58,6 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
   const sendShiftData = async () => { // async 追加
     const formattedStartTime = `${selectedDate} ${startTime}`;
     const formattedEndTime = `${selectedDate} ${endTime}`;
-
 
     const context: InterFaceShiftQuery = {
       user_id: userId,
@@ -90,16 +89,16 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
 
       {isAdmin && (
         <div className="mb-4">
-          <label htmlFor="user-select" className="block mb-2">
-            ユーザー選択:
-          </label>
+          <h3 className="mb-4 pb-2 flex justify-center ">
+            シフトを追加するユーザーを選択してください
+          </h3>
           <select
             id="user-select"
-            className="w-full p-2 border"
+            className="p-2 border mx-auto block w-30"
             onChange={(e) => {
               setUserId(Number(e.target.value));
             }}
-            value={Number(userData[0].user_id)}
+            value={Number(userId)}
           >
             {userData.map((user) => (
               <option
