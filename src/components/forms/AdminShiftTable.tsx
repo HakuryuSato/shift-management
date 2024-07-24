@@ -120,7 +120,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
         <div id="header-left" className="flex">
           <div className="m-4">
             <Button
-              text="一週間の画面へ"
+              text="１週間の画面へ"
               onClick={onButtonClickBackToShiftApproval}
             />
           </div>
