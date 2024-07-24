@@ -139,7 +139,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           customButtons={{ // FullCalendar内に埋め込む独自ボタン
             backToMenuButton: {
-              text: "月間画面",
+              text: "１ヶ月の画面へ",
               click: onBack,
             },
           }}
