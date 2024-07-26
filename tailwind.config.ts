@@ -5,6 +5,7 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/utils/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     colors: {
@@ -16,6 +17,7 @@ const config: Config = {
       'red': '#F4515B',
       'blue': '#00A0E8',
       'orange': '#FFB400',
+      'green': '#69b076',
     },
     extend: {
       backgroundImage: {
