@@ -21,8 +21,8 @@ export default function calcSumShiftHourPerDay(data: any[]) {
     const colorsByDate = Object.fromEntries(
         Object.entries(shiftHoursByDate).map(([date, value]) => [
             date,
-            // value >= 70 ? 'bg-red' : value <= 56 ? 'bg-orange' : ''
-            value >= 70 ? 'bg-orange' : ''
+            value >= 72 ? 'bg-red' : value <= 56 ? 'bg-orange' : ''
+            // value >= 70 ? 'bg-orange' : ''
         ])
     );
 
