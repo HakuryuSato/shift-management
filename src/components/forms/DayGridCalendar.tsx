@@ -13,6 +13,7 @@ import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
+import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
 import Button from "@ui/Button";
 
 // fetch関数
@@ -27,7 +28,7 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 
 // Props
 interface DayGridCalendarProps {
-  onLogout: () => void; // デバッグ
+  onLogout: () => void; // デバッグ用
   user: InterFaceTableUsers;
 }
 
@@ -54,12 +55,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   );
 
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
-  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用 true:みんなのシフト false:個人のシフト
+  const [isAllMembersView, setIsAllMembersView] = useState(false); // シフト表示切替用 true:みんなのシフト false:個人のシフト
+  const [bGColorsPerDay, setBGColorsPerDay] = useState<{ [date: string]: string }>({})
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
-    const user_id = isApprovedView ? "*" : userId;
+    const user_id = isAllMembersView ? "*" : userId;
 
     try {
       // APIからシフトデータを取得
@@ -69,27 +71,37 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       const responseData = await response.json();
       const data = responseData.data; // dataキーの値を使用
+
+      // イベントをフルカレ用に書式変更
       const formattedEvents = formatShiftsForFullCalendarEvent(
         data,
-        isApprovedView,
+        isAllMembersView,
       );
+
+      // もし全員のビューなら各日のシフト時間を計算して日付の背景色を取得
+      if (isAllMembersView) {
+        const calculatedShiftHoursData = calcSumShiftHourPerDay(data)
+        setBGColorsPerDay(calculatedShiftHoursData);
+      }else{
+        setBGColorsPerDay({});
+      }
+
       setShiftEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to fetch shifts:", error);
     }
-  }, [userId, currentYear, currentMonth, isApprovedView]);
+  }, [userId, currentYear, currentMonth, isAllMembersView]);
 
   // シフト登録モーダル非表示
   const closeRegisterModal = async () => { // 関数名変更、async 追加
     setIsModalOpen(false);
-    await updateEventData(); // 更新処理を確実に待つ
+    await updateEventData();
   };
-
   // シフト削除モーダル非表示
   const closeDeleteModal = async () => { // async に変更
     setIsDeleteModalOpen(false);
     setSelectedShiftId(null);
-    await updateEventData(); // 更新処理を確実に待つ
+    await updateEventData();
   };
 
   // FullCalendarのイベントの表示方法を変更する
@@ -114,13 +126,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // シフトの表示方法を切り替える
   const toggleShiftView = () => {
-    setIsApprovedView(!isApprovedView);
+    setIsAllMembersView(!isAllMembersView);
   };
 
   // Effect  -------------------------------------------------
   useEffect(() => {
     updateEventData();
-  }, [updateEventData, currentMonth, isApprovedView]);
+  }, [updateEventData, currentMonth, isAllMembersView]);
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
@@ -192,19 +204,33 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
         customButtons={{
           toggleShiftViewButton: {
-            text: isApprovedView ? "個人シフト画面へ" : "全員のシフト画面へ",
+            text: isAllMembersView ? "個人シフト画面へ" : "全員のシフト画面へ",
             click: toggleShiftView,
           },
         }}
-        dayCellClassNames={(arg) => { // 今月の日曜日だけ色を少し薄くする
+        dayCellClassNames={(info) => {
+          const classes = [];
           const today = new Date();
-          return (
-              arg.date.getDay() === 0 &&
-              arg.date.getMonth() === today.getMonth()
-            )
-            ? "text-gray"
-            : "";
+          const dateStr = info.date.toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          }).replace(/\//g, '-');
+
+          // 今月の日曜日だけ色を少し薄くする
+          if (info.date.getDay() === 0 && info.date.getMonth() === today.getMonth()) {
+            classes.push('text-gray');
+          }
+  
+          // シフト混雑状況に応じて色変更
+          if (bGColorsPerDay[dateStr]) {
+            classes.push(bGColorsPerDay[dateStr]);
+          }
+  
+          return classes.join(' ');
         }}
+
+
         datesSet={(dateInfo) => { // 年数と月数を取得
           const fullCalendarDate = new Date(dateInfo.start);
           fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
@@ -212,6 +238,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
           setCurrentYear(fullCalendarDate.getFullYear());
           setCurrentMonth(fullCalendarDate.getMonth());
         }}
+
+        
       />
 
       <CommonShiftRegisterForm
@@ -225,7 +253,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       <h1>{user.user_name}としてログインしています</h1>
 
-      
       {selectedShiftId !== null && (
         <UserShiftDeleteForm
           isOpen={isDeleteModalOpen}
