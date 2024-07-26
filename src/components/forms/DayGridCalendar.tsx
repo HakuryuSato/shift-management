@@ -54,10 +54,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   );
 
   const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
-  const [isApprovedView, setIsApprovedView] = useState(true); // シフト表示切替用 true:シフト確認 false:シフト希望提出
+  const [isApprovedView, setIsApprovedView] = useState(false); // シフト表示切替用 true:みんなのシフト false:個人のシフト
 
   // 関数---------------------------------------------------------------------------------------------------------
-  // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
     const user_id = isApprovedView ? "*" : userId;
