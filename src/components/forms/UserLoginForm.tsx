@@ -47,7 +47,7 @@ const UserLoginForm = (
         };
 
         // ログイン成功
-        Cookies.set(COOKIE_USER_LOGGED_IN, "true", { expires: 365 }); // 365日維持
+        Cookies.set(COOKIE_USER_LOGGED_IN, "true", { expires: 3650 });
         Cookies.set(COOKIE_USER_INFO, JSON.stringify(userData), {
             expires: 365,
         }); // ユーザー情報をクッキーに保存
