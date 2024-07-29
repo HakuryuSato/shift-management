@@ -145,7 +145,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           locale={jaLocale}
           slotMinTime="08:00:00"
-          slotMaxTime="20:00:00"
+          slotMaxTime="21:00:00"
           slotLabelInterval="01:00:00"
           events={shiftEvents}
           slotEventOverlap={false} // 時間枠内のイベントが重ならないように設定
