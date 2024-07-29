@@ -23,7 +23,7 @@ const AdminLoginForm = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
         }
 
         // ログイン成功
-        Cookies.set(COOKIE_ADMIN_ISLOGGEDIN, "true", { expires: 365 }); // 365日維持
+        Cookies.set(COOKIE_ADMIN_ISLOGGEDIN, "true", { expires: 3650 });
         onLoginSuccess();
     };
 
