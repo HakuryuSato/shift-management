@@ -106,6 +106,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     if (selectedShiftId != null) { // 選択シフトIDが存在するなら(編集モードで開いていたなら)
       setSelectedShiftId(null);
       setSelectedDate(null);
+      setSelectedEventShiftTime(null);
     }
     setIsModalOpen(false);
     setIsEditMode(false);
