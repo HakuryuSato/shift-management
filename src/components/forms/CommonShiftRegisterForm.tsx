@@ -18,15 +18,25 @@ import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 type CommonShiftRegisterFormProps = {
   isOpen: boolean;
   onClose: () => void;
-  selectedDate: string;
+  selectedDate: string | null;
   user_id: number;
   onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
   isAdmin: boolean;
-  isEditMode?: boolean;
+  selectedShiftId?: number | null;
+  selectedEventShiftTime?: string | null;
 };
 
 const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
-  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin , isEditMode},
+  {
+    isOpen,
+    onClose,
+    selectedDate,
+    user_id,
+    onRegister,
+    isAdmin,
+    selectedShiftId,
+    selectedEventShiftTime,
+  },
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
@@ -39,10 +49,16 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
   >([]);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
-    const { start_time, end_time } = getUserOptions();
-    setStartTime(start_time);
-    setEndTime(end_time);
-    setUserOptions({ start_time: startTime, end_time: endTime });
+    // もし編集モードなら
+    if (selectedShiftId != null { // shiftIdから時刻を取得
+      setStartTime(selectedEventShiftTime.split("-")[0])
+
+    } else {
+      const { start_time, end_time } = getUserOptions();
+      setStartTime(start_time);
+      setEndTime(end_time);
+      setUserOptions({ start_time: startTime, end_time: endTime });
+    }
 
     if (isAdmin) { // 管理者の場合、ユーザー名一覧を取得
       fetchUserData().then((data) => {
@@ -85,10 +101,7 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
         <h2 className="text-lg font-bold">{selectedDate}</h2>
       </div>
 
-      {isEditMode &&(
-        <h3>編集モード</h3>
-          
-      )}
+      {selectedShiftId && <h3>編集モード</h3>}
 
       {isAdmin && (
         <div className="mb-4">
