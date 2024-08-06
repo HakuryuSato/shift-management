@@ -85,6 +85,11 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
         <h2 className="text-lg font-bold">{selectedDate}</h2>
       </div>
 
+      {isEditMode &&(
+        <h3>編集モード</h3>
+          
+      )}
+
       {isAdmin && (
         <div className="mb-4">
           <h3 className="mb-4 pb-2 flex justify-center ">
