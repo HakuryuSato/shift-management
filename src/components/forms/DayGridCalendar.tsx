@@ -168,7 +168,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       arg.event.extendedProps.user_id == userId
     ) {
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-      setIsDeleteModalOpen(true);
+      
+      // setIsDeleteModalOpen(true);
     }
   };
 
