@@ -42,17 +42,21 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
   // フック--------------------------------------------------------------------------------------------------
   // State
   const [userId, setUserId] = useState<number>(user_id);
-  const [startTime, setStartTime] = useState<string>("08:30");
-  const [endTime, setEndTime] = useState<string>("18:00");
+
+  const [startTime, setStartTime] = useState<string>(
+    selectedEventShiftTime ? selectedEventShiftTime.split("-")[0] : "08:30"
+  );
+  const [endTime, setEndTime] = useState<string>(
+    selectedEventShiftTime ? selectedEventShiftTime.split("-")[1] : "18:00"
+  );
   const [userData, setUserData] = useState<
     { user_name: string; user_id: Number }[]
   >([]);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
-    // もし編集モードなら
-    if (selectedShiftId != null { // shiftIdから時刻を取得
+    if (selectedShiftId && selectedEventShiftTime != null) { // もし選択シフトIDとイベントシフト時間がnullでないなら(編集モード)
       setStartTime(selectedEventShiftTime.split("-")[0])
-
+      setEndTime(selectedEventShiftTime.split("-")[1])
     } else {
       const { start_time, end_time } = getUserOptions();
       setStartTime(start_time);
