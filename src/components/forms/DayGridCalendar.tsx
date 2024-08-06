@@ -41,9 +41,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // State -------------------------------------------------------------------------------------------------------
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false)
 
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedEventShiftTime,setSelectedEventShiftTime] = useState<string | null>("");
+
   const [shiftEvents, setShiftEvents] = useState<
     { start: string; end: string }[]
   >([]);
@@ -93,16 +96,26 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   }, [userId, currentYear, currentMonth, isAllMembersView]);
 
   // シフト登録モーダル非表示
-  const closeRegisterModal = async () => { // 関数名変更、async 追加
+  const closeRegisterModal = async () => {
     setIsModalOpen(false);
+    setIsEditMode(false);
     await updateEventData();
   };
+
   // シフト削除モーダル非表示
-  const closeDeleteModal = async () => { // async に変更
+  const closeDeleteModal = async () => {
     setIsDeleteModalOpen(false);
     setSelectedShiftId(null);
     await updateEventData();
   };
+
+  // // シフト編集モーダル非表示
+  // const closeEditModal = async () => {
+  //   setIsEditMode(false);
+  //   setSelectedShiftId(null);
+  //   await updateEventData();
+  // };
+
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -168,7 +181,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       arg.event.extendedProps.user_id == userId
     ) {
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-      
+      setIsEditMode(true)
+      setIsModalOpen(true)
+      setSelectedEventShiftTime(arg.el.textContent ? String(arg.el.textContent) : null)
       // setIsDeleteModalOpen(true);
     }
   };
@@ -250,7 +265,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         user_id={user.user_id!}
         onRegister={handleRegister}
         isAdmin={false}
+        isEditMode={isEditMode}
+        
       />
+
+      
 
       <h1>{user.user_name}としてログインしています</h1>
 
