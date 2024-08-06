@@ -16,6 +16,10 @@ import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
 import Button from "@ui/Button";
 
+// 変換用関数
+import convertJtcToIsoString from "@utils/convertJtcToIsoString";
+import extractTimeFromDate from "@utils/extractTimeFromDate";
+
 // fetch関数
 import fetchSendShift from "@utils/fetchSendShift";
 
@@ -42,10 +46,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedEventShiftTime,setSelectedEventShiftTime] = useState<string | null>("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<string | null>(null);
 
   const [shiftEvents, setShiftEvents] = useState<
     { start: string; end: string }[]
@@ -57,9 +61,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     new Date().getMonth(),
   );
 
-  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null); // イベントクリック用
+  const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
   const [isAllMembersView, setIsAllMembersView] = useState(false); // シフト表示切替用 true:みんなのシフト false:個人のシフト
-  const [bGColorsPerDay, setBGColorsPerDay] = useState<{ [date: string]: string }>({})
+  const [bGColorsPerDay, setBGColorsPerDay] = useState<
+    { [date: string]: string }
+  >({});
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
@@ -83,9 +89,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       // もし全員のビューなら各日のシフト時間を計算して日付の背景色を取得
       if (isAllMembersView) {
-        const calculatedShiftHoursData = calcSumShiftHourPerDay(data)
+        const calculatedShiftHoursData = calcSumShiftHourPerDay(data);
         setBGColorsPerDay(calculatedShiftHoursData);
-      }else{
+      } else {
         setBGColorsPerDay({});
       }
 
@@ -97,17 +103,21 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // シフト登録モーダル非表示
   const closeRegisterModal = async () => {
+    if (selectedShiftId != null) { // 選択シフトIDが存在するなら(編集モードで開いていたなら)
+      setSelectedShiftId(null);
+      setSelectedDate(null);
+    }
     setIsModalOpen(false);
     setIsEditMode(false);
     await updateEventData();
   };
 
   // シフト削除モーダル非表示
-  const closeDeleteModal = async () => {
-    setIsDeleteModalOpen(false);
-    setSelectedShiftId(null);
-    await updateEventData();
-  };
+  // const closeDeleteModal = async () => {
+  //   setIsDeleteModalOpen(false);
+  //   setSelectedShiftId(null);
+  //   await updateEventData();
+  // };
 
   // // シフト編集モーダル非表示
   // const closeEditModal = async () => {
@@ -115,7 +125,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   //   setSelectedShiftId(null);
   //   await updateEventData();
   // };
-
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -149,7 +158,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // 以下ハンドラー-------------------------------------------------------------------------------------------------------
   // 日付クリック
-  const handleDateClick = (info: { dateStr: string }) => { // 日付クリック
+  const handleDateClick = (dateInfo: { dateStr: string }) => { // 日付クリック
     function checkUserAndDate(array: any[], userId: number, date: string) {
       array.sort((a, b) => a.start.localeCompare(b.start));
 
@@ -159,7 +168,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       );
     }
 
-    const clickedDate = info.dateStr;
+    const clickedDate = dateInfo.dateStr;
     const isSunday = new Date(clickedDate).getDay() === 0;
     const isThisMonth = (new Date(clickedDate).getMonth()) === currentMonth;
 
@@ -174,17 +183,27 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   };
 
   // イベント(予定)クリック
-  const handleEventClick = (arg: EventClickArg) => {
-    // シフトが承認済みでなく、ユーザーidが自分と一致するなら
+  const handleEventClick = (eventInfo: EventClickArg) => {
     if (
-      !arg.event.extendedProps.is_approved &&
-      arg.event.extendedProps.user_id == userId
+      // シフトが承認済みでなく、ユーザーidが自分と一致するなら
+      !eventInfo.event.extendedProps.is_approved &&
+      eventInfo.event.extendedProps.user_id == userId
     ) {
-      setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-      setIsEditMode(true)
-      setIsModalOpen(true)
-      setSelectedEventShiftTime(arg.el.textContent ? String(arg.el.textContent) : null)
-      // setIsDeleteModalOpen(true);
+      setSelectedShiftId(
+        eventInfo.event.id ? parseInt(eventInfo.event.id) : null,
+      );
+      setSelectedDate(convertJtcToIsoString(String(eventInfo.event.start)));
+
+      const startTime = eventInfo.event.start
+        ? extractTimeFromDate(eventInfo.event.start)
+        : null;
+      const endTime = eventInfo.event.end
+        ? extractTimeFromDate(eventInfo.event.end)
+        : null;
+
+      setSelectedEventShiftTime(`${startTime}-${endTime}`);
+      setIsEditMode(true);
+      setIsModalOpen(true);
     }
   };
 
@@ -227,26 +246,27 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         dayCellClassNames={(info) => {
           const classes = [];
           const today = new Date();
-          const dateStr = info.date.toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          }).replace(/\//g, '-');
+          const dateStr = info.date.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).replace(/\//g, "-");
 
           // 今月の日曜日だけ色を少し薄くする
-          if (info.date.getDay() === 0 && info.date.getMonth() === today.getMonth()) {
-            classes.push('text-gray');
+          if (
+            info.date.getDay() === 0 &&
+            info.date.getMonth() === today.getMonth()
+          ) {
+            classes.push("text-gray");
           }
-  
+
           // シフト混雑状況に応じて色変更
           if (bGColorsPerDay[dateStr]) {
             classes.push(bGColorsPerDay[dateStr]);
           }
-  
-          return classes.join(' ');
+
+          return classes.join(" ");
         }}
-
-
         datesSet={(dateInfo) => { // 年数と月数を取得
           const fullCalendarDate = new Date(dateInfo.start);
           fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
@@ -254,8 +274,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
           setCurrentYear(fullCalendarDate.getFullYear());
           setCurrentMonth(fullCalendarDate.getMonth());
         }}
-
-        
       />
 
       <CommonShiftRegisterForm
@@ -265,21 +283,21 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         user_id={user.user_id!}
         onRegister={handleRegister}
         isAdmin={false}
-        isEditMode={isEditMode}
-        
+        selectedShiftId={selectedShiftId}
+        selectedEventShiftTime={selectedEventShiftTime}
       />
-
-      
 
       <h1>{user.user_name}としてログインしています</h1>
 
-      {selectedShiftId !== null && (
+      {
+        /* {selectedShiftId !== null && (
         <UserShiftDeleteForm
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           shiftId={selectedShiftId}
         />
-      )}
+      )} */
+      }
 
       {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
