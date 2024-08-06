@@ -22,7 +22,7 @@ type CommonShiftRegisterFormProps = {
   user_id: number;
   onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
   isAdmin: boolean;
-  isEditMode: boolean;
+  isEditMode?: boolean;
 };
 
 const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
