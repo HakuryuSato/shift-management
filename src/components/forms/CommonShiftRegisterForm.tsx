@@ -22,11 +22,11 @@ type CommonShiftRegisterFormProps = {
   user_id: number;
   onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
   isAdmin: boolean;
-  isResiter: boolean;
+  isEditMode: boolean;
 };
 
 const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
-  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin , isResiter},
+  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin , isEditMode},
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
@@ -37,9 +37,6 @@ const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
   const [userData, setUserData] = useState<
     { user_name: string; user_id: Number }[]
   >([]);
-  // const [userForAdmin, setUserForAdmin] = useState<
-  //   { user_name: string; user_id: number } | undefined
-  // >(undefined);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
     const { start_time, end_time } = getUserOptions();
