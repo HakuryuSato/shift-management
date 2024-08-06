@@ -22,10 +22,11 @@ type CommonShiftRegisterFormProps = {
   user_id: number;
   onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
   isAdmin: boolean;
+  isResiter: boolean;
 };
 
 const CommonShiftRegisterForm: React.FC<CommonShiftRegisterFormProps> = (
-  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin },
+  { isOpen, onClose, selectedDate, user_id, onRegister, isAdmin , isResiter},
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
