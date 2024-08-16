@@ -107,10 +107,12 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   };
 
   const handleEditClick = () => {
-    onClose();
+    setIsEditMode(true);
   };
 
-  const handleCloseClick = () => {
+  const handleClose = () => {
+    setIsEditMode(false);
+    setIsDeleteModalOpen(false);
     onClose();
   };
 
@@ -122,14 +124,17 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
   return (
     // モーダル用の黒塗り背景
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+    >
       <div>
         {/* もしシフトidがあるなら、編集モード用ツールバー */}
         {selectedShiftId &&
           (
             <div>
               <ShiftEditToolBar
-                onClose={handleCloseClick}
+                onClose={handleClose}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
               />
@@ -181,7 +186,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
                 <Button
                   text="確認"
-                  onClick={handleCloseClick}
+                  onClick={handleClose}
                   className="w-20"
                 />
               </div>
@@ -221,10 +226,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         (
           <ShiftDeleteForm
             isOpen={isDeleteModalOpen}
-            onClose={() => {
-              setIsDeleteModalOpen(false);
-              onClose();
-            }}
+            onClose={handleClose}
             shiftId={selectedShiftId}
           />
         )}
