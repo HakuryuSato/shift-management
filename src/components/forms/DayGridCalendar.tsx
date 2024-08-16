@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
-import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
+import ShiftRegisterForm from "@components/common/ShiftRegisterForm"
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
 import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
@@ -277,7 +277,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
       />
 
-      <CommonShiftRegisterForm
+      <ShiftRegisterForm
         isOpen={isModalOpen}
         onClose={closeRegisterModal}
         selectedDate={selectedDate}

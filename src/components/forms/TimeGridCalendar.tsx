@@ -11,7 +11,7 @@ import { EventClickArg } from "@fullcalendar/core";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
 // import Button from "@ui/Button";
-import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
+import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
 import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 
@@ -165,7 +165,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
         {/* <button onClick={onLogout}>ログアウト</button> */}
 
-        <CommonShiftRegisterForm
+        <ShiftRegisterForm
           isOpen={isRegisterModalOpen}
           onClose={closeRegisterModal}
           selectedDate={selectedDate}
