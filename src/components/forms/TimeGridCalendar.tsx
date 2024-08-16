@@ -16,7 +16,7 @@ import fetchSendShift from "@utils/fetchSendShift";
 import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 import createTableForAdminShift from "@/utils/createTableForAdminShift";
-import formatShiftsForTable from "@utils/formatShiftsForTable";
+
 
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
@@ -26,6 +26,7 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 
 // API fetch
 import fetchUserData from "@utils/fetchUserData";
+import fetchShifts from "@/utils/fetchShifts";
 
 
 
@@ -37,24 +38,24 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // 関数 -----------------------------------------------------------------------------------------------------------------------
     // イベントデータを取得しFullCalendarのStateにセットする関数
-    const updateEventData = async (start_time: Date, end_time: Date) => {
-      try {
-        // APIからシフトデータを取得
-        const response = await fetch(
-          `/api/getShift?user_id=${"*"}&start_time=${start_time}&end_time=${end_time}`,
-        );
+    // const updateEventData = async (start_time: Date, end_time: Date) => {
+    //   try {
+    //     // APIからシフトデータを取得
+    //     const response = await fetch(
+    //       `/api/getShift?user_id=${"*"}&start_time=${start_time}&end_time=${end_time}`,
+    //     );
 
-        const responseData = await response.json();
-        const data = responseData.data; // dataキーの値を使用
-        const formattedEvents = formatShiftsForFullCalendarEvent(
-          data,
-          true, // イベント名に名前を表示
-        );
-        setShiftEvents(formattedEvents);
-      } catch (error) {
-        console.error("Failed to fetch shifts:", error);
-      }
-    };
+    //     const responseData = await response.json();
+    //     const data = responseData.data; // dataキーの値を使用
+    //     const formattedEvents = formatShiftsForFullCalendarEvent(
+    //       data,
+    //       true, // イベント名に名前を表示
+    //     );
+    //     setShiftEvents(formattedEvents);
+    //   } catch (error) {
+    //     console.error("Failed to fetch shifts:", error);
+    //   }
+    // };
 
     // シフト登録モーダル非表示
     const closeRegisterModal = async () => { // 関数名変更、async 追加
