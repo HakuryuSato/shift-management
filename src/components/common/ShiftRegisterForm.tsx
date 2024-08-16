@@ -12,6 +12,7 @@ import { getUserOptions, setUserOptions } from "@/utils/userOptions";
 import Modal from "@/components/common/Modal";
 import fetchUserData from "@/utils/fetchUserData";
 import ShiftEditToolBar from "@components/common/ShiftEditToolBar";
+import ShiftDeleteForm from "./ShiftDeleteForm";
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -54,6 +55,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     { user_name: string; user_id: Number }[]
   >([]);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
     if (selectedShiftId && selectedEventShiftTime != null) { // もし選択シフトIDとイベントシフト時間がnullでないなら(編集モード)
@@ -90,6 +92,10 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     await onRegister(context);
   };
 
+  const deleteShift = async () => {
+    console.log();
+  };
+
   // ハンドラー---------------------------------------------------------------------------
 
   // 登録ボタン
@@ -100,8 +106,16 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     onClose();
   };
 
-  const handleDelete = () => {
-    console.log();
+  const handleEditClick = () => {
+    onClose();
+  };
+
+  const handleCloseClick = () => {
+    onClose();
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteModalOpen(true);
   };
 
   if (!isOpen) return null;
@@ -115,9 +129,9 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
           (
             <div>
               <ShiftEditToolBar
-                onClose={handleDelete}
-                onEdit={handleDelete}
-                onDelete={handleDelete}
+                onClose={handleCloseClick}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
               />
             </div>
           )}
@@ -158,10 +172,18 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
             </div>
             // 選択シフトIDは存在するが編集モードでない
             : (
-              <div>
+              // 管理者モードなら名前表示
+
+              <div className="flex flex-col items-center space-y-4">
                 <h1 className="text-3xl my-4 text-center">
                   {selectedEventShiftTime}
                 </h1>
+
+                <Button
+                  text="確認"
+                  onClick={handleCloseClick}
+                  className="w-20"
+                />
               </div>
             )
         )
@@ -193,6 +215,18 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
               </div>
             </div>
           </div>
+        )}
+
+      {selectedShiftId && // 選択されたシフトIDがあるなら、シフト削除フォーム読み込み
+        (
+          <ShiftDeleteForm
+            isOpen={isDeleteModalOpen}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+              onClose();
+            }}
+            shiftId={selectedShiftId}
+          />
         )}
     </Modal>
   );
