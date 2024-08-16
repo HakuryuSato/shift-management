@@ -11,10 +11,8 @@ import { EventClickArg } from "@fullcalendar/core";
 // オリジナル
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm"
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-// import createContext from "@/utils/createContext";
-import UserShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
-import Button from "@ui/Button";
+
 
 // 変換用関数
 import convertJtcToIsoString from "@utils/convertJtcToIsoString";
@@ -290,15 +288,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
       <h1>{user.user_name}としてログインしています</h1>
 
-      {
-        /* {selectedShiftId !== null && (
-        <UserShiftDeleteForm
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-          shiftId={selectedShiftId}
-        />
-      )} */
-      }
+
 
       {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
