@@ -150,35 +150,41 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         </div>
       )}
 
-      {isEditMode
+      {selectedShiftId
         ? (
-          <div>
+          // 選択シフトIDが存在して、編集モードなら
+          isEditMode
+            ? <div>編集</div>
+            // 選択シフトIDは存在するが編集モードでない
             
-          </div>
+            : <div>確認</div>
         )
         : (
-          <div className="p-4">
-            <h3 className="mb-4 flex justify-center ">
-              シフトを希望する時間を入力してください
-            </h3>
+          // 選択シフトIDが存在しないなら、シフト登録画面
+          <div>
+            <div className="p-4">
+              <h3 className="mb-4 flex justify-center ">
+                シフトを希望する時間を入力してください
+              </h3>
 
-            <div className="flex justify-center items-center space-x-2">
-              <TimeInput
-                initialValue={startTime}
-                onReturn={(selectedTime) => setStartTime(selectedTime)}
-              />
-              <a className="pt-3">-</a>
-              <TimeInput
-                initialValue={endTime}
-                onReturn={(selectedTime) => setEndTime(selectedTime)}
-              />
-            </div>
+              <div className="flex justify-center items-center space-x-2">
+                <TimeInput
+                  initialValue={startTime}
+                  onReturn={(selectedTime) => setStartTime(selectedTime)}
+                />
+                <a className="pt-3">-</a>
+                <TimeInput
+                  initialValue={endTime}
+                  onReturn={(selectedTime) => setEndTime(selectedTime)}
+                />
+              </div>
 
-            <div className="pt-10 flex justify-center ">
-              <Button
-                text="保存"
-                onClick={handleRegisterClick}
-              />
+              <div className="pt-10 flex justify-center ">
+                <Button
+                  text="保存"
+                  onClick={handleRegisterClick}
+                />
+              </div>
             </div>
           </div>
         )}
