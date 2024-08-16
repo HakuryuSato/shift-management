@@ -8,11 +8,16 @@ export default async function fetchShifts({
     user_id = '*',
     year = new Date().getFullYear(),
     month = new Date().getMonth() + 1,
+    start_time,
+    end_time,
 }: InterFaceShiftQuery = {}): Promise<ShiftData[]> {
     try {
-        const response = await fetch(
-            `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`,
-        );
+        // start_time と end_time が指定されている場合は優先
+        const query = start_time && end_time 
+            ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
+            : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
+
+        const response = await fetch(query);
         const responseData = await response.json();
         const data = responseData.data;
 
