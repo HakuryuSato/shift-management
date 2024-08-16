@@ -6,7 +6,7 @@ export default interface InterFaceShiftQuery {
     year?: number,
     month?: number,
     is_approved?: boolean;
-    start_time?: string | number;
-    end_time?: string | number;
+    start_time?: string | number | Date;
+    end_time?: string | number | Date;
 
 }
