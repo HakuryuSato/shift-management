@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import toJapanDateString from './toJapanDateString';
 
 // FullCalendar用の型メモ
 type ShiftEvent = {
@@ -20,7 +21,7 @@ type ShiftEvent = {
 const downloadShiftTableXlsx = async (startDate: Date, endDate: Date, shiftEvents: any) => {
 
   // 表示用文字列生成 MM月DD日~MM月DD日
-  const fileName = `週間シフト表_${startDate.getMonth() + 1}月${startDate.getDate() + 1}日 ~ ${endDate.getMonth() + 1}月${endDate.getDate()}日`;
+  const fileName = `週間シフト表_${startDate.getMonth() + 1}月${startDate.getDate()}日 ~ ${endDate.getMonth() + 1}月${endDate.getDate()}日`;
   const table = generateScheduleSheet(shiftEvents, startDate, fileName)
 
   const workbook = createWorksheet(table);
@@ -61,10 +62,10 @@ function generateScheduleSheet(shiftEvents: { id: string; start: string; end: st
   // 3行目以降：各名前ごとのシフトデータ
   for (let name of names) {
     const row: string[] = [name];
-    for (let i = 0; i < 6; i++) { // 月曜日から土曜日まで
+    for (let i = 1; i < 7; i++) { // 月曜日から土曜日まで
       const currentDate = new Date(startDate);
       currentDate.setDate(currentDate.getDate() + i); // 日曜日を除外して、さらにi日分進める
-      const dateString = currentDate.toISOString().split('T')[0];
+      const dateString = toJapanDateString(currentDate).split('T')[0]
       const matchingEvent = shiftEvents.find(event =>
         event.title === name && event.start.startsWith(dateString)
       );
@@ -81,7 +82,6 @@ function generateScheduleSheet(shiftEvents: { id: string; start: string; end: st
 
   return result;
 }
-
 
 
 // xlsxワークシート作成関数  -------------------------------------------------
