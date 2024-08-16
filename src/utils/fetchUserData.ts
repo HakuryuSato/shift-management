@@ -1,7 +1,6 @@
 export default async function fetchUserData() {
-
     try {
-        // APIからシフトデータを取得
+        // APIからユーザーデータ取得
         const response = await fetch(
             `/api/getUserData`,
         );
