@@ -17,7 +17,6 @@ import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 import createTableForAdminShift from "@/utils/createTableForAdminShift";
 
-
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 
@@ -27,9 +26,6 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 // API fetch
 import fetchUserData from "@utils/fetchUserData";
 import fetchShifts from "@/utils/fetchShifts";
-
-
-
 
 // コンポーネント----------------------------------------------------------------------------------------------------------------------------------------------
 const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
@@ -56,6 +52,22 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     //     console.error("Failed to fetch shifts:", error);
     //   }
     // };
+
+    const updateEventData = async (start_time: Date, end_time: Date) => {
+      const data = await fetchShifts(
+        {
+          start_time: start_time,
+          end_time: end_time,
+        },
+      );
+
+      const formattedEvents = formatShiftsForFullCalendarEvent(
+        data,
+        true, // イベント名に名前を表示
+      );
+
+      setShiftEvents(formattedEvents);
+    };
 
     // シフト登録モーダル非表示
     const closeRegisterModal = async () => { // 関数名変更、async 追加
@@ -89,17 +101,16 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // effect
     useEffect(() => { // 初回用
       // 今日の日付から、今週の日曜日と土曜日を取得し、表示される期間に格納する
-      const today = new Date()
+      const today = new Date();
       const sunday = new Date(today);
       sunday.setDate(today.getDate() - today.getDay()); // 日曜日
-    
+
       const saturday = new Date(sunday);
       saturday.setDate(sunday.getDate() + 6); // 土曜日
 
       setStartDate(sunday);
       setEndDate(saturday);
       updateEventData(sunday, saturday);
-
     }, []);
 
     useEffect(() => { // 変更時用
