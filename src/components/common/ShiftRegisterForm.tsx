@@ -53,9 +53,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   const [userData, setUserData] = useState<
     { user_name: string; user_id: Number }[]
   >([]);
-  const [isEditMode,setIsEditMode] = useState<boolean>(false)
-  
-  
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
     if (selectedShiftId && selectedEventShiftTime != null) { // もし選択シフトIDとイベントシフト時間がnullでないなら(編集モード)
@@ -152,32 +150,38 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         </div>
       )}
 
+      {isEditMode
+        ? (
+          <div>
+            
+          </div>
+        )
+        : (
+          <div className="p-4">
+            <h3 className="mb-4 flex justify-center ">
+              シフトを希望する時間を入力してください
+            </h3>
 
-      {isRegi}
-      <div className="p-4">
-        <h3 className="mb-4 flex justify-center ">
-          シフトを希望する時間を入力してください
-        </h3>
+            <div className="flex justify-center items-center space-x-2">
+              <TimeInput
+                initialValue={startTime}
+                onReturn={(selectedTime) => setStartTime(selectedTime)}
+              />
+              <a className="pt-3">-</a>
+              <TimeInput
+                initialValue={endTime}
+                onReturn={(selectedTime) => setEndTime(selectedTime)}
+              />
+            </div>
 
-        <div className="flex justify-center items-center space-x-2">
-          <TimeInput
-            initialValue={startTime}
-            onReturn={(selectedTime) => setStartTime(selectedTime)}
-          />
-          <a className="pt-3">-</a>
-          <TimeInput
-            initialValue={endTime}
-            onReturn={(selectedTime) => setEndTime(selectedTime)}
-          />
-        </div>
-
-        <div className="pt-10 flex justify-center ">
-          <Button
-            text="登録"
-            onClick={handleRegisterClick}
-          />
-        </div>
-      </div>
+            <div className="pt-10 flex justify-center ">
+              <Button
+                text="保存"
+                onClick={handleRegisterClick}
+              />
+            </div>
+          </div>
+        )}
     </Modal>
   );
 };
