@@ -152,19 +152,25 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
       {selectedShiftId
         ? (
-          // 選択シフトIDが存在して、編集モードなら
           isEditMode
-            ? <div>編集</div>
+            // 選択シフトIDが存在して、編集モードなら
+            ? <div>
+            </div>
             // 選択シフトIDは存在するが編集モードでない
-            
-            : <div>確認</div>
+            : (
+              <div>
+                <h1 className="text-3xl my-4 text-center">
+                  {selectedEventShiftTime}
+                </h1>
+              </div>
+            )
         )
+        // 選択シフトIDが存在しないなら、シフト登録画面
         : (
-          // 選択シフトIDが存在しないなら、シフト登録画面
           <div>
             <div className="p-4">
               <h3 className="mb-4 flex justify-center ">
-                シフトを希望する時間を入力してください
+                シフトを希望する時間を 入力してください
               </h3>
 
               <div className="flex justify-center items-center space-x-2">
