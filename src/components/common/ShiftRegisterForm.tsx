@@ -97,6 +97,12 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   };
 
   // ハンドラー---------------------------------------------------------------------------
+  // モーダルを閉じる際の初期化処理
+  const handleClose = () => {
+    setIsEditMode(false);
+    setIsDeleteModalOpen(false);
+    onClose();
+  };
 
   // 登録ボタン
   const handleRegisterClick = async () => {
@@ -110,11 +116,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     setIsEditMode(true);
   };
 
-  const handleClose = () => {
-    setIsEditMode(false);
-    setIsDeleteModalOpen(false);
-    onClose();
-  };
+
 
   const handleDeleteClick = () => {
     setIsDeleteModalOpen(true);
