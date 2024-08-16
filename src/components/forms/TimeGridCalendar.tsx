@@ -13,7 +13,7 @@ import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalenda
 // import Button from "@ui/Button";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
-import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
+import ShiftDeleteForm from "@components/common/ShiftDeleteForm";
 
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
