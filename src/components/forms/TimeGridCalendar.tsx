@@ -33,26 +33,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // 定数 -----------------------------------------------------------------------------------------------------------------------
 
     // 関数 -----------------------------------------------------------------------------------------------------------------------
-    // イベントデータを取得しFullCalendarのStateにセットする関数
-    // const updateEventData = async (start_time: Date, end_time: Date) => {
-    //   try {
-    //     // APIからシフトデータを取得
-    //     const response = await fetch(
-    //       `/api/getShift?user_id=${"*"}&start_time=${start_time}&end_time=${end_time}`,
-    //     );
-
-    //     const responseData = await response.json();
-    //     const data = responseData.data; // dataキーの値を使用
-    //     const formattedEvents = formatShiftsForFullCalendarEvent(
-    //       data,
-    //       true, // イベント名に名前を表示
-    //     );
-    //     setShiftEvents(formattedEvents);
-    //   } catch (error) {
-    //     console.error("Failed to fetch shifts:", error);
-    //   }
-    // };
-
     const updateEventData = async (start_time: Date, end_time: Date) => {
       const data = await fetchShifts(
         {
@@ -68,6 +48,8 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
       setShiftEvents(formattedEvents);
     };
+
+    
 
     // シフト登録モーダル非表示
     const closeRegisterModal = async () => { // 関数名変更、async 追加
@@ -146,16 +128,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // 一週間分ダウンロード
     const handleDownloadWeeklyShifts = async () => {
-      const formattedData: any = shiftEvents;
-      const userNames = await fetchUserData();
-
-      // const table = createTableForAdminShift(
-      //   startDate.getMonth() + 1,
-      //   startDate.getFullYear(),
-      //   formattedData,
-      //   userNames,
-      // );
-
       downloadWeeklyShiftTableXlsx(startDate, endDate, shiftEvents);
     };
 

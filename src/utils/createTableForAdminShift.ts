@@ -2,6 +2,56 @@
 import type InterFaceAdminShiftTable from '@customTypes/InterFaceAdminShiftTable';
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
+
+// メイン関数
+export default function createTableForAdminShift(
+  currentMonth: number,
+  currentYear: number,
+  formatedShifts: InterFaceAdminShiftTable[],
+  userNames: InterFaceTableUsers[]
+): (string | number)[][] {
+  userNames.sort((a, b) => (a.user_name ?? '').localeCompare(b.user_name ?? ''));
+
+
+
+
+  const dateList = generateDateList(currentMonth, currentYear);
+  
+  const userTotals = calculateUserTotals(formatedShifts, userNames);
+  const dailyTotals = calculateDailyTotals(currentMonth, currentYear, formatedShifts);
+  
+  const headerRow = [`${currentMonth + 1}月`, "名前"].concat(userNames.map(user => user.user_name ?? ""));
+  const totalRow = ["日付", "合計(H)"].concat(userTotals.map(total => total.toString()));
+
+  const table: (string | number)[][] = [headerRow];
+
+  dateList.forEach(date => {
+    const row: (string | number)[] = [date, dailyTotals[date]];
+    userNames.forEach(user => {
+      const shift = formatedShifts.find(shift => shift.user_name === user.user_name && shift.start_time && new Date(shift.start_time).toLocaleDateString('ja-JP') === date);
+      if (shift && shift.start_time && shift.end_time) {
+        row.push(`${formatTime(shift.start_time)}-${formatTime(shift.end_time)}`);
+      } else {
+        row.push("");
+      }
+    });
+    table.push(row);
+  });
+
+  table.splice(1, 0, totalRow); // Insert the totalRow after the header row
+  
+
+  const result = changeDateFormat(table);
+
+
+
+
+
+  return result;
+}
+
+
+
 // Convert start_time and end_time to text
 function formatTime(time: string): string {
   return new Date(time).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
@@ -90,49 +140,3 @@ function changeDateFormat(input:any) {
   return output;
 }
 
-// Main function to generate the 2D array
-export default function createTableForAdminShift(
-  currentMonth: number,
-  currentYear: number,
-  formatedShifts: InterFaceAdminShiftTable[],
-  userNames: InterFaceTableUsers[]
-): (string | number)[][] {
-  userNames.sort((a, b) => (a.user_name ?? '').localeCompare(b.user_name ?? ''));
-
-
-
-
-  const dateList = generateDateList(currentMonth, currentYear);
-  
-  const userTotals = calculateUserTotals(formatedShifts, userNames);
-  const dailyTotals = calculateDailyTotals(currentMonth, currentYear, formatedShifts);
-  
-  const headerRow = [`${currentMonth + 1}月`, "名前"].concat(userNames.map(user => user.user_name ?? ""));
-  const totalRow = ["日付", "合計(H)"].concat(userTotals.map(total => total.toString()));
-
-  const table: (string | number)[][] = [headerRow];
-
-  dateList.forEach(date => {
-    const row: (string | number)[] = [date, dailyTotals[date]];
-    userNames.forEach(user => {
-      const shift = formatedShifts.find(shift => shift.user_name === user.user_name && shift.start_time && new Date(shift.start_time).toLocaleDateString('ja-JP') === date);
-      if (shift && shift.start_time && shift.end_time) {
-        row.push(`${formatTime(shift.start_time)}-${formatTime(shift.end_time)}`);
-      } else {
-        row.push("");
-      }
-    });
-    table.push(row);
-  });
-
-  table.splice(1, 0, totalRow); // Insert the totalRow after the header row
-  
-
-  const result = changeDateFormat(table);
-
-
-
-
-
-  return result;
-}
