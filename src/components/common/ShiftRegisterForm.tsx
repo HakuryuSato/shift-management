@@ -53,6 +53,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   const [userData, setUserData] = useState<
     { user_name: string; user_id: Number }[]
   >([]);
+  const [isEditMode,setIsEditMode] = useState<boolean>(false)
   
   
 
