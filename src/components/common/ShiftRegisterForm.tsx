@@ -20,10 +20,11 @@ import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 type ShiftRegisterFormProps = {
   isOpen: boolean;
   onClose: () => void;
-  selectedDate: string | null;
-  user_id: number;
   onRegister: (shiftData: InterFaceShiftQuery) => Promise<void>;
   onUpdate: (shiftData: InterFaceShiftQuery) => Promise<void>;
+  selectedDate: string | null;
+  user_id: number;
+  user_name?: string;
   isAdmin: boolean;
   selectedShiftId?: number | null;
   selectedEventShiftTime?: string | null;
@@ -34,7 +35,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     isOpen,
     selectedDate,
     user_id,
-
+    user_name,
     onClose,
     onRegister,
     onUpdate,
@@ -83,7 +84,6 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
   // 関数------------------------------------------------------------
 
-
   // ハンドラー---------------------------------------------------------------------------
   // モーダルを閉じる際の初期化処理
   const handleClose = () => {
@@ -118,8 +118,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       end_time: formattedEndTime,
     };
 
-    await onUpdate(context)
-    
+    await onUpdate(context);
+
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
