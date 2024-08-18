@@ -113,19 +113,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     await updateEventData();
   };
 
-  // シフト削除モーダル非表示
-  // const closeDeleteModal = async () => {
-  //   setIsDeleteModalOpen(false);
-  //   setSelectedShiftId(null);
-  //   await updateEventData();
-  // };
 
-  // // シフト編集モーダル非表示
-  // const closeEditModal = async () => {
-  //   setIsEditMode(false);
-  //   setSelectedShiftId(null);
-  //   await updateEventData();
-  // };
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -211,13 +199,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
   const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
     await fetchSendShift(shiftData);
-    await updateEventData();
   };
 
   // シフト更新 *子コンポで行うと反映が間に合わないため、ここで実行している。
   const handleShiftUpdate = async (shiftData: InterFaceShiftQuery) => {
     await fetchUpdateShift(shiftData);
-    await updateEventData();
   };
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------

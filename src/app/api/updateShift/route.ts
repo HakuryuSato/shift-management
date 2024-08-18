@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabase
         .from('shifts')
         .update({ start_time, end_time })
-        .eq('id', shift_id);
+        .eq('shift_id', shift_id);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });

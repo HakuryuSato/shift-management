@@ -32,15 +32,16 @@ type ShiftRegisterFormProps = {
 const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   {
     isOpen,
-    onClose,
     selectedDate,
     user_id,
+
+    onClose,
     onRegister,
+    onUpdate,
     isAdmin,
     selectedShiftId,
     selectedEventShiftTime,
   },
-
 ) => {
   // 定数-----------------------------------
   // フック--------------------------------------------------------------------------------------------------
@@ -83,11 +84,6 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   // 関数------------------------------------------------------------
 
 
-  const updateShift = async () => {
-    // ここでアップデート用APIを呼び出し
-    console.log();
-  };
-
   // ハンドラー---------------------------------------------------------------------------
   // モーダルを閉じる際の初期化処理
   const handleClose = () => {
@@ -98,29 +94,32 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
   // 登録ボタン
   const handleRegisterClick = async () => {
-    
+    const formattedStartTime = `${selectedDate} ${startTime}`;
+    const formattedEndTime = `${selectedDate} ${endTime}`;
 
-    const sendShiftData = async () => { // async 追加
-      const formattedStartTime = `${selectedDate} ${startTime}`;
-      const formattedEndTime = `${selectedDate} ${endTime}`;
-  
-      const context: InterFaceShiftQuery = {
-        user_id: userId,
-        start_time: formattedStartTime,
-        end_time: formattedEndTime,
-      };
-  
-      await onRegister(context);
+    const context: InterFaceShiftQuery = {
+      user_id: userId,
+      start_time: formattedStartTime,
+      end_time: formattedEndTime,
     };
 
-    await sendShiftData();
+    await onRegister(context);
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
 
   const handleUpdateClick = async () => {
-    await sendUpdateData();
+    const formattedStartTime = `${selectedDate} ${startTime}`;
+    const formattedEndTime = `${selectedDate} ${endTime}`;
 
+    const context: InterFaceShiftQuery = {
+      shift_id: selectedShiftId!,
+      start_time: formattedStartTime,
+      end_time: formattedEndTime,
+    };
+
+    await onUpdate(context)
+    
     setUserOptions({ start_time: startTime, end_time: endTime });
     onClose();
   };
@@ -188,7 +187,6 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
           isEditMode
             // シフト編集画面
             ? <div className="flex flex-col items-center space-y-4">
-
               <div className="flex justify-center items-center space-x-2">
                 <TimeInput
                   initialValue={selectedEventShiftTime?.split("-")[0]}
@@ -201,10 +199,9 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
                 />
               </div>
 
-                {/* handleCloseを */}
               <Button
                 text="保存"
-                onClick={handleClose} 
+                onClick={handleUpdateClick}
                 className="w-20"
               />
             </div>
@@ -229,9 +226,11 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         : (
           <div>
             <div className="p-4">
-              {/* <h3 className="mb-4 flex justify-center ">
+              {
+                /* <h3 className="mb-4 flex justify-center ">
                 シフトを希望する時間を 入力してください
-              </h3> */}
+              </h3> */
+              }
 
               <div className="flex justify-center items-center space-x-2">
                 <TimeInput
