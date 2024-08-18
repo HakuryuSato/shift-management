@@ -11,7 +11,7 @@ import { EventClickArg } from "@fullcalendar/core";
 // オリジナル
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm"
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
+import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";0
 
 
 // 変換用関数
@@ -20,6 +20,8 @@ import extractTimeFromDate from "@utils/extractTimeFromDate";
 
 // fetch関数
 import fetchSendShift from "@utils/fetchSendShift";
+import fetchUpdateShift from "@/utils/fetchUpdateShift";
+
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -206,14 +208,17 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     }
   };
 
-  // シフト登録(負債コード、子供のコンポーネントでやるべき)
-  // const handleRegister = async (shiftData: InterFaceShiftQuery) => {
-  //   await await fetchSendShift(shiftData);
-  //   await updateEventData();
-  // };
+  // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
+  const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
+    await fetchSendShift(shiftData);
+    await updateEventData();
+  };
 
-
-
+  // シフト更新 *子コンポで行うと反映が間に合わないため、ここで実行している。
+  const handleShiftUpdate = async (shiftData: InterFaceShiftQuery) => {
+    await fetchUpdateShift(shiftData);
+    await updateEventData();
+  };
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
@@ -283,7 +288,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
-
+        onRegister={handleShiftRegister}
+        onUpdate={handleShiftUpdate}
         isAdmin={false}
         selectedShiftId={selectedShiftId}
         selectedEventShiftTime={selectedEventShiftTime}
