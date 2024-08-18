@@ -13,7 +13,11 @@ import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalenda
 // import Button from "@ui/Button";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
+
 import ShiftDeleteForm from "@components/common/ShiftDeleteForm";
+import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
+import createTableForAdminShift from "@/utils/createTableForAdminShift";
+
 
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
@@ -21,31 +25,33 @@ import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 // スタイル
 import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更
 
+// API fetch
+import fetchUserData from "@utils/fetchUserData";
+import fetchShifts from "@/utils/fetchShifts";
+
 // コンポーネント----------------------------------------------------------------------------------------------------------------------------------------------
 const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
   ({ onLogout, onBack }) => {
     // 定数 -----------------------------------------------------------------------------------------------------------------------
 
     // 関数 -----------------------------------------------------------------------------------------------------------------------
-    // イベントデータを取得しFullCalendarのStateにセットする関数
     const updateEventData = async (start_time: Date, end_time: Date) => {
-      try {
-        // APIからシフトデータを取得
-        const response = await fetch(
-          `/api/getShift?user_id=${"*"}&start_time=${start_time}&end_time=${end_time}`,
-        );
+      const data = await fetchShifts(
+        {
+          start_time: start_time,
+          end_time: end_time,
+        },
+      );
 
-        const responseData = await response.json();
-        const data = responseData.data; // dataキーの値を使用
-        const formattedEvents = formatShiftsForFullCalendarEvent(
-          data,
-          true, // イベント名に名前を表示
-        );
-        setShiftEvents(formattedEvents);
-      } catch (error) {
-        console.error("Failed to fetch shifts:", error);
-      }
+      const formattedEvents = formatShiftsForFullCalendarEvent(
+        data,
+        true, // イベント名に名前を表示
+      );
+
+      setShiftEvents(formattedEvents);
     };
+
+    
 
     // シフト登録モーダル非表示
     const closeRegisterModal = async () => { // 関数名変更、async 追加
@@ -71,20 +77,24 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
+
     // モーダル
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
 
     // effect
     useEffect(() => { // 初回用
-      const initialStartDate = new Date();
-      const initialEndDate = new Date();
-      initialStartDate.setDate(initialStartDate.getDate() - 7); // 1週間前の日付を設定
-      initialEndDate.setDate(initialEndDate.getDate() + 7); // 1週間後の日付を設定
+      // 今日の日付から、今週の日曜日と土曜日を取得し、表示される期間に格納する
+      const today = new Date();
+      const sunday = new Date(today);
+      sunday.setDate(today.getDate() - today.getDay()); // 日曜日
 
-      setStartDate(initialStartDate);
-      setEndDate(initialEndDate);
-      updateEventData(initialStartDate, initialEndDate);
+      const saturday = new Date(sunday);
+      saturday.setDate(sunday.getDate() + 6); // 土曜日
+
+      setStartDate(sunday);
+      setEndDate(saturday);
+      updateEventData(sunday, saturday);
     }, []);
 
     useEffect(() => { // 変更時用
@@ -96,7 +106,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
     const handleEventClick = async (arg: EventClickArg) => {
-      // ここにイベント削除を実装する
       setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
       setIsDeleteModalOpen(true);
     };
@@ -115,8 +124,13 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // シフト登録
     const handleRegister = async (shiftData: InterFaceShiftQuery) => {
-      await await fetchSendShift(shiftData);
+      await fetchSendShift(shiftData);
       await updateEventData(startDate, endDate);
+    };
+
+    // 一週間分ダウンロード
+    const handleDownloadWeeklyShifts = async () => {
+      downloadWeeklyShiftTableXlsx(startDate, endDate, shiftEvents);
     };
 
     return (
@@ -130,7 +144,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
               ? "timeGridWeek"
               : "backToMenuButton",
             center: "title",
-            right: "",
+            right: "downloadWeeklyShiftButton",
           }}
           footerToolbar={{ // フッター
             left: "prev",
@@ -142,6 +156,10 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
               text: "１ヶ月の画面へ",
               click: onBack,
             },
+            downloadWeeklyShiftButton: {
+              text: "１週間のシフト表ダウンロード",
+              click: handleDownloadWeeklyShifts,
+            },
           }}
           locale={jaLocale}
           slotMinTime="08:00:00"
@@ -152,7 +170,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           // eventMaxStack={20} // 同時に表示するイベントの最大数
           eventOverlap={false} // イベントが重ならないように設定
           eventClick={handleEventClick}
-          datesSet={(dateInfo) => {
+          datesSet={(dateInfo) => { // 週変更時発火
             const newStartDate = new Date(dateInfo.start);
             const newEndDate = new Date(dateInfo.end);
             setStartDate(newStartDate);
@@ -163,9 +181,9 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           dateClick={handleDateClick}
         />
 
-        {/* <button onClick={onLogout}>ログアウト</button> */}
 
         <ShiftRegisterForm
+
           isOpen={isRegisterModalOpen}
           onClose={closeRegisterModal}
           selectedDate={selectedDate}
