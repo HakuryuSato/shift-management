@@ -92,7 +92,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     await onRegister(context);
   };
 
-  const deleteShift = async () => {
+  const updateShift = async () => {
+    // ここでアップデート用APIを呼び出し
     console.log();
   };
 
@@ -116,8 +117,6 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     setIsEditMode(true);
   };
 
-
-
   const handleDeleteClick = () => {
     setIsDeleteModalOpen(true);
   };
@@ -131,8 +130,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       onClose={handleClose}
     >
       <div>
-        {/* もしシフトidがあるなら、編集モード用ツールバー */}
-        {selectedShiftId &&
+        {/* 編集モード用ツールバー */}
+        {selectedShiftId && !isEditMode &&
           (
             <div>
               <ShiftEditToolBar
@@ -145,7 +144,6 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       </div>
 
       <h2 className="text-lg mt-6 text-center">{selectedDate}</h2>
-
       {isAdmin && (
         <div className="mb-4">
           <h3 className="mb-4 pb-2 flex justify-center ">
@@ -174,10 +172,29 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       {selectedShiftId
         ? (
           isEditMode
-            // 選択シフトIDが存在して、編集モードなら
-            ? <div>
+            // シフト編集画面
+            ? <div className="flex flex-col items-center space-y-4">
+
+              <div className="flex justify-center items-center space-x-2">
+                <TimeInput
+                  initialValue={selectedEventShiftTime?.split("-")[0]}
+                  onReturn={(selectedTime) => setStartTime(selectedTime)}
+                />
+                <a className="pt-3">-</a>
+                <TimeInput
+                  initialValue={selectedEventShiftTime?.split("-")[1]}
+                  onReturn={(selectedTime) => setEndTime(selectedTime)}
+                />
+              </div>
+
+                {/* handleCloseを */}
+              <Button
+                text="保存"
+                onClick={handleClose} 
+                className="w-20"
+              />
             </div>
-            // 選択シフトIDは存在するが編集モードでない
+            // シフト確認画面
             : (
               // 管理者モードなら名前表示
 
@@ -194,13 +211,13 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
               </div>
             )
         )
-        // 選択シフトIDが存在しないなら、シフト登録画面
+        // シフト登録画面
         : (
           <div>
             <div className="p-4">
-              <h3 className="mb-4 flex justify-center ">
+              {/* <h3 className="mb-4 flex justify-center ">
                 シフトを希望する時間を 入力してください
-              </h3>
+              </h3> */}
 
               <div className="flex justify-center items-center space-x-2">
                 <TimeInput
