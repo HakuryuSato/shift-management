@@ -11,12 +11,15 @@ import { EventClickArg } from "@fullcalendar/core";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 // import createContext from "@/utils/createContext";
 // import Button from "@ui/Button";
-import CommonShiftRegisterForm from "@forms/CommonShiftRegisterForm";
+import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
-import ShiftDeleteForm from "@forms/CommonShiftDeleteForm";
+
+import ShiftDeleteForm from "@components/common/ShiftDeleteForm";
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 import createTableForAdminShift from "@/utils/createTableForAdminShift";
 
+
+import fetchUpdateShift from "@/utils/fetchUpdateShift";
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
 
@@ -120,10 +123,17 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       }
     };
 
-    // シフト登録
-    const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+
+    // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
+    const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
       await fetchSendShift(shiftData);
-      await updateEventData(startDate, endDate);
+      // await updateEventData(startDate, endDate);
+    };
+
+    // シフト更新 *子コンポで行うと反映が間に合わないため、ここで実行している。
+    const handleShiftUpdate = async (shiftData: InterFaceShiftQuery) => {
+      await fetchUpdateShift(shiftData);
+
     };
 
     // 一週間分ダウンロード
@@ -179,12 +189,16 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           dateClick={handleDateClick}
         />
 
-        <CommonShiftRegisterForm
+
+        <ShiftRegisterForm
+
+          onUpdate={handleShiftUpdate}
+
           isOpen={isRegisterModalOpen}
           onClose={closeRegisterModal}
           selectedDate={selectedDate}
           user_id={0}
-          onRegister={handleRegister}
+          onRegister={handleShiftRegister}
           isAdmin={true}
         />
 
