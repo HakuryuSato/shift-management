@@ -206,11 +206,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     }
   };
 
-  // シフト登録
-  const handleRegister = async (shiftData: InterFaceShiftQuery) => {
-    await await fetchSendShift(shiftData);
-    await updateEventData();
-  };
+  // シフト登録(負債コード、子供のコンポーネントでやるべき)
+  // const handleRegister = async (shiftData: InterFaceShiftQuery) => {
+  //   await await fetchSendShift(shiftData);
+  //   await updateEventData();
+  // };
+
+
+
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
@@ -280,7 +283,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onClose={closeRegisterModal}
         selectedDate={selectedDate}
         user_id={user.user_id!}
-        onRegister={handleRegister}
+
         isAdmin={false}
         selectedShiftId={selectedShiftId}
         selectedEventShiftTime={selectedEventShiftTime}
