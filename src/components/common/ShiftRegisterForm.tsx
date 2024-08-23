@@ -26,6 +26,7 @@ type ShiftRegisterFormProps = {
   user_id: number;
   user_name?: string;
   isAdmin: boolean;
+  isMultiple?: boolean;
   selectedShiftId?: number | null;
   selectedEventShiftTime?: string | null;
 };
@@ -40,6 +41,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     onRegister,
     onUpdate,
     isAdmin,
+    isMultiple,
     selectedShiftId,
     selectedEventShiftTime,
   },
@@ -94,6 +96,18 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
   // 登録ボタン
   const handleRegisterClick = async () => {
+    
+
+    if(isMultiple){ // もしまとめて登録なら
+      // その日に既にシフトがないかチェック
+      // if?
+
+      // ないなら配列に追加
+
+      //
+
+    }
+
     const formattedStartTime = `${selectedDate} ${startTime}`;
     const formattedEndTime = `${selectedDate} ${endTime}`;
 
@@ -142,18 +156,21 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       isOpen={isOpen}
       onClose={handleClose}
     >
+      {/* 編集モード用ツールバー */}
+
+      {selectedShiftId && !isEditMode &&
+        (
+          <div>
+            <ShiftEditToolBar
+              onClose={handleClose}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+            />
+          </div>
+        )}
+
       <div>
         {/* 編集モード用ツールバー */}
-        {selectedShiftId && !isEditMode &&
-          (
-            <div>
-              <ShiftEditToolBar
-                onClose={handleClose}
-                onEdit={handleEditClick}
-                onDelete={handleDeleteClick}
-              />
-            </div>
-          )}
       </div>
 
       <h2 className="text-lg mt-6 text-center">{selectedDate}</h2>
