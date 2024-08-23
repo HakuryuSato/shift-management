@@ -66,6 +66,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [bGColorsPerDay, setBGColorsPerDay] = useState<
     { [date: string]: string }
   >({});
+  
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
@@ -197,6 +198,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   };
 
   // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
+  // shiftDataはShiftRegisterFormから
   const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
     await fetchSendShift(shiftData);
   };
@@ -205,6 +207,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const handleShiftUpdate = async (shiftData: InterFaceShiftQuery) => {
     await fetchUpdateShift(shiftData);
   };
+
+
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
@@ -227,13 +231,17 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
         footerToolbar={{
           left: "prev",
-          center: "",
+          center: "multipleShiftInputButton",
           right: "next",
         }}
         customButtons={{
           toggleShiftViewButton: {
             text: isAllMembersView ? "個人シフト画面へ" : "全員のシフト画面へ",
             click: toggleShiftView,
+          },
+          multipleShiftInputButton: {
+            text: "曜日でまとめて",
+            click: ,
           },
         }}
         dayCellClassNames={(info) => {
