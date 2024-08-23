@@ -9,10 +9,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EventClickArg } from "@fullcalendar/core";
 
 // オリジナル
-import ShiftRegisterForm from "@components/common/ShiftRegisterForm"
+import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";0
-
+import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
 
 // 変換用関数
 import convertJtcToIsoString from "@utils/convertJtcToIsoString";
@@ -21,7 +20,6 @@ import extractTimeFromDate from "@utils/extractTimeFromDate";
 // fetch関数
 import fetchSendShift from "@utils/fetchSendShift";
 import fetchUpdateShift from "@/utils/fetchUpdateShift";
-
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -32,12 +30,11 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 
 // Props
 interface DayGridCalendarProps {
-  onLogout: () => void; // デバッグ用
   user: InterFaceTableUsers;
 }
 
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
-  { onLogout, user },
+  { user },
 ) => { //以下コンポーネント--------------------------------------------------------------------------------------------
   // 以下定数---------------------------------------------------------------------------------------------------------
   const userId: number = user.user_id!; // page.tsxでログインしているためnull以外
@@ -49,7 +46,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<string | null>(null);
+  const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
+    string | null
+  >(null);
 
   const [shiftEvents, setShiftEvents] = useState<
     { start: string; end: string }[]
@@ -66,7 +65,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [bGColorsPerDay, setBGColorsPerDay] = useState<
     { [date: string]: string }
   >({});
-  
+  const [isMultipleShiftInput, setIsMultipleShiftInput] = useState(false)
 
   // 関数---------------------------------------------------------------------------------------------------------
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
@@ -111,10 +110,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     }
     setIsModalOpen(false);
     setIsEditMode(false);
+    setIsMultipleShiftInput(false);
     await updateEventData();
   };
-
-
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -199,7 +197,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
   // shiftDataはShiftRegisterFormから
-  const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
+  const handleShiftRegister = async (shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) => {
     await fetchSendShift(shiftData);
   };
 
@@ -208,7 +206,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     await fetchUpdateShift(shiftData);
   };
 
+  const handleMutipleShiftInputClick = () => {
 
+    // await fetchSendShift(shiftData);
+  };
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
@@ -241,7 +242,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
           },
           multipleShiftInputButton: {
             text: "曜日でまとめて",
-            click: ,
+            click: handleMutipleShiftInputClick,
           },
         }}
         dayCellClassNames={(info) => {
@@ -285,13 +286,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onRegister={handleShiftRegister}
         onUpdate={handleShiftUpdate}
         isAdmin={false}
+        isMultiple
         selectedShiftId={selectedShiftId}
         selectedEventShiftTime={selectedEventShiftTime}
       />
 
       <h1>{user.user_name}としてログインしています</h1>
-
-
 
       {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
