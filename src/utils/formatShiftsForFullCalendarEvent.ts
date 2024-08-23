@@ -1,10 +1,6 @@
 // FullCalendar用にイベントを整形
 export default function formatShiftsForFullCalendarEvent(data: any[], isAllMembersView: boolean = false) {
 
-
-
-
-
   return data.map((shift) => ({
     id: String(shift.shift_id),
     start: shift.start_time,
@@ -12,7 +8,6 @@ export default function formatShiftsForFullCalendarEvent(data: any[], isAllMembe
     // useUserNameAsTitleがtrueならshift.user_name、falseならshift.title、どちらも無ければ空文字
     title: isAllMembersView ? shift.user_name || '' : shift.title || '',
     display: 'block',
-
 
     // backgroundColor: shift.is_approved ? 'green' : '',
 
