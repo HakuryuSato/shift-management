@@ -3,13 +3,12 @@ import { supabase } from '@api/supabase';
 import type InterFaceShiftQuery from '@/customTypes/InterFaceShiftQuery';
 
 export async function POST(req: NextRequest) {
-    const { user_id, start_time, end_time }: InterFaceShiftQuery = await req.json();
+    const requestData = await req.json();
+    const shiftDataArray = Array.isArray(requestData) ? requestData : [requestData];
 
     const { data, error } = await supabase
         .from('shifts')
-        .insert([
-            { start_time, end_time, user_id }
-        ]);
+        .insert(shiftDataArray);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
