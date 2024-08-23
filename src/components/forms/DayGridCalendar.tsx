@@ -207,6 +207,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   };
 
   const handleMutipleShiftInputClick = () => {
+    setIsMultipleShiftInput(true)
+    setIsModalOpen(true)
 
     // await fetchSendShift(shiftData);
   };
@@ -286,9 +288,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         onRegister={handleShiftRegister}
         onUpdate={handleShiftUpdate}
         isAdmin={false}
-        isMultiple
+        isMultiple={isMultipleShiftInput}
+        fullCalendarShiftEvents={shiftEvents}
         selectedShiftId={selectedShiftId}
         selectedEventShiftTime={selectedEventShiftTime}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
       />
 
       <h1>{user.user_name}としてログインしています</h1>

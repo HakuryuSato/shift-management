@@ -125,15 +125,13 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
 
     // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
-    const handleShiftRegister = async (shiftData: InterFaceShiftQuery) => {
+    const handleShiftRegister = async (shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) => {
       await fetchSendShift(shiftData);
-      // await updateEventData(startDate, endDate);
     };
 
     // シフト更新 *子コンポで行うと反映が間に合わないため、ここで実行している。
     const handleShiftUpdate = async (shiftData: InterFaceShiftQuery) => {
       await fetchUpdateShift(shiftData);
-
     };
 
     // 一週間分ダウンロード
