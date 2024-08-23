@@ -243,7 +243,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             click: toggleShiftView,
           },
           multipleShiftInputButton: {
-            text: "曜日でまとめて",
+            text: "曜日でまとめて登録",
             click: handleMutipleShiftInputClick,
           },
         }}
