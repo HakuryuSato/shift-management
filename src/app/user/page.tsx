@@ -40,18 +40,10 @@ export default function UserPage() {
     setUser(userData);
   };
 
-  const handleLogout = () => { // デバッグ用 ログアウト
-    Cookies.remove(COOKIE_USER_LOGGED_IN);
-    Cookies.remove(COOKIE_USER_INFO);
-    Cookies.remove(COOKIE_USER_OPTIONS);
-    setIsLoggedIn(false);
-    setUser({ user_id: 0, user_name: "" });
-  };
-
   return (
     <>
       {isLoggedIn // ログイン済みならカレンダー、まだならログインフォーム
-        ? <DayGridCalendar onLogout={handleLogout} user={user} />
+        ? <DayGridCalendar user={user} />
         : <UserLoginForm onLoginSuccess={handleLoginSuccess} />}
     </>
   );
