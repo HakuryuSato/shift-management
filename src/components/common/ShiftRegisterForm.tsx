@@ -122,7 +122,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
-    if (selectedShiftId && selectedEventShiftTime != null) { // もし選択シフトIDとイベントシフト時間がnullでないなら(編集モード)
+    // 編集モードなら(選択シフトIDとイベントシフト時間がnullでない)
+    if (selectedShiftId && selectedEventShiftTime != null) {
       setStartTime(selectedEventShiftTime.split("-")[0]);
       setEndTime(selectedEventShiftTime.split("-")[1]);
     } else {
@@ -159,6 +160,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   const handleClose = () => {
     setIsEditMode(false);
     setIsDeleteModalOpen(false);
+
     onClose();
   };
 
@@ -186,7 +188,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       for (let i = 1; i <= currentDateCount; i++) {
         const currentDate = new Date(currentYear!, currentMonth!, i);
         const dayOfWeek = currentDate.getDay(); // 曜日取得
-        const formattedDate = toJapanDateString(currentDate);
+        const formattedDate = toJapanDateString(currentDate); // 'YYYY-MM-DD'
 
         if (
           // 選択した曜日　かつ　既に自分のシフトが登録されていない日
@@ -197,24 +199,10 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         }
       }
 
+      // 完了して、multipleContextsの中身が存在するなら、onRegisterを実行
       if (multipleContexts.length > 0) {
         await onRegister(multipleContexts);
       }
-
-      // let alreadyRegistedDays = "" // 'YYYY-MM-DD'
-      // fullCalendarShiftEventsの中から 、startの日付を抽出し(start.split('T')[0]、alreadyRegistedDaysに格納
-      // for
-      // if() user_idが一致するなら
-
-      // let multipleContexts:InterFaceShiftQuery[]
-
-      // for (let i = 1; i <= currentDateCount; i++) {
-      //   // if() selectedDays 1~6の曜日のリストが入るので、currentYear,currentMonth,currentDate(i)が曜日に該当するか
-      //   // 加えて、alreadyRegistedDaysに存在しないかチェックし、createContext(該当日)の結果をmultipleContextsに格納
-      // }
-
-      // 完了して、multipleContextsの中身が存在するなら、onRegisterを実行
-      // await onRegister(multipleContexts);
     } else { // 個別に登録なら
       const formattedStartTime = `${selectedDate} ${startTime}`;
       const formattedEndTime = `${selectedDate} ${endTime}`;
@@ -228,7 +216,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     }
 
     setUserOptions({ start_time: startTime, end_time: endTime }); // キャッシュに時間保存
-    onClose();
+    handleClose();
   };
 
   const handleUpdateClick = async () => {
@@ -244,11 +232,19 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     await onUpdate(context);
 
     setUserOptions({ start_time: startTime, end_time: endTime });
-    onClose();
+    handleClose();
   };
+
+
+
 
   // 編集ボタン(えんぴつ)
   const handleEditClick = () => {
+    if (selectedEventShiftTime) {
+      const [startTime, endTime] = selectedEventShiftTime.split("-");
+      setStartTime(startTime);
+      setEndTime(endTime);
+    }
     setIsEditMode(true);
   };
 
@@ -262,6 +258,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     setSelectedDays(days);
   };
 
+  // モーダルisOpenでないならnullを返す
   if (!isOpen) return null;
 
   return (
@@ -270,8 +267,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       isOpen={isOpen}
       onClose={handleClose}
     >
-      {/* 編集モード用ツールバー */}
-
+      {/* 編集モード用ツールバー シフトIDが存在し、編集モードでない*/}
       {selectedShiftId && !isEditMode &&
         (
           <div>
@@ -283,7 +279,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
           </div>
         )}
 
-      {/* 曜日選択 */}
+      {/* 曜日選択 複数シフト登録(ユーザーのみtrueにできる)*/}
       {isMultiple && (
         <div>
           <DaySelector onDaysSelected={handleDaysSelected} />
@@ -291,14 +287,13 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       )}
 
       {!isMultiple && (
-        <h2 className="text-lg mt-6 text-center">{selectedDate}</h2>
+        <h2 className="text-lg mt-6 text-center mb-4">{selectedDate}</h2>
       )}
 
-      {isAdmin && (
+      {/* ユーザー名選択　管理者かつ、登録モード(編集モードでない) */}
+      {isAdmin && !selectedShiftId && (
         <div className="mb-4">
-          <h3 className="mb-4 pb-2 flex justify-center ">
-            シフトを追加するユーザーを選択してください
-          </h3>
+          <a>{user_name}</a>
           <select
             id="user-select"
             className="p-2 border mx-auto block w-30"
@@ -319,81 +314,55 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
         </div>
       )}
 
-      {selectedShiftId
-        ? (
-          isEditMode
-            // シフト編集画面
-            ? <div className="flex flex-col items-center space-y-4">
-              <div className="flex justify-center items-center space-x-2">
-                <TimeInput
-                  initialValue={selectedEventShiftTime?.split("-")[0]}
-                  onReturn={(selectedTime) => setStartTime(selectedTime)}
-                />
-                <a className="pt-3">-</a>
-                <TimeInput
-                  initialValue={selectedEventShiftTime?.split("-")[1]}
-                  onReturn={(selectedTime) => setEndTime(selectedTime)}
-                />
-              </div>
+      {/* ユーザー名確認 管理者かつ編集モード */}
+      {isAdmin && selectedShiftId && (
+        <div className="flex flex-col items-center space-y-4">
+          <a className="text-2xl my-4 text-center">
+            {user_name}
+          </a>
+        </div>
+      )}
 
-              <Button
-                text="保存"
-                onClick={handleUpdateClick}
-                className="w-20"
-              />
-            </div>
-            // シフト確認画面
-            : (
-              // 管理者モードなら名前表示
+      {/* 時間確認 確認画面かつ編集モードでない */}
+      {selectedShiftId && !isEditMode && (
+        <h1 className="text-3xl my-4 text-center">
+          {selectedEventShiftTime}
+        </h1>
+      )}
 
-              <div className="flex flex-col items-center space-y-4">
-                <h1 className="text-3xl my-4 text-center">
-                  {selectedEventShiftTime}
-                </h1>
+      {/* 時間入力  確認モードでない(シフトidなし) または編集モード または曜日でまとめて */}
+      {(!selectedShiftId || isEditMode || isMultiple) && (
+        <div className="flex justify-center items-center space-x-2">
+          <TimeInput
+            initialValue={startTime}
+            onReturn={(selectedTime) => setStartTime(selectedTime)}
+          />
+          <a className="pt-3">-</a>
+          <TimeInput
+            initialValue={endTime}
+            onReturn={(selectedTime) => setEndTime(selectedTime)}
+          />
+        </div>
+      )}
 
-                <Button
-                  text="確認"
-                  onClick={handleClose}
-                  className="w-20"
-                />
-              </div>
-            )
-        )
-        // シフト登録画面
-        : (
-          <div>
-            <div className="p-4">
-              {
-                /* <h3 className="mb-4 flex justify-center ">
-                シフトを希望する時間を 入力してください
-              </h3> */
-              }
+      {/* ボタン 全ての場合で表示*/}
+      <div className="pt-10 flex justify-center">
+        <Button
+          text={selectedShiftId && !isEditMode
+            ? "確認"
+            : isEditMode
+            ? "更新"
+            : "保存"}
+          onClick={selectedShiftId && !isEditMode
+            ? handleClose
+            : isEditMode
+            ? handleUpdateClick
+            : handleRegisterClick}
+        />
+      </div>
 
-              {/* 時間入力 */}
-              <div className="flex justify-center items-center space-x-2">
-                <TimeInput
-                  initialValue={startTime}
-                  onReturn={(selectedTime) => setStartTime(selectedTime)}
-                />
-                <a className="pt-3">-</a>
-                <TimeInput
-                  initialValue={endTime}
-                  onReturn={(selectedTime) => setEndTime(selectedTime)}
-                />
-              </div>
-
-              {/* 保存ボタン */}
-              <div className="pt-10 flex justify-center ">
-                <Button
-                  text="保存"
-                  onClick={handleRegisterClick}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-      {selectedShiftId && // 選択されたシフトIDがあるなら、シフト削除フォーム読み込み
+      {/* シフト削除フォーム */}
+      {selectedShiftId && // 選択されたシフトIDがあるなら読み込み
         (
           <ShiftDeleteForm
             isOpen={isDeleteModalOpen}

@@ -42,8 +42,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // State -------------------------------------------------------------------------------------------------------
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
@@ -109,7 +108,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
       setSelectedEventShiftTime(null);
     }
     setIsModalOpen(false);
-    setIsEditMode(false);
+
     setIsMultipleShiftInput(false);
     await updateEventData();
   };
@@ -190,7 +189,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         : null;
 
       setSelectedEventShiftTime(`${startTime}-${endTime}`);
-      setIsEditMode(true);
       setIsModalOpen(true);
     }
   };
