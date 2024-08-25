@@ -15,6 +15,8 @@ import fetchSendShift from "@utils/fetchSendShift";
 // 変換用関数
 import extractTimeFromDate from "@utils/extractTimeFromDate";
 import convertJtcToIsoString from "@/utils/convertJtcToIsoString";
+import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
+
 
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 
@@ -49,6 +51,10 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
         true, // イベント名に名前を表示
       );
 
+      // 混雑状況の表示
+      const calculatedShiftHoursData = calcSumShiftHourPerDay(data);
+      setBGColorsPerDay(calculatedShiftHoursData);
+
       setShiftEvents(formattedEvents);
     };
 
@@ -63,6 +69,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       setIsRegisterModalOpen(false);
       setSelectedShiftId(null);
       setSelectedShiftUserName("");
+
       await updateEventData(startDate, endDate);
     };
 
@@ -85,6 +92,9 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // モーダル
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+    const [bGColorsPerDay, setBGColorsPerDay] = useState<
+    { [date: string]: string }
+  >({});
 
     // effect
     useEffect(() => { // 初回用
@@ -99,6 +109,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       setStartDate(sunday);
       setEndDate(saturday);
       updateEventData(sunday, saturday);
+
     }, []);
 
     useEffect(() => { // 変更時用
@@ -204,6 +215,30 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           }}
           allDaySlot={false}
           dateClick={handleDateClick}
+          dayCellClassNames={(info) => {
+            const classes = [];
+            const today = new Date();
+            const dateStr = info.date.toLocaleDateString("ja-JP", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).replace(/\//g, "-");
+  
+            // 今月の日曜日だけ色を少し薄くする
+            if (
+              info.date.getDay() === 0 &&
+              info.date.getMonth() === today.getMonth()
+            ) {
+              classes.push("text-gray");
+            }
+  
+            // シフト混雑状況に応じて色変更
+            if (bGColorsPerDay[dateStr]) {
+              classes.push(bGColorsPerDay[dateStr]);
+            }
+  
+            return classes.join(" ");
+          }}
         />
 
         <ShiftRegisterForm
@@ -219,23 +254,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           selectedEventShiftTime={selectedEventShiftTime}
         />
 
-        {
-          /*       <ShiftRegisterForm
-        isOpen={isModalOpen}
-        onClose={closeRegisterModal}
-        selectedDate={selectedDate}
-        user_id={user.user_id!}
-        onRegister={handleShiftRegister}
-        onUpdate={handleShiftUpdate}
-        isAdmin={false}
-        isMultiple={isMultipleShiftInput}
-        fullCalendarShiftEvents={shiftEvents}
-        selectedShiftId={selectedShiftId}
-        selectedEventShiftTime={selectedEventShiftTime}
-        currentYear={currentYear}
-        currentMonth={currentMonth}
-      /> */
-        }
       </div>
     );
   };
