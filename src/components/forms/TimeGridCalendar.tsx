@@ -9,16 +9,16 @@ import { EventClickArg } from "@fullcalendar/core";
 
 // 独自
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
-// import createContext from "@/utils/createContext";
-// import Button from "@ui/Button";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import fetchSendShift from "@utils/fetchSendShift";
 
-import ShiftDeleteForm from "@components/common/ShiftDeleteForm";
+// 変換用関数
+import extractTimeFromDate from "@utils/extractTimeFromDate";
+import convertJtcToIsoString from "@/utils/convertJtcToIsoString";
+
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
-import createTableForAdminShift from "@/utils/createTableForAdminShift";
 
-
+// fetch
 import fetchUpdateShift from "@/utils/fetchUpdateShift";
 // 型
 import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
@@ -52,18 +52,17 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       setShiftEvents(formattedEvents);
     };
 
-    
-
     // シフト登録モーダル非表示
     const closeRegisterModal = async () => { // 関数名変更、async 追加
-      setIsRegisterModalOpen(false);
-      await updateEventData(startDate, endDate);
-    };
+      if (selectedShiftId != null) { // 選択シフトIDが存在するなら(編集モードで開いていたなら)
+        setSelectedShiftId(null);
+        setSelectedDate("");
+        setSelectedEventShiftTime(null);
+      }
 
-    // シフト削除モーダル非表示
-    const closeDeleteModal = async () => { // async に変更
-      setIsDeleteModalOpen(false);
+      setIsRegisterModalOpen(false);
       setSelectedShiftId(null);
+      setSelectedShiftUserName("");
       await updateEventData(startDate, endDate);
     };
 
@@ -75,13 +74,17 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
     const [currentView, setCurrentView] = useState("timeGridWeek");
-    // const [operationMode, setOperationMode] = useState<string>("approval"); // モード管理用、一旦承認のみ
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
+    const [selectedShiftUserName, setSelectedShiftUserName] = useState<string>(
+      "",
+    );
+    const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
+      string | null
+    >(null);
 
     // モーダル
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 削除モーダル用
 
     // effect
     useEffect(() => { // 初回用
@@ -106,9 +109,24 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
 
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
-    const handleEventClick = async (arg: EventClickArg) => {
-      setSelectedShiftId(arg.event.id ? parseInt(arg.event.id) : null);
-      setIsDeleteModalOpen(true);
+    const handleEventClick = async (eventInfo: EventClickArg) => {
+      
+      // ShiftRegisterForm用にデータを準備してモーダルを開く
+      setSelectedShiftId(
+        eventInfo.event.id ? parseInt(eventInfo.event.id) : null,
+      );
+      setSelectedDate(convertJtcToIsoString(String(eventInfo.event.start)));
+
+      const startTime = eventInfo.event.start
+        ? extractTimeFromDate(eventInfo.event.start)
+        : null;
+      const endTime = eventInfo.event.end
+        ? extractTimeFromDate(eventInfo.event.end)
+        : null;
+
+      setSelectedEventShiftTime(`${startTime}-${endTime}`);
+      setSelectedShiftUserName(eventInfo.event.title);
+      setIsRegisterModalOpen(true);
     };
 
     // 日付クリック
@@ -123,9 +141,10 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       }
     };
 
-
     // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
-    const handleShiftRegister = async (shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) => {
+    const handleShiftRegister = async (
+      shiftData: InterFaceShiftQuery | InterFaceShiftQuery[],
+    ) => {
       await fetchSendShift(shiftData);
     };
 
@@ -187,26 +206,36 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           dateClick={handleDateClick}
         />
 
-
         <ShiftRegisterForm
-
           onUpdate={handleShiftUpdate}
-
           isOpen={isRegisterModalOpen}
           onClose={closeRegisterModal}
           selectedDate={selectedDate}
           user_id={0}
+          user_name={selectedShiftUserName}
           onRegister={handleShiftRegister}
           isAdmin={true}
+          selectedShiftId={selectedShiftId}
+          selectedEventShiftTime={selectedEventShiftTime}
         />
 
-        {selectedShiftId !== null && (
-          <ShiftDeleteForm
-            isOpen={isDeleteModalOpen}
-            onClose={closeDeleteModal}
-            shiftId={selectedShiftId}
-          />
-        )}
+        {
+          /*       <ShiftRegisterForm
+        isOpen={isModalOpen}
+        onClose={closeRegisterModal}
+        selectedDate={selectedDate}
+        user_id={user.user_id!}
+        onRegister={handleShiftRegister}
+        onUpdate={handleShiftUpdate}
+        isAdmin={false}
+        isMultiple={isMultipleShiftInput}
+        fullCalendarShiftEvents={shiftEvents}
+        selectedShiftId={selectedShiftId}
+        selectedEventShiftTime={selectedEventShiftTime}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
+      /> */
+        }
       </div>
     );
   };

@@ -123,7 +123,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
 
   useEffect(() => { // モーダル表示時にCookieから値取得してStateへ
     // 編集モードなら(選択シフトIDとイベントシフト時間がnullでない)
-    if (selectedShiftId && selectedEventShiftTime != null) { // もしなら(編集モード)
+    if (selectedShiftId && selectedEventShiftTime != null) {
       setStartTime(selectedEventShiftTime.split("-")[0]);
       setEndTime(selectedEventShiftTime.split("-")[1]);
     } else {
@@ -160,6 +160,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
   const handleClose = () => {
     setIsEditMode(false);
     setIsDeleteModalOpen(false);
+
     onClose();
   };
 
@@ -215,7 +216,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     }
 
     setUserOptions({ start_time: startTime, end_time: endTime }); // キャッシュに時間保存
-    onClose();
+    handleClose();
   };
 
   const handleUpdateClick = async () => {
@@ -231,11 +232,19 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     await onUpdate(context);
 
     setUserOptions({ start_time: startTime, end_time: endTime });
-    onClose();
+    handleClose();
   };
+
+
+
 
   // 編集ボタン(えんぴつ)
   const handleEditClick = () => {
+    if (selectedEventShiftTime) {
+      const [startTime, endTime] = selectedEventShiftTime.split("-");
+      setStartTime(startTime);
+      setEndTime(endTime);
+    }
     setIsEditMode(true);
   };
 
@@ -249,6 +258,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
     setSelectedDays(days);
   };
 
+  // モーダルisOpenでないならnullを返す
   if (!isOpen) return null;
 
   return (
@@ -307,7 +317,7 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       {/* ユーザー名確認 管理者かつ編集モード */}
       {isAdmin && selectedShiftId && (
         <div className="flex flex-col items-center space-y-4">
-          <a>
+          <a className="text-2xl my-4 text-center">
             {user_name}
           </a>
         </div>
@@ -338,12 +348,28 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       {/* ボタン 全ての場合で表示*/}
       <div className="pt-10 flex justify-center">
         <Button
-          // 確認画面なら"確認" そうでないなら"保存"
-          text={selectedShiftId && !isEditMode ? "確認" : "保存"}
-          onClick={handleRegisterClick}
+          text={selectedShiftId && !isEditMode
+            ? "確認"
+            : isEditMode
+            ? "更新"
+            : "保存"}
+          onClick={selectedShiftId && !isEditMode
+            ? handleClose
+            : isEditMode
+            ? handleUpdateClick
+            : handleRegisterClick}
         />
       </div>
 
+      {/* シフト削除フォーム */}
+      {selectedShiftId && // 選択されたシフトIDがあるなら読み込み
+        (
+          <ShiftDeleteForm
+            isOpen={isDeleteModalOpen}
+            onClose={handleClose}
+            shiftId={selectedShiftId}
+          />
+        )}
     </Modal>
   );
 };
