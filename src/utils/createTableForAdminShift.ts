@@ -21,7 +21,7 @@ export default function createTableForAdminShift(
   const dailyTotals = calculateDailyTotals(currentMonth, currentYear, formatedShifts);
   
   const headerRow = [`${currentMonth + 1}月`, "名前"].concat(userNames.map(user => user.user_name ?? ""));
-  const overtimeRow = ["-", "時間外合計(H)"].concat(userOvertimeTotals.map(total => total.toString()));
+  const overtimeRow = ["-", "時間外(H)"].concat(userOvertimeTotals.map(total => total.toString()));
   const totalRow = ["日付", "合計(H)"].concat(userTotals.map(total => total.toString()));
 
 
