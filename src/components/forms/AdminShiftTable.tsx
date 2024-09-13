@@ -53,30 +53,6 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   };
 
 
-
-
-  // シフトデータ取得
-  // const fetchGetShifts = async () => { // 納期の都合でfetch関数化断念
-
-  //   try {
-  //     // APIからシフトデータを取得
-  //     const response = await fetch(
-  //       `/api/getShift?user_id=${'*'}&year=${currentYear}&month=${currentMonth}`,
-  //     );
-  //     const responseData = await response.json();
-  //     const data = responseData.data; // dataキーの値を使用
-  //     const formattedEvents = formatShiftsForTable(
-  //       data,
-  //     );
-
-  //     return formattedEvents
-  //   } catch (error) {
-  //     console.error("Failed to fetch shifts:", error);
-  //     return [];
-  //   }
-
-  // };
-
   const fetchShiftsFrom26thTo25th = async () => {
     try {
       // 現在の日時を取得し、先月の26日と今月の25日を計算
@@ -187,7 +163,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
                     <td
                       key={cellIndex}
                       className={`border p-1 text-xs text-black text-center
-                  ${rowIndex === 1 ? "border-b-2 border-double" : "border-gray"}
+                  ${rowIndex === 2 ? "border-b-2 border-double" : "border-gray"}
                   ${
                         cellIndex === 1
                           ? "border-r-2 border-double border-gray"
