@@ -18,7 +18,7 @@ const createWorksheet = (data: any[][]): ExcelJS.Workbook => {
     const colCount = worksheet.columnCount;
 
     row.eachCell((cell, colIndex) => {
-      const isSecondRow = rowIndex === 2;
+      const isSecondRow = rowIndex === 3;
       const isSecondCol = colIndex === 2;
 
       const borders: Partial<ExcelJS.Borders> = {

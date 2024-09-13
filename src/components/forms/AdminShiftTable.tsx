@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 // 基盤
@@ -12,13 +13,14 @@ import type InterFaceAdminShiftTable from "@customTypes/InterFaceAdminShiftTable
 
 // 独自
 import Button from "@ui/Button";
-// import createContext from "@utils/createContext";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
 import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
+import toJapanDateString from '@utils/toJapanDateString';
 
 // API fetch
+import fetchShifts from '@utils/fetchShifts';
 import fetchUserData from "@utils/fetchUserData"
 
 
@@ -36,7 +38,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
     const userNames = await fetchUserData();
 
 
-    const shifts = await fetchGetShifts();
+    const shifts = await fetchShiftsFrom26thTo25th();
     const formattedData = formatShiftsForTable(shifts);
 
     const table = createTableForAdminShift(
@@ -51,28 +53,27 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   };
 
 
-
-
-  // シフトデータ取得
-  const fetchGetShifts = async () => { // 納期の都合でfetch関数化断念
-
+  const fetchShiftsFrom26thTo25th = async () => {
     try {
-      // APIからシフトデータを取得
-      const response = await fetch(
-        `/api/getShift?user_id=${'*'}&year=${currentYear}&month=${currentMonth}`,
-      );
-      const responseData = await response.json();
-      const data = responseData.data; // dataキーの値を使用
-      const formattedEvents = formatShiftsForTable(
-        data,
-      );
+      // 現在の日時を取得し、先月の26日と今月の25日を計算
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 26);
+      const endDate = new Date(now.getFullYear(), now.getMonth(), 25);
+  
+      // 日本時間での日付をフォーマット
+      const start_time = toJapanDateString(startDate);
+      const end_time = toJapanDateString(endDate);
+  
+      // fetchShifts関数を使用してシフトデータを取得
+      const data = await fetchShifts({ user_id: '*', start_time, end_time });
+  
+      const formattedEvents = formatShiftsForTable(data);
 
-      return formattedEvents
+      return formattedEvents;
     } catch (error) {
-      console.error("Failed to fetch shifts:", error);
+      console.error('Failed to fetch shifts:', error);
       return [];
     }
-
   };
 
   // モーダル閉じる
@@ -162,7 +163,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
                     <td
                       key={cellIndex}
                       className={`border p-1 text-xs text-black text-center
-                  ${rowIndex === 1 ? "border-b-2 border-double" : "border-gray"}
+                  ${rowIndex === 2 ? "border-b-2 border-double" : "border-gray"}
                   ${
                         cellIndex === 1
                           ? "border-r-2 border-double border-gray"
