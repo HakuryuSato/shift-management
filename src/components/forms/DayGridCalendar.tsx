@@ -7,6 +7,7 @@ import jaLocale from "@fullcalendar/core/locales/ja";
 import interactionPlugin from "@fullcalendar/interaction";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { EventClickArg } from "@fullcalendar/core";
+import useSWR from "swr";
 
 // オリジナル
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
@@ -33,6 +34,9 @@ interface DayGridCalendarProps {
   user: InterFaceTableUsers;
 }
 
+// 祝日取得用
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   { user },
 ) => { //以下コンポーネント--------------------------------------------------------------------------------------------
@@ -42,7 +46,6 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // State -------------------------------------------------------------------------------------------------------
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
@@ -64,9 +67,16 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   const [bGColorsPerDay, setBGColorsPerDay] = useState<
     { [date: string]: string }
   >({});
-  const [isMultipleShiftInput, setIsMultipleShiftInput] = useState(false)
+  const [isMultipleShiftInput, setIsMultipleShiftInput] = useState(false);
 
   // 関数---------------------------------------------------------------------------------------------------------
+
+  // 祝日を取得する
+  const { data: holidays, error: holidaysError } = useSWR(
+    "/api/holidays",
+    fetcher,
+  );
+
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {
     const user_id = isAllMembersView ? "*" : userId;
@@ -94,11 +104,29 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         setBGColorsPerDay({});
       }
 
-      setShiftEvents(formattedEvents);
+      // 祝日取得
+      if (holidays) {
+        const holidayEvents = holidays.map((holiday: any) => ({
+          title: holiday.title,
+          start: holiday.date,
+          allDay: true,
+          color: "red",
+          extendedProps: {
+            isHoliday: true,
+          },
+        }));
+
+        const allEvents = [...formattedEvents, ...holidayEvents];
+        setShiftEvents(allEvents);
+      } else {
+        setShiftEvents(formattedEvents);
+      }
+
+      // setShiftEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to fetch shifts:", error);
     }
-  }, [userId, currentYear, currentMonth, isAllMembersView]);
+  }, [userId, currentYear, currentMonth, isAllMembersView, holidays]);
 
   // シフト登録モーダル非表示
   const closeRegisterModal = async () => {
@@ -115,22 +143,31 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
-    const startTime = eventInfo.event.start.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const endTime = eventInfo.event.end?.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (eventInfo.event.extendedProps.isHoliday) {
+      return (
+        <div>
+          <b>{eventInfo.event.title}</b>
+        </div>
+      );
+    } else {
+      // Existing shift event rendering
+      const startTime = eventInfo.event.start.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const endTime = eventInfo.event.end?.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
-    return (
-      <div>
-        <b>{startTime} - {endTime}</b>
-        <br />
-        <i>{eventInfo.event.title}</i>
-      </div>
-    );
+      return (
+        <div>
+          <b>{startTime} - {endTime}</b>
+          <br />
+          <i>{eventInfo.event.title}</i>
+        </div>
+      );
+    }
   };
 
   // シフトの表示方法を切り替える
@@ -195,7 +232,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // シフト登録 *子コンポで行うと反映が間に合わないため、ここで実行している。
   // shiftDataはShiftRegisterFormから
-  const handleShiftRegister = async (shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) => {
+  const handleShiftRegister = async (
+    shiftData: InterFaceShiftQuery | InterFaceShiftQuery[],
+  ) => {
     await fetchSendShift(shiftData);
   };
 
@@ -205,8 +244,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   };
 
   const handleMutipleShiftInputClick = () => {
-    setIsMultipleShiftInput(true)
-    setIsModalOpen(true)
+    setIsMultipleShiftInput(true);
+    setIsModalOpen(true);
 
     // await fetchSendShift(shiftData);
   };
@@ -225,6 +264,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         dayCellContent={(e) => e.dayNumberText.replace("日", "")} // x日 の表記を消す
         events={shiftEvents}
         eventContent={renderEventContent}
+        fixedWeekCount={false} 
         headerToolbar={{
           left: "toggleShiftViewButton",
           center: "",
