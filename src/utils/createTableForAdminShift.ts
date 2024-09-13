@@ -14,8 +14,8 @@ export default function createTableForAdminShift(
 
 
 
-
-  const dateList = generateDateList(currentMonth, currentYear);
+  // 日付リストを生成（先月26日から今月25日まで）
+  const dateList = generateDateListFrom26thTo25th(currentMonth, currentYear);
   
   const userTotals = calculateUserTotals(formatedShifts, userNames);
   const dailyTotals = calculateDailyTotals(currentMonth, currentYear, formatedShifts);
@@ -64,15 +64,17 @@ function calculateShiftHours(start: string, end: string): number {
   return (endHour + endMinute / 60) - (startHour + startMinute / 60);
 }
 
-// Generate a list of dates for the given month
-function generateDateList(currentMonth: number, currentYear: number): string[] {
+// 先月26日から今月25日までの日付リストを生成する関数
+function generateDateListFrom26thTo25th(currentMonth: number, currentYear: number): string[] {
   const dates = [];
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(currentYear, currentMonth, day);
-    dates.push(date.toLocaleDateString('ja-JP'));
-    // dates.push(date.toLocaleDateString('ja-JP',{ month: 'numeric', day: 'numeric', weekday: 'short' }));    
+  
+  const startDate = new Date(currentYear, currentMonth - 1, 26); // 先月26日
+  const endDate = new Date(currentYear, currentMonth, 25); // 今月25日
+
+  for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
+    dates.push(new Date(date).toLocaleDateString('ja-JP'));
   }
+
   return dates;
 }
 
@@ -105,7 +107,7 @@ function calculateDailyTotals(
   currentYear: number,
   formatedShifts: InterFaceAdminShiftTable[]
 ): Record<string, number> {
-  const dateList = generateDateList(currentMonth, currentYear);
+  const dateList = generateDateListFrom26thTo25th(currentMonth, currentYear);
   const dailyTotals: Record<string, number> = {};
 
   dateList.forEach(date => {
