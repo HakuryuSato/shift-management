@@ -110,7 +110,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
           title: holiday.title,
           start: holiday.date,
           allDay: true,
-          color: "red",
+          color: "#69b076",
           extendedProps: {
             isHoliday: true,
           },
@@ -143,13 +143,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
-    if (eventInfo.event.extendedProps.isHoliday) {
+    if (eventInfo.event.extendedProps.isHoliday) { // 祝日イベント
+      // 祝日を設定
       return (
         <div>
           <b>{eventInfo.event.title}</b>
         </div>
       );
-    } else {
+    } else { // それ以外
       // Existing shift event rendering
       const startTime = eventInfo.event.start.toLocaleTimeString([], {
         hour: "2-digit",
@@ -264,7 +265,8 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         dayCellContent={(e) => e.dayNumberText.replace("日", "")} // x日 の表記を消す
         events={shiftEvents}
         eventContent={renderEventContent}
-        fixedWeekCount={false} 
+        fixedWeekCount={false}
+        
         headerToolbar={{
           left: "toggleShiftViewButton",
           center: "",
