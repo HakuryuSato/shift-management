@@ -104,7 +104,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         setBGColorsPerDay({});
       }
 
-      // 祝日取得
+      // 祝日設定
       if (holidays) {
         const holidayEvents = holidays.map((holiday: any) => ({
           title: holiday.title,
