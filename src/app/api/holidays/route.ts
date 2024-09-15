@@ -6,7 +6,7 @@ export async function GET() {
 
     // 3か月後まで取得
     const now = new Date();
-    const timeMin = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const timeMin = new Date(now.getFullYear(), now.getMonth() -3, 1).toISOString();
     const timeMax = new Date(now.getFullYear(), now.getMonth() + 3, 1).toISOString();
 
     // encodeURIComponent: URL用のエンコード
