@@ -19,10 +19,10 @@ import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
 import toJapanDateString from '@utils/toJapanDateString';
 
-// API fetch
+// API呼び出し
 import fetchShifts from '@utils/fetchShifts';
 import fetchUserData from "@utils/fetchUserData"
-
+import { fetchHolidays } from '@utils/apiClient';
 
 interface AdminShiftTableProps {
   onButtonClickBackToShiftApproval: () => void;
@@ -35,17 +35,18 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 関数 ---------------------------------------------------------------------------------------------------
   // 2次元のテーブルを作成する
   const updateTable = async () => {
+
     const userNames = await fetchUserData();
-
-
     const shifts = await fetchShiftsFrom26thTo25th();
     const formattedData = formatShiftsForTable(shifts);
+    const holidays = await fetchHolidays();
 
     const table = createTableForAdminShift(
       currentMonth,
       currentYear,
       formattedData,
       userNames,
+      holidays,
     );
 
 

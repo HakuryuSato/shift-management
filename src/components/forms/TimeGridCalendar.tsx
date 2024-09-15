@@ -6,6 +6,7 @@ import TimeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import { EventClickArg } from "@fullcalendar/core";
+import useSWR from "swr";
 
 // 独自
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
@@ -16,7 +17,6 @@ import fetchSendShift from "@utils/fetchSendShift";
 import extractTimeFromDate from "@utils/extractTimeFromDate";
 import convertJtcToIsoString from "@/utils/convertJtcToIsoString";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
-
 
 import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 
@@ -32,12 +32,22 @@ import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色�
 import fetchUserData from "@utils/fetchUserData";
 import fetchShifts from "@/utils/fetchShifts";
 
+// 祝日取得用
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 // コンポーネント----------------------------------------------------------------------------------------------------------------------------------------------
 const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
   ({ onLogout, onBack }) => {
     // 定数 -----------------------------------------------------------------------------------------------------------------------
 
     // 関数 -----------------------------------------------------------------------------------------------------------------------
+
+    // 祝日を取得する
+    const { data: holidays, error: holidaysError } = useSWR(
+      "/api/holidays",
+      fetcher,
+    );
+
     const updateEventData = async (start_time: Date, end_time: Date) => {
       const data = await fetchShifts(
         {
@@ -55,7 +65,25 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       const calculatedShiftHoursData = calcSumShiftHourPerDay(data);
       setBGColorsPerDay(calculatedShiftHoursData);
 
-      setShiftEvents(formattedEvents);
+      // setShiftEvents(formattedEvents);
+      // 祝日があるなら祝日も設定
+      if (holidays) {
+        const holidayEvents = holidays.map((holiday: any) => ({
+          title: holiday.title,
+          start: holiday.date,
+          allDay: true,
+          color: "#69b076",
+          extendedProps: {
+            isHoliday: true,
+          },
+        }));
+
+        const allEvents = [...formattedEvents, ...holidayEvents];
+        setShiftEvents(allEvents);
+      } else {
+        setShiftEvents(formattedEvents);
+      }
+      
     };
 
     // シフト登録モーダル非表示
@@ -93,8 +121,8 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // モーダル
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [bGColorsPerDay, setBGColorsPerDay] = useState<
-    { [date: string]: string }
-  >({});
+      { [date: string]: string }
+    >({});
 
     // effect
     useEffect(() => { // 初回用
@@ -109,7 +137,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
       setStartDate(sunday);
       setEndDate(saturday);
       updateEventData(sunday, saturday);
-
     }, []);
 
     useEffect(() => { // 変更時用
@@ -121,7 +148,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // ハンドラー -----------------------------------------------------------------------------------------------------------------------
     // イベントクリックハンドラー
     const handleEventClick = async (eventInfo: EventClickArg) => {
-      
       // ShiftRegisterForm用にデータを準備してモーダルを開く
       setSelectedShiftId(
         eventInfo.event.id ? parseInt(eventInfo.event.id) : null,
@@ -213,7 +239,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             setEndDate(newEndDate);
             setCurrentView(dateInfo.view.type);
           }}
-          allDaySlot={false}
+          allDaySlot={true}
           dateClick={handleDateClick}
           dayCellClassNames={(info) => {
             const classes = [];
@@ -223,7 +249,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
               month: "2-digit",
               day: "2-digit",
             }).replace(/\//g, "-");
-  
+
             // 今月の日曜日だけ色を少し薄くする
             if (
               info.date.getDay() === 0 &&
@@ -231,12 +257,12 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             ) {
               classes.push("text-gray");
             }
-  
+
             // シフト混雑状況に応じて色変更
             if (bGColorsPerDay[dateStr]) {
               classes.push(bGColorsPerDay[dateStr]);
             }
-  
+
             return classes.join(" ");
           }}
         />
@@ -253,7 +279,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           selectedShiftId={selectedShiftId}
           selectedEventShiftTime={selectedEventShiftTime}
         />
-
       </div>
     );
   };

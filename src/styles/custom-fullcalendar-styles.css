@@ -13,7 +13,7 @@
 }
 
 /* ボタンを押した後、フォーカス時の線を無効にする */
-.fc .fc-button:focus {
+.fc .fc-button:focus .fc-daygrid-event{
   outline: none;
   box-shadow: none; 
 }
@@ -33,7 +33,14 @@
 }
 
 .fc-event {
-  white-space: normal !important; /* 文字の折り返しを有効にする */
-  height: auto !important; /* 高さを自動調整 */
+  white-space: normal; /* 文字の折り返しを有効にする */
+  height: auto; /* 高さを自動調整 */
   min-height: 40px; /* 最小の高さを設定 */
+}
+
+/* 祝日のイベント */
+
+.fc-holiday-event {
+  background-color: green; /* 背景色を強制的に赤に設定 */
+  color: white; /* 文字色を強制的に白に設定 */
 }
