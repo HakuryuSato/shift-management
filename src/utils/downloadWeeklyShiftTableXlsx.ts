@@ -16,65 +16,74 @@ type ShiftEvent = {
   };
 };
 
-
 // メイン関数
-const downloadShiftTableXlsx = async (startDate: Date, endDate: Date, shiftEvents: any) => {
-
+const downloadShiftTableXlsx = async (startDate: Date, endDate: Date, shiftEvents: any[]) => {
   // 表示用文字列生成 MM月DD日~MM月DD日
-  const fileName = `週間シフト表_${startDate.getMonth() + 1}月${startDate.getDate()}日 ~ ${endDate.getMonth() + 1}月${endDate.getDate()}日`;
-  const table = generateScheduleSheet(shiftEvents, startDate, fileName)
+  const fileName = `週間シフト表_${startDate.getMonth() + 1}月${startDate.getDate()}日 ~ ${
+    endDate.getMonth() + 1
+  }月${endDate.getDate()}日`;
 
-  const workbook = createWorksheet(table);
+  // 祝日を除外（endプロパティが存在しないイベント）
+  const shiftEventsOnly: ShiftEvent[] = shiftEvents.filter(
+    (event: any): event is ShiftEvent => event.end
+  );
+
+  const table = generateShiftTableData(shiftEventsOnly, startDate, fileName);
+
+  const workbook = createWorkbookFromTable(table);
   const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
   saveAs(blob, fileName);
 };
 
-
-
-// FullCalendar用のデータを、Excel用の2次元配列に変換する関数
-function generateScheduleSheet(shiftEvents: { id: string; start: string; end: string; title: string; display: string; extendedProps: { is_approved: boolean; user_name: string; user_id: number; }; }[], startDate: Date, titleText: string): string[][] {
-  const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
+// シフトイベントをExcel用の2次元配列に変換する関数
+function generateShiftTableData(
+  shiftEvents: ShiftEvent[],
+  startDate: Date,
+  titleText: string
+): string[][] {
+  const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
   const result: string[][] = [];
 
   // 1行目：タイトル
   result.push([titleText]);
 
-  // 表タイトル weekDays配列を作成（月曜日から土曜日まで）
-  let weekDays: string[] = [];
-
-
-  for (let i = 1; i < 7; i++) { // 月曜日から土曜日まで
+  // 週の日付を取得（月曜日から土曜日まで）
+  const weekDates: Date[] = [];
+  for (let i = 1; i < 7; i++) {
     const currentDate = new Date(startDate);
-    currentDate.setDate(currentDate.getDate() + i); 
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const weekDay = daysOfWeek[currentDate.getDay()];
-    weekDays.push(`${month}/${day} (${weekDay})`);
-}
+    currentDate.setDate(currentDate.getDate() + i);
+    weekDates.push(currentDate);
+  }
 
-  // 2行目：名前を追加
-  result.push(["名前", ...weekDays]);
+  // 2行目：曜日を追加
+  const weekDays: string[] = weekDates.map((date) => {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const weekDay = daysOfWeek[date.getDay()];
+    return `${month}/${day} (${weekDay})`;
+  });
+  result.push(['名前', ...weekDays]);
 
   // 全ての名前を取得して昇順ソート
-  let names: string[] = Array.from(new Set(shiftEvents.map(event => event.title))).sort();
+  const names: string[] = Array.from(new Set(shiftEvents.map((event) => event.title))).sort();
 
   // 3行目以降：各名前ごとのシフトデータ
-  for (let name of names) {
+  for (const name of names) {
     const row: string[] = [name];
-    for (let i = 1; i < 7; i++) { // 月曜日から土曜日まで
-      const currentDate = new Date(startDate);
-      currentDate.setDate(currentDate.getDate() + i); // 日曜日を除外して、さらにi日分進める
-      const dateString = toJapanDateString(currentDate).split('T')[0]
-      const matchingEvent = shiftEvents.find(event =>
-        event.title === name && event.start.startsWith(dateString)
+    for (const date of weekDates) {
+      const dateString = toJapanDateString(date).split('T')[0];
+      const matchingEvent = shiftEvents.find(
+        (event) => event.title === name && event.start.startsWith(dateString)
       );
       if (matchingEvent) {
         const startTime = matchingEvent.start.split('T')[1].substring(0, 5);
         const endTime = matchingEvent.end.split('T')[1].substring(0, 5);
         row.push(`${startTime} ~ ${endTime}`);
       } else {
-        row.push(""); // シフトがない場合は空白
+        row.push(''); // シフトがない場合は空白
       }
     }
     result.push(row);
@@ -83,9 +92,8 @@ function generateScheduleSheet(shiftEvents: { id: string; start: string; end: st
   return result;
 }
 
-
-// xlsxワークシート作成関数  -------------------------------------------------
-const createWorksheet = (data: any[][]): ExcelJS.Workbook => {
+// xlsxワークブック作成関数
+const createWorkbookFromTable = (data: string[][]): ExcelJS.Workbook => {
   const GREY_COLOR = 'FF8E8E93';
   const RIGHT_GRAY = 'FFDDDDDD';
   const MEDIUM_BORDER = { style: 'medium' as ExcelJS.BorderStyle, color: { argb: GREY_COLOR } };
@@ -96,31 +104,22 @@ const createWorksheet = (data: any[][]): ExcelJS.Workbook => {
   const worksheet = workbook.addWorksheet('週間シフト');
   worksheet.addRows(data);
 
-  worksheet.eachRow((row, rowIndex) => { // 行ごと
-
-
-
+  worksheet.eachRow((row, rowIndex) => {
     const rowCount = worksheet.rowCount;
     const colCount = worksheet.columnCount;
 
     row.eachCell((cell, colIndex) => {
+      if (rowIndex === 1 && colIndex === 1) return; // A1除外
 
-      if (rowIndex === 1 && colIndex === 1) { return; } // A1除外
-
-
-      // 凡例を分かりやすく区切るための行と列指定
       const isSecondRow = rowIndex === 2;
       const isSecondCol = colIndex === 1;
 
-
-      const borders: Partial<ExcelJS.Borders> = { // 外側に適用するボーダーのリスト
+      const borders: Partial<ExcelJS.Borders> = {
         top: THIN_BORDER,
         bottom: THIN_BORDER,
         left: THIN_BORDER,
-        right: THIN_BORDER
+        right: THIN_BORDER,
       };
-
-
 
       if (isSecondRow && isSecondCol) {
         borders.right = MEDIUM_BORDER;
@@ -131,37 +130,29 @@ const createWorksheet = (data: any[][]): ExcelJS.Workbook => {
         borders.right = MEDIUM_BORDER;
       }
 
-
       // 外側のセルのボーダー追加
-      if (rowIndex === 2) borders.top = THICK_BORDER // 上
-      if (rowIndex === rowCount) borders.bottom = THICK_BORDER // 下
-      if (colIndex === 1) borders.left = THICK_BORDER // 左
-      if (colIndex === colCount) borders.right = THICK_BORDER // 右
+      if (rowIndex === 2) borders.top = THICK_BORDER; // 上
+      if (rowIndex === rowCount) borders.bottom = THICK_BORDER; // 下
+      if (colIndex === 1) borders.left = THICK_BORDER; // 左
+      if (colIndex === colCount) borders.right = THICK_BORDER; // 右
 
-
-
-      cell.style = { // 設定したボーダーを適用
+      cell.style = {
         border: borders,
-        alignment: { horizontal: 'center' }
+        alignment: { horizontal: 'center' },
       };
-
-
-
-
     });
   });
 
   // タイトルは左揃えに
   worksheet.getCell('A1').alignment = { horizontal: 'left' };
 
-  // 1列目の列幅変更
-  worksheet.getColumn(1).width = 12
-
-  // 2列目から最後の列までの列幅を変更
+  // 列幅の設定
+  worksheet.getColumn(1).width = 12;
   for (let colIndex = 2; colIndex <= worksheet.columnCount; colIndex++) {
     worksheet.getColumn(colIndex).width = 13;
   }
 
+  // 偶数行に色を付ける
   for (let rowIndex = 3; rowIndex <= worksheet.rowCount; rowIndex += 2) {
     const row = worksheet.getRow(rowIndex);
     row.eachCell((cell) => {
@@ -175,9 +166,5 @@ const createWorksheet = (data: any[][]): ExcelJS.Workbook => {
 
   return workbook;
 };
-
-
-
-
 
 export default downloadShiftTableXlsx;
