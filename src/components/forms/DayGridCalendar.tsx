@@ -290,7 +290,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
         footerToolbar={{
           left: "prev",
-          center: "multipleShiftInputButton",
+          center: "multipleShiftInputButton autoShiftInputButton",
           right: "next",
         }}
         customButtons={{
@@ -358,6 +358,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
 
         <AutoShiftSettingsForm
         userId={userId}
+        isOpen={isAutoShiftOpen}
         onClose={closeAutoShiftSettingsForm}
         />
       

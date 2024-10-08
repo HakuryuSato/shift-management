@@ -1,62 +1,81 @@
-// src/components/shift/ShiftTimeInputPerDay.tsx
-
 import React from "react";
-import { Grid, TextField, Checkbox, FormControlLabel } from "@mui/material";
-import type { AutoShiftTime } from '@/customTypes/AutoShiftTypes';
+import {
+  Grid,
+  Box,
+  ToggleButton,
+  Typography,
+} from "@mui/material";
+import TimeDropdown from "../common/TimeDropdown";
+import type { AutoShiftTime } from "@/customTypes/AutoShiftTypes";
 
 interface ShiftTimeInputPerDayProps {
   initialData: AutoShiftTime[];
   onChange: (data: AutoShiftTime[]) => void;
 }
 
-const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({ initialData, onChange }) => {
-  const handleTimeChange = (index: number, field: keyof AutoShiftTime, value: any) => {
+const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
+  initialData,
+  onChange,
+}) => {
+  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+
+  const handleTimeChange = (
+    dayOfWeek: number,
+    field: keyof AutoShiftTime,
+    value: any,
+  ) => {
     const updatedData = [...initialData];
-    updatedData[index] = { ...updatedData[index], [field]: value };
-    onChange(updatedData);
+    const index = updatedData.findIndex((item) => item.day_of_week === dayOfWeek);
+    if (index !== -1) {
+      updatedData[index] = { ...updatedData[index], [field]: value };
+      onChange(updatedData);
+    }
   };
 
   return (
     <Grid container spacing={2}>
-      {initialData.map((dayTime, index) => (
-        <Grid item xs={12} sm={6} md={3} key={dayTime.day_of_week}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={dayTime.is_enabled}
-                onChange={(e) => handleTimeChange(index, 'is_enabled', e.target.checked)}
-                color="primary"
-              />
-            }
-            label={`曜日 ${dayTime.day_of_week}`}
-          />
-          <TextField
-            label="開始時間"
-            type="time"
-            value={dayTime.start_time}
-            onChange={(e) => handleTimeChange(index, 'start_time', e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 300, // 5分刻み
-            }}
-            fullWidth
-          />
-          <TextField
-            label="終了時間"
-            type="time"
-            value={dayTime.end_time}
-            onChange={(e) => handleTimeChange(index, 'end_time', e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{
-              step: 300, // 5分刻み
-            }}
-            fullWidth
-          />
-          {/* エラー表示などが必要な場合は追加 */}
+      {initialData.map((dayTime) => (
+        <Grid item xs={12} key={dayTime.day_of_week}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <ToggleButton
+              value="check"
+              selected={dayTime.is_enabled}
+              onChange={() =>
+                handleTimeChange(
+                  dayTime.day_of_week,
+                  "is_enabled",
+                  !dayTime.is_enabled,
+                )
+              }
+            >
+              {weekDays[dayTime.day_of_week]}
+            </ToggleButton>
+            <TimeDropdown
+              label="開始時間"
+              value={dayTime.start_time}
+              onChange={(value) =>
+                handleTimeChange(
+                  dayTime.day_of_week,
+                  "start_time",
+                  value,
+                )
+              }
+              disabled={!dayTime.is_enabled}
+            />
+            <Typography variant="body1">-</Typography>
+            <TimeDropdown
+              label="終了時間"
+              value={dayTime.end_time}
+              onChange={(value) =>
+                handleTimeChange(
+                  dayTime.day_of_week,
+                  "end_time",
+                  value,
+                )
+              }
+              disabled={!dayTime.is_enabled}
+            />
+          </Box>
         </Grid>
       ))}
     </Grid>
