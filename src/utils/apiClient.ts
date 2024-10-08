@@ -1,8 +1,16 @@
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type { getShiftAPIResponse, AutoShiftSettingsAPIResponse, FetchAutoShiftSettingsAPIResponse } from '@/customTypes/ApiResponses';
+import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/customTypes/ApiResponses';
 
+
+/*
+
+[クライアントサイドからAPIを呼び出す関数群]
+response.dataからの展開はこの関数内で行い、展開後のデータをクライアントサイドへ返す。
+
+*/
 
 // 共通のfetchエラーハンドリング関数
+// APIレスポンスの型をジェネリクス型として受け取る
 async function handleFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
     const response = await fetch(url, options);
@@ -61,7 +69,7 @@ export async function fetchShifts(params: InterFaceShiftQuery = {}): Promise<Int
     ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
     : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
 
-  const response = await handleFetch<getShiftAPIResponse>(query);
+  const response = await handleFetch<GetShiftAPIResponse>(query);
 
   if (response && 'data' in response) {
     return response.data;
@@ -89,8 +97,15 @@ export async function fetchUpdateShift(shiftData: InterFaceShiftQuery) {
 }
 
 // 祝日データの取得 ---------------------------------------------------------------------------------------------------
+// 注意：Holidaysのみ、response.data の展開をAPI側で行っている。　時間があれば修正すること
 export async function fetchHolidays() {
-  return await handleFetch("/api/holidays") || [];
+  const response = await handleFetch<GetHolidaysAPIResponse>("/api/holidays");
+  if (response && 'data' in response) {
+    return response.data;
+  } else {
+    // エラーが発生した場合は空配列を返す
+    return [];
+  }
 }
 
 // 自動シフト関連 ---------------------------------------------------------------------------------------------------
@@ -100,9 +115,9 @@ export async function runAutoShift() {
 }
 
 // 自動シフト設定の取得
-export async function fetchAutoShiftSettings(userId?: string): Promise<FetchAutoShiftSettingsAPIResponse | null> {
+export async function fetchAutoShiftSettings(userId?: string): Promise<GetAutoShiftSettingsAPIResponse | null> {
   const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
-  return await handleFetch<FetchAutoShiftSettingsAPIResponse>(query);
+  return await handleFetch<GetAutoShiftSettingsAPIResponse>(query);
 }
 
 // 自動シフト設定の保存
