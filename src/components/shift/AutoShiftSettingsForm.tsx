@@ -9,10 +9,11 @@ import {
 } from "@mui/material";
 import ShiftTimeInputPerDay from "./ShiftTimeInputPerDay";
 import { sendAutoShiftSettings } from "@/utils/apiClient";
+import type { AutoShiftSettings, AutoShiftTime } from '@/customTypes/AutoShiftTypes';
 
 interface AutoShiftSettingsFormProps {
   userId: number;
-  initialData?: any;
+  initialData?: AutoShiftSettings;
   onSuccess: () => void;
 }
 
@@ -21,7 +22,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
   initialData,
   onSuccess,
 }) => {
-  const [dayTimes, setDayTimes] = useState<any[]>(initialData?.auto_shift_times || []);
+  const [dayTimes, setDayTimes] = useState<AutoShiftTime[]>(initialData?.auto_shift_times || []);
   const [isHolidayIncluded, setIsHolidayIncluded] = useState<boolean>(
     initialData?.is_holiday_included || false
   );
@@ -34,7 +35,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
     // バリデーションエラーがあるか確認
     let hasError = false;
     for (const dayTime of dayTimes) {
-      if (dayTime.isEnabled && dayTime.error && Object.keys(dayTime.error).length > 0) {
+      if (dayTime.is_enabled && dayTime.error && Object.keys(dayTime.error).length > 0) {
         hasError = true;
         break;
       }
@@ -44,24 +45,26 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       return;
     }
 
-    const settingData = {
+    const settingData: AutoShiftSettings = {
       user_id: userId,
       is_holiday_included: isHolidayIncluded,
       is_enabled: isEnabled,
       auto_shift_times: dayTimes.map((dayTime) => ({
-        day_of_week: dayTime.dayOfWeek,
-        start_time: dayTime.startTime,
-        end_time: dayTime.endTime,
-        is_enabled: dayTime.isEnabled,
+        day_of_week: dayTime.day_of_week,
+        start_time: dayTime.start_time,
+        end_time: dayTime.end_time,
+        is_enabled: dayTime.is_enabled,
       })),
     };
 
     const response = await sendAutoShiftSettings(settingData);
 
-    if (response.error) {
+    if (response && 'error' in response) {
       setError("設定の保存に失敗しました。");
-    } else {
+    } else if (response && 'message' in response) {
       onSuccess();
+    } else {
+      setError("予期しないエラーが発生しました。");
     }
   };
 
@@ -72,7 +75,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       </Typography>
       <ShiftTimeInputPerDay
         initialData={dayTimes}
-        onChange={(data) => setDayTimes(data)}
+        onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
       />
       <FormControlLabel
         control={

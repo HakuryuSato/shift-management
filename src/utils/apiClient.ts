@@ -1,5 +1,5 @@
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type { getShiftAPIResponse } from '@/customTypes/ApiResponse';
+import type { getShiftAPIResponse,AutoShiftSettingsAPIResponse   } from '@/customTypes/ApiResponses';
 
 
 // 共通のfetchエラーハンドリング関数
@@ -96,18 +96,18 @@ export async function fetchHolidays() {
 // 自動シフト関連 ---------------------------------------------------------------------------------------------------
 // 自動シフトの実行
 export async function runAutoShift() {
-  return await handleFetch("/api/auto_shift/run");
+  return await handleFetch("/api/auto-shift/run");
 }
 
 // 自動シフト設定の取得
 export async function fetchAutoShiftSettings(userId?: string) {
-  const query = userId ? `/api/auto_shift/settings?user_id=${userId}` : `/api/auto_shift/settings`;
+  const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
   return await handleFetch(query);
 }
 
 // 自動シフト設定の保存
 export async function sendAutoShiftSettings(autoShiftSettingData: any) {
-  return await handleFetch("/api/auto_shift/settings", {
+  return await handleFetch<AutoShiftSettingsAPIResponse>("/api/auto-shift/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(autoShiftSettingData),

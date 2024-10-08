@@ -20,5 +20,5 @@ export interface getShiftErrorResponse {
 }
 
 
-export type AutoShiftSettingsResponse = SuccessResponse | ErrorResponse;
+export type AutoShiftSettingsAPIResponse = SuccessResponse | ErrorResponse;
 export type getShiftAPIResponse = getShiftSuccessResponse | getShiftErrorResponse;
