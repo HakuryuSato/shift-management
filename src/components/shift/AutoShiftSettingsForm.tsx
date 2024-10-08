@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Box,
   Button,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
   IconButton,
+  ToggleButton,
   Typography,
   useMediaQuery,
   useTheme,
-  Box,
-  ToggleButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ShiftTimeInputPerDay from "./ShiftTimeInputPerDay";
@@ -32,7 +32,7 @@ interface AutoShiftSettingsFormProps {
 const defaultDayTimes: AutoShiftTime[] = Array.from(
   { length: 6 },
   (_, index) => ({
-    day_of_week: index + 1, // 1から6
+    day_of_week: index + 1, // 1から6(月から土)
     start_time: "08:30",
     end_time: "18:00",
     is_enabled: true,
@@ -132,31 +132,18 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       </DialogTitle>
       <DialogContent>
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}>
-          <Typography
-            variant="h6"
-            sx={{ color: isAutoShiftEnabled ? "green" : "red" }}
-          >
-            現在 {isAutoShiftEnabled ? "有効です" : "無効です"}
-          </Typography>
-          <Button
-            variant="contained"
-            color={isAutoShiftEnabled ? "secondary" : "primary"}
-            onClick={toggleAutoShiftEnabled}
-          >
-            {isAutoShiftEnabled ? "無効にする" : "有効にする"}
-          </Button>
-          <ToggleButton
-            value="check"
-            selected={isHolidayIncluded}
-            onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-          >
-            祝日も登録する
-          </ToggleButton>
         </Box>
         <ShiftTimeInputPerDay
           initialData={dayTimes}
           onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
         />
+        <ToggleButton
+          value="check"
+          selected={isHolidayIncluded}
+          onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
+        >
+          祝日も登録する
+        </ToggleButton>
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {error}
