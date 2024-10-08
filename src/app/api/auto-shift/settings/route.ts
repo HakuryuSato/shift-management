@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     const { error: timesError } = await supabase
       .from('auto_shift_times')
-      .upsert(timesData, { onConflict: 'id' });
+      .upsert(timesData, { onConflict: 'auto_shift_times_id' });
 
     if (timesError) {
       return NextResponse.json({ error: timesError.message }, { status: 500 });
