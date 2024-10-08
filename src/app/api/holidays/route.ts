@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+// このAPIだけdataを分解して返している、統合するためにdataのままreturnするよう変更する必要がある。
+
 export async function GET() {
     const apiKey = process.env.GOOGLE_CALENDAR_API_KEY!;
     const calendarId = 'japanese__ja@holiday.calendar.google.com';
