@@ -1,5 +1,5 @@
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-// import type { getShiftAPIResponse, getShiftSuccessResponse, getShiftErrorResponse } from '@/customTypes/ApiResponse';
+import type { getShiftAPIResponse } from '@/customTypes/ApiResponse';
 
 
 // 共通のfetchエラーハンドリング関数
