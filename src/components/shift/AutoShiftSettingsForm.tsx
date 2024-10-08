@@ -110,8 +110,8 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       fullScreen={fullScreen}
     >
       <DialogTitle>
-        自動シフト登録設定
-        <IconButton
+        自動シフト登録設定 {isAutoShiftEnabled ? "現在有効" : ""}
+        <IconButton // 閉じるボタン
           aria-label="close"
           onClick={onClose}
           sx={{
@@ -134,8 +134,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           height: "100%", // 必要に応じて高さを指定
         }}
       >
-        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}>
-        </Box>
+        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}/>
 
         <ShiftTimeInputPerDay
           initialData={dayTimes}
@@ -159,7 +158,9 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         >
           {isHolidayIncluded ? "祝日への登録　あり" : "祝日への登録　なし"}
         </ToggleButton>
-        <Button
+
+      </DialogContent>
+      <Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
@@ -167,7 +168,6 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         >
           {isAutoShiftEnabled ? "無効にする" : "有効にする"}
         </Button>
-      </DialogContent>
     </Dialog>
   );
 };
