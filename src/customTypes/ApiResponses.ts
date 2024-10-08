@@ -1,33 +1,27 @@
 import InterFaceShiftQuery from './InterFaceShiftQuery';
 import { AutoShiftSettings } from './AutoShiftTypes';
+import { Holiday } from './Holiday';
 
-// 汎用
-export interface SuccessResponse {
-    message: string;
+// 共通のAPIレスポンス型
+export interface ApiSuccess<T> {
+    data: T;
 }
 
-export interface ErrorResponse {
+export interface ApiError {
     error: string;
 }
 
+// 汎用のAPIレスポンスタイプ
+export type APIResponse<T> = ApiSuccess<T> | ApiError;
 
 // getShift
-export interface getShiftSuccessResponse {
-    data: InterFaceShiftQuery[];
-}
+export type GetShiftAPIResponse = APIResponse<InterFaceShiftQuery[]>;
 
-export interface getShiftErrorResponse {
-    error: string;
-}
+// GET auto-shift/settings
+export type GetAutoShiftSettingsAPIResponse = APIResponse<AutoShiftSettings[]>;
 
-export interface FetchAutoShiftSettingsSuccessResponse {
-    data: AutoShiftSettings[];
-  }
-  
-  export interface FetchAutoShiftSettingsErrorResponse {
-    error: string;
-  }
+// GET holidays
+export type GetHolidaysAPIResponse = APIResponse<Holiday[]>;
 
-export type FetchAutoShiftSettingsAPIResponse = FetchAutoShiftSettingsSuccessResponse | FetchAutoShiftSettingsErrorResponse;
-export type AutoShiftSettingsAPIResponse = SuccessResponse | ErrorResponse;
-export type getShiftAPIResponse = getShiftSuccessResponse | getShiftErrorResponse;
+// メッセージベースのレスポンス型
+export type AutoShiftSettingsAPIResponse = APIResponse<string>;
