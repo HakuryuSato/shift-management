@@ -47,6 +47,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // State -------------------------------------------------------------------------------------------------------
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAutoShiftOpen, setIsAutoShiftOpen] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
@@ -141,6 +142,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsMultipleShiftInput(false);
     await updateEventData();
   };
+
+
+
+  
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -253,11 +258,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   };
 
   const handleAutoShiftInputClick = () => {
+    setIsAutoShiftOpen(true)
+  };
 
-    // setIsMultipleShiftInput(true);
-    // setIsModalOpen(true);
-
-    // await fetchSendShift(shiftData);
+  const closeAutoShiftSettingsForm = async () => {
+    setIsAutoShiftOpen(false)
+    await updateEventData();
   };
   
 
@@ -350,11 +356,12 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         currentMonth={currentMonth}
       />
 
+        <AutoShiftSettingsForm
+        userId={userId}
+        onClose={closeAutoShiftSettingsForm}
+        />
       
 
-      {/* <h1>{user.user_name}としてログインしています</h1> */}
-
-      {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
   );
 };
