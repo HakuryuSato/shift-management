@@ -13,6 +13,7 @@ import useSWR from "swr";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
+import AutoShiftSettingsForm from "@components/shift/AutoShiftSettingsForm";
 
 // 変換用関数
 import convertJtcToIsoString from "@utils/convertJtcToIsoString";
@@ -251,6 +252,15 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     // await fetchSendShift(shiftData);
   };
 
+  const handleAutoShiftInputClick = () => {
+
+    // setIsMultipleShiftInput(true);
+    // setIsModalOpen(true);
+
+    // await fetchSendShift(shiftData);
+  };
+  
+
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
@@ -286,6 +296,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             text: "曜日でまとめて登録",
             click: handleMutipleShiftInputClick,
           },
+          autoShiftInputButton:{
+            text: "毎月自動入力設定",
+            click: handleAutoShiftInputClick,
+          }
         }}
         dayCellClassNames={(info) => {
           const classes = [];
@@ -336,7 +350,9 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         currentMonth={currentMonth}
       />
 
-      <h1>{user.user_name}としてログインしています</h1>
+      
+
+      {/* <h1>{user.user_name}としてログインしています</h1> */}
 
       {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
