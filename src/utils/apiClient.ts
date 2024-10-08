@@ -1,5 +1,5 @@
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type { getShiftAPIResponse,AutoShiftSettingsAPIResponse   } from '@/customTypes/ApiResponses';
+import type { getShiftAPIResponse, AutoShiftSettingsAPIResponse, FetchAutoShiftSettingsAPIResponse } from '@/customTypes/ApiResponses';
 
 
 // 共通のfetchエラーハンドリング関数
@@ -100,9 +100,9 @@ export async function runAutoShift() {
 }
 
 // 自動シフト設定の取得
-export async function fetchAutoShiftSettings(userId?: string) {
+export async function fetchAutoShiftSettings(userId?: string): Promise<FetchAutoShiftSettingsAPIResponse | null> {
   const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
-  return await handleFetch(query);
+  return await handleFetch<FetchAutoShiftSettingsAPIResponse>(query);
 }
 
 // 自動シフト設定の保存
