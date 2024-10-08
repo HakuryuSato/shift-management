@@ -11,11 +11,13 @@ import type { AutoShiftTime } from "@/customTypes/AutoShiftTypes";
 interface ShiftTimeInputPerDayProps {
   initialData: AutoShiftTime[];
   onChange: (data: AutoShiftTime[]) => void;
+  disabled: boolean;
 }
 
 const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
   initialData,
   onChange,
+  disabled,
 }) => {
   const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -47,6 +49,11 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
                   !dayTime.is_enabled,
                 )
               }
+              disabled={disabled}
+              sx={{
+                backgroundColor: dayTime.is_enabled ? "blue" : "white",
+                color: dayTime.is_enabled ? "white" : "black",
+              }}
             >
               {weekDays[dayTime.day_of_week]}
             </ToggleButton>
@@ -60,7 +67,7 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
                   value,
                 )
               }
-              disabled={!dayTime.is_enabled}
+              disabled={disabled || !dayTime.is_enabled}
             />
             <Typography variant="body1">-</Typography>
             <TimeDropdown
@@ -73,7 +80,7 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
                   value,
                 )
               }
-              disabled={!dayTime.is_enabled}
+              disabled={disabled || !dayTime.is_enabled}
             />
           </Box>
         </Grid>

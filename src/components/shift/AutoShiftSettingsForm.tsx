@@ -78,15 +78,9 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
   }, [userId]);
 
   const handleSubmit = async () => {
-    // バリデーションエラーがあるか確認
-    // ...（省略）
-  };
-
-  const toggleAutoShiftEnabled = async () => {
     const newIsEnabled = !isAutoShiftEnabled;
-    setIsAutoShiftEnabled(newIsEnabled);
 
-    // DBに状態を保存
+    // サーバーに状態を保存
     try {
       const settingData: AutoShiftSettings = {
         user_id: userId,
@@ -97,14 +91,13 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       const response = await sendAutoShiftSettings(settingData);
       if (response && "error" in response) {
         setError("設定の保存に失敗しました。");
-        // エラーが発生した場合、状態を元に戻す
-        setIsAutoShiftEnabled(!newIsEnabled);
+      } else {
+        setIsAutoShiftEnabled(newIsEnabled);
+        onClose();
       }
     } catch (err) {
       console.error(err);
-      setError("自動シフト設定の更新に失敗しました。");
-      // エラーが発生した場合、状態を元に戻す
-      setIsAutoShiftEnabled(!newIsEnabled);
+      setError("設定の保存に失敗しました。");
     }
   };
 
@@ -117,7 +110,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       fullScreen={fullScreen}
     >
       <DialogTitle>
-        自動シフト設定
+        自動シフト登録設定
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -130,32 +123,49 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          height: "100%", // 必要に応じて高さを指定
+        }}
+      >
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}>
         </Box>
+
         <ShiftTimeInputPerDay
           initialData={dayTimes}
           onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
+          disabled={isAutoShiftEnabled}
         />
-        <ToggleButton
-          value="check"
-          selected={isHolidayIncluded}
-          onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-        >
-          祝日も登録する
-        </ToggleButton>
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {error}
           </Alert>
         )}
+        <ToggleButton
+          value="check"
+          selected={isHolidayIncluded}
+          onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
+          disabled={isAutoShiftEnabled}
+          sx={{
+            backgroundColor: isHolidayIncluded ? "blue" : "default",
+            color: isHolidayIncluded ? "white" : "default",
+          }}
+        >
+          {isHolidayIncluded ? "祝日への登録　あり" : "祝日への登録　なし"}
+        </ToggleButton>
         <Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
           sx={{ mt: 2 }}
         >
-          設定を保存
+          {isAutoShiftEnabled ? "無効にする" : "有効にする"}
         </Button>
       </DialogContent>
     </Dialog>

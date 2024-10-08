@@ -31,7 +31,13 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
   }
 
   return (
-    <FormControl variant="outlined" size="small" fullWidth error={error} disabled={disabled}>
+    <FormControl
+      variant="outlined"
+      size="small"
+      error={error}
+      disabled={disabled}
+      sx={{ minWidth: 120 }}
+    >
       {label && <InputLabel>{label}</InputLabel>}
       <Select
         value={value || ""}
