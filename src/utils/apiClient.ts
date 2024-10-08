@@ -1,91 +1,115 @@
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
+// import type { getShiftAPIResponse, getShiftSuccessResponse, getShiftErrorResponse } from '@/customTypes/ApiResponse';
+
 
 // 共通のfetchエラーハンドリング関数
-async function handleFetch(url: string, options?: RequestInit) {
+async function handleFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.statusText}`);
+      console.error(`Network response was not ok: ${response.statusText}`);
+      return null;
     }
-    return { data: await response.json(), error: null };
+    const result = await response.json();
+    return result as T;
   } catch (error) {
-    return {
-      data: null,
-      error: error instanceof Error ? error.message : "An unknown error occurred",
-    };
+    console.error(
+      "An error occurred:",
+      error instanceof Error ? error.message : "An unknown error occurred"
+    );
+    return null;
   }
 }
 
-// ユーザー削除
-export async function deleteUser(user_name: string) {
-  return handleFetch(`/api/deleteUser?user_name=${user_name}`, { method: 'DELETE' });
+// ユーザー関連 ---------------------------------------------------------------------------------------------------
+// ユーザー 一覧取得
+export async function fetchUsers() {
+  return await handleFetch(`/api/getUserData`) || [];
 }
 
-// ユーザー確認
+// ユーザー存在確認
 export async function fetchGetIsUser(user_name: string) {
-  return handleFetch(`/api/getIsUser?user_name=${user_name}`);
+  return await handleFetch(`/api/getIsUser?user_name=${user_name}`);
 }
 
-// シフト送信
-export async function fetchSendShift(shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) {
-  return handleFetch("/api/sendShift", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(shiftData),
-  });
-}
-
-// ユーザー送信
+// ユーザー登録
 export async function sendUser(userName: string) {
-  return handleFetch('/api/sendUser', {
+  return await handleFetch('/api/sendUser', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userName }),
   });
 }
 
+// ユーザー削除
+export async function deleteUser(user_name: string) {
+  return await handleFetch(`/api/deleteUser?user_name=${user_name}`, { method: 'DELETE' });
+}
+
+// シフト関連  ---------------------------------------------------------------------------------------------------
 // シフト取得
-export async function fetchShifts(params: InterFaceShiftQuery = {}): Promise<any[]> {
-  const { user_id = '*', year = new Date().getFullYear(), month = new Date().getMonth() + 1, start_time, end_time } = params;
-  const query = start_time && end_time 
+export async function fetchShifts(params: InterFaceShiftQuery = {}): Promise<InterFaceShiftQuery[]> {
+  const { // paramsになければ初期値
+    user_id = '*',
+    year = new Date().getFullYear(),
+    month = new Date().getMonth() + 1,
+    start_time,
+    end_time
+  } = params; // 渡された引数で上書き
+
+  const query = start_time && end_time
     ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
     : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
 
-  const { data, error } = await handleFetch(query);
-  if (error) {
-    console.error("Failed to fetch shifts:", error);
+  const response = await handleFetch<getShiftAPIResponse>(query);
+
+  if (response && 'data' in response) {
+    return response.data;
+  } else {
     return [];
   }
-  return data;
 }
 
-// シフト更新
-export async function fetchUpdateShift(shiftData: InterFaceShiftQuery) {
-  return handleFetch("/api/updateShift", {
+// シフト送信
+export async function fetchSendShift(shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) {
+  return await handleFetch("/api/sendShift", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(shiftData),
   });
 }
 
-// ユーザーデータ取得
-export async function fetchUserData() {
-  const { data, error } = await handleFetch(`/api/getUserData`);
-  if (error) {
-    console.error("Failed to fetch user data:", error);
-    return [];
-  }
-  return data;
+// シフト更新
+export async function fetchUpdateShift(shiftData: InterFaceShiftQuery) {
+  return await handleFetch("/api/updateShift", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(shiftData),
+  });
 }
 
-// 祝日データの取得
+// 祝日データの取得 ---------------------------------------------------------------------------------------------------
 export async function fetchHolidays() {
-  const response = await handleFetch("/api/holidays");
-  
-  if (response.error) {
-    console.error("Failed to fetch holidays:", response.error);
-    return [];
-  }
-  
-  return response.data;
+  return await handleFetch("/api/holidays") || [];
+}
+
+// 自動シフト関連 ---------------------------------------------------------------------------------------------------
+// 自動シフトの実行
+export async function runAutoShift() {
+  return await handleFetch("/api/auto_shift/run");
+}
+
+// 自動シフト設定の取得
+export async function fetchAutoShiftSettings(userId?: string) {
+  const query = userId ? `/api/auto_shift/settings?user_id=${userId}` : `/api/auto_shift/settings`;
+  return await handleFetch(query);
+}
+
+// 自動シフト設定の保存
+export async function sendAutoShiftSettings(autoShiftSettingData: any) {
+  return await handleFetch("/api/auto_shift/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(autoShiftSettingData),
+  });
 }
