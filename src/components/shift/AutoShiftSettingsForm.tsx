@@ -7,7 +7,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  ToggleButton,
+  Checkbox,
+  FormControlLabel,
   Typography,
   useMediaQuery,
   useTheme,
@@ -107,10 +108,10 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
       onClose={onClose}
       fullWidth
       maxWidth="sm"
-      fullScreen={fullScreen}
+      // fullScreen={fullScreen}
     >
       <DialogTitle>
-        自動シフト登録設定 {isAutoShiftEnabled ? "現在有効" : ""}
+        自動シフト登録設定 {isAutoShiftEnabled ? "：現在有効" : ""}
         <IconButton // 閉じるボタン
           aria-label="close"
           onClick={onClose}
@@ -139,7 +140,6 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         <ShiftTimeInputPerDay
           initialData={dayTimes}
           onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
-          disabled={isAutoShiftEnabled}
         />
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
@@ -147,18 +147,17 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           </Alert>
         )}
 
-        <ToggleButton
-          value="check"
-          selected={isHolidayIncluded}
-          onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-          disabled={isAutoShiftEnabled}
-          sx={{
-            backgroundColor: isHolidayIncluded ? "blue" : "default",
-            color: isHolidayIncluded ? "white" : "default",
-          }}
-        >
-          {isHolidayIncluded ? "祝日への登録　あり" : "祝日への登録　なし"}
-        </ToggleButton>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isHolidayIncluded}
+              onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
+              disabled={isAutoShiftEnabled}
+            />
+          }
+          label="祝日も登録する"
+          sx={{ mt: 2 }}
+        />
       </DialogContent>
       <Button
         variant="contained"

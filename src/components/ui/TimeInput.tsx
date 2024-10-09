@@ -36,7 +36,6 @@ const TimeInput: React.FC<TimeInputProps> = ({ initialValue, onReturn }) => {
     "20:00",
     "20:30",
     "21:00",
-
   ];
 
   // 変更時にselectedTimeへ値をセットし、onReturnで親へ返す

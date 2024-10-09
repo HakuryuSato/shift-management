@@ -13,7 +13,7 @@ interface TimeDropdownProps {
   onChange: (time: string) => void;
   error?: boolean;
   helperText?: string;
-  disabled?: boolean;
+
 }
 
 const TimeDropdown: React.FC<TimeDropdownProps> = ({
@@ -22,20 +22,42 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
   onChange,
   error = false,
   helperText = "",
-  disabled = false,
+
 }) => {
-  const timeOptions = [];
-  for (let hour = 8; hour <= 21; hour++) {
-    timeOptions.push(`${hour.toString().padStart(2, "0")}:00`);
-    timeOptions.push(`${hour.toString().padStart(2, "0")}:30`);
-  }
+
+  const timeOptions = [
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
+    "21:00",
+  ];
 
   return (
     <FormControl
       variant="outlined"
       size="small"
       error={error}
-      disabled={disabled}
       sx={{ minWidth: 120 }}
     >
       {label && <InputLabel>{label}</InputLabel>}
@@ -44,9 +66,6 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
         onChange={(e) => onChange(e.target.value)}
         label={label}
       >
-        <MenuItem value="">
-          <em>--</em>
-        </MenuItem>
         {timeOptions.map((time) => (
           <MenuItem key={time} value={time}>
             {time}
