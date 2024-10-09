@@ -131,10 +131,10 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
-          height: "100%", // 必要に応じて高さを指定
+          height: "100%",
         }}
       >
-        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }}/>
+        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }} />
 
         <ShiftTimeInputPerDay
           initialData={dayTimes}
@@ -146,6 +146,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
             {error}
           </Alert>
         )}
+
         <ToggleButton
           value="check"
           selected={isHolidayIncluded}
@@ -158,16 +159,15 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         >
           {isHolidayIncluded ? "祝日への登録　あり" : "祝日への登録　なし"}
         </ToggleButton>
-
       </DialogContent>
       <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          sx={{ mt: 2 }}
-        >
-          {isAutoShiftEnabled ? "無効にする" : "有効にする"}
-        </Button>
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        sx={{ mt: 2 }}
+      >
+        {isAutoShiftEnabled ? "無効にする" : "有効にする"}
+      </Button>
     </Dialog>
   );
 };

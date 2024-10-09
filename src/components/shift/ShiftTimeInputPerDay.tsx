@@ -46,11 +46,13 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
               )
             }
             disabled={disabled}
-            color={dayTime.is_enabled ? "primary" : "standard"}
             sx={{
-              backgroundColor: dayTime.is_enabled ? "blue" : "white",
-              color: dayTime.is_enabled ? "white" : "black",
+              fontSize: "0.875rem",  // 小さめのテキストサイズを指定
+              height: "40px",        // TimeDropdownと同じ高さに調整
+              width:"40px",
+              backgroundColor: '#1976d2', color: '#fff'
             }}
+
           >
             {weekDays[dayTime.day_of_week]}
 
