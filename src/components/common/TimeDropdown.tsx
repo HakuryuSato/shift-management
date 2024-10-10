@@ -13,7 +13,7 @@ interface TimeDropdownProps {
   onChange: (time: string) => void;
   error?: boolean;
   helperText?: string;
-
+  disabled:boolean;
 }
 
 const TimeDropdown: React.FC<TimeDropdownProps> = ({
@@ -22,10 +22,12 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
   onChange,
   error = false,
   helperText = "",
-
+  disabled
 }) => {
 
   const timeOptions = [
+    "07:30",
+    "08:00",
     "08:30",
     "09:00",
     "09:30",
@@ -59,6 +61,7 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
       size="small"
       error={error}
       sx={{ minWidth: 120 }}
+      disabled={disabled}
     >
       {label && <InputLabel>{label}</InputLabel>}
       <Select
