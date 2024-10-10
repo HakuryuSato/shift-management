@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@api/supabase';
-import type { GetAutoShiftSettingsAPIResponse } from '@/customTypes/ApiResponses';
+
 import {
   AutoShiftSettings,
   AutoShiftTime,
@@ -9,6 +9,7 @@ import {
 } from '@/customTypes/AutoShiftTypes';
 
 // GET /api/auto_shift/settings
+// 現在の設定の取得
 export async function GET(req: NextRequest) {
   try {
     const userId = req.nextUrl.searchParams.get('user_id');
@@ -29,17 +30,14 @@ export async function GET(req: NextRequest) {
     const { data, error } = await query;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      throw new Error(error.message);
     }
 
     return NextResponse.json({ data }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    } else {
-      return NextResponse.json({ error: 'An unknown error occurred' }, { status: 500 });
-    }
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -48,20 +46,16 @@ export async function POST(req: NextRequest) {
   try {
     const requestData: AutoShiftSettings = await req.json();
 
-    // auto_shift_settings の UPSERT
+    // auto_shift_settings の UPSERT用
     const settingDataToUpsert: AutoShiftSettingsUpsertData = {
       user_id: requestData.user_id,
       is_holiday_included: requestData.is_holiday_included,
       is_enabled: requestData.is_enabled,
     };
 
-    // `auto_shift_setting_id` が存在する場合のみ追加
-    if (requestData.auto_shift_setting_id) {
-      settingDataToUpsert.auto_shift_setting_id = requestData.auto_shift_setting_id;
-    }
-
     const { data: settingData, error: settingError } = await supabase
       .from('auto_shift_settings')
+      // 既に同じユーザーで作成済みならば更新
       .upsert(settingDataToUpsert, { onConflict: 'user_id' })
       .select();
 
@@ -85,16 +79,13 @@ export async function POST(req: NextRequest) {
           end_time: time.end_time,
           is_enabled: time.is_enabled,
         };
-        if (time.auto_shift_times_id) {
-          timeData.auto_shift_times_id = time.auto_shift_times_id;
-        }
         return timeData;
       }
     );
 
     const { error: timesError } = await supabase
       .from('auto_shift_times')
-      .upsert(timesData, { onConflict: 'auto_shift_times_id' });
+      .upsert(timesData, { onConflict: 'auto_shift_setting_id,day_of_week' });
 
     if (timesError) {
       console.error('Times upsert error:', timesError);
@@ -111,3 +102,4 @@ export async function POST(req: NextRequest) {
     }
   }
 }
+

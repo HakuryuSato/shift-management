@@ -11,7 +11,7 @@ export interface ApiError {
     error: string;
 }
 
-// 汎用のAPIレスポンスタイプ
+// 汎用のAPIレスポンスタイプ、成功ならば結果 | 失敗ならばエラー
 export type APIResponse<T> = ApiSuccess<T> | ApiError;
 
 // getShift

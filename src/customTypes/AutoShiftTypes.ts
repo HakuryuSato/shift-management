@@ -1,5 +1,12 @@
+/*
+シフト自動登録用の型定義ファイル
+
+[注意事項]
+start_timeとend_timeについて、DB上はHH:MM:SSとして保存されているが、コンポーネントではHH:MMとして扱っている。
+（送信時はHH:MMで送信、受信時はTimeDropdown内の関数で書式変換している）
+
+*/
 export interface AutoShiftTime {
-    auto_shift_times_id?: number;
     day_of_week: number;
     start_time: string;
     end_time: string;
@@ -23,7 +30,6 @@ export interface AutoShiftTime {
   }
   
   export interface AutoShiftTimeUpsertData {
-    auto_shift_times_id?: number;
     auto_shift_setting_id: number;
     day_of_week: number;
     start_time: string;
