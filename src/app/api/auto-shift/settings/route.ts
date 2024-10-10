@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     const { data: settingData, error: settingError } = await supabase
       .from('auto_shift_settings')
-      .upsert(settingDataToUpsert, { onConflict: 'auto_shift_setting_id' })
+      .upsert(settingDataToUpsert, { onConflict: 'user_id' })
       .select();
 
     if (settingError || !settingData || settingData.length === 0) {

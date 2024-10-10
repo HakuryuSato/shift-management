@@ -3,12 +3,12 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton,
-  Checkbox,
   FormControlLabel,
+  IconButton,
   Typography,
   useMediaQuery,
   useTheme,
@@ -59,7 +59,11 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         const response = await fetchAutoShiftSettings(String(userId));
         if (response && "data" in response && response.data.length > 0) {
           const initialData: AutoShiftSettings = response.data[0];
-          setDayTimes(initialData.auto_shift_times || defaultDayTimes);
+          setDayTimes(
+            initialData.auto_shift_times && initialData.auto_shift_times.length > 0
+              ? initialData.auto_shift_times
+              : defaultDayTimes
+          );
           setIsHolidayIncluded(initialData.is_holiday_included || false);
           setIsAutoShiftEnabled(initialData.is_enabled || false);
         } else {
@@ -138,7 +142,8 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }} />
 
         <ShiftTimeInputPerDay
-          initialData={dayTimes}
+          disabled={isAutoShiftEnabled}
+          initialDayTimes={dayTimes}
           onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
         />
         {error && (
@@ -148,6 +153,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
         )}
 
         <FormControlLabel
+          label="祝日も登録する"
           control={
             <Checkbox
               checked={isHolidayIncluded}
@@ -155,7 +161,6 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
               disabled={isAutoShiftEnabled}
             />
           }
-          label="祝日も登録する"
           sx={{ mt: 2 }}
         />
       </DialogContent>

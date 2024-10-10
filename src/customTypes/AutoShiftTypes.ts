@@ -15,3 +15,18 @@ export interface AutoShiftTime {
     auto_shift_times: AutoShiftTime[];
   }
   
+  export interface AutoShiftSettingsUpsertData {
+    auto_shift_setting_id?: number;
+    user_id: number;
+    is_holiday_included: boolean;
+    is_enabled: boolean;
+  }
+  
+  export interface AutoShiftTimeUpsertData {
+    auto_shift_times_id?: number;
+    auto_shift_setting_id: number;
+    day_of_week: number;
+    start_time: string;
+    end_time: string;
+    is_enabled: boolean;
+  }
