@@ -14,11 +14,13 @@ response.dataからの展開はこの関数内で行い、展開後のデータ�
 async function handleFetch<T>(url: string, options?: RequestInit): Promise<T | null> {
   try {
     const response = await fetch(url, options);
+    const result = await response.json();
+    console.log(result)
     if (!response.ok) {
       console.error(`Network response was not ok: ${response.statusText}`);
+      console.error(`Error details: ${JSON.stringify(result)}`);
       return null;
     }
-    const result = await response.json();
     return result as T;
   } catch (error) {
     console.error(
