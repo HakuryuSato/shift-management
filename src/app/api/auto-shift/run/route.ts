@@ -8,7 +8,7 @@ import type { AutoShiftTime } from '@/customTypes/AutoShiftTypes';
 
 /*
 シフトの自動登録設定に従い、
-毎月x日に自動的にシフト登録を行うためのAPI
+毎月20日に自動的にシフト登録を行うためのAPI
 Vercel Cronで毎月呼び出しを行う
 */
 
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       // エラー処理やデフォルト値の設定
     }
 
-    // 既存のシフトをセットに格納（高速化）
+    // 既存のシフトの日付をセットに格納
     const existingShiftKeys = new Set(
       existingShifts
         .filter(
@@ -54,9 +54,9 @@ export async function GET(req: NextRequest) {
           `${shift.user_id}_${toJapanDateString(new Date(shift.start_time))}`
         )
     );
-    
 
-    // 翌月の祝日情報を取得
+
+    // 祝日情報を取得
     const holidaysResponse = await fetch(`${process.env.BASE_URL}/api/holidays`);
     let holidaysData: Holiday[] = [];
     if (holidaysResponse.ok) {
@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // ユーザーIDの存在チェックと無効化
+    // ユーザーが削除されているなら設定無効化
     for (const setting of autoShiftSettings) {
       if (!userIds.has(setting.user_id)) {
         await supabase
@@ -132,6 +132,7 @@ export async function GET(req: NextRequest) {
     // シフト登録用データを作成
     const shiftsToInsert: InterFaceShiftQuery[] = [];
 
+    // 設定があるものでループ 最大10
     for (const setting of autoShiftSettings) {
       const userId = setting.user_id;
       const isHolidayIncluded = setting.is_holiday_included;
@@ -145,29 +146,24 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // 翌月の各日をループ
+      // 翌月の各日をループ 最大31
       for (let day = 1; day <= endOfMonth.getDate(); day++) {
         const currentDate = new Date(targetYear, targetMonth, day);
         const dayOfWeek = currentDate.getDay(); // 0 (日曜) ～ 6 (土曜)
-
         const dateString = toJapanDateString(currentDate);
 
-        // 祝日判定
+        // 条件をまとめてチェック
         const isHoliday = holidayDates.has(dateString);
-        if (!isHolidayIncluded && isHoliday) {
-          continue;
-        }
-
-        // 該当曜日のシフト設定を取得
         const autoShiftTime = dayOfWeekToShiftTime.get(dayOfWeek);
-        if (!autoShiftTime) {
-          continue;
-        }
-
-        // 既にシフトが登録されているか確認
         const shiftKey = `${userId}_${dateString}`;
-        if (existingShiftKeys.has(shiftKey)) {
-          continue;
+        const shiftExists = existingShiftKeys.has(shiftKey);
+
+        if (
+          (!isHolidayIncluded && isHoliday) || // 祝日を除外かつ祝日
+          !autoShiftTime ||                    // または 該当曜日のシフト設定がない
+          shiftExists                          // または 既にシフトが登録されている場合
+        ) {
+          continue; // 次の日付へ
         }
 
         // シフトデータを作成
@@ -182,8 +178,15 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // シフトを一括登録
-    if (shiftsToInsert.length > 0) {
+
+    // シフトデータが空なら終了
+    if (shiftsToInsert.length === 0) {
+      return NextResponse.json(
+        { message: '登録するデータがありませんでした' },
+        { status: 200
+         }
+      );
+    } else { // 空でないならシフトを一括登録
       const sendShiftResponse = await fetch(
         `${process.env.BASE_URL}/api/sendShift`,
         {
@@ -197,12 +200,15 @@ export async function GET(req: NextRequest) {
         const errorData = await sendShiftResponse.json();
         return NextResponse.json({ error: errorData.error }, { status: 500 });
       }
+
+      return NextResponse.json(
+        { message: '登録に成功しました' },
+        { status: 200 }
+      );
     }
 
-    return NextResponse.json(
-      { message: '自動シフト登録が完了しました。' },
-      { status: 200 }
-    );
+
+
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
