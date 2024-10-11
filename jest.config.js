@@ -3,7 +3,10 @@ const { compilerOptions } = require("./tsconfig");
 
 module.exports = {
   preset: "ts-jest",
-
+  // transform: {
+  //   '^.+\\.ts?$': 'ts-jest',
+  // },
+  // moduleFileExtensions: ['ts', 'js'],
 
   // tsconfig.jsonのパスエイリアスを継承
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
