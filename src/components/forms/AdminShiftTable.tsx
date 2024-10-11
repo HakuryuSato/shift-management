@@ -11,6 +11,7 @@ import { ja } from "date-fns/locale";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 import type InterFaceAdminShiftTable from "@customTypes/InterFaceAdminShiftTable";
 
+
 // 独自
 import Button from "@ui/Button";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
@@ -95,7 +96,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth(),
   );
-  const [table, setTable] = useState<any>(!null);
+  const [table, setTable] = useState<any>();
 
   useEffect(() => { // シフトデータ更新
     updateTable();

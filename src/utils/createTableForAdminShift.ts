@@ -3,6 +3,7 @@
 // 型
 import type InterFaceAdminShiftTable from '@customTypes/InterFaceAdminShiftTable';
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
+import type { Holiday } from '@/customTypes/Holiday';
 
 // 変換用
 import toJapanDateString from './toJapanDateString';
@@ -15,7 +16,7 @@ export default function createTableForAdminShift(
   currentYear: number,
   formatedShifts: InterFaceAdminShiftTable[],
   userNames: InterFaceTableUsers[],
-  holidays: { title: string; date: string }[]
+  holidays: Holiday[]
 
 ): (string | number)[][] {
   // 関数ここから ---------------------------------------------------------------------------------------------------

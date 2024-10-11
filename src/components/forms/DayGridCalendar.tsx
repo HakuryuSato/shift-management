@@ -13,6 +13,7 @@ import useSWR from "swr";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
+import AutoShiftSettingsForm from "@components/shift/AutoShiftSettingsForm";
 
 // 変換用関数
 import convertJtcToIsoString from "@utils/convertJtcToIsoString";
@@ -46,6 +47,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // State -------------------------------------------------------------------------------------------------------
   // モーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAutoShiftOpen, setIsAutoShiftOpen] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedEventShiftTime, setSelectedEventShiftTime] = useState<
@@ -140,6 +142,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     setIsMultipleShiftInput(false);
     await updateEventData();
   };
+
+
+
+  
 
   // FullCalendarのイベントの表示方法を変更する
   const renderEventContent = (eventInfo: any) => {
@@ -251,6 +257,16 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     // await fetchSendShift(shiftData);
   };
 
+  const handleAutoShiftInputClick = () => {
+    setIsAutoShiftOpen(true)
+  };
+
+  const closeAutoShiftSettingsForm = async () => {
+    setIsAutoShiftOpen(false)
+    await updateEventData();
+  };
+  
+
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
   return (
     <div>
@@ -274,7 +290,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
         footerToolbar={{
           left: "prev",
-          center: "multipleShiftInputButton",
+          center: "multipleShiftInputButton autoShiftInputButton",
           right: "next",
         }}
         customButtons={{
@@ -283,9 +299,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             click: toggleShiftView,
           },
           multipleShiftInputButton: {
-            text: "曜日でまとめて登録",
+            text: "曜日でまとめて",
             click: handleMutipleShiftInputClick,
           },
+          autoShiftInputButton:{
+            text: "自動入力設定",
+            click: handleAutoShiftInputClick,
+          }
         }}
         dayCellClassNames={(info) => {
           const classes = [];
@@ -336,9 +356,13 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         currentMonth={currentMonth}
       />
 
-      <h1>{user.user_name}としてログインしています</h1>
+        <AutoShiftSettingsForm
+        userId={userId}
+        isOpen={isAutoShiftOpen}
+        onClose={closeAutoShiftSettingsForm}
+        />
+      
 
-      {/* <Button text="ログアウト" onClick={onLogout}/> */}
     </div>
   );
 };

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "react", "react-dom"],
+    "types": ["node", "react", "react-dom","jest"],
     "typeRoots": ["src/customTypes", "./node_modules/@types"],
     "jsx": "preserve",
     "allowJs": true,
@@ -39,9 +39,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-    // "src/app/page.tsx", // 未使用？
-    //     "src/app/user/shift/page.jsx",
-    //  "src/app/api/getUserData"
   ],
   "exclude": ["node_modules"]
 }
