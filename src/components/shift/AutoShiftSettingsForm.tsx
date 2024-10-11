@@ -139,7 +139,8 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           height: "100%",
         }}
       >
-        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 2 }} />
+          <Typography variant="body1">*毎月20日に、翌月1日から月末まで自動登録します</Typography>
+        <Box display="flex" alignItems="center" sx={{ m: 2 }} />
 
         <ShiftTimeInputPerDay
           disabled={isAutoShiftEnabled}
