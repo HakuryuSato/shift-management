@@ -1,6 +1,12 @@
 {
-  "crons": [{
+  "crons": [
+    {
       "path": "/api/auto-shift/run",
-      "schedule": "0 1 * * *"
-    }]
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/auto-shift/run",
+      "schedule": "0 20 * * *"
+    }
+  ]
 }
