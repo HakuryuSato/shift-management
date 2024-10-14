@@ -12,8 +12,16 @@ import type { AutoShiftTime } from '@/customTypes/AutoShiftTypes';
 Vercel Cronで毎月呼び出しを行う
 */
 
+
+
+
+
 // GET /api/auto_shift/run
 export async function GET(req: NextRequest) {
+
+  // ベースURLを取得
+  const baseUrl = req.nextUrl.origin;
+
   try {
     // 現在の日時を取得
     const now = new Date();
