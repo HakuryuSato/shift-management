@@ -12,9 +12,17 @@ import type { AutoShiftTime } from '@/customTypes/AutoShiftTypes';
 Vercel Cronで毎月呼び出しを行う
 */
 
+
+
+
+
 // GET /api/auto_shift/run
 export async function GET(req: NextRequest) {
   try {
+
+    // ベースURLを取得
+    const baseUrl = req.nextUrl.origin;
+
     // 現在の日時を取得
     const now = new Date();
     const year = now.getFullYear();
@@ -31,7 +39,7 @@ export async function GET(req: NextRequest) {
 
     // 翌月のシフト情報を全て取得（重複チェック用）
     const shiftsResponse = await fetch(
-      `${process.env.BASE_URL}/api/getShift?start_time=${startOfMonth.toISOString()}&end_time=${endOfMonth.toISOString()}&user_id=${'*'}`
+      `${baseUrl}/api/getShift?start_time=${startOfMonth.toISOString()}&end_time=${endOfMonth.toISOString()}&user_id=${'*'}`
     );
 
     let existingShifts: InterFaceShiftQuery[] = [];
@@ -57,7 +65,7 @@ export async function GET(req: NextRequest) {
 
 
     // 祝日情報を取得
-    const holidaysResponse = await fetch(`${process.env.BASE_URL}/api/holidays`);
+    const holidaysResponse = await fetch(`${baseUrl}/api/holidays`);
     let holidaysData: Holiday[] = [];
     if (holidaysResponse.ok) {
       holidaysData = await holidaysResponse.json();
@@ -80,7 +88,7 @@ export async function GET(req: NextRequest) {
     );
 
     // ユーザー情報を取得
-    const usersResponse = await fetch(`${process.env.BASE_URL}/api/getUserData`);
+    const usersResponse = await fetch(`${baseUrl}/api/getUserData`);
     let users: InterFaceTableUsers[] = [];
     if (usersResponse.ok) {
       const usersData = await usersResponse.json();
@@ -183,12 +191,13 @@ export async function GET(req: NextRequest) {
     if (shiftsToInsert.length === 0) {
       return NextResponse.json(
         { message: '登録するデータがありませんでした' },
-        { status: 200
-         }
+        {
+          status: 200
+        }
       );
     } else { // 空でないならシフトを一括登録
       const sendShiftResponse = await fetch(
-        `${process.env.BASE_URL}/api/sendShift`,
+        `${baseUrl}/api/sendShift`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
