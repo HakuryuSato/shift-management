@@ -15,4 +15,4 @@
 ![画面遷移図（管理者）](./3_2_画面遷移図(管理者).png)
 
 ## 4_ワイヤーフレーム図
-![ワイヤーフレーム図](https://www.figma.com/design/CcXx9ixcPT7hYtJrsnFnXC/QR%E5%87%BA%E9%80%80%E5%8B%A4%E7%AE%A1%E7%90%86-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E5%9B%B3?node-id=0-1&t=Ps4qeNwcvlry73hJ-1)
+https://www.figma.com/design/CcXx9ixcPT7hYtJrsnFnXC/QR%E5%87%BA%E9%80%80%E5%8B%A4%E7%AE%A1%E7%90%86-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E5%9B%B3?node-id=0-1&t=Ps4qeNwcvlry73hJ-1
