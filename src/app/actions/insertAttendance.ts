@@ -1,9 +1,8 @@
 'use server';
 
 import { supabase } from '@api/supabase';
-import { cookies } from 'next/headers';
 
-export async function upsertAttendance(user_id:number) {
+export async function insertAttendance(user_id:number) {
 
   const userId = user_id;
 
