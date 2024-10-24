@@ -6,7 +6,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev --experimental-https",
     "build": "next build",
     "start": "next start",
     "start:watch": "nodemon --watch src --exec 'npm start'",
