@@ -40,3 +40,4 @@ next-env.d.ts
 
 # old files on local
 .old
+certificates
