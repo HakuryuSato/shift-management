@@ -26,6 +26,7 @@
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.5",
     "@types/file-saver": "^2.0.7",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "chokidar-cli": "^3.0.0",
     "date-fns": "^3.6.0",
     "exceljs": "^4.4.0",
