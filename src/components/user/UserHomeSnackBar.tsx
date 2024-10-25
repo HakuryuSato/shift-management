@@ -16,7 +16,8 @@ export function UserHomeSnackBar() {
       open={isUserSnackBarVisible}
       autoHideDuration={3000} // 3秒で自動的に消える
       onClose={hideUserSnackBar}
-      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      
     >
       <Alert onClose={hideUserSnackBar} severity={snackBarStatus}>
         {snackBarMessage}
