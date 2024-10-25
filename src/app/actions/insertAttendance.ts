@@ -2,9 +2,7 @@
 
 import { supabase } from '@api/supabase';
 
-export async function insertAttendance(user_id:number) {
-
-  const userId = user_id;
+export async function insertAttendance(userId:number) {
 
   // 今日の日付を取得（時刻は00:00:00にリセット）
   const today = new Date();
