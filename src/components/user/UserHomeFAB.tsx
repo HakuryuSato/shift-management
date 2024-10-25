@@ -1,22 +1,23 @@
-import React from 'react';
-import { Fab } from '@mui/material';
-import QrCodeIcon from '@mui/icons-material/QrCode';
-import AddIcon from '@mui/icons-material/Add';
-import { useUserHomeFABStore } from '@stores/user/userHomeFABSlice';
-import { useQRCodeReaderStore } from '@stores/user/qrcodeReaderSlice';
+import React from "react";
+import { Fab } from "@mui/material";
+import QrCodeIcon from "@mui/icons-material/QrCode";
+import AddIcon from "@mui/icons-material/Add";
+import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
+import { useQRCodeReaderStore } from "@stores/user/qrcodeReaderSlice";
 
 export function UserHomeFAB() {
-  const { isVisible, iconType, hide } = useUserHomeFABStore();
-  const { show: showQRCodeReader } = useQRCodeReaderStore();
+  const { isUserHomeFABVisible, fabIconType, hideUserHomeFAB } =
+    useUserHomeFABStore();
+  const { showQRCodeReader } = useQRCodeReaderStore();
 
-  if (!isVisible) return null;
+  if (!isUserHomeFABVisible) return null;
 
   const handleClick = () => {
-    if (iconType === 'qr') {
+    if (fabIconType === "qr") {
       showQRCodeReader();
-      hide();
-    } else if (iconType === 'plus') {
-      // 他のアクションをここに追加
+      hideUserHomeFAB();
+    } else if (fabIconType === "plus") {
+      // シフト追加用
     }
   };
 
@@ -24,9 +25,9 @@ export function UserHomeFAB() {
     <Fab
       color="primary"
       onClick={handleClick}
-      sx={{ position: 'fixed', bottom: 16, right: 16 }}
+      sx={{ position: "fixed", bottom: 16, right: 16 }}
     >
-      {iconType === 'qr' ? <QrCodeIcon /> : <AddIcon />}
+      {fabIconType === "qr" ? <QrCodeIcon /> : <AddIcon />}
     </Fab>
   );
 }
