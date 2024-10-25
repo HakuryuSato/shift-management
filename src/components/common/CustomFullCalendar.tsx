@@ -9,21 +9,45 @@ import jaLocale from '@fullcalendar/core/locales/ja';
 import { DateClickArg } from '@fullcalendar/interaction';
 import { EventClickArg, EventContentArg } from '@fullcalendar/core';
 
+import { useCallback, useEffect, useRef, useState } from "react";
+import { fetchAttendance } from '@/utils/apiClient';
+import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullClandar';
+import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 
-export function CustomFullCalendar () {
-  const {
-    customFullCalendarRole,
-    customFullCalendarEvents,
-    customFullCalendarBgColorsPerDay,
-    customFullCalendarCurrentView,
-    customFullCalendarIsAllMembersView,
-    setCustomFullCalendarStartDate,
-    setCustomFullCalendarEndDate,
-    setCustomFullCalendarCurrentView,
-    setCustomFullCalendarCurrentYear,
-    setCustomFullCalendarCurrentMonth,
-    toggleCustomFullCalendarMemberView,
-  } = useCustomFullCalendarStore();
+
+
+
+
+
+
+  export function CustomFullCalendar () {
+
+    const {
+      customFullCalendarRole,
+      customFullCalendarEvents,
+      customFullCalendarBgColorsPerDay,
+      customFullCalendarCurrentView,
+      customFullCalendarIsAllMembersView,
+      setCustomFullCalendarEvents,
+      setCustomFullCalendarStartDate,
+      setCustomFullCalendarEndDate,
+      setCustomFullCalendarCurrentView,
+      setCustomFullCalendarCurrentYear,
+      setCustomFullCalendarCurrentMonth,
+      toggleCustomFullCalendarMemberView,
+    } = useCustomFullCalendarStore();
+  
+    const {userId} = useUserHomeStore();
+
+    // const updateEventData = useCallback(async () => {
+    //   const attendanceEvents = await fetchAttendance()
+    //   const formattedEvents = formatEventsForFullCalendar(attendanceEvents)
+    //   setCustomFullCalendarEvents(formattedEvents)
+    // });
+    
+  
+
+
 
   // イベントハンドラをコンポーネント内で定義
   const handleEventClick = (info: EventClickArg) => {
