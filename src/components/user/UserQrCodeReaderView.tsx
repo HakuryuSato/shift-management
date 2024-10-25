@@ -9,7 +9,7 @@ import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 
 // 状態管理
 import { useUserHomeStore } from "@/stores/user/userHomeSlice";
-import { useQRCodeReaderStore } from "@stores/user/qrcodeReaderSlice";
+import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
 
@@ -17,7 +17,7 @@ import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
 import { insertAttendance } from "@actions/insertAttendance";
 
 export function UserQrCodeReader() {
-  const { isQRCodeReaderVisible, hideQRCodeReader } = useQRCodeReaderStore();
+  const { isQRCodeReaderVisible, hideQRCodeReader } = useUserQrCodeReaderViewStore();
   const { showUserHomeFAB } = useUserHomeFABStore();
   const { userId } = useUserHomeStore();
   const { showUserSnackBar } = useUserSnackBarStore();

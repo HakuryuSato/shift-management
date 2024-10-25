@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 
-interface QRCodeReaderState {
+interface UserQrCodeReaderViewState {
   isQRCodeReaderVisible: boolean;
   showQRCodeReader: () => void;
   hideQRCodeReader: () => void;
 }
 
-export const useQRCodeReaderStore = create<QRCodeReaderState>((set) => ({
+export const useUserQrCodeReaderViewStore = create<UserQrCodeReaderViewState>((set) => ({
   isQRCodeReaderVisible: false,
   showQRCodeReader: () => set({ isQRCodeReaderVisible: true }),
   hideQRCodeReader: () => set({ isQRCodeReaderVisible: false }),
