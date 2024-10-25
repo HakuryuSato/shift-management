@@ -28,6 +28,7 @@ export function UserQrCodeReader() {
     showUserHomeFAB();
   };
 
+  // エラー時
   const handleError = (error: any) => {
     console.error("QRコードの読み取りエラー:", error);
   };
