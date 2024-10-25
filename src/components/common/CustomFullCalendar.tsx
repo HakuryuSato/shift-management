@@ -9,6 +9,7 @@ import jaLocale from '@fullcalendar/core/locales/ja';
 import { DateClickArg } from '@fullcalendar/interaction';
 import { EventClickArg, EventContentArg } from '@fullcalendar/core';
 
+
 export function CustomFullCalendar () {
   const {
     customFullCalendarRole,
@@ -98,22 +99,11 @@ export function CustomFullCalendar () {
       right: 'title',
     };
     footerToolbar = {
-      left: 'prev',
-      center: '',
-      right: 'next',
+      left: '',
+      center: 'prev next',
+      right: '',
     };
-    // customButtons = {
-    //   toggleMemberViewButton: {
-    //     text: customFullCalendarIsAllMembersView
-    //       ? '個人画面へ'
-    //       : '全員の画面へ',
-    //     click: toggleCustomFullCalendarMemberView,
-    //   },
-    //   multipleInputButton: {
-    //     text: '曜日でまとめて登録',
-    //     click: handleMultipleInputClick,
-    //   },
-    // };
+
     datesSetHandler = (dateInfo: any) => {
       const fullCalendarDate = new Date(dateInfo.start);
       fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
