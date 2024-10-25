@@ -1,98 +1,150 @@
-'use client';
+"use client";
 
-import React, { useCallback } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Scanner, IDetectedBarcode } from '@yudiel/react-qr-scanner';
+// ライブラリ
+import React, { useCallback } from "react";
+import { Box, IconButton, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import QrCodeIcon from "@mui/icons-material/QrCode2";
+import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 
-import { useUserHomeStore } from '@/stores/user/userHomeSlice';
-import { useQRCodeReaderStore } from '@stores/user/qrcodeReaderSlice';
-import { useUserHomeFABStore } from '@stores/user/userHomeFABSlice';
+// 状態管理
+import { useUserHomeStore } from "@/stores/user/userHomeSlice";
+import { useQRCodeReaderStore } from "@stores/user/qrcodeReaderSlice";
+import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
+import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
 
-import { insertAttendance } from '@actions/insertAttendance'
+// サーバーアクション
+import { insertAttendance } from "@actions/insertAttendance";
 
 export function UserQrCodeReader() {
-  const { isQRCodeReaderVisible, hide: hideQRCodeReader } = useQRCodeReaderStore();
-  const { show: showFAB } = useUserHomeFABStore();
+  const { isQRCodeReaderVisible, hideQRCodeReader } = useQRCodeReaderStore();
+  const { showUserHomeFAB } = useUserHomeFABStore();
   const { userId } = useUserHomeStore();
+  const { showUserSnackBar } = useUserSnackBarStore();
 
-  // Hooksは無条件に呼び出す
-  const handleScan = useCallback(
-    async (detectedCodes: IDetectedBarcode[]) => {
-      const code = detectedCodes[0];
-      if (!code) return;
-  
-      const decodedText = code.rawValue;
-      if (decodedText === 'FIXED_QR_CODE_CONTENT') {
-        try {
-          const res = await insertAttendance(userId);
-          alert(res.message);
-          hideQRCodeReader();
-          showFAB();
-        } catch (error) {
-          alert('打刻に失敗しました');
-          console.error(error);
-        }
-      }
-    },
-    [hideQRCodeReader, showFAB, userId]
-  );
-
-  const handleError = useCallback((error: any) => {
-    console.error('QRコードの読み取りエラー:', error);
-  }, []);
-
+  // 閉じる
   const handleClose = () => {
     hideQRCodeReader();
-    showFAB();
+    showUserHomeFAB();
+  };
+
+  const handleError = (error: any) => {
+    console.error("QRコードの読み取りエラー:", error);
+  };
+
+  // QRコード認識時
+  const handleScan = async (detectedCodes: IDetectedBarcode[]) => {
+    console.log("handleScan");
+    const code = detectedCodes[0];
+    if (!code) return;
+
+    const decodedText = code.rawValue;
+    if (decodedText === "ATTENDANCE_QR") {
+      try {
+        const res = await insertAttendance(userId);
+        handleClose();
+
+        showUserSnackBar(res.message,"success");
+
+      } catch (error) {
+        console.error(error);
+        handleClose();
+      }
+    }
   };
 
   // Hooksの呼び出し後に条件分岐を行う
   if (!isQRCodeReaderVisible) return null;
 
   return (
-    <Box sx={{ position: 'relative', height: '100vh' }}>
-      {/* 閉じるボタン */}
+    <Box
+      sx={{
+        position: "relative",
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
+      {/* 閉じる */}
       <IconButton
-        sx={{ position: 'absolute', top: 16, left: 16, zIndex: 100 }}
+        sx={{
+          position: "absolute",
+          top: 16,
+          left: 16,
+          zIndex: 10,
+          color: "white",
+        }}
         onClick={handleClose}
       >
         <CloseIcon />
       </IconButton>
 
-      {/* ヘッダーテキスト */}
       <Typography
         variant="h6"
         sx={{
-          position: 'absolute',
-          top: 16,
-          left: 0,
-          right: 0,
-          textAlign: 'center',
-          zIndex: 100,
+          position: "absolute",
+          top: "10%",
+          width: "100%",
+          textAlign: "center",
+          color: "#fff",
+          zIndex: 10,
         }}
       >
-        出入口にあるQRコードを読み込んでください
+        出退勤用QRコードを読み込んでください
       </Typography>
 
-      {/* QRコードスキャナー */}
-      <Box sx={{ width: '100%', height: '100%' }}>
-        <Scanner onScan={handleScan} onError={handleError} />
-      </Box>
-
-      {/* QRコードの位置を示すプレースホルダー */}
+      {/* 背景 */}
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          opacity: 0.5,
-          zIndex: 99,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        {/* ここにカスタムUIを追加可能 */}
+        {/* QRアイコン */}
+        <Box
+          sx={{
+            position: "relative",
+            transform: "translateY(-50px)", // 位置を上に移動
+            width: "250px",
+            height: "250px",
+            border: "2px solid white",
+            borderRadius: "4px",
+            zIndex: 5,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            opacity: 0.7,
+          }}
+        >
+          <QrCodeIcon sx={{ fontSize: 120, opacity: 0.5, color: "white" }} />
+        </Box>
       </Box>
+
+      <Scanner
+        onScan={handleScan}
+        onError={handleError}
+        components={{ finder: false }}
+        styles={{
+          container: {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
+          },
+          video: {
+            objectFit: "cover",
+          },
+        }}
+      />
     </Box>
   );
 }
