@@ -3,12 +3,12 @@ import { Fab } from "@mui/material";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import AddIcon from "@mui/icons-material/Add";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
-import { useQRCodeReaderStore } from "@stores/user/qrcodeReaderSlice";
+import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
 
 export function UserHomeFAB() {
   const { isUserHomeFABVisible, fabIconType, hideUserHomeFAB } =
     useUserHomeFABStore();
-  const { showQRCodeReader } = useQRCodeReaderStore();
+  const { showQRCodeReader } = useUserQrCodeReaderViewStore();
 
   if (!isUserHomeFABVisible) return null;
 
