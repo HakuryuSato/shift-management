@@ -1,17 +1,17 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 
 interface UserHomeFABState {
-  isVisible: boolean;
-  iconType: 'qr' | 'plus';
-  setIconType: (type: 'qr' | 'plus') => void;
-  show: () => void;
-  hide: () => void;
+  isUserHomeFABVisible: boolean;
+  fabIconType: 'qr' | 'plus';
+  setFABIconType: (type: 'qr' | 'plus') => void;
+  showUserHomeFAB: () => void;
+  hideUserHomeFAB: () => void;
 }
 
 export const useUserHomeFABStore = create<UserHomeFABState>((set) => ({
-  isVisible: true,
-  iconType: 'qr',
-  setIconType: (type) => set({ iconType: type }),
-  show: () => set({ isVisible: true }),
-  hide: () => set({ isVisible: false }),
+  isUserHomeFABVisible: true,
+  fabIconType: 'qr',
+  setFABIconType: (type) => set({ fabIconType: type }),
+  showUserHomeFAB: () => set({ isUserHomeFABVisible: true }),
+  hideUserHomeFAB: () => set({ isUserHomeFABVisible: false }),
 }));
