@@ -1,16 +1,37 @@
-// src/components/user/UserHome.tsx
+"use client";
 
-'use client';
+//ライブラリ
+import React, { useEffect } from "react";
 
-import React from 'react';
-import { UserQrCodeReader } from './UserQrCodeReaderView';
-import { UserHomeFAB } from './UserHomeFAB';
+// コンポーネント
+import { UserQrCodeReader } from "./UserQrCodeReaderView";
+import { UserHomeFAB } from "./UserHomeFAB";
+import {UserHomeSnackBar} from "./UserHomeSnackBar";
+
+// 状態管理
+import { useUserHomeStore } from "@/stores/user/userHomeSlice";
+
+
 
 export function UserHome() {
+  const { userId, setUserId } = useUserHomeStore();
+
+  // テスト用にここでuserIdをセットしている、最終的にはミドルウェアでセットを行う。
+  const useEffectOnce = () => {
+    useEffect(() => {
+      setUserId(2); // userId=2
+    }, []); // 空の依存配列なので、初回マウント時にのみ実行
+  };
+
+  useEffectOnce()
+  
+
+
   return (
     <>
       <UserQrCodeReader />
       <UserHomeFAB />
+      <UserHomeSnackBar/>
     </>
   );
 }
