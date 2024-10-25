@@ -1,6 +1,7 @@
 'use server';
 
 import { supabase } from '@api/supabase';
+import { toJapanISOString } from '@/utils/toJapanISOString';
 
 export async function insertAttendance(userId:number) {
 
@@ -13,7 +14,7 @@ export async function insertAttendance(userId:number) {
     .from('attendances')
     .select('*')
     .eq('user_id', userId)
-    .gte('start_time', today.toISOString())
+    .gte('start_time', toJapanISOString(today))
     .order('start_time', { ascending: false })
     .limit(1);
 
@@ -28,7 +29,7 @@ export async function insertAttendance(userId:number) {
       // end_timeが未設定の場合、終了時間を設定
       const { error: updateError } = await supabase
         .from('attendances')
-        .update({ end_time: new Date().toISOString() })
+        .update({ end_time: toJapanISOString(new Date()) })
         .eq('attendance_id', attendance.attendance_id);
 
       if (updateError) {
@@ -42,7 +43,7 @@ export async function insertAttendance(userId:number) {
         .from('attendances')
         .insert({
           user_id: userId,
-          start_time: new Date().toISOString(),
+          start_time: toJapanISOString(new Date()),
         });
 
       if (insertError) {
@@ -57,7 +58,7 @@ export async function insertAttendance(userId:number) {
       .from('attendances')
       .insert({
         user_id: userId,
-        start_time: new Date().toISOString(),
+        start_time: toJapanISOString(new Date()),
       });
 
     if (insertError) {
