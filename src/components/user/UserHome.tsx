@@ -27,9 +27,9 @@ export function UserHome() {
   return (
     <>
       <UserQrCodeReader />
-      <UserHomeFAB />
       <UserHomeSnackBar />
       <UserCalendarView />
+      <UserHomeFAB />
     </>
   );
 }
