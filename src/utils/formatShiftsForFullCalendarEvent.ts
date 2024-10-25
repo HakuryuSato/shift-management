@@ -1,3 +1,4 @@
+// 10/25 これは後々廃止予定、どこかのタイミングでformatEventsForFullClandarへ移行する。
 // FullCalendar用にイベントを整形
 export default function formatShiftsForFullCalendarEvent(data: any[], isAllMembersView: boolean = false) {
 

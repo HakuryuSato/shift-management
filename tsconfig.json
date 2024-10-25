@@ -31,7 +31,9 @@
       "@utils/*": ["./src/utils/*"],
       "@customTypes/*": ["./src/customTypes/*"],
       "@styles/*": ["./src/styles/*"],
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@actions/*": ["./src/app/actions/*"],
     }
   },
   "include": [
