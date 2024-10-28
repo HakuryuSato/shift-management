@@ -1,10 +1,10 @@
-// customFullCalendarStore.ts
+// src\stores\common\customFullCalendarSlice.ts
+
 import { create } from 'zustand';
 
 interface CustomFullCalendarStoreState {
   // 共通の状態
   customFullCalendarRole: 'admin' | 'user';
-  customFullCalendarMode: '出退勤' | 'シフト(個人)' | 'シフト(全員)';
   customFullCalendarEvents: any[]; // shiftEvents を一般化
   customFullCalendarBgColorsPerDay: Record<string, string>; // 混雑状況
   customFullCalendarCurrentView: string;
@@ -16,7 +16,7 @@ interface CustomFullCalendarStoreState {
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role: 'admin' | 'user') => void;
-  setCustomFullCalendarMode: (mode: '出退勤' | 'シフト(個人)' | 'シフト(全員)') => void;
+  // customFullCalendarMode とその setter を削除
   setCustomFullCalendarEvents: (events: any[]) => void;
   setCustomFullCalendarBgColorsPerDay: (bgColors: Record<string, string>) => void;
   setCustomFullCalendarCurrentView: (viewType: string) => void;
@@ -30,7 +30,6 @@ interface CustomFullCalendarStoreState {
 export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((set) => ({
   // 初期状態
   customFullCalendarRole: 'user',
-  customFullCalendarMode: '出退勤',
   customFullCalendarEvents: [],
   customFullCalendarBgColorsPerDay: {},
   customFullCalendarCurrentView: '',
@@ -42,7 +41,6 @@ export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role) => set({ customFullCalendarRole: role }),
-  setCustomFullCalendarMode: (mode) => set({ customFullCalendarMode: mode }),
   setCustomFullCalendarEvents: (events) => set({ customFullCalendarEvents: events }),
   setCustomFullCalendarBgColorsPerDay: (bgColors) => set({ customFullCalendarBgColorsPerDay: bgColors }),
   setCustomFullCalendarCurrentView: (viewType) => set({ customFullCalendarCurrentView: viewType }),

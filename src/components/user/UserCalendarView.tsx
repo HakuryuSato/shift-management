@@ -1,19 +1,23 @@
-"use client";
-
-//ライブラリ
-import React, { useEffect } from "react";
-
-// コンポーネント
-import { CustomFullCalendar} from "@components/common/CustomFullCalendar"
-
+import React from "react";
+import { Box, Grid } from "@mui/material";
+import { CustomFullCalendar } from "@components/common/CustomFullCalendar";
+import { CalendarViewToggle } from "@components/user/CalendarViewToggle";
 
 export function UserCalendarView() {
-  // ユーザー用にするために状態設定
-  
-  
   return (
-    <>
-      <CustomFullCalendar />
-    </>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      style={{ minHeight: "50vh" }}
+    >
+      <Box>
+        <CalendarViewToggle />
+      </Box>
+      <Box mt={2}>
+        <CustomFullCalendar />
+      </Box>
+    </Grid>
   );
 }
