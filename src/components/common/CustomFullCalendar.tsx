@@ -101,15 +101,8 @@ export function CustomFullCalendar() {
     plugins.push(dayGridPlugin);
     initialView = 'dayGridMonth';
     headerToolbar=false
-    // headerToolbar = {
-    //   left: '',
-    //   center: '',
-    //   right: '',
-    // };
-    footerToolbar = {
-      left: '',
-      right: '',
-    };
+    footerToolbar=false
+
 
     datesSetHandler = (dateInfo: any) => {
       const fullCalendarDate = new Date(dateInfo.start);
