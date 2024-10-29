@@ -18,14 +18,14 @@ import { insertAttendance } from "@actions/insertAttendance";
 
 export function UserQrCodeReader() {
   const { isQRCodeReaderVisible, hideQRCodeReader } = useUserQrCodeReaderViewStore();
-  const { showUserHomeFAB } = useUserHomeFABStore();
+  const { setIsUserHomeFABVisible } = useUserHomeFABStore();
   const { userId } = useUserHomeStore();
   const { showUserSnackBar } = useUserSnackBarStore();
 
   // 閉じる
   const handleClose = () => {
     hideQRCodeReader();
-    showUserHomeFAB();
+    setIsUserHomeFABVisible(true);
   };
 
   // エラー時

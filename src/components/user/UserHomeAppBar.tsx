@@ -19,9 +19,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 // Store
-import { useUserHomeAppBarStore ,UserHomeAppBarView } from "@stores/user/userHomeAppBarSlice";
+import {
+  UserHomeAppBarView,
+  useUserHomeAppBarStore,
+} from "@stores/user/userHomeAppBarSlice";
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice";
+import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
 
 export function UserHomeAppBar() {
   const {
@@ -35,6 +39,7 @@ export function UserHomeAppBar() {
 
   const { customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
   const { setIsUserCalendarViewVisible } = useUserCalendarViewStore();
+  const { setIsUserHomeFABVisible } = useUserHomeFABStore();
 
   // 現在のビューがHomeかどうかを判定
   const isHomeView = userHomeAppBarCurrentView === "Home";
@@ -53,15 +58,18 @@ export function UserHomeAppBar() {
   // ビューを切り替える関数
   const handleChangeView = (view: UserHomeAppBarView) => {
     setUserHomeAppBarCurrentView(view);
-    setIsUserCalendarViewVisible(view === "Home"); // Home以外では非表示にする
+    
+    // Home以外では非表示
+    setIsUserHomeFABVisible(view === "Home");
+    setIsUserCalendarViewVisible(view === "Home");
   };
 
   // 中央のタイトル：Homeでは現在の月、それ以外ではビュー名
   const centerTitle = isHomeView
     ? `${customFullCalendarCurrentMonth + 1}月`
     : userHomeAppBarMenuItems.find((item) =>
-        item.id === userHomeAppBarCurrentView
-      )?.label || userHomeAppBarCurrentView;
+      item.id === userHomeAppBarCurrentView
+    )?.label || userHomeAppBarCurrentView;
 
   return (
     <>
