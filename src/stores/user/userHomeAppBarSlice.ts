@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type UserHomeAppBarView = 'Home' | 'Notifications' | 'Guide' | string;
+export type UserHomeAppBarView = 'Home' | 'Notifications' | 'Guide' | string;
 
 interface UserHomeAppBarMenuItem {
   id: UserHomeAppBarView;

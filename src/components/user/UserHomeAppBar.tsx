@@ -1,3 +1,4 @@
+// src/components/user/UserHomeAppBar.tsx
 "use client";
 
 // ライブラリ
@@ -18,8 +19,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 // Store
-import { useUserHomeAppBarStore } from "@stores/user/userHomeAppBarSlice";
+import { useUserHomeAppBarStore ,UserHomeAppBarView } from "@stores/user/userHomeAppBarSlice";
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
+import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice";
 
 export function UserHomeAppBar() {
   const {
@@ -32,26 +34,34 @@ export function UserHomeAppBar() {
   } = useUserHomeAppBarStore();
 
   const { customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
+  const { setIsUserCalendarViewVisible } = useUserCalendarViewStore();
 
   // 現在のビューがHomeかどうかを判定
   const isHomeView = userHomeAppBarCurrentView === "Home";
 
   // 左のボタン：Homeではハンバーガーメニュー、それ以外では戻るアイコン
   const LeftButtonIcon = isHomeView ? MenuIcon : ArrowBackIcon;
+
   const handleLeftButtonClick = () => {
     if (isHomeView) {
       openUserHomeAppBarDrawer();
     } else {
-      setUserHomeAppBarCurrentView("Home");
+      handleChangeView("Home");
     }
+  };
+
+  // ビューを切り替える関数
+  const handleChangeView = (view: UserHomeAppBarView) => {
+    setUserHomeAppBarCurrentView(view);
+    setIsUserCalendarViewVisible(view === "Home"); // Home以外では非表示にする
   };
 
   // 中央のタイトル：Homeでは現在の月、それ以外ではビュー名
   const centerTitle = isHomeView
     ? `${customFullCalendarCurrentMonth + 1}月`
     : userHomeAppBarMenuItems.find((item) =>
-      item.id === userHomeAppBarCurrentView
-    )?.label || userHomeAppBarCurrentView;
+        item.id === userHomeAppBarCurrentView
+      )?.label || userHomeAppBarCurrentView;
 
   return (
     <>
@@ -97,7 +107,7 @@ export function UserHomeAppBar() {
             <ListItem key={item.id} disablePadding>
               <ListItemButton
                 onClick={() => {
-                  setUserHomeAppBarCurrentView(item.id);
+                  handleChangeView(item.id); // ビューの切り替え
                   closeUserHomeAppBarDrawer();
                 }}
               >
