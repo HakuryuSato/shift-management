@@ -1,5 +1,3 @@
-// src\stores\user\calendarViewToggleSlice.ts
-
 import { create } from 'zustand';
 
 type CalendarViewMode = '出退勤' | 'シフト(個人)' | 'シフト(全員)';

@@ -10,14 +10,15 @@ export function UserCalendarView() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      style={{ minHeight: "50vh" }}
+      style={{ minHeight: "auto" }}
     >
-      <Box>
+      {/* AppBarとViewToggleの間にのみマージン, FullCalendarは標準でマージンがある */}
+      <Grid item style={{ marginTop: "25px" }}> 
         <CalendarViewToggle />
-      </Box>
-      <Box mt={2}>
+      </Grid>
+      <Grid item>
         <CustomFullCalendar />
-      </Box>
+      </Grid>
     </Grid>
   );
 }

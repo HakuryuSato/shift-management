@@ -1,5 +1,3 @@
-// src\stores\common\customFullCalendarSlice.ts
-
 import { create } from 'zustand';
 
 interface CustomFullCalendarStoreState {

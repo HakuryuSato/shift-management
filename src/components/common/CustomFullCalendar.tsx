@@ -17,9 +17,6 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 
 
 
-
-
-
   export function CustomFullCalendar () {
 
     const {
@@ -120,11 +117,11 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
     headerToolbar = {
       left: '',
       center: '',
-      right: 'title',
+      right: '',
     };
     footerToolbar = {
       left: '',
-      center: 'prev next',
+      // center: 'prev next',
       right: '',
     };
 
