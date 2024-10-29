@@ -1,5 +1,4 @@
-// CustomFullCalendar.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -9,42 +8,29 @@ import jaLocale from '@fullcalendar/core/locales/ja';
 import { DateClickArg } from '@fullcalendar/interaction';
 import { EventClickArg, EventContentArg } from '@fullcalendar/core';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchAttendance } from '@/utils/apiClient';
-import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullClandar';
-import { useUserHomeStore } from '@/stores/user/userHomeSlice';
+import { useSwipeable } from "react-swipeable";
 
+export function CustomFullCalendar() {
+  const calendarRef = useRef<FullCalendar>(null);
 
+  // Swipe handlers
+  const handlers = useSwipeable({
+    onSwipedLeft: () => calendarRef.current?.getApi().next(), // 次の月へ
+    onSwipedRight: () => calendarRef.current?.getApi().prev(), // 前の月へ
+    trackMouse: true, // マウスでのテストを可能にする（オプション）
+  });
 
-
-  export function CustomFullCalendar () {
-
-    const {
-      customFullCalendarRole,
-      customFullCalendarEvents,
-      customFullCalendarBgColorsPerDay,
-      customFullCalendarCurrentView,
-      customFullCalendarIsAllMembersView,
-      setCustomFullCalendarEvents,
-      setCustomFullCalendarStartDate,
-      setCustomFullCalendarEndDate,
-      setCustomFullCalendarCurrentView,
-      setCustomFullCalendarCurrentYear,
-      setCustomFullCalendarCurrentMonth,
-      toggleCustomFullCalendarMemberView,
-    } = useCustomFullCalendarStore();
-  
-    const {userId} = useUserHomeStore();
-
-    // const updateEventData = useCallback(async () => {
-    //   const attendanceEvents = await fetchAttendance()
-    //   const formattedEvents = formatEventsForFullCalendar(attendanceEvents)
-    //   setCustomFullCalendarEvents(formattedEvents)
-    // });
-    
-  
-
-
+  const {
+    customFullCalendarRole,
+    customFullCalendarEvents,
+    customFullCalendarBgColorsPerDay,
+    customFullCalendarCurrentView,
+    setCustomFullCalendarStartDate,
+    setCustomFullCalendarEndDate,
+    setCustomFullCalendarCurrentView,
+    setCustomFullCalendarCurrentYear,
+    setCustomFullCalendarCurrentMonth,
+  } = useCustomFullCalendarStore();
 
   // イベントハンドラをコンポーネント内で定義
   const handleEventClick = (info: EventClickArg) => {
@@ -114,14 +100,14 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
   } else if (customFullCalendarRole === 'user') {
     plugins.push(dayGridPlugin);
     initialView = 'dayGridMonth';
-    headerToolbar = {
-      left: '',
-      center: '',
-      right: '',
-    };
+    headerToolbar=false
+    // headerToolbar = {
+    //   left: '',
+    //   center: '',
+    //   right: '',
+    // };
     footerToolbar = {
       left: '',
-      // center: 'prev next',
       right: '',
     };
 
@@ -161,34 +147,37 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
   };
 
   return (
-    <FullCalendar
-      plugins={plugins}
-      initialView={initialView}
-      height="auto"
-      locale={jaLocale}
-      events={customFullCalendarEvents}
-      eventClick={handleEventClick}
-      dateClick={handleDateClick}
-      headerToolbar={headerToolbar}
-      footerToolbar={footerToolbar}
-      customButtons={customButtons}
-      datesSet={datesSetHandler}
-      dayCellClassNames={dayCellClassNames}
-      {...(customFullCalendarRole === 'admin' && {
-        slotMinTime: '08:00:00',
-        slotMaxTime: '21:00:00',
-        slotLabelInterval: '01:00:00',
-        slotEventOverlap: false,
-        eventOverlap: false,
-        allDaySlot: true,
-      })}
-      {...(customFullCalendarRole === 'user' && {
-        dayCellContent: (e: any) => e.dayNumberText.replace('日', ''),
-        eventContent: renderEventContent,
-        fixedWeekCount: false,
-      })}
-    />
+    <div {...handlers}>
+      <FullCalendar
+        ref={calendarRef}
+        plugins={plugins}
+        initialView={initialView}
+        height="auto"
+        locale={jaLocale}
+        events={customFullCalendarEvents}
+        eventClick={handleEventClick}
+        dateClick={handleDateClick}
+        headerToolbar={headerToolbar}
+        footerToolbar={footerToolbar}
+        customButtons={customButtons}
+        datesSet={datesSetHandler}
+        dayCellClassNames={dayCellClassNames}
+        {...(customFullCalendarRole === 'admin' && {
+          slotMinTime: '08:00:00',
+          slotMaxTime: '21:00:00',
+          slotLabelInterval: '01:00:00',
+          slotEventOverlap: false,
+          eventOverlap: false,
+          allDaySlot: true,
+        })}
+        {...(customFullCalendarRole === 'user' && {
+          dayCellContent: (e: any) => e.dayNumberText.replace('日', ''),
+          eventContent: renderEventContent,
+          fixedWeekCount: false,
+        })}
+      />
+    </div>
   );
-};
+}
 
 export default CustomFullCalendar;
