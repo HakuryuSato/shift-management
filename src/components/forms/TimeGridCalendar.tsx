@@ -108,7 +108,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     >([]);
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
-    const [currentView, setCurrentView] = useState("timeGridWeek");
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
     const [selectedShiftUserName, setSelectedShiftUserName] = useState<string>(
@@ -202,9 +201,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           initialView="timeGridWeek"
           height="auto"
           headerToolbar={{ // ヘッダー
-            left: currentView === "timeGridDay"
-              ? "timeGridWeek"
-              : "backToMenuButton",
+            left: "backToMenuButton",
             center: "title",
             right: "downloadWeeklyShiftButton",
           }}
@@ -237,7 +234,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             const newEndDate = new Date(dateInfo.end);
             setStartDate(newStartDate);
             setEndDate(newEndDate);
-            setCurrentView(dateInfo.view.type);
           }}
           allDaySlot={true}
           dateClick={handleDateClick}
