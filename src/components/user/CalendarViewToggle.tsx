@@ -10,10 +10,10 @@ import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
 
 export function CalendarViewToggle() {
     const {
-        CalendarViewMode,
+        calendarViewMode,
         setCalendarViewModeToAttendance,
-        setCalendarViewModeToShiftPersonal,
-        setCalendarViewModeToShiftAllMembers,
+        setCalendarViewModeToPersonalShift,
+        setCalendarViewModeToAllMembersShift,
     } = useCalendarViewToggleStore();
 
     const { setFABIconType } = useUserHomeFABStore();
@@ -21,7 +21,7 @@ export function CalendarViewToggle() {
     return (
         <ButtonGroup variant="contained" sx={{ width: "100%" }}>
             <Button
-                variant={CalendarViewMode === "出退勤"
+                variant={calendarViewMode === "ATTENDANCE"
                     ? "contained"
                     : "outlined"}
                 onClick={() => {
@@ -33,11 +33,11 @@ export function CalendarViewToggle() {
                 出退勤
             </Button>
             <Button
-                variant={CalendarViewMode === "シフト(個人)"
+                variant={calendarViewMode === "PERSONAL_SHIFT"
                     ? "contained"
                     : "outlined"}
                 onClick={() => {
-                    setCalendarViewModeToShiftPersonal();
+                    setCalendarViewModeToPersonalShift();
                     setFABIconType("plus");
                 }}
                 sx={{ flex: 1 }}
@@ -45,11 +45,11 @@ export function CalendarViewToggle() {
                 シフト(個人)
             </Button>
             <Button
-                variant={CalendarViewMode === "シフト(全員)"
+                variant={calendarViewMode === "ALL_MEMBERS_SHIFT"
                     ? "contained"
                     : "outlined"}
                 onClick={() => {
-                    setCalendarViewModeToShiftAllMembers();
+                    setCalendarViewModeToAllMembersShift();
                     setFABIconType("plus");
                 }}
                 sx={{ flex: 1 }}
