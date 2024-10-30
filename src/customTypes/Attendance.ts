@@ -9,6 +9,7 @@ export interface AttendanceQuery {
     end_time?: string | number | Date;
   }
   
+  // DBの構造
   export interface Attendance {
     attendance_id: number;
     user_id: number;
