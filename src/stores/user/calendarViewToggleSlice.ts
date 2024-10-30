@@ -1,21 +1,21 @@
 import { create } from 'zustand';
 
-type CalendarViewMode = '出退勤' | 'シフト(個人)' | 'シフト(全員)';
+type CalendarViewMode = 'ATTENDANCE' | 'PERSONAL_SHIFT' | 'ALL_MEMBERS_SHIFT';
 
 interface CalendarViewToggleState {
   // カレンダービューモード
-  CalendarViewMode: CalendarViewMode;
+  calendarViewMode: CalendarViewMode;
   setCalendarViewModeToAttendance: () => void;
-  setCalendarViewModeToShiftPersonal: () => void;
-  setCalendarViewModeToShiftAllMembers: () => void;
+  setCalendarViewModeToPersonalShift: () => void;
+  setCalendarViewModeToAllMembersShift: () => void;
 }
 
 export const useCalendarViewToggleStore = create<CalendarViewToggleState>((set) => ({
   // 初期状態
-  CalendarViewMode: '出退勤',
+  calendarViewMode: 'ATTENDANCE',
 
   // ビューモードを変更するアクション
-  setCalendarViewModeToAttendance: () => set({ CalendarViewMode: '出退勤' }),
-  setCalendarViewModeToShiftPersonal: () => set({ CalendarViewMode: 'シフト(個人)' }),
-  setCalendarViewModeToShiftAllMembers: () => set({ CalendarViewMode: 'シフト(全員)' }),
+  setCalendarViewModeToAttendance: () => set({ calendarViewMode: 'ATTENDANCE' }),
+  setCalendarViewModeToPersonalShift: () => set({ calendarViewMode: 'PERSONAL_SHIFT' }),
+  setCalendarViewModeToAllMembersShift: () => set({ calendarViewMode: 'ALL_MEMBERS_SHIFT' }),
 }));
