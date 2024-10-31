@@ -1,28 +1,36 @@
 // hooks/useAttendanceEventsForCustomFullCalendar.ts
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import { fetchAttendance } from '@/utils/apiClient';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
-import { formatAttendancesForFullCalendarEvent } from '@/utils/attendanceUtils';
+import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';
+import { options } from '@fullcalendar/core/preact.js';
+import { AttendanceQuery } from '@/customTypes/Attendance';
+import { useUserHomeStore } from '@/stores/user/userHomeSlice';
+import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
+import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 
-interface UseAttendanceEventsParams {
-  userId: string;
-  year: number;
-  month: number;
-}
 
-export function useAttendanceEventsForCustomFullCalendar({ userId, year, month }: UseAttendanceEventsParams) {
-  const { setCustomFullCalendarAttendanceEvents } = useCustomFullCalendarStore();
+export function useAttendanceEventsForCustomFullCalendar() {
+  const { setCustomFullCalendarAttendanceEvents, customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
+  const { userId } = useUserHomeStore();
+  const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth)
+  const { isUserCalendarViewVisible } = useUserCalendarViewStore();
 
-  const { data: attendances } = useSWR(
-    ['/api/getAttendance', userId, year, month],
-    () => fetchAttendance({ user_id: userId, year, month })
+  const { data: attendances, mutate } = useSWR(
+    isUserCalendarViewVisible 
+      ? ['attendances', userId, start_date, end_date].join('-') // 一意のキー
+      : null,
+    () => fetchAttendance({ user_id: userId, start_date, end_date })
   );
 
   useEffect(() => {
     if (attendances) {
-      const formattedEvents = formatAttendancesForFullCalendarEvent(attendances);
+      const formattedEvents = formatEventsForFullCalendar(attendances,);
       setCustomFullCalendarAttendanceEvents(formattedEvents);
     }
-  }, [attendances]);
+  }, [attendances, customFullCalendarCurrentMonth, setCustomFullCalendarAttendanceEvents]);
+
+  // return { refreshAttendanceEvents: mutate }; // リアタイ反映されなければmutateで実行する
+
 }
