@@ -1,6 +1,8 @@
+'use client'
+
+// ライブラリ
 import React, { useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
-import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -8,6 +10,11 @@ import jaLocale from "@fullcalendar/core/locales/ja";
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg, EventContentArg } from "@fullcalendar/core";
 import { useSwipeable } from "react-swipeable";
+
+// store
+import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
+import { useCalendarViewToggleStore } from '@stores/user/calendarViewToggleSlice';
+import { useAttendanceEventsForCustomFullCalendar } from "@/hooks/useAttendanceEventsForCustomFullCalendar";
 
 export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
@@ -21,15 +28,20 @@ export function CustomFullCalendar() {
 
   const {
     customFullCalendarRole,
-    customFullCalendarEvents,
     customFullCalendarBgColorsPerDay,
-    customFullCalendarCurrentView,
     setCustomFullCalendarStartDate,
     setCustomFullCalendarEndDate,
-    setCustomFullCalendarCurrentView,
     setCustomFullCalendarCurrentYear,
     setCustomFullCalendarCurrentMonth,
+    customFullCalendarAttendanceEvents,
+    customFullCalendarPersonalShiftEvents,
+    customFullCalendarAllMembersShiftEvents,
   } = useCustomFullCalendarStore();
+
+  const { calendarViewMode } = useCalendarViewToggleStore();
+
+  // 出退勤データ取得用Hooks
+  useAttendanceEventsForCustomFullCalendar();
 
   // イベントハンドラをコンポーネント内で定義
   const handleEventClick = (info: EventClickArg) => {
@@ -67,9 +79,7 @@ export function CustomFullCalendar() {
     plugins.push(timeGridPlugin);
     initialView = "timeGridWeek";
     headerToolbar = {
-      left: customFullCalendarCurrentView === "timeGridDay"
-        ? "timeGridWeek"
-        : "backToMenuButton",
+      left: "goToAttendanceViewButton",
       center: "title",
       right: "downloadWeeklyDataButton",
     };
@@ -79,7 +89,7 @@ export function CustomFullCalendar() {
       right: "next",
     };
     customButtons = {
-      backToMenuButton: {
+      goToAttendanceViewButton: {
         text: "１ヶ月の画面へ",
         click: onBack,
       },
@@ -88,12 +98,10 @@ export function CustomFullCalendar() {
         click: handleDownloadWeeklyData,
       },
     };
+    // 週や月変更時に日付のStateを変更するため
     datesSetHandler = (dateInfo: any) => {
-      const newStartDate = new Date(dateInfo.start);
-      const newEndDate = new Date(dateInfo.end);
-      setCustomFullCalendarStartDate(newStartDate);
-      setCustomFullCalendarEndDate(newEndDate);
-      setCustomFullCalendarCurrentView(dateInfo.view.type);
+      setCustomFullCalendarStartDate(new Date(dateInfo.start));
+      setCustomFullCalendarEndDate(new Date(dateInfo.end));
     };
   } else if (customFullCalendarRole === "user") {
     plugins.push(dayGridPlugin);
@@ -135,6 +143,16 @@ export function CustomFullCalendar() {
 
     return classes.join(" ");
   };
+
+  const customFullCalendarEvents =
+    calendarViewMode === 'ATTENDANCE'
+      ? customFullCalendarAttendanceEvents
+      : calendarViewMode === 'PERSONAL_SHIFT'
+      ? customFullCalendarPersonalShiftEvents
+      : calendarViewMode === 'ALL_MEMBERS_SHIFT'
+      ? customFullCalendarAllMembersShiftEvents
+      : [];
+  
 
   return (
     <div {...reactSwipeHandlers}>
