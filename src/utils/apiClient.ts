@@ -133,16 +133,12 @@ export async function sendAutoShiftSettings(autoShiftSettingData: any) {
 }
 
 // 出退勤  ---------------------------------------------------------------------------------------------------
-//出退勤データ取得
+// 出退勤データ取得
 export async function fetchAttendance(params: AttendanceQuery = {}): Promise<Attendance[]> {
   const {
     user_id = '*',
-    year = new Date().getFullYear(),
-    month = new Date().getMonth() + 1,
     start_date,
     end_date,
-    start_time,
-    end_time,
   } = params;
 
   // クエリパラメータの構築
@@ -155,23 +151,9 @@ export async function fetchAttendance(params: AttendanceQuery = {}): Promise<Att
   if (start_date && end_date) {
     queryParams.append('start_date', start_date);
     queryParams.append('end_date', end_date);
-  } else if (start_time && end_time) {
-    queryParams.append('start_time', start_time.toString());
-    queryParams.append('end_time', end_time.toString());
-  } else if (year && month) {
-    queryParams.append('year', year.toString());
-    queryParams.append('month', month.toString());
   }
-
-  const query = `/api/getAttendance?${queryParams.toString()}`;
 
   // APIリクエストの実行
-  const response = await handleFetch<AttendanceAPIResponse>(query);
+  return (await handleFetch<AttendanceAPIResponse>(`/api/attendance?${queryParams.toString()}`))?.data || [];
 
-  if (response && 'data' in response && Array.isArray(response.data)) {
-    // レスポンスデータをそのまま返却
-    return response.data;
-  } else {
-    return [];
-  }
 }
