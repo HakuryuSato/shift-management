@@ -10,9 +10,10 @@ interface CustomFullCalendarStoreState {
   customFullCalendarCurrentMonth: number;
 
   // イベントの状態を3つに分割
+  customFullCalendarAttendanceEvents: any[];
   customFullCalendarPersonalShiftEvents: any[];
   customFullCalendarAllMembersShiftEvents: any[];
-  customFullCalendarAttendanceEvents: any[];
+
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role: 'admin' | 'user') => void;
