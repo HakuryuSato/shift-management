@@ -15,7 +15,7 @@ export function formatEventsForFullCalendar<T extends ShiftOrAttendance>(
 ): EventInput[] {
 
     // 最初のレコードから型を定義
-    const isShift = 'shift_id' in records[0];
+    const isShift = records.length > 0 && 'shift_id' in records[0];
     const idField = isShift ? 'shift_id' : 'attendance_id';
 
 
