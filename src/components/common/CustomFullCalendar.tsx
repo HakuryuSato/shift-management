@@ -11,21 +11,21 @@ import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg, EventContentArg } from "@fullcalendar/core";
 import { useSwipeable } from "react-swipeable";
 
-// store
+// Store
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
+
+
+// Hooks
 import { useAttendanceEventsForCustomFullCalendar } from "@/hooks/useAttendanceEventsForCustomFullCalendar";
 import { useHolidaysForCustomFullCalendar } from "@/hooks/useHolidaysForCustomFullCalendar";
+import { usePersonalShiftEventsForCustomFullCalendar } from "@/hooks/usePersonalShiftEventsForCustomFullCalendar";
+import { useAllMembersShiftEventsForCustomFullCalendar } from "@/hooks/useAllmembersShiftEventsForCustomFullCalendar";
 
 export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
 
-  // Swipe handlers
-  const reactSwipeHandlers = useSwipeable({
-    onSwipedLeft: () => calendarRef.current?.getApi().next(),
-    onSwipedRight: () => calendarRef.current?.getApi().prev(),
-    trackMouse: true, // マウスでのテストを可能にする（オプション）
-  });
+
 
   const {
     customFullCalendarRole,
@@ -43,13 +43,30 @@ export function CustomFullCalendar() {
   const { calendarViewMode } = useCalendarViewToggleStore();
 
 
+  // Hooks  ---------------------------------------------------------------------------------------------------
   // 祝日データををフルカレ用のStateに設定
   useHolidaysForCustomFullCalendar();
 
   // 出退勤データをStateに設定
   useAttendanceEventsForCustomFullCalendar();
 
-  // イベントハンドラをコンポーネント内で定義
+  // 個人用シフトデータ
+  usePersonalShiftEventsForCustomFullCalendar();
+
+  // 全員用シフトデータ
+  useAllMembersShiftEventsForCustomFullCalendar();
+
+
+
+
+  // イベントハンドラ  ---------------------------------------------------------------------------------------------------
+    // Swipe handlers
+    const reactSwipeHandlers = useSwipeable({
+      onSwipedLeft: () => calendarRef.current?.getApi().next(),
+      onSwipedRight: () => calendarRef.current?.getApi().prev(),
+      trackMouse: true, // マウスでのテストを可能にする（オプション）
+    });
+
   const handleEventClick = (info: EventClickArg) => {
     console.log("イベントがクリックされました:", info.event);
   };
@@ -102,6 +119,8 @@ export function CustomFullCalendar() {
       );
     }
   };
+
+  // FullCalendarオプション  ---------------------------------------------------------------------------------------------------
 
   const plugins = [interactionPlugin];
   let initialView = "";
@@ -191,6 +210,7 @@ export function CustomFullCalendar() {
   ];
 
   // console.log(customFullCalendarEvents);
+
 
   return (
     <div {...reactSwipeHandlers}>
