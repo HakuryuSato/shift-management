@@ -57,8 +57,8 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
     const fetchInitialData = async () => {
       try {
         const response = await fetchAutoShiftSettings(String(userId));
-        if (response && "data" in response && response.data.length > 0) {
-          const initialData: AutoShiftSettings = response.data[0];
+        if (response) {
+          const initialData: AutoShiftSettings = response;
           setDayTimes(
             initialData.auto_shift_times && initialData.auto_shift_times.length > 0
               ? initialData.auto_shift_times
