@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid } from "@mui/material";
-import { CustomFullCalendar } from "@components/common/CustomFullCalendar";
+import { CustomFullCalendar } from "@/components/common/CustomFullCalendar/CustomFullCalendar";
 import { CalendarViewToggle } from "@components/user/CalendarViewToggle";
 import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice"; 
 
