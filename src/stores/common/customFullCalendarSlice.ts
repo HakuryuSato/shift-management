@@ -10,6 +10,7 @@ interface CustomFullCalendarStoreState {
   customFullCalendarCurrentMonth: number;
 
   // イベントの状態を3つに分割
+  customFullCalendarHolidayEvents:any[];
   customFullCalendarAttendanceEvents: any[];
   customFullCalendarPersonalShiftEvents: any[];
   customFullCalendarAllMembersShiftEvents: any[];
@@ -17,6 +18,7 @@ interface CustomFullCalendarStoreState {
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role: 'admin' | 'user') => void;
+  setCustomFullCalendarHolidayEvents:(events: any[]) => void;
   setCustomFullCalendarPersonalShiftEvents: (events: any[]) => void;
   setCustomFullCalendarAllMembersShiftEvents: (events: any[]) => void;
   setCustomFullCalendarAttendanceEvents: (events: any[]) => void;
@@ -35,12 +37,14 @@ export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((
   customFullCalendarEndDate: new Date(),
   customFullCalendarCurrentYear: new Date().getFullYear(),
   customFullCalendarCurrentMonth: new Date().getMonth(),
+  customFullCalendarHolidayEvents: [],
   customFullCalendarPersonalShiftEvents: [],
   customFullCalendarAllMembersShiftEvents: [],
   customFullCalendarAttendanceEvents: [],
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role) => set({ customFullCalendarRole: role }),
+  setCustomFullCalendarHolidayEvents: (events) => set({ customFullCalendarHolidayEvents: events }),
   setCustomFullCalendarPersonalShiftEvents: (events) => set({ customFullCalendarPersonalShiftEvents: events }),
   setCustomFullCalendarAllMembersShiftEvents: (events) => set({ customFullCalendarAllMembersShiftEvents: events }),
   setCustomFullCalendarAttendanceEvents: (events) => set({ customFullCalendarAttendanceEvents: events }),
