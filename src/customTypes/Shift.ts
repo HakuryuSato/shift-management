@@ -3,7 +3,7 @@ export interface ShiftQuery {
     shift_id?: number,
     year?: number,
     month?: number,
-    is_approved?: boolean;
+    is_approved?: boolean; // 廃止予定
     start_time?: string | number | Date;
     end_time?: string | number | Date;
 }
