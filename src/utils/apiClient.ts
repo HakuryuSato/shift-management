@@ -3,6 +3,8 @@ import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSet
 import { AttendanceQuery, Attendance, AttendanceAPIResponse } from '@customTypes/Attendance';
 import type { Holiday } from "@/customTypes/Holiday";
 import type { AutoShiftSettings } from "@/customTypes/AutoShiftTypes";
+import type { Shift,ShiftQuery } from "@/customTypes/Shift";
+import type { User } from "@/customTypes/User";
 
 /*
 
@@ -34,19 +36,18 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 // ユーザー関連 ---------------------------------------------------------------------------------------------------
-// ユーザー 一覧取得 未使用のため一時的にコメントアウト
-// export async function fetchUsers() {
-//   return await handleFetch(`/api/getUserData`) || [];
-// }
-
+// ユーザー 一覧取得 API名称はusersに変更予定
+export async function fetchUsers():Promise<User[]> {
+  return await handleFetch<User[]>(`/api/getUserData`);
+}
 
 
 
 // シフト関連  ---------------------------------------------------------------------------------------------------
 // シフト取得
 export async function fetchShifts(
-  params: InterFaceShiftQuery = {}
-): Promise<InterFaceShiftQuery[]> {
+  params: ShiftQuery = {}
+): Promise<Shift[]> {
   const {
     user_id = '*',
     year = new Date().getFullYear(),
@@ -59,7 +60,7 @@ export async function fetchShifts(
     ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
     : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
 
-  return await handleFetch<InterFaceShiftQuery[]>(query);
+  return await handleFetch<Shift[]>(query);
 }
 
 
