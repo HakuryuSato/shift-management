@@ -15,7 +15,7 @@ import { useSwipeable } from "react-swipeable";
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 import { useAttendanceEventsForCustomFullCalendar } from "@/hooks/useAttendanceEventsForCustomFullCalendar";
-import { useInitializeCustomFullCalendar } from "@/hooks/useInitializeCustomFullCalendar";
+import { useHolidaysForCustomFullCalendar } from "@/hooks/useHolidaysForCustomFullCalendar";
 
 export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
@@ -34,6 +34,7 @@ export function CustomFullCalendar() {
     setCustomFullCalendarEndDate,
     setCustomFullCalendarCurrentYear,
     setCustomFullCalendarCurrentMonth,
+    customFullCalendarHolidayEvents,
     customFullCalendarAttendanceEvents,
     customFullCalendarPersonalShiftEvents,
     customFullCalendarAllMembersShiftEvents,
@@ -42,9 +43,10 @@ export function CustomFullCalendar() {
   const { calendarViewMode } = useCalendarViewToggleStore();
 
 
-  // 各種データをフルカレンダーイベントに設定する
-  useInitializeCustomFullCalendar();
-  // 出退勤データ取得用Hooks
+  // 祝日データををフルカレ用のStateに設定
+  useHolidaysForCustomFullCalendar();
+
+  // 出退勤データをStateに設定
   useAttendanceEventsForCustomFullCalendar();
 
   // イベントハンドラをコンポーネント内で定義
@@ -99,7 +101,6 @@ export function CustomFullCalendar() {
         </div>
       );
     }
-    // return <div>{eventInfo.event.title}</div>;
   };
 
   const plugins = [interactionPlugin];
@@ -178,15 +179,18 @@ export function CustomFullCalendar() {
     return classes.join(" ");
   };
 
-  const customFullCalendarEvents = calendarViewMode === "ATTENDANCE"
-    ? customFullCalendarAttendanceEvents
-    : calendarViewMode === "PERSONAL_SHIFT"
-    ? customFullCalendarPersonalShiftEvents
-    : calendarViewMode === "ALL_MEMBERS_SHIFT"
-    ? customFullCalendarAllMembersShiftEvents
-    : [];
+  const customFullCalendarEvents = [
+    ...customFullCalendarHolidayEvents,
+    ...(calendarViewMode === "ATTENDANCE"
+      ? customFullCalendarAttendanceEvents
+      : calendarViewMode === "PERSONAL_SHIFT"
+      ? customFullCalendarPersonalShiftEvents
+      : calendarViewMode === "ALL_MEMBERS_SHIFT"
+      ? customFullCalendarAllMembersShiftEvents
+      : [])
+  ];
 
-  console.log(customFullCalendarEvents);
+  // console.log(customFullCalendarEvents);
 
   return (
     <div {...reactSwipeHandlers}>
