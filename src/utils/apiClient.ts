@@ -2,7 +2,7 @@ import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
 import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/customTypes/ApiResponses';
 import { AttendanceQuery, Attendance, AttendanceAPIResponse } from '@customTypes/Attendance';
 import type { Holiday } from "@/customTypes/Holiday";
-
+import type { AutoShiftSettings } from "@/customTypes/AutoShiftTypes";
 
 /*
 
@@ -18,7 +18,10 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
     const response = await fetch(url, options);
     const result = await response.json();
 
+
+
     if (response.ok && result && 'data' in result) {
+      console.log(result.data)
       return result.data as T;
     } else {
       console.error(`Error fetching ${url}:`, result);
@@ -62,7 +65,6 @@ export async function fetchShifts(
 
 
 // 祝日データの取得 ---------------------------------------------------------------------------------------------------
-// 注意：Holidaysのみ、response.data の展開をAPI側で行っている。　時間があれば修正すること
 export async function fetchHolidays(): Promise<Holiday[]> {
   return await handleFetch<Holiday[]>('/api/holidays');
 }
@@ -74,14 +76,14 @@ export async function fetchHolidays(): Promise<Holiday[]> {
 // }
 
 // 自動シフト設定の取得
-export async function fetchAutoShiftSettings(userId?: string): Promise<GetAutoShiftSettingsAPIResponse | null> {
+export async function fetchAutoShiftSettings(userId?: string): Promise<AutoShiftSettings | null> {
   const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
-  return await handleFetch<GetAutoShiftSettingsAPIResponse>(query);
+  return await handleFetch<AutoShiftSettings>(query);
 }
 
-// 自動シフト設定の保存
+// 自動シフト設定の保存 サーバーアクションに移行予定
 export async function sendAutoShiftSettings(autoShiftSettingData: any) {
-  return await handleFetch<AutoShiftSettingsAPIResponse>("/api/auto-shift/settings", {
+  return await handleFetch<AutoShiftSettings>("/api/auto-shift/settings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(autoShiftSettingData),
