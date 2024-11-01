@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: timesError.message }, { status: 500 });
     }
 
-    return NextResponse.json({ message: '自動シフト設定が保存されました。' }, { status: 200 });
+    return NextResponse.json({ data: { message: '自動シフト設定が保存されました。' } },{ status: 200 });
   } catch (error: unknown) {
     console.error('Unhandled error:', error);
     if (error instanceof Error) {

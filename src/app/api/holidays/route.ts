@@ -34,5 +34,5 @@ export async function GET() {
         date: event.start.date,
     }));
 
-    return NextResponse.json(holidays);
+    return NextResponse.json({ data: holidays });
 }

@@ -1,8 +1,12 @@
 import { supabase } from '@api/supabase';
 import { NextRequest, NextResponse } from 'next/server';
+import { AttendanceQuery } from '@/customTypes/Attendance';
+
+
+
 
 // 日付範囲を計算するヘルパー関数
-function getDateRange(params: { start_date?: string; end_date?: string; }): { startDate: Date; endDate: Date; error?: string } {
+function getTimeRange(params: AttendanceQuery): { startDate: Date; endDate: Date; error?: string } {
     let startDate: Date;
     let endDate: Date;
 
@@ -12,11 +16,13 @@ function getDateRange(params: { start_date?: string; end_date?: string; }): { st
     if (start_date && end_date) {
         startDate = new Date(start_date);
         endDate = new Date(end_date);
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            return { startDate: new Date(), endDate: new Date(), error: 'start_dateまたはend_dateが無効です' };
-        }
+
+        // 時間を明確に設定
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+
     } else {
-        // デフォルトは現在の月
+        // デフォルトは現在の月（この記述方法が最も簡潔
         const now = new Date();
         const y = now.getFullYear();
         const m = now.getMonth();
@@ -34,12 +40,13 @@ export async function GET(request: NextRequest) {
         const start_date = searchParams.get('start_date') ?? undefined; // nullをundefinedに変換
         const end_date = searchParams.get('end_date') ?? undefined; // nullをundefinedに変換
 
-        const { startDate, endDate, error: dateError } = getDateRange({ start_date, end_date });
+        const { startDate, endDate, error: dateError } = getTimeRange({ start_date, end_date });
 
         if (dateError) {
             return NextResponse.json({ error: dateError }, { status: 400 });
         }
 
+        // Shift側でもtoISOString。
         const startDateISOString = startDate.toISOString();
         const endDateISOString = endDate.toISOString();
 
@@ -49,10 +56,7 @@ export async function GET(request: NextRequest) {
                 attendance_id,
                 user_id,
                 start_time,
-                end_time,
-                users (
-                    user_name
-                )
+                end_time
             `)
             .gte('start_time', startDateISOString)
             .lte('start_time', endDateISOString);

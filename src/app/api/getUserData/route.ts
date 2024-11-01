@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
+// API名称はusersに変更予定
+
 export async function GET(req: NextRequest, res: NextResponse) {
 
     const { data, error } = await supabase

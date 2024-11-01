@@ -6,7 +6,7 @@ import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
 
 export function UserHomeFAB() {
-  const { isUserHomeFABVisible, fabIconType, hideUserHomeFAB } =
+  const { isUserHomeFABVisible, fabIconType, setIsUserHomeFABVisible } =
     useUserHomeFABStore();
   const { showQRCodeReader } = useUserQrCodeReaderViewStore();
 
@@ -15,7 +15,7 @@ export function UserHomeFAB() {
   const handleClick = () => {
     if (fabIconType === "qr") {
       showQRCodeReader();
-      hideUserHomeFAB();
+      setIsUserHomeFABVisible(false);
     } else if (fabIconType === "plus") {
       // シフト追加用
     }

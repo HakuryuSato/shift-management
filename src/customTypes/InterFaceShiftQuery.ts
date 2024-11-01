@@ -1,4 +1,4 @@
-// DBのshiftsテーブルと同じ型
+// DBのshiftsテーブルと同じ型(廃止予定)
 export default interface InterFaceShiftQuery {
 
     user_id?: string | number,

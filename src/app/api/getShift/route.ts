@@ -2,6 +2,9 @@ import { supabase } from '@api/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 
+// API群の整理時、このAPIの呼び出し方法をAttendanceと同じ形式にすること（start_date,end_dateの範囲までを指定し、API側で開始日0時から終了日23:59:59に変更する
+
+
 export async function GET(req: NextRequest, res: NextResponse) {
 
     const user_id: InterFaceShiftQuery['user_id'] = req.nextUrl.searchParams.get('user_id') as string | number;

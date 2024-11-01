@@ -7,7 +7,7 @@ export default function formatShiftsForFullCalendarEvent(data: any[], isAllMembe
     start: shift.start_time,
     end: shift.end_time,
     // useUserNameAsTitleがtrueならshift.user_name、falseならshift.title、どちらも無ければ空文字
-    title: isAllMembersView ? shift.user_name || '' : shift.title || '',
+    title: isAllMembersView ? shift.user_name :  '',
     display: 'block',
 
     // backgroundColor: shift.is_approved ? 'green' : '',

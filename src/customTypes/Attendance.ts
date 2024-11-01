@@ -1,14 +1,10 @@
 export interface AttendanceQuery {
     user_id?: string | number;
-    attendance_id?: number;
-    year?: number;
-    month?: number;
-    start_date?: string;
+    start_date?: string; // ISO (YYYY-MM-DD)
     end_date?: string;
-    start_time?: string | number | Date;
-    end_time?: string | number | Date;
   }
   
+  // DBの構造
   export interface Attendance {
     attendance_id: number;
     user_id: number;

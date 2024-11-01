@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 // 基盤
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import TimeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -43,10 +44,13 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // 関数 -----------------------------------------------------------------------------------------------------------------------
 
     // 祝日を取得する
-    const { data: holidays, error: holidaysError } = useSWR(
+    const { data: holidaysData, error: holidaysError } = useSWR(
       "/api/holidays",
       fetcher,
     );
+    
+    // holidaysDataが更新された場合のみholidaysを再計算
+    const holidays = useMemo(() => (holidaysData ? holidaysData.data : []), [holidaysData]);
 
     const updateEventData = async (start_time: Date, end_time: Date) => {
       const data = await fetchShifts(
@@ -108,7 +112,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     >([]);
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
-    const [currentView, setCurrentView] = useState("timeGridWeek");
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedShiftId, setSelectedShiftId] = useState<number | null>(null);
     const [selectedShiftUserName, setSelectedShiftUserName] = useState<string>(
@@ -202,9 +205,7 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
           initialView="timeGridWeek"
           height="auto"
           headerToolbar={{ // ヘッダー
-            left: currentView === "timeGridDay"
-              ? "timeGridWeek"
-              : "backToMenuButton",
+            left: "backToMenuButton",
             center: "title",
             right: "downloadWeeklyShiftButton",
           }}
@@ -237,7 +238,6 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
             const newEndDate = new Date(dateInfo.end);
             setStartDate(newStartDate);
             setEndDate(newEndDate);
-            setCurrentView(dateInfo.view.type);
           }}
           allDaySlot={true}
           dateClick={handleDateClick}
