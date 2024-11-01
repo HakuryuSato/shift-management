@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 // ライブラリ
 import React, { useRef } from "react";
@@ -13,8 +13,9 @@ import { useSwipeable } from "react-swipeable";
 
 // store
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
-import { useCalendarViewToggleStore } from '@stores/user/calendarViewToggleSlice';
+import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 import { useAttendanceEventsForCustomFullCalendar } from "@/hooks/useAttendanceEventsForCustomFullCalendar";
+import { useInitializeCustomFullCalendar } from "@/hooks/useInitializeCustomFullCalendar";
 
 export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
@@ -40,6 +41,9 @@ export function CustomFullCalendar() {
 
   const { calendarViewMode } = useCalendarViewToggleStore();
 
+
+  // 各種データをフルカレンダーイベントに設定する
+  useInitializeCustomFullCalendar();
   // 出退勤データ取得用Hooks
   useAttendanceEventsForCustomFullCalendar();
 
@@ -65,7 +69,37 @@ export function CustomFullCalendar() {
   };
 
   const renderEventContent = (eventInfo: EventContentArg) => {
-    return <div>{eventInfo.event.title}</div>;
+    if (eventInfo.event.extendedProps.isHoliday) { // 祝日イベント
+      // 祝日を設定
+      return (
+        <div>
+          <b>{eventInfo.event.title}</b>
+        </div>
+      );
+    } else { // それ以外
+      // Existing shift event rendering
+      const startTime = eventInfo.event.start?.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const endTime = eventInfo.event.end?.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      return (
+        <div>
+          <b>
+            {startTime}-
+            <br />
+            {endTime}
+          </b>
+          <br />
+          <i>{eventInfo.event.title}</i>
+        </div>
+      );
+    }
+    // return <div>{eventInfo.event.title}</div>;
   };
 
   const plugins = [interactionPlugin];
@@ -144,15 +178,15 @@ export function CustomFullCalendar() {
     return classes.join(" ");
   };
 
-  const customFullCalendarEvents =
-    calendarViewMode === 'ATTENDANCE'
-      ? customFullCalendarAttendanceEvents
-      : calendarViewMode === 'PERSONAL_SHIFT'
-      ? customFullCalendarPersonalShiftEvents
-      : calendarViewMode === 'ALL_MEMBERS_SHIFT'
-      ? customFullCalendarAllMembersShiftEvents
-      : [];
-  
+  const customFullCalendarEvents = calendarViewMode === "ATTENDANCE"
+    ? customFullCalendarAttendanceEvents
+    : calendarViewMode === "PERSONAL_SHIFT"
+    ? customFullCalendarPersonalShiftEvents
+    : calendarViewMode === "ALL_MEMBERS_SHIFT"
+    ? customFullCalendarAllMembersShiftEvents
+    : [];
+
+  console.log(customFullCalendarEvents);
 
   return (
     <div {...reactSwipeHandlers}>

@@ -18,8 +18,8 @@ export function UserCalendarView() {
       justifyContent="center"
       style={{ minHeight: "auto" }}
     >
-      <CustomFullCalendar />
       <CalendarViewToggle />
+      <CustomFullCalendar />
     </Grid>
   );
 }

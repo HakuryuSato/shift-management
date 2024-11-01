@@ -19,7 +19,7 @@ export function useAttendanceEventsForCustomFullCalendar() {
 
   const { data: attendances, mutate } = useSWR(
     isUserCalendarViewVisible 
-      ? ['attendances', userId, start_date, end_date].join('-') // 一意のキー
+      ? ['attendances', userId, start_date, end_date].join('-')
       : null,
     () => fetchAttendance({ user_id: userId, start_date, end_date })
   );
@@ -27,9 +27,10 @@ export function useAttendanceEventsForCustomFullCalendar() {
   useEffect(() => {
     if (attendances) {
       const formattedEvents = formatEventsForFullCalendar(attendances,);
+      console.log(formattedEvents)
       setCustomFullCalendarAttendanceEvents(formattedEvents);
     }
-  }, [attendances, customFullCalendarCurrentMonth, setCustomFullCalendarAttendanceEvents]);
+  }, [attendances, customFullCalendarCurrentMonth, isUserCalendarViewVisible,setCustomFullCalendarAttendanceEvents]);
 
   // return { refreshAttendanceEvents: mutate }; // リアタイ反映されなければmutateで実行する
 
