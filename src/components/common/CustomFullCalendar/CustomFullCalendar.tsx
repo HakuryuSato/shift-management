@@ -26,7 +26,7 @@ import {
   handleClickEvent,
   handleClickMultipleInput,
   handleClickToAttendance,
-} from "./clickhandlers";
+} from "./clickHandlers";
 
 // フルカレンダー用設定
 import { renderEventContent } from "./renderEventContnt";
