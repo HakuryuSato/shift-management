@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import interactionPlugin from "@fullcalendar/interaction";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState,useMemo } from "react";
 import { EventClickArg } from "@fullcalendar/core";
 import useSWR from "swr";
 
@@ -74,10 +74,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
   // 関数---------------------------------------------------------------------------------------------------------
 
   // 祝日を取得する
-  const { data: holidays, error: holidaysError } = useSWR(
+  const { data: holidaysData, error: holidaysError } = useSWR(
     "/api/holidays",
     fetcher,
   );
+  const holidays = useMemo(() => (holidaysData ? holidaysData.data : []), [holidaysData]);
 
   // 今月のイベントデータを取得しFullCalendarのStateにセットする関数
   const updateEventData = useCallback(async () => {

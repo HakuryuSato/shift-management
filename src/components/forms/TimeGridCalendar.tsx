@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 // 基盤
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import TimeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -44,10 +44,13 @@ const TimeGridCalendar: React.FC<{ onLogout: () => void; onBack: () => void }> =
     // 関数 -----------------------------------------------------------------------------------------------------------------------
 
     // 祝日を取得する
-    const { data: holidays, error: holidaysError } = useSWR(
+    const { data: holidaysData, error: holidaysError } = useSWR(
       "/api/holidays",
       fetcher,
     );
+    
+    // holidaysDataが更新された場合のみholidaysを再計算
+    const holidays = useMemo(() => (holidaysData ? holidaysData.data : []), [holidaysData]);
 
     const updateEventData = async (start_time: Date, end_time: Date) => {
       const data = await fetchShifts(
