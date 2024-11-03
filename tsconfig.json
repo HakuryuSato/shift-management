@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "react", "react-dom","jest"],
+    "types": ["node", "react", "react-dom", "jest"],
     "typeRoots": ["src/customTypes", "./node_modules/@types"],
     "jsx": "preserve",
     "allowJs": true,
@@ -33,14 +33,9 @@
       "@styles/*": ["./src/styles/*"],
       "@common/*": ["./src/common/*"],
       "@stores/*": ["./src/stores/*"],
-      "@actions/*": ["./src/app/actions/*"],
+      "@actions/*": ["./src/app/actions/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
