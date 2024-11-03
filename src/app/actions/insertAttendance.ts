@@ -3,6 +3,9 @@
 import { supabase } from '@api/supabase';
 import { toJapanISOString } from '@/utils/toJapanISOString';
 
+// 共通のsupabase関数を使う形式にリファクタリングすること
+// 既に存在するなら新たに作成ではなく、end_time更新とすること
+
 export async function insertAttendance(userId:number) {
 
   // 今日の日付を取得（時刻は00:00:00にリセット）
