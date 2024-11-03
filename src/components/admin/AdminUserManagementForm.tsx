@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
 import {
     Box,
@@ -15,7 +15,7 @@ import {
     insertUserAction,
 } from "@/utils/client/serverActionClient";
 
-const AdminUserManagementForm: React.FC = () => {
+export function AdminUserManagementForm() {
     const {
         isAdminUserManagementFormVisible,
         mode,
@@ -26,13 +26,37 @@ const AdminUserManagementForm: React.FC = () => {
         setEmploymentType,
     } = useAdminUserManagementFormStore();
 
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = React.useState(false);
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+
+    // バリデーション用の状態
+    const [userNameError, setUserNameError] = useState(false);
+    const [userNameHelperText, setUserNameHelperText] = useState("");
 
     const handleClose = () => {
         closeAdminUserManagementForm();
+        // フォームを閉じる際にエラーメッセージをリセット
+        setUserNameError(false);
+        setUserNameHelperText("");
     };
 
     const handleActionClick = async () => {
+        let isValid = true;
+
+        // ユーザー名のバリデーション
+        if (userName.trim() === "") {
+            setUserNameError(true);
+            setUserNameHelperText("ユーザー名を入力してください");
+            isValid = false;
+        } else {
+            setUserNameError(false);
+            setUserNameHelperText("");
+        }
+
+        // バリデーションに失敗した場合は処理を中断
+        if (!isValid) {
+            return;
+        }
+
         if (mode === "register") {
             await insertUserAction({
                 user_name: userName,
@@ -82,16 +106,9 @@ const AdminUserManagementForm: React.FC = () => {
                     </Typography>
                     <Typography variant="body1" mb={2}>
                         {mode === "register"
-                            ? "登録するユーザー名を入力してください"
+                            ? "登録するユーザーの雇用形態と名前を入力してください"
                             : "削除するユーザー名を入力してください"}
                     </Typography>
-                    <TextField
-                        label="ユーザー名"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
                     {mode === "register" && (
                         <Select
                             label="雇用形態"
@@ -99,18 +116,36 @@ const AdminUserManagementForm: React.FC = () => {
                             onChange={(e) =>
                                 setEmploymentType(
                                     e.target.value as "full_time" | "part_time",
-                                )}
+                                )
+                            }
                             fullWidth
                             margin="dense"
                         >
                             <MenuItem value="full_time">正社員</MenuItem>
-                            <MenuItem value="part_time">非正社員</MenuItem>
+                            <MenuItem value="part_time">アルバイト・パート</MenuItem>
                         </Select>
                     )}
+                    <TextField
+                        label="ユーザー名"
+                        value={userName}
+                        onChange={(e) => {
+                            setUserName(e.target.value);
+                            // 入力中にエラーメッセージをクリア
+                            if (e.target.value.trim() !== "") {
+                                setUserNameError(false);
+                                setUserNameHelperText("");
+                            }
+                        }}
+                        fullWidth
+                        margin="normal"
+                        error={userNameError}
+                        helperText={userNameHelperText}
+                    />
+
                     <Box mt={4} textAlign="center">
                         <Button
                             variant="contained"
-                            color="primary"
+                            color={mode === "register" ? "primary" : "error"}
                             onClick={handleActionClick}
                         >
                             {mode === "register" ? "登録" : "削除"}
@@ -164,6 +199,4 @@ const AdminUserManagementForm: React.FC = () => {
             )}
         </div>
     );
-};
-
-export default AdminUserManagementForm;
+}
