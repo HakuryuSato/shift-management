@@ -11,19 +11,22 @@ import { ja } from "date-fns/locale";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 import type InterFaceAdminShiftTable from "@customTypes/InterFaceAdminShiftTable";
 
-
 // 独自
 import Button from "@ui/Button";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
-import AdminUserManagementForm from "@forms/AdminUserManagementForm";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
-import toJapanDateString from '@utils/toJapanDateString';
+import toJapanDateString from "@utils/toJapanDateString";
+
+import { AdminUserManagementForm } from "../admin/AdminUserManagementForm";
+
+// store
+import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
 
 // API呼び出し
-import fetchShifts from '@utils/fetchShifts';
-import fetchUserData from "@utils/fetchUserData"
-import { fetchHolidays } from '@utils/apiClient';
+import fetchShifts from "@utils/fetchShifts";
+import fetchUserData from "@utils/fetchUserData";
+import { fetchHolidays } from "@/utils/client/apiClient";
 
 interface AdminShiftTableProps {
   onButtonClickBackToShiftApproval: () => void;
@@ -36,7 +39,6 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   // 関数 ---------------------------------------------------------------------------------------------------
   // 2次元のテーブルを作成する
   const updateTable = async () => {
-
     const userNames = await fetchUserData();
     const shifts = await fetchShiftsFrom26thTo25th();
     const formattedData = formatShiftsForTable(shifts);
@@ -50,10 +52,8 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
       holidays,
     );
 
-
     setTable(table);
   };
-
 
   const fetchShiftsFrom26thTo25th = async () => {
     try {
@@ -61,31 +61,32 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
       const now = new Date();
       const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 26);
       const endDate = new Date(now.getFullYear(), now.getMonth(), 25);
-  
+
       // 日本時間での日付をフォーマット
       const start_time = toJapanDateString(startDate);
       const end_time = toJapanDateString(endDate);
-  
+
       // fetchShifts関数を使用してシフトデータを取得
-      const data = await fetchShifts({ user_id: '*', start_time, end_time });
-  
+      const data = await fetchShifts({ user_id: "*", start_time, end_time });
+
       const formattedEvents = formatShiftsForTable(data);
 
       return formattedEvents;
     } catch (error) {
-      console.error('Failed to fetch shifts:', error);
+      console.error("Failed to fetch shifts:", error);
       return [];
     }
   };
 
   // モーダル閉じる
   const closeModal = () => {
-    setIsModalOpen(false);
+    closeAdminUserManagementForm();
     updateTable();
   };
 
   // フック ---------------------------------------------------------------------------------------------------
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { openAdminUserManagementForm, closeAdminUserManagementForm } =
+    useAdminUserManagementFormStore();
   const [managementModalMode, setManagementModalMode] = useState<
     "register" | "delete"
   >("register");
@@ -104,13 +105,11 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
   const userRegistrationClick = () => {
-    setIsModalOpen(true);
-    setManagementModalMode("register");
+    openAdminUserManagementForm("register");
   };
 
   const userDeleteClick = () => {
-    setIsModalOpen(true);
-    setManagementModalMode("delete");
+    openAdminUserManagementForm("delete");
   };
 
   const handleCsvDownloadClick = () => {
@@ -187,11 +186,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
       {/* 表データ　ここまで  -------------------------------------------------*/}
 
-      <AdminUserManagementForm
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        mode={managementModalMode}
-      />
+      <AdminUserManagementForm />
     </>
   );
 };
