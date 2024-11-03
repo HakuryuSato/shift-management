@@ -1,4 +1,3 @@
-// モックをトップレベルで定義
 jest.mock('@/utils/server/handleSupabaseRequest', () => ({
     handleSupabaseRequest: jest.fn(),
   }));
