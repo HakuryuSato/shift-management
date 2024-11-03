@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 
 export async function GET(req: NextRequest) {
     const user_name = req.nextUrl.searchParams.get('user_name');

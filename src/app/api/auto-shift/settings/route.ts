@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 
 import {
   AutoShiftSettings,

@@ -1,5 +1,5 @@
 'use server'
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 
 // クエリビルダー関数の型定義
 type QueryBuilder<T> = (supabaseClient: typeof supabase) => Promise<{ data: T | null; error: any }>;

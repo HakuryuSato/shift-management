@@ -1,6 +1,6 @@
 'use server';
 
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 import { toJapanISOString } from '@/utils/toJapanISOString';
 
 // 共通のsupabase関数を使う形式にリファクタリングすること
