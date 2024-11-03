@@ -8,7 +8,7 @@ import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 
 // API呼び出し
-import { fetchShifts, fetchUsers } from '@/utils/apiClient';
+import { fetchShifts, fetchUsers } from '@/utils/client/apiClient';
 
 // util関数
 import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';

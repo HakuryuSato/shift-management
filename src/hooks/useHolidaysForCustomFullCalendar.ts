@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { fetchHolidays } from '@/utils/apiClient';
+import { fetchHolidays } from '@/utils/client/apiClient';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import type { Holiday } from "@/customTypes/Holiday";
 import { useEffect, useCallback } from 'react';

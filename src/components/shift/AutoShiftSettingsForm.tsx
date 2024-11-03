@@ -18,7 +18,7 @@ import ShiftTimeInputPerDay from "./ShiftTimeInputPerDay";
 import {
   fetchAutoShiftSettings,
   sendAutoShiftSettings,
-} from "@/utils/apiClient";
+} from "@/utils/client/apiClient";
 import type {
   AutoShiftSettings,
   AutoShiftTime,
