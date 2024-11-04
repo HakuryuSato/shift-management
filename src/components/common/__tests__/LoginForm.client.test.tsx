@@ -3,6 +3,8 @@ import LoginForm from "@/components/common/LoginForm";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+import '@testing-library/jest-dom'; // 追加
+
 jest.mock("next-auth/react");
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
