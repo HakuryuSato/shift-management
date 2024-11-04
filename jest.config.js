@@ -6,7 +6,12 @@ const commonConfig = {
   preset: "ts-jest",
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.jest.json',
+      tsconfig: {
+        ...compilerOptions,
+        module: 'commonjs',
+        moduleResolution: 'node',
+        jsx: 'react-jsx',
+      },
     },
   },
   transform: {
