@@ -1,4 +1,6 @@
 "use cliant";
+// common/LoginFormへ切替後に廃止予定　 ---------------------------------------------------------------------------------------------------
+
 import Button from "@ui/Button";
 import Input from "@ui/Input";
 import Cookies from "js-cookie";
@@ -8,6 +10,8 @@ import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // API呼び出し
 import { fetchUserByUsername } from "@utils/client/apiClient";
+
+
 
 
 const COOKIE_USER_LOGGED_IN = process.env

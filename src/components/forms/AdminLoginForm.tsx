@@ -1,8 +1,14 @@
 "use cliant";
+
+// common/LoginFormへ切替後に廃止予定　 ---------------------------------------------------------------------------------------------------
+
 import Button from "@ui/Button";
 import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
+
+
+
 
 const COOKIE_ADMIN_ISLOGGEDIN = process.env.NEXT_PUBLIC_COOKIE_ADMIN_ISLOGGEDIN as string
 
