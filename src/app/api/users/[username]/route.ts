@@ -1,22 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/utils/server/supabaseClient';
+import { NextRequest } from 'next/server';
+import { handleApiRequest } from '@/utils/server/handleApiRequest';
+import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 
 export async function GET(req: NextRequest, { params }: { params: { username: string } }) {
+  return handleApiRequest(async () => {
     const { username } = params;
-
-    const { data, error } = await supabase
+    const data = await handleSupabaseRequest(async (supabaseClient) => {
+      return supabaseClient
         .from('users')
-        .select('*') // 全てのカラムを取得
+        .select('*')
         .eq('user_name', username)
-        .single(); // 単一のレコードを取得
-
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    if (!data) {
-        return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
+        .single();
+    });
+    return data;
+  });
 }
