@@ -7,7 +7,8 @@ import { useState } from "react";
 import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 
 // API呼び出し
-import fetchGetIsUser from "@utils/fetchGetIsUser"
+import { fetchUserByUsername } from "@utils/client/apiClient";
+
 
 const COOKIE_USER_LOGGED_IN = process.env
     .NEXT_PUBLIC_COOKIE_USER_LOGGEDIN as string;
@@ -32,18 +33,17 @@ const UserLoginForm = (
             return;
         }
 
-        const { data, error } = await fetchGetIsUser(username);
-        const innerData = data.data;
-
-        if (error || !innerData.length) {
+        const user = await fetchUserByUsername(username);
+        
+        if (!user) {
             alert("ユーザーが存在しません");
-            // console.log(error,data)
             return;
         }
 
         const userData: InterFaceTableUsers = {
-            user_id: innerData[0].user_id,
+            user_id: user.user_id,
             user_name: username,
+            // 他の必要なカラムを追加
         };
 
         // ログイン成功
