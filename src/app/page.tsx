@@ -1,12 +1,17 @@
 "use client";
-import { UserHome } from "@/components/user/UserHome";
+
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
-  return (
-    <>
-      <UserHome />
-    </>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/dev/user');
+  }, [router]);
+
+  return null;
 };
 
 export default Home;
