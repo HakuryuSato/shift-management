@@ -4,11 +4,15 @@ const path = require('path');
 
 const commonConfig = {
   preset: "ts-jest",
-  transform: {
-    '^.+\\.ts?$': 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.jest.json',
+    },
   },
-  moduleFileExtensions: ['ts', 'js'],
-  // パスエイリアス継承
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'js', 'jsx', 'tsx'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>/",
   }),
@@ -27,7 +31,7 @@ module.exports = {
       ...commonConfig,
       displayName: 'client',
       testEnvironment: "jsdom",
-      testMatch: ["**/*.client.test.ts"],
+      testMatch: ["**/*.client.test.ts", "**/*.client.test.tsx"],
     },
   ],
 };
