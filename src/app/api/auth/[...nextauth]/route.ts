@@ -41,7 +41,6 @@ const authOptions: NextAuthOptions = {
               user_id: user.user_id,
               user_name: user.user_name || "Default User",
               email: "user@example.com",
-              role: "user",
               employment_type: user.employment_type,
             } as CustomNextAuthUser;
           }
@@ -55,7 +54,6 @@ const authOptions: NextAuthOptions = {
               id: "admin",
               name: "Admin",
               email: "admin@example.com",
-              role: "admin",
             } as CustomNextAuthUser;
           }
         }
