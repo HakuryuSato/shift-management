@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions, Session} from "next-auth";
+import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { CustomNextAuthUser } from "@/customTypes/CustomNextAuthUser";
 import { JWT } from "next-auth/jwt";
@@ -24,19 +24,22 @@ const authOptions: NextAuthOptions = {
             return null;
           }
 
+
           // ユーザーの取得
           const apiResponse = await fetch(
             `${process.env.NEXTAUTH_URL}/api/users/${input1}`
           );
 
-          if (!apiResponse.ok) return null;
 
-          const user = (await apiResponse.json()) as CustomNextAuthUser;
+
+          if (!apiResponse.ok) return null;
+          const user = (await apiResponse.json()).data as CustomNextAuthUser;
 
           if (user) {
             return {
-              id: user.user_id?.toString() || "user_default_id",
-              name: user.user_name || "Default User",
+              id: user.user_id || "user_default_id",
+              user_id: user.user_id,
+              user_name: user.user_name || "Default User",
               email: "user@example.com",
               role: "user",
               employment_type: user.employment_type,
