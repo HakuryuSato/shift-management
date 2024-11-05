@@ -1,12 +1,8 @@
-import NextAuth, { NextAuthOptions, Session, User as NextAuthUser } from "next-auth";
+import NextAuth, { NextAuthOptions, Session} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { User as CustomUserType } from "@/customTypes/User";
+import type { CustomNextAuthUser } from "@/customTypes/CustomNextAuthUser";
 import { JWT } from "next-auth/jwt";
 
-interface CustomUser extends NextAuthUser, CustomUserType {
-  role?: "user" | "admin";
-  user_id?: number;
-}
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -35,7 +31,7 @@ const authOptions: NextAuthOptions = {
 
           if (!apiResponse.ok) return null;
 
-          const user = (await apiResponse.json()) as CustomUserType;
+          const user = (await apiResponse.json()) as CustomNextAuthUser;
 
           if (user) {
             return {
@@ -43,8 +39,8 @@ const authOptions: NextAuthOptions = {
               name: user.user_name || "Default User",
               email: "user@example.com",
               role: "user",
-              user_id: user.user_id,
-            } as CustomUser;
+              employment_type: user.employment_type,
+            } as CustomNextAuthUser;
           }
         } else if (role === "admin") {
           // サイトパスワードと管理者パスワードの検証
@@ -57,7 +53,7 @@ const authOptions: NextAuthOptions = {
               name: "Admin",
               email: "admin@example.com",
               role: "admin",
-            } as CustomUser;
+            } as CustomNextAuthUser;
           }
         }
 
@@ -66,7 +62,7 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: CustomUser | null }) {
+    async jwt({ token, user }: { token: JWT; user?: CustomNextAuthUser | null }) {
       if (user) {
         token.user = user;
       }
@@ -74,7 +70,7 @@ const authOptions: NextAuthOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token.user) {
-        session.user = token.user as CustomUser;
+        session.user = token.user as CustomNextAuthUser;
       }
       return session;
     },
