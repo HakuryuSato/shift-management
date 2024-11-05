@@ -2,10 +2,15 @@ import { create } from 'zustand';
 
 interface UserHomeState {
   userId: number;
-  setUserId: (id: number) => void;
+  userName: string;
+  employmentType: 'full_time' | 'part_time';
+  setUserData: (userData: Partial<UserHomeState>) => void;
 }
 
 export const useUserHomeStore = create<UserHomeState>((set) => ({
-  userId: 1,
-  setUserId: (id) => set({ userId: id }),
+  userId: 0,
+  userName: "",
+  employmentType: "full_time",
+  setUserData: (userData) => set((state) => ({ ...state, ...userData })),
 }));
+
