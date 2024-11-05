@@ -1,7 +1,10 @@
 'use server';
 
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 import { toJapanISOString } from '@/utils/toJapanISOString';
+
+// 共通のsupabase関数を使う形式にリファクタリングすること
+// 既に存在するなら新たに作成ではなく、end_time更新とすること
 
 export async function insertAttendance(userId:number) {
 

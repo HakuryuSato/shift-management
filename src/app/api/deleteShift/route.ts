@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@api/supabase';
+import { supabase } from '@/utils/server/supabaseClient';
 
 export async function DELETE(req: NextRequest) {
     const shiftId = req.nextUrl.searchParams.get('shiftId');

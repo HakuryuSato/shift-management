@@ -36,10 +36,18 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 // ユーザー関連 ---------------------------------------------------------------------------------------------------
+
+// ユーザー名からユーザー情報取得
+export async function fetchUserByUsername(username: string): Promise<User | null> {
+  return await handleFetch<User>(`/api/users/${encodeURIComponent(username)}`);
+}
+
 // ユーザー 一覧取得 API名称はusersに変更予定
 export async function fetchUsers():Promise<User[]> {
   return await handleFetch<User[]>(`/api/getUserData`);
 }
+
+
 
 
 

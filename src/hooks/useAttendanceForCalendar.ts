@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { fetchAttendance } from '@/utils/apiClient';
+import { fetchAttendance } from '@/utils/client/apiClient';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
@@ -8,7 +8,7 @@ import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 
 
-export function useAttendanceEventsForCustomFullCalendar() {
+export function useAttendanceForCalendar() {
   const { setCustomFullCalendarAttendanceEvents, customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
   const { userId } = useUserHomeStore();
   const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth)

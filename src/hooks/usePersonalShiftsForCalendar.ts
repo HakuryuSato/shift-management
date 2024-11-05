@@ -8,7 +8,7 @@ import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 
 // API呼び出し
-import { fetchShifts } from '@/utils/apiClient';
+import { fetchShifts } from '@/utils/client/apiClient';
 
 // util関数
 import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';
@@ -16,7 +16,7 @@ import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar
 
 
 
-export function usePersonalShiftEventsForCustomFullCalendar() {
+export function usePersonalShiftsForCalendar() {
   const { setCustomFullCalendarPersonalShiftEvents, customFullCalendarCurrentMonth} = useCustomFullCalendarStore();
 
 
