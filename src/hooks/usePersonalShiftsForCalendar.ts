@@ -16,7 +16,7 @@ import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar
 
 
 
-export function usePersonalShiftEventsForCustomFullCalendar() {
+export function usePersonalShiftsForCalendar() {
   const { setCustomFullCalendarPersonalShiftEvents, customFullCalendarCurrentMonth} = useCustomFullCalendarStore();
 
 

@@ -14,10 +14,10 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 
 // Hooks
-import { useAttendanceEventsForCustomFullCalendar } from "@/hooks/useAttendanceEventsForCustomFullCalendar";
+import { useAttendanceForCalendar } from "@/hooks/useAttendanceForCalendar";
 import { useHolidaysForCustomFullCalendar } from "@/hooks/useHolidaysForCustomFullCalendar";
-import { usePersonalShiftEventsForCustomFullCalendar } from "@/hooks/usePersonalShiftEventsForCustomFullCalendar";
-import { useAllMembersShiftEventsForCustomFullCalendar } from "@/hooks/useAllmembersShiftEventsForCustomFullCalendar";
+import { usePersonalShiftsForCalendar } from "@/hooks/usePersonalShiftsForCalendar";
+import { useAllShiftsForCalendar } from "@/hooks/useAllShiftsForCalendar";
 
 // クリックイベント群
 import {
@@ -56,13 +56,13 @@ export function CustomFullCalendar() {
   useHolidaysForCustomFullCalendar();
 
   // 出退勤データをStateに設定
-  useAttendanceEventsForCustomFullCalendar();
+  useAttendanceForCalendar();
 
   // 個人用シフトデータ
-  usePersonalShiftEventsForCustomFullCalendar();
+  usePersonalShiftsForCalendar();
 
   // 全員用シフトデータ
-  useAllMembersShiftEventsForCustomFullCalendar();
+  useAllShiftsForCalendar();
 
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え
