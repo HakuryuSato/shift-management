@@ -9,21 +9,19 @@ import { UserHomeFAB } from "./UserHomeFAB";
 import { UserHomeSnackBar } from "./UserHomeSnackBar";
 import { UserCalendarView } from "./UserCalendarView";
 import { UserHomeAppBar } from "./UserHomeAppBar";
+import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 
-// 状態管理
-import { useUserHomeStore } from "@/stores/user/userHomeSlice";
+// Hooks
+import { useUserSessionForUserHome } from "@/hooks/useUserSessionForUserHome";
 
 export function UserHome() {
-  const { userId, setUserId } = useUserHomeStore();
+  useUserSessionForUserHome();
+  const { userId, userName, employmentType, role } = useUserHomeStore();
 
-  // テスト用にここでuserIdをセットしている、最終的にはミドルウェアでセットを行う。
-  const useEffectOnce = () => {
-    useEffect(() => {
-      setUserId(2); // userId=2
-    }, []); // 空の依存配列なので、初回マウント時にのみ実行
-  };
+  // デバッグ用のログ出力
+  // console.log("User Info:", { userId, userName, employmentType, role });
 
-  useEffectOnce();
+
 
   return (
     <>
