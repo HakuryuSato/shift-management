@@ -42,6 +42,7 @@ const authOptions: NextAuthOptions = {
               user_name: user.user_name || "Default User",
               email: "user@example.com",
               employment_type: user.employment_type,
+              role: 'user', // ログイン後のルーティングで使用
             } as CustomNextAuthUser;
           }
         } else if (role === "admin") {
@@ -54,6 +55,7 @@ const authOptions: NextAuthOptions = {
               id: "admin",
               name: "Admin",
               email: "admin@example.com",
+              role: 'admin'
             } as CustomNextAuthUser;
           }
         }

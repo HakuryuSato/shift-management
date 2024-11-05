@@ -1,22 +1,13 @@
-'use client'
-
 import LoginForm from "@/components/common/LoginForm";
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 
-const LoginPage = () => {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <LoginComponent />
-        </Suspense>
-    );
-};
+interface Props {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-const LoginComponent = () => {
-    const searchParams = useSearchParams();
-    const role = searchParams?.get("role") as "user" | "admin" || "user";
-
-    return <LoginForm role={role} />;
+const LoginPage = ({ searchParams }: Props) => {
+  const roleParam = searchParams.role;
+  const role = roleParam === "admin" ? "admin" : "user";
+  return <LoginForm role={role} />;
 };
 
 export default LoginPage;
