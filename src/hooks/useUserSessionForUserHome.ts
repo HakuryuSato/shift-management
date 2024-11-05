@@ -7,6 +7,7 @@ export function useUserSessionForUserHome() {
   const { setUserData } = useUserHomeStore();
   const { data: session } = useSession();
 
+
   useEffect(() => {
     if (session && session.user) {
       const user = session.user as CustomNextAuthUser;
