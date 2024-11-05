@@ -9,19 +9,14 @@ import { UserHomeFAB } from "./UserHomeFAB";
 import { UserHomeSnackBar } from "./UserHomeSnackBar";
 import { UserCalendarView } from "./UserCalendarView";
 import { UserHomeAppBar } from "./UserHomeAppBar";
-import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 
 // Hooks
 import { useUserSessionForUserHome } from "@/hooks/useUserSessionForUserHome";
 
 export function UserHome() {
+
+  // UserSessionの情報をStoreにセット
   useUserSessionForUserHome();
-  const { userId, userName, employmentType, role } = useUserHomeStore();
-
-  // デバッグ用のログ出力
-  // console.log("User Info:", { userId, userName, employmentType, role });
-
-
 
   return (
     <>
