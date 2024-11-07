@@ -4,7 +4,7 @@ import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSli
 import type { Holiday } from "@/customTypes/Holiday";
 import { useEffect, useCallback } from 'react';
 
-export function useHolidaysForCustomFullCalendar() {
+export function useCalendarHolidays() {
   const {
     setCustomFullCalendarHolidayEvents,
   } = useCustomFullCalendarStore();

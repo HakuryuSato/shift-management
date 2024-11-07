@@ -11,12 +11,12 @@ import { UserCalendarView } from "./UserCalendarView";
 import { UserHomeAppBar } from "./UserHomeAppBar";
 
 // Hooks
-import { useUserSessionForUserHome } from "@/hooks/useUserSessionForUserHome";
+import { useUserHomeUserSession } from "@/hooks/useUserHomeUserSession";
 
 export function UserHome() {
 
   // UserSessionの情報をStoreにセット
-  useUserSessionForUserHome();
+  useUserHomeUserSession();
 
   return (
     <>

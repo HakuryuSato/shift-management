@@ -16,7 +16,7 @@ import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
 
 
-export function useAllShiftsForCalendar() {
+export function useCalendarShiftAllMembers() {
   const { setCustomFullCalendarAllMembersShiftEvents, customFullCalendarCurrentMonth,setCustomFullCalendarBgColorsPerDay } = useCustomFullCalendarStore();
 
   // shiftAPIの更新時、attendanceと同じように以下の形式で呼び出すように設計すること

@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import type { CustomNextAuthUser } from '@/customTypes/CustomNextAuthUser';
 
-export function useUserSessionForUserHome() {
+export function useUserHomeUserSession() {
   const { setUserData } = useUserHomeStore();
   const { data: session } = useSession();
 

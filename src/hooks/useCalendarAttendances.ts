@@ -8,7 +8,7 @@ import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 
 
-export function useAttendanceForCalendar() {
+export function useCalendarAttendances() {
   const { setCustomFullCalendarAttendanceEvents, customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
   const { userId } = useUserHomeStore();
   const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth)
