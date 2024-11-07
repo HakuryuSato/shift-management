@@ -12,12 +12,13 @@ import { useSwipeable } from "react-swipeable";
 // Store
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
+import { useModalStore } from "@/stores/common/modalSlice";
 
 // Hooks
 import { useAttendanceForCalendar } from "@/hooks/useAttendanceForCalendar";
 import { useHolidaysForCustomFullCalendar } from "@/hooks/useHolidaysForCustomFullCalendar";
 import { usePersonalShiftsForCalendar } from "@/hooks/usePersonalShiftsForCalendar";
-import { useAllShiftsForCalendar } from "@/hooks/useAllShiftsForCalendar";
+import { useAllShiftsForCalendar } from "@/hooks/useCalendarAllShift";
 
 // クリックイベント群
 import {
@@ -28,7 +29,7 @@ import {
   handleClickToAttendance,
 } from "./clickHandlers";
 
-// フルカレンダー用設定
+// FullCalendar用設定群
 import { renderEventContent } from "./renderEventContnt";
 import { dayCellClassNames } from "./dayCellClassNames";
 
@@ -49,19 +50,22 @@ export function CustomFullCalendar() {
     customFullCalendarAllMembersShiftEvents,
   } = useCustomFullCalendarStore();
 
+  
+
   const { calendarViewMode } = useCalendarViewToggleStore();
 
   // Hooks  ---------------------------------------------------------------------------------------------------
-  // 祝日データををフルカレ用のStateに設定
+  // 各種データをCustomFullCalendarSoreに設定
+  // 祝日
   useHolidaysForCustomFullCalendar();
 
-  // 出退勤データをStateに設定
+  // 出退勤
   useAttendanceForCalendar();
 
-  // 個人用シフトデータ
+  // 個人用シフト
   usePersonalShiftsForCalendar();
 
-  // 全員用シフトデータ
+  // 全員用シフト
   useAllShiftsForCalendar();
 
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
@@ -85,8 +89,6 @@ export function CustomFullCalendar() {
       : []),
   ];
 
-
-
   return (
     <div {...reactSwipeHandlers}>
       <FullCalendar
@@ -101,29 +103,25 @@ export function CustomFullCalendar() {
         initialView={customFullCalendarRole === "admin"
           ? "timeGridWeek"
           : "dayGridMonth"}
-
         height="auto"
         locale={jaLocale}
         events={customFullCalendarEvents}
         eventClick={handleClickEvent}
         dateClick={handleClickDate}
-
         headerToolbar={false}
         footerToolbar={false}
-
         // 月や週遷移時の日付再設定
         datesSet={(dateInfo) => {
-        if (customFullCalendarRole === "admin") {
-          setCustomFullCalendarStartDate(new Date(dateInfo.start));
-          setCustomFullCalendarEndDate(new Date(dateInfo.end));
-        } else {
-          const fullCalendarDate = new Date(dateInfo.start);
-          fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
-          setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
-          setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth());
-        }
-      }}
-
+          if (customFullCalendarRole === "admin") {
+            setCustomFullCalendarStartDate(new Date(dateInfo.start));
+            setCustomFullCalendarEndDate(new Date(dateInfo.end));
+          } else {
+            const fullCalendarDate = new Date(dateInfo.start);
+            fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
+            setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
+            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth());
+          }
+        }}
         // 日付セルに適用するCSSを定義
         dayCellClassNames={(info) =>
           dayCellClassNames(
