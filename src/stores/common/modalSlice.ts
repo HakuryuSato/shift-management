@@ -3,11 +3,11 @@ import { create } from 'zustand';
 interface ModalStoreState {
   isModalVisible: boolean;
   modalRole: 'user' | 'admin';
-  modalAction: 'confirm' | 'register' | 'delete';
+  modalAction: 'confirm' | 'register' | 'delete' | 'multiple-register';
 
   setIsModalVisible: (visible: boolean) => void;
   setModalRole: (role: 'user' | 'admin') => void;
-  setModalAction: (action: 'confirm' | 'register' | 'delete') => void;
+  setModalAction: (action: 'confirm' | 'register' | 'delete' | 'multiple-register') => void;
 }
 
 export const useModalStore = create<ModalStoreState>((set) => ({

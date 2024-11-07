@@ -15,10 +15,10 @@ import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice
 import { useModalStore } from "@/stores/common/modalSlice";
 
 // Hooks
-import { useCalendarAttendances } from "@/hooks/useCalendarAttendances";
-import { useCalendarHolidays } from "@/hooks/useCalendarHolidays";
-import { useCalendarShiftPersonal } from "@/hooks/useCalendarShiftPersonal";
-import { useCalendarShiftAllMembers } from "@/hooks/useCalendarShiftAllMembers";
+import { useAttendanceForCalendar } from "@/hooks/common/useCalendarAttendances";
+import { useCalendarHolidays } from "@/hooks/common/useCalendarHolidays";
+import { useCalendarShiftPersonal } from "@/hooks/user/useCalendarShiftPersonal";
+import { useCalendarShiftAllMembers } from "@/hooks/common/useCalendarShiftAllMembers";
 
 // クリックイベント群
 import {
@@ -60,7 +60,7 @@ export function CustomFullCalendar() {
   useCalendarHolidays();
 
   // 出退勤
-  useCalendarAttendances();
+  useAttendanceForCalendar();
 
   // 個人用シフト
   useCalendarShiftPersonal();
