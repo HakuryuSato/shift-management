@@ -9,24 +9,18 @@ import { UserHomeFAB } from "./UserHomeFAB";
 import { UserHomeSnackBar } from "./UserHomeSnackBar";
 import { UserCalendarView } from "./UserCalendarView";
 import { UserHomeAppBar } from "./UserHomeAppBar";
-
-// Stores
-import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
+import { ModalContainer } from "@/components/common/Modal/ModalContainer";
 
 // Hooks
-import { useUserHomeUserSession } from "@/hooks/user/useUserHomeUserSession";
+import { useCommonHomeInitialize } from "@/hooks/user/useCommonHomeInitialize";
 
 export function UserHome() {
-
-  // UserSessionの情報をStoreにセット
-  useUserHomeUserSession();
-
-  // 各種コンポーネントをUser用に設定
-  
-  
+  // User用に各種コンポーンネントの状態を設定
+  useCommonHomeInitialize("user");
 
   return (
     <>
+      <ModalContainer/>
       <UserQrCodeReader />
       <UserHomeAppBar />
       <UserCalendarView />
