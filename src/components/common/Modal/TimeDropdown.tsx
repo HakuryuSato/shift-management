@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   FormControl,
   FormHelperText,
@@ -13,16 +14,14 @@ interface TimeDropdownProps {
   onChange: (time: string) => void;
   error?: boolean;
   helperText?: string;
-  disabled: boolean;
 }
 
-const TimeDropdown: React.FC<TimeDropdownProps> = ({
+export const TimeDropdown: React.FC<TimeDropdownProps> = ({
   label,
   value,
   onChange,
   error = false,
   helperText = "",
-  disabled,
 }) => {
   // 定数
   const timeOptions = [
@@ -68,7 +67,6 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
       size="small"
       error={error}
       sx={{ minWidth: 120 }}
-      disabled={disabled}
     >
       {label && <InputLabel>{label}</InputLabel>}
       <Select
@@ -86,5 +84,3 @@ const TimeDropdown: React.FC<TimeDropdownProps> = ({
     </FormControl>
   );
 };
-
-export default TimeDropdown;
