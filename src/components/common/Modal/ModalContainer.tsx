@@ -6,13 +6,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { ModalContent } from "./ModalContent";
 import { ModalTopBar } from "./ModalTopBar";
-
+import { useModalContainer } from "@/hooks/common/Modal/useModalContainer";
 
 export const ModalContainer: React.FC = () => {
-    const isModalVisible = useModalContainerStore((state) => state.isModalVisible);
+    const isModalVisible = useModalContainerStore((state) =>
+        state.isModalVisible
+    );
     const closeModal = useModalContainerStore((state) => state.closeModal);
     const modalMode = useModalContainerStore((state) => state.modalMode);
-    
+    const { handleClickModalContainerButton } = useModalContainer();
 
     const modeText: { [key: string]: string } = {
         confirm: "確認",
@@ -55,7 +57,10 @@ export const ModalContainer: React.FC = () => {
                         marginTop: 2,
                     }}
                 >
-                    <Button variant="contained">
+                    <Button
+                        variant="contained"
+                        onClick={() => handleClickModalContainerButton()}
+                    >
                         {modeText[modalMode]}
                     </Button>
                 </Box>

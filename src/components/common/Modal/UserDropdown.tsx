@@ -1,7 +1,8 @@
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const UserDropdown: React.FC = () => (
+
+export const UserDropdown: React.FC = () => (
   <FormControl fullWidth>
     <InputLabel>ユーザー名</InputLabel>
     <Select>
@@ -11,4 +12,4 @@ const UserDropdown: React.FC = () => (
   </FormControl>
 );
 
-export default UserDropdown;
+

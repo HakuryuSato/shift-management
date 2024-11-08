@@ -5,22 +5,20 @@ import { useModalTopBarStore } from "@/stores/common/modalTopBarSlice";
 
 export const useModalTopBar = () => {
     const closeModal = useModalContainerStore((state) => state.closeModal);
-    const setmodalMode = useModalContainerStore((state) => state.setmodalMode)
+    const setmodalMode = useModalContainerStore((state) => state.setModalMode)
     const openModal = useModalContainerStore((state) => state.openModal)
 
 
 
     // 編集アイコンクリック
     const handleClickEditIcon = () => {
-        setmodalMode('register')
+        setmodalMode('update')
         closeModal()
-        openModal('register')
-
     };
 
     // 削除アイコンクリック
     const handleClickDeleteIcon = () => {
-
+        setmodalMode('delete')
 
     };
 

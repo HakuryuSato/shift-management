@@ -1,13 +1,16 @@
 import { create } from 'zustand';
 
+type ModalRole = 'user' | 'admin';
+type ModalMode = 'confirm' | 'register' | 'update' | 'delete' | 'multiple-register';
+
 interface ModalContainerStoreState {
   isModalVisible: boolean;
-  modalRole: 'user' | 'admin';
-  modalMode: 'confirm' | 'register' | 'delete' | 'multiple-register';
+  modalRole: ModalRole;
+  modalMode: ModalMode;
 
-  setModalRole: (role: 'user' | 'admin') => void;
-  setmodalMode: (action: 'confirm' | 'register' | 'delete' | 'multiple-register') => void;
-  openModal: (mode: 'confirm' | 'register' | 'delete' | 'multiple-register') => void;
+  setModalRole: (role: ModalRole) => void;
+  setModalMode: (mode: ModalMode) => void;
+  openModal: (mode: ModalMode) => void;
   closeModal: () => void;
 }
 
@@ -17,11 +20,8 @@ export const useModalContainerStore = create<ModalContainerStoreState>((set) => 
   modalMode: 'confirm',
 
   setModalRole: (role) => set({ modalRole: role }),
-  setmodalMode: (action) => set({ modalMode: action }),
+  setModalMode: (mode) => set({ modalMode: mode }),
 
-  // モーダルを開く関数
   openModal: (mode) => set({ modalMode: mode, isModalVisible: true }),
-
-  // モーダルを閉じる関数
   closeModal: () => set({ isModalVisible: false }),
 }));
