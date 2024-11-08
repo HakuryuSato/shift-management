@@ -15,19 +15,12 @@ import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice
 import { useModalStore } from "@/stores/common/modalSlice";
 
 // Hooks
-import { useAttendanceForCalendar } from "@/hooks/common/useCalendarAttendances";
-import { useCalendarHolidays } from "@/hooks/common/useCalendarHolidays";
+import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
+import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/user/useCalendarShiftPersonal";
-import { useCalendarShiftAllMembers } from "@/hooks/common/useCalendarShiftAllMembers";
+import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllMembers";
+import { useCalendarClickHandlers } from "@/hooks/common/CustomFullCalendar/useCalendarClickHandlers";
 
-// クリックイベント群
-import {
-  handleClickDate,
-  handleClickDownloadWeeklyData,
-  handleClickEvent,
-  handleClickMultipleInput,
-  handleClickToAttendance,
-} from "./clickHandlers";
 
 // FullCalendar用設定群
 import { renderEventContent } from "./renderEventContnt";
@@ -60,13 +53,17 @@ export function CustomFullCalendar() {
   useCalendarHolidays();
 
   // 出退勤
-  useAttendanceForCalendar();
+  useCalendarAttendances();
 
   // 個人用シフト
   useCalendarShiftPersonal();
 
   // 全員用シフト
   useCalendarShiftAllMembers();
+
+
+  // handleClick用Hooks
+  const { handleClickDate,handleClickEvent} = useCalendarClickHandlers()
 
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え

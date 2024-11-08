@@ -8,14 +8,23 @@ import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 
 
-export function useAttendanceForCalendar() {
-  const { setCustomFullCalendarAttendanceEvents, customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
-  const { userId } = useUserHomeStore();
-  const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth)
-  const { isUserCalendarViewVisible } = useUserCalendarViewStore();
+export function useCalendarAttendances() {
+  const setCustomFullCalendarAttendanceEvents = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarAttendanceEvents
+  );
+  const customFullCalendarCurrentMonth = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarCurrentMonth
+  );
+  const userId = useUserHomeStore((state) => state.userId);
+  const isUserCalendarViewVisible = useUserCalendarViewStore(
+    (state) => state.isUserCalendarViewVisible
+  );
+
+  const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth);
+
 
   const { data: attendances, mutate } = useSWR(
-    isUserCalendarViewVisible 
+    isUserCalendarViewVisible
       ? ['attendances', userId, start_date, end_date].join('-')
       : null,
     () => fetchAttendance({ user_id: userId, start_date, end_date })
@@ -28,6 +37,6 @@ export function useAttendanceForCalendar() {
       console.log(formattedEvents)
       setCustomFullCalendarAttendanceEvents(formattedEvents);
     }
-  }, [attendances, customFullCalendarCurrentMonth, isUserCalendarViewVisible,setCustomFullCalendarAttendanceEvents]);
+  }, [attendances, customFullCalendarCurrentMonth, isUserCalendarViewVisible, setCustomFullCalendarAttendanceEvents]);
 
 }

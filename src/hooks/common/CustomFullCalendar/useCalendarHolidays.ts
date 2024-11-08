@@ -11,7 +11,7 @@ export function useCalendarHolidays() {
 
   const { data: holidays } = useSWR<Holiday[]>('holidays', fetchHolidays);
 
-  // 祝日データを一度だけ設定する関数
+  // 祝日データを設定する関数
   const updateHolidayEvents = useCallback(() => {
     if (holidays) {
       const holidayEvents = holidays.map((holiday: Holiday) => ({
