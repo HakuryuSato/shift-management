@@ -4,34 +4,39 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { useModalHooks } from "@/hooks/common/useModalHooks";
+import { useModalTopBarStore } from "@/stores/common/modalTopBarSlice";
+import { useModalTopBar } from "@/hooks/common/Modal/useModalTopBar";
 
 export const ModalTopBar: React.FC = () => {
-    const { closeModal } = useModalHooks();
+    const isModalTopBarEditIconsVisible = useModalTopBarStore(
+        (state) => state.isModalTopBarEditIconsVisible,
+    );
+    const { handleClickEditIcon, handleClickDeleteIcon, handleClickCloseIcon } =
+        useModalTopBar();
 
     return (
         <Box
             sx={{
-                position: "absolute",
-                top: 8,
-                width: "100%",
                 display: "flex",
                 justifyContent: "space-between",
-                paddingX: 1,
+                alignItems: "center",
             }}
         >
-            <IconButton onClick={closeModal}>
+            <IconButton onClick={handleClickCloseIcon}>
                 <CloseIcon />
             </IconButton>
 
-            <Box>
-                <IconButton>
-                    <EditIcon />
-                </IconButton>
-                <IconButton sx={{ marginLeft: 1 }}>
-                    <DeleteIcon />
-                </IconButton>
-            </Box>
+            {/* 編集禁止または、confirm以外なら編集と削除アイコン非表示 */}
+            {isModalTopBarEditIconsVisible && (
+                <Box sx={{ display: "flex" }}>
+                    <IconButton onClick={handleClickEditIcon}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={handleClickDeleteIcon}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
+            )}
         </Box>
     );
 };

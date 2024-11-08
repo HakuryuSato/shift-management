@@ -1,11 +1,11 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import { useModalStore } from "@/stores/common/modalSlice";
-import TimeDropdown from "@/components/common/TimeDropdown";
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
+import OldTimeDropdown from "@/components/common/OldTimeDropdown";
 import UserDropdown from "./UserDropdown";
 
 export const ModalContent: React.FC = () => {
-  const { modalRole, modalMode } = useModalStore();
+  const { modalRole, modalMode } = useModalContainerStore();
 
   return (
     <div>
@@ -17,7 +17,7 @@ export const ModalContent: React.FC = () => {
 
       {/* 登録用 */}
       {modalMode == "register" && (
-        <TimeDropdown label="開始時間" disabled={false} onChange={() => {}} />
+        <TimeDropdown label="開始時間"  onChange={() => {}} />
       )}
 
     </div>

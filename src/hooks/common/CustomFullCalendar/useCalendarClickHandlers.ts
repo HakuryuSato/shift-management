@@ -2,7 +2,10 @@ import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 import { useUserHomeStore } from "@/stores/user/userHomeSlice";
-import { useModalStore } from "@/stores/common/modalSlice";
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
+import { useCalendarViewToggleStore } from "@/stores/user/calendarViewToggleSlice";
+import { useModalTopBarStore } from "@/stores/common/modalTopBarSlice";
+
 
 
 export const useCalendarClickHandlers = () => {
@@ -10,7 +13,11 @@ export const useCalendarClickHandlers = () => {
     const userId = useUserHomeStore((state) => state.userId);
     const setCustomFullCalendarClickedDate = useCustomFullCalendarStore((state) => state.setCustomFullCalendarClickedDate);
     const setCustomFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.setCustomFullCalendarClickedEvent);
-    const setIsModalVisible= useModalStore((state) => state.setIsModalVisible);
+    const openModal = useModalContainerStore((state) => state.openModal);
+    const modalMode = useModalContainerStore((state) => state.modalMode);
+    const calendarViewMode = useCalendarViewToggleStore((state) => state.calendarViewMode) // 'ATTENDANCE' | 'PERSONAL_SHIFT' | 'ALL_MEMBERS_SHIFT';
+    const showModalTopBarEditIcons=useModalTopBarStore((state)=>state.showModalTopBarEditIcons)
+    const hideModalTopBarEditIcons=useModalTopBarStore((state)=>state.hideModalTopBarEditIcons)
 
 
     const handleClickEvent = (eventInfo: EventClickArg) => {
@@ -20,14 +27,24 @@ export const useCalendarClickHandlers = () => {
             return;
         }
 
-        // 祝日でない場合、user/adminの役割に応じて処理
-        if (customFullCalendarRole === "user") {
-            setCustomFullCalendarClickedEvent(eventInfo)
-            setIsModalVisible(true)
+        // フルカレStoreにクリックされたEvent情報保存
+        setCustomFullCalendarClickedEvent(eventInfo);
 
+        // userかつ自分のイベントの場合
+        if (customFullCalendarRole === "user" && eventInfo.event.extendedProps.user_id == userId) {
+            // 個人シフト画面なら編集アイコンを表示
+            if (calendarViewMode === 'PERSONAL_SHIFT') {
+                showModalTopBarEditIcons()
+                setCustomFullCalendarClickedEvent(eventInfo);
+                openModal('confirm');
+            }else{
+                hideModalTopBarEditIcons()
+                openModal('confirm');
+            }
+        }
 
-        } else { // admin の場合
-            // イベントからユーザー名を取得して、上に表示できるようにする？
+        // adminの場合（未実装）
+        if (customFullCalendarRole === "admin") {
             console.log("管理者としての処理を実行します。");
         }
 

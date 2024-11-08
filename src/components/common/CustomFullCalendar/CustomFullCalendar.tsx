@@ -12,7 +12,7 @@ import { useSwipeable } from "react-swipeable";
 // Store
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
-import { useModalStore } from "@/stores/common/modalSlice";
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 
 // Hooks
 import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";

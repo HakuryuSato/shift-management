@@ -3,15 +3,15 @@ import { Box, Button, IconButton, Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useModalStore } from "@/stores/common/modalSlice";
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { ModalContent } from "./ModalContent";
 import { ModalTopBar } from "./ModalTopBar";
 
 
 export const ModalContainer: React.FC = () => {
-    const isModalVisible = useModalStore((state) => state.isModalVisible);
-    const setIsModalVisible = useModalStore((state) => state.setIsModalVisible);
-    const modalMode = useModalStore((state) => state.modalMode);
+    const isModalVisible = useModalContainerStore((state) => state.isModalVisible);
+    const closeModal = useModalContainerStore((state) => state.closeModal);
+    const modalMode = useModalContainerStore((state) => state.modalMode);
     
 
     const modeText: { [key: string]: string } = {
@@ -24,7 +24,7 @@ export const ModalContainer: React.FC = () => {
     return (
         <Modal
             open={isModalVisible}
-            onClose={() => setIsModalVisible(false)}
+            onClose={() => closeModal()}
             sx={{
                 display: "flex",
                 alignItems: "center",
@@ -33,16 +33,16 @@ export const ModalContainer: React.FC = () => {
         >
             <Box
                 sx={{
-                    padding: 2,
+                    display: "flex",
+                    flexDirection: "column",
                     backgroundColor: "white",
                     borderRadius: 2,
-                    position: "relative",
                     width: 400,
+                    padding: 2,
                 }}
             >
-
                 {/* TopBar */}
-                <ModalTopBar/>
+                <ModalTopBar />
 
                 {/* コンテンツ */}
                 <ModalContent />
