@@ -1,44 +1,40 @@
+import { useEffect } from 'react';
 import { useModalContentStore } from '@/stores/common/modalContentSlice';
 import { useCustomFullCalendarStore } from '@/stores/common/customFullCalendarSlice';
+import { useModalContainerStore } from '@/stores/common/modalContainerSlice';
+import { toJapanDateString } from '@/utils/toJapanDateString'
+
 
 export const useModalContent = () => {
-  const {
-    setModalContentSelectedDate,
-    setModalContentSelectedStartTime,
-    setModalContentSelectedEndTime,
-    setModalContentSelectedUserName,
-  } = useModalContentStore((state) => ({
-    setModalContentSelectedDate: state.setModalContentSelectedDate,
-    setModalContentSelectedStartTime: state.setModalContentSelectedStartTime,
-    setModalContentSelectedEndTime: state.setModalContentSelectedEndTime,
-    setModalContentSelectedUserName: state.setModalContentSelectedUserName,
-  }));
+  const modalMode = useModalContainerStore((state) => state.modalMode)
 
-  const { customFullCalendarClickedEvent, customFullCalendarClickedDate } = useCustomFullCalendarStore((state) => ({
-    customFullCalendarClickedEvent: state.customFullCalendarClickedEvent,
-    customFullCalendarClickedDate: state.customFullCalendarClickedDate,
-  }));
+  const setModalContentSelectedDate = useModalContentStore((state) => state.setModalContentSelectedDate);
+  const setModalContentSelectedStartTime = useModalContentStore((state) => state.setModalContentSelectedStartTime);
+  const setModalContentSelectedEndTime = useModalContentStore((state) => state.setModalContentSelectedEndTime);
+  const setModalContentSelectedUserName = useModalContentStore((state) => state.setModalContentSelectedUserName);
 
-  // 初期化処理
+  const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent);
+  const customFullCalendarClickedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate);
+
+
+  // ModalContent初期化用関数
   const modalContentInitialize = (mode: 'eventClick' | 'dateClick') => {
     if (mode === 'eventClick') {
       if (customFullCalendarClickedEvent) {
-        // 日付を取得
+
+        // 日付、ユーザー名、開始・終了時間をフルカレイベントから取得
         const startDate = customFullCalendarClickedEvent.event.start;
-        const dateStr = startDate ? startDate.toISOString().slice(0, 10) : ''; // "YYYY-MM-DD"
-
-        // ユーザー名を取得
-        const userName = customFullCalendarClickedEvent.event.extendedProps.user_name || '';
-
-        // 開始・終了時間を取得
+        const dateStr = startDate ? toJapanDateString(startDate) : ''; // "YYYY-MM-DD"
+        const userName = customFullCalendarClickedEvent.event.extendedProps.user_name ?? '';
         const startTime = customFullCalendarClickedEvent.event.start;
         const endTime = customFullCalendarClickedEvent.event.end;
 
         // 時間を 'HH:mm' 形式にフォーマット
-        const formatTime = (date: Date | null) => (date ? date.toTimeString().slice(0, 5) : '');
+        const extractTime = (date: Date | null) =>
+          date?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) ?? '';
 
-        const startTimeStr = formatTime(startTime);
-        const endTimeStr = formatTime(endTime);
+        const startTimeStr = extractTime(startTime);
+        const endTimeStr = extractTime(endTime);
 
         // 状態を更新
         setModalContentSelectedDate(dateStr);
@@ -47,18 +43,24 @@ export const useModalContent = () => {
         setModalContentSelectedEndTime(endTimeStr);
       }
     } else if (mode === 'dateClick') {
-      if (customFullCalendarClickedDate) {
-        // 日付を取得
-        const dateStr = customFullCalendarClickedDate.dateStr || '';
+      // if (customFullCalendarClickedDate) {
+      //   // 日付を取得
+      //   const dateStr = customFullCalendarClickedDate.dateStr;
 
-        // 状態を初期化
-        setModalContentSelectedDate(dateStr);
-        setModalContentSelectedUserName('');
-        setModalContentSelectedStartTime('');
-        setModalContentSelectedEndTime('');
-      }
+      //   // 状態を初期化
+      //   setModalContentSelectedDate(dateStr);
+      //   setModalContentSelectedUserName('');
+      //   setModalContentSelectedStartTime('');
+      //   setModalContentSelectedEndTime('');
+      // }
     }
   };
+
+  useEffect(() => {
+    modalContentInitialize();
+  }, [modalMode, customFullCalendarClickedEvent]); // 依存関係に modalMode と customFullCalendarClickedEvent を追加
+
+
 
   // その他のハンドラ
   const handleChangeStartTime = (newStartTime: string) => {

@@ -10,7 +10,7 @@ interface ModalContainerStoreState {
 
   setModalRole: (role: ModalRole) => void;
   setModalMode: (mode: ModalMode) => void;
-  openModal: (mode: ModalMode) => void;
+  openModal: () => void;
   closeModal: () => void;
 }
 
@@ -21,7 +21,6 @@ export const useModalContainerStore = create<ModalContainerStoreState>((set) => 
 
   setModalRole: (role) => set({ modalRole: role }),
   setModalMode: (mode) => set({ modalMode: mode }),
-
-  openModal: (mode) => set({ modalMode: mode, isModalVisible: true }),
+  openModal: () => set({ isModalVisible: true }),
   closeModal: () => set({ isModalVisible: false }),
 }));

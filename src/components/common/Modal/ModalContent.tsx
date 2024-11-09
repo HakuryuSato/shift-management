@@ -10,28 +10,22 @@ export const ModalContent: React.FC = () => {
   const { modalRole, modalMode } = useModalContainerStore();
 
   const {
-    modalContentInitialize,
     handleChangeStartTime,
     handleChangeEndTime,
     handleChangeSelectedUser,
   } = useModalContent();
 
-  const {
-    modalContentSelectedDate,
-    modalContentSelectedUserName,
-    modalContentSelectedStartTime,
-    modalContentSelectedEndTime,
-  } = useModalContentStore((state) => ({
-    modalContentSelectedDate: state.modalContentSelectedDate,
-    modalContentSelectedUserName: state.modalContentSelectedUserName,
-    modalContentSelectedStartTime: state.modalContentSelectedStartTime,
-    modalContentSelectedEndTime: state.modalContentSelectedEndTime,
-  }));
+  const modalContentSelectedDate = useModalContentStore((state) => state.modalContentSelectedDate);
+  const modalContentSelectedUserName = useModalContentStore((state) => state.modalContentSelectedUserName);
+  const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime);
+  const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime);
 
   return (
     <div>
+      {/* 管理者ならユーザー名 */}
       {modalRole === "admin" && (
         <>
+          {modalMode === "confirm"}
           <Typography>{modalContentSelectedUserName}</Typography>
 
           {/* modalModeがregisterならユーザー選択 */}
@@ -45,16 +39,18 @@ export const ModalContent: React.FC = () => {
       {/* 登録用 */}
       {modalMode === "register" && (
         <Box display="flex" justifyContent="center" alignItems="center">
-          <TimeDropdown
+          {
+            /* <TimeDropdown
             label="開始時間"
             value={modalContentSelectedStartTime}
-            onChange={handleChangeStartTime}
+            onChange={()=>handleChangeStartTime()}
           />
           <TimeDropdown
             label="終了時間"
             value={modalContentSelectedEndTime}
             onChange={handleChangeEndTime}
-          />
+          /> */
+          }
         </Box>
       )}
 
