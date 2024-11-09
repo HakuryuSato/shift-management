@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
@@ -14,6 +15,7 @@ export const useCalendarClickHandlers = () => {
     const userId = useUserHomeStore((state) => state.userId);
     const setCustomFullCalendarClickedDate = useCustomFullCalendarStore((state) => state.setCustomFullCalendarClickedDate);
     const setCustomFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.setCustomFullCalendarClickedEvent);
+    const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent);
     const openModal = useModalContainerStore((state) => state.openModal);
     const modalMode = useModalContainerStore((state) => state.modalMode);
     const calendarViewMode = useCalendarViewToggleStore((state) => state.calendarViewMode) // 'ATTENDANCE' | 'PERSONAL_SHIFT' | 'ALL_MEMBERS_SHIFT';
@@ -22,25 +24,14 @@ export const useCalendarClickHandlers = () => {
     const { modalContentInitialize } = useModalContent()
 
 
-    const handleClickEvent = (eventInfo: EventClickArg) => {
-        // 終日イベント(祝日のみ)なら終了
-        if (eventInfo.event.allDay) {
-            console.log("祝日のため処理を行いません。");
-            return;
-        }
-
-        
-
-        // フルカレStoreにクリックされたEvent情報保存
-        setCustomFullCalendarClickedEvent(eventInfo);
-
+    const initializeModals = (customFullCalendarClickedEvent: EventClickArg) => {
         // // userかつ自分のイベントの場合
-        if (customFullCalendarRole === "user" && eventInfo.event.extendedProps.user_id == userId) {
+        if (customFullCalendarRole === "user" && customFullCalendarClickedEvent.event.extendedProps.user_id == userId) {
             // 個人シフト画面なら編集アイコンを表示
             if (calendarViewMode === 'PERSONAL_SHIFT') {
                 showModalTopBarEditIcons()
                 modalContentInitialize('eventClick')
-                setCustomFullCalendarClickedEvent(eventInfo);
+                // setCustomFullCalendarClickedEvent(eventInfo);
                 openModal();
             } else {
                 hideModalTopBarEditIcons()
@@ -52,6 +43,28 @@ export const useCalendarClickHandlers = () => {
         // if (customFullCalendarRole === "admin") {
         //     console.log("管理者としての処理を実行します。");
         // }
+    }
+
+    useEffect(() => {
+        if (customFullCalendarClickedEvent) {
+            // eventのセットに伴う処理
+            console.log("イベントがセットされました:", customFullCalendarClickedEvent);
+
+            // initializeModalsを呼び出す
+            initializeModals(customFullCalendarClickedEvent);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [customFullCalendarClickedEvent]);
+
+    const handleClickEvent = (eventInfo: EventClickArg) => {
+        // 終日イベント(祝日のみ)なら終了
+        if (eventInfo.event.allDay) {
+            console.log("祝日のため処理を行いません。");
+            return;
+        }
+
+        // フルカレStoreにクリックされたEvent情報保存
+        setCustomFullCalendarClickedEvent(eventInfo);
 
         // 選択されたイベント情報を表示
         console.log("選択されたイベント情報:", eventInfo);
