@@ -43,22 +43,19 @@ export const useModalContent = () => {
         setModalContentSelectedEndTime(endTimeStr);
       }
     } else if (mode === 'dateClick') {
-      // if (customFullCalendarClickedDate) {
-      //   // 日付を取得
-      //   const dateStr = customFullCalendarClickedDate.dateStr;
+      if (customFullCalendarClickedDate) {
+        // 日付を取得
+        const dateStr = customFullCalendarClickedDate.dateStr;
 
-      //   // 状態を初期化
-      //   setModalContentSelectedDate(dateStr);
-      //   setModalContentSelectedUserName('');
-      //   setModalContentSelectedStartTime('');
-      //   setModalContentSelectedEndTime('');
-      // }
+        // 状態を初期化
+        setModalContentSelectedDate(dateStr);
+        setModalContentSelectedUserName('');
+        setModalContentSelectedStartTime('');
+        setModalContentSelectedEndTime('');
+      }
     }
   };
 
-  useEffect(() => {
-    modalContentInitialize();
-  }, [modalMode, customFullCalendarClickedEvent]); // 依存関係に modalMode と customFullCalendarClickedEvent を追加
 
 
 
