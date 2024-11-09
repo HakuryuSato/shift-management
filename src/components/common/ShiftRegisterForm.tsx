@@ -14,7 +14,7 @@ import fetchUserData from "@/utils/fetchUserData";
 import ShiftEditToolBar from "@components/common/ShiftEditToolBar";
 import ShiftDeleteForm from "./ShiftDeleteForm";
 import DaySelector from "@components/common/DaySelector";
-import toJapanDateString from "@/utils/toJapanDateString";
+import {toJapanDateString} from "@/utils/toJapanDateString";
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";

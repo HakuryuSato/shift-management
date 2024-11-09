@@ -1,4 +1,4 @@
-import toJapanDateString from '@/utils/toJapanDateString';
+import {toJapanDateString} from '@/utils/toJapanDateString';
 
 export function calcDateRangeForMonth(month:number,isAdmin?:boolean) {
   const now = new Date();
