@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 
+import type { CustomFullCalendarEvent } from '@/customTypes/CustomFullCalendarEvent';
+
 interface CustomFullCalendarStoreState {
   // 共通の状態
   customFullCalendarRole: 'admin' | 'user';
@@ -14,10 +16,10 @@ interface CustomFullCalendarStoreState {
   customFullCalendarCurrentMonth: number;
 
   // イベントの状態を3つに分割(ページ切替で再取得が発生しないように)
-  customFullCalendarHolidayEvents: any[];
-  customFullCalendarAttendanceEvents: any[];
-  customFullCalendarPersonalShiftEvents: any[];
-  customFullCalendarAllMembersShiftEvents: any[];
+  customFullCalendarHolidayEvents: CustomFullCalendarEvent[];
+  customFullCalendarAttendanceEvents: CustomFullCalendarEvent[];
+  customFullCalendarPersonalShiftEvents: CustomFullCalendarEvent[];
+  customFullCalendarAllMembersShiftEvents: CustomFullCalendarEvent[];
 
   // カレンダークリック時の選択情報
   customFullCalendarClickedDate: DateClickArg | null;
