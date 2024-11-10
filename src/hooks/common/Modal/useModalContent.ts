@@ -3,6 +3,7 @@ import { useModalContentStore } from '@/stores/common/modalContentSlice';
 import { useCustomFullCalendarStore } from '@/stores/common/customFullCalendarSlice';
 import { useModalContainerStore } from '@/stores/common/modalContainerSlice';
 import { toJapanDateString } from '@/utils/toJapanDateString'
+import { getUserOptions } from '@/utils/userOptions';
 
 
 export const useModalContent = () => {
@@ -49,14 +50,14 @@ export const useModalContent = () => {
 
         // 状態を初期化
         setModalContentSelectedDate(dateStr);
-        setModalContentSelectedUserName('');
-        setModalContentSelectedStartTime('');
-        setModalContentSelectedEndTime('');
+        // setModalContentSelectedUserName('');
+        const { start_time, end_time } = getUserOptions();
+        // ここでCookieから値取得
+        setModalContentSelectedStartTime(start_time);
+        setModalContentSelectedEndTime(end_time);
       }
     }
   };
-
-
 
 
   // その他のハンドラ
