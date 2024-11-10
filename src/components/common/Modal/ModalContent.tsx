@@ -30,70 +30,67 @@ export const ModalContent: React.FC = () => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-    >
-      {/* 管理者なら */}
-      {modalRole === "admin" && (
-        <>
-          {/* 確認ならユーザー名表示 */}
-          <Box mb={2} display={modalMode === "confirm" ? "block" : "none"}>
-            <Typography>{modalContentSelectedUserName}</Typography>
-          </Box>
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="center"
+    sx={{ gap: 2 }}
+  >
+    {/* 管理者なら */}
+    {modalRole === "admin" && (
+      <>
+        {/* 確認ならユーザー名表示 */}
+        <Box display={modalMode === "confirm" ? "block" : "none"}>
+          <Typography>{modalContentSelectedUserName}</Typography>
+        </Box>
 
-          {/* 登録ならユーザー選択表示 */}
-          <Box mb={2} display={modalMode === "register" ? "block" : "none"}>
-            <UserDropdown />
-          </Box>
-        </>
-      )}
+        {/* 登録ならユーザー選択表示 */}
+        <Box display={modalMode === "register" ? "block" : "none"}>
+          <UserDropdown />
+        </Box>
+      </>
+    )}
 
-      {/* 選択された日付 */}
-      <Box mb={2}>
-        <Typography variant="h5">{modalContentSelectedDate}</Typography>
-      </Box>
-
-      {/* 登録用 */}
-      <Box
-        mb={2}
-        display={modalMode === "register" ? "flex" : "none"}
-        justifyContent="center"
-        alignItems="center"
-      >
-        {/* タイムドロップダウンを表示する場合 */}
-        <TimeDropdown
-          label="開始時間"
-          value={modalContentSelectedStartTime}
-          onChange={(time) => handleChangeStartTime(time)}
-          display={modalMode === "register" ? "block" : "none"}
-        />
-        <Typography variant="body1">-</Typography>
-        <TimeDropdown
-          label="終了時間"
-          value={modalContentSelectedEndTime}
-          onChange={(time) => handleChangeEndTime(time)}
-          display={modalMode === "register" ? "block" : "none"}
-        />
-      </Box>
-
-      {/* 確認モード共通の時間表示 */}
-      <Box
-        mb={2}
-        display={(modalMode === "confirm" || modalMode === "delete")
-          ? "block"
-          : "none"}
-      >
-        <Typography variant="h4">
-          {modalContentSelectedStartTime} - {modalContentSelectedEndTime}
-        </Typography>
-      </Box>
-
-      {/* 削除モードのテキスト表示 */}
-      <Box display={modalMode === "delete" ? "block" : "none"}>
-        <Typography>このシフトを削除しますか？</Typography>
-      </Box>
+    {/* 選択された日付 */}
+    <Box>
+      <Typography variant="h6">{modalContentSelectedDate}</Typography>
     </Box>
-  );
+
+    {/* 登録用 */}
+    <Box
+      display={modalMode === "register" ? "flex" : "none"}
+      justifyContent="center"
+      alignItems="center"
+    >
+      {/* タイムドロップダウンを表示する場合 */}
+      <TimeDropdown
+        label="開始時間"
+        value={modalContentSelectedStartTime}
+        onChange={(time) => handleChangeStartTime(time)}
+        display={modalMode === "register" ? "block" : "none"}
+      />
+      <Typography variant="body1">-</Typography>
+      <TimeDropdown
+        label="終了時間"
+        value={modalContentSelectedEndTime}
+        onChange={(time) => handleChangeEndTime(time)}
+        display={modalMode === "register" ? "block" : "none"}
+      />
+    </Box>
+
+    {/* 確認モード共通の時間表示 */}
+    <Box
+      display={(modalMode === "confirm" || modalMode === "delete") ? "block" : "none"}
+    >
+      <Typography variant="h4">
+        {modalContentSelectedStartTime} - {modalContentSelectedEndTime}
+      </Typography>
+    </Box>
+
+    {/* 削除モードのテキスト表示 */}
+    <Box display={modalMode === "delete" ? "block" : "none"}>
+      <Typography>このシフトを削除しますか？</Typography>
+    </Box>
+  </Box>
+);
 };
