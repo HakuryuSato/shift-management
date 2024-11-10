@@ -1,4 +1,5 @@
-import { EventInput } from '@fullcalendar/core';
+// import { EventInput } from '@fullcalendar/core';
+import { CustomFullCalendarEvent } from '@/customTypes/CustomFullCalendarEvent';
 import { Shift } from '../customTypes/Shift';
 import { Attendance } from '../customTypes/Attendance';
 import { User } from '../customTypes/User';
@@ -12,7 +13,7 @@ type ShiftOrAttendance = Shift | Attendance;
 export function formatEventsForFullCalendar<T extends ShiftOrAttendance>(
     records: T[],
     users?: User[]
-): EventInput[] {
+): CustomFullCalendarEvent[] {
 
     // 最初のレコードから型を定義
     const isShift = records.length > 0 && 'shift_id' in records[0];
@@ -49,6 +50,6 @@ export function formatEventsForFullCalendar<T extends ShiftOrAttendance>(
                 user_id: record.user_id,
                 user_name: user_name,
             },
-        } as EventInput;
+        } as CustomFullCalendarEvent;
     });
 }
