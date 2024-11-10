@@ -10,8 +10,7 @@ export const ModalContent: React.FC = () => {
   const { modalRole, modalMode } = useModalContainerStore();
 
   const {
-    handleChangeStartTime,
-    handleChangeEndTime,
+    handleChangeStartEndTime,
     handleChangeSelectedUser,
   } = useModalContent();
 
@@ -30,68 +29,72 @@ export const ModalContent: React.FC = () => {
 
   return (
     <Box
-    display="flex"
-    flexDirection="column"
-    alignItems="center"
-    justifyContent="center"
-    sx={{ gap: 2 }}
-  >
-    {/* 管理者なら */}
-    {modalRole === "admin" && (
-      <>
-        {/* 確認ならユーザー名表示 */}
-        <Box display={modalMode === "confirm" ? "block" : "none"}>
-          <Typography>{modalContentSelectedUserName}</Typography>
-        </Box>
-
-        {/* 登録ならユーザー選択表示 */}
-        <Box display={modalMode === "register" ? "block" : "none"}>
-          <UserDropdown />
-        </Box>
-      </>
-    )}
-
-    {/* 選択された日付 */}
-    <Box>
-      <Typography variant="h6">{modalContentSelectedDate}</Typography>
-    </Box>
-
-    {/* 登録用 */}
-    <Box
-      display={modalMode === "register" ? "flex" : "none"}
-      justifyContent="center"
+      display="flex"
+      flexDirection="column"
       alignItems="center"
-      sx={{ gap: 1 }}
+      justifyContent="center"
+      sx={{ gap: 2 }}
     >
-      {/* タイムドロップダウンを表示する場合 */}
-      <TimeDropdown
-        label="開始時間"
-        value={modalContentSelectedStartTime}
-        onChange={(time) => handleChangeStartTime(time)}
-        display={modalMode === "register" ? "block" : "none"}
-      />
-      <Typography variant="body1">-</Typography>
-      <TimeDropdown
-        label="終了時間"
-        value={modalContentSelectedEndTime}
-        onChange={(time) => handleChangeEndTime(time)}
-        display={modalMode === "register" ? "block" : "none"}
-      />
-    </Box>
+      {/* 管理者なら */}
+      {modalRole === "admin" && (
+        <>
+          {/* 確認ならユーザー名表示 */}
+          <Box display={modalMode === "confirm" ? "block" : "none"}>
+            <Typography>{modalContentSelectedUserName}</Typography>
+          </Box>
 
-    {/* 確認モード共通の時間表示 */}
-    <Box
-      display={(modalMode === "confirm" || modalMode === "delete") ? "block" : "none"}
-    >
-      <Typography variant="h4">
-        {modalContentSelectedStartTime} - {modalContentSelectedEndTime}
-      </Typography>
-    </Box>
+          {/* 登録ならユーザー選択表示 */}
+          <Box display={modalMode === "register" ? "block" : "none"}>
+            <UserDropdown />
+          </Box>
+        </>
+      )}
 
-    {/* 削除モードのテキスト表示 */}
-    <Box display={modalMode === "delete" ? "block" : "none"}>
-      <Typography>このシフトを削除しますか？</Typography>
+      {/* 選択された日付 */}
+      <Box>
+        <Typography variant="h6">{modalContentSelectedDate}</Typography>
+      </Box>
+
+      {/* 登録用 */}
+      <Box
+        display={modalMode === "register" ? "flex" : "none"}
+        justifyContent="center"
+        alignItems="center"
+        sx={{ gap: 1 }}
+      >
+        {/* タイムドロップダウンを表示する場合 */}
+        <TimeDropdown
+          label="開始時間"
+          value={modalContentSelectedStartTime}
+          onChange={(startTime) =>
+            handleChangeStartEndTime(startTime, modalContentSelectedEndTime)}
+          display={modalMode === "register" ? "block" : "none"}
+        />
+        <Typography variant="body1">-</Typography>
+        <TimeDropdown
+          label="終了時間"
+          value={modalContentSelectedEndTime}
+          onChange={(endTime) =>
+            handleChangeStartEndTime(modalContentSelectedStartTime, endTime)}
+          display={modalMode === "register" ? "block" : "none"}
+        />
+      </Box>
+
+      {/* 確認モード共通の時間表示 */}
+      <Box
+        display={(modalMode === "confirm" || modalMode === "delete")
+          ? "block"
+          : "none"}
+      >
+        <Typography variant="h4">
+          {modalContentSelectedStartTime} - {modalContentSelectedEndTime}
+        </Typography>
+      </Box>
+
+      {/* 削除モードのテキスト表示 */}
+      <Box display={modalMode === "delete" ? "block" : "none"}>
+        <Typography>このシフトを削除しますか？</Typography>
+      </Box>
     </Box>
-  </Box>
-);
+  );
 };
