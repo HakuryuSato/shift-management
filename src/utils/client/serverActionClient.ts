@@ -1,11 +1,17 @@
 'use client'
 
+// サーバーアクション関数
 import { deleteUser } from '@/app/actions/deleteUser';
 import { insertUser } from '@/app/actions/insertUser';
 import { insertAttendance } from '@/app/actions/insertAttendance';
-import type { User } from '@/customTypes/User';
+import { insertShift } from '@/app/actions/insertShift';
 
-// サーバーアクションのエラーハンドリングを共通化する関数
+// 型
+import type { User } from '@/customTypes/User';
+import type { Shift } from '@/customTypes/Shift';
+
+
+// サーバーアクションのエラーハンドリングを共通化する関数  ---------------------------------------------------------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
   try {
     const data = await action();
@@ -17,6 +23,9 @@ export async function handleServerAction<T>(action: () => Promise<T>): Promise<T
   }
 }
 
+
+
+// サーバーアクション呼び出し関数群  ---------------------------------------------------------------------------------------------------
 
 /**
  * ユーザーを削除するサーバーアクションを呼び出す関数
@@ -46,3 +55,11 @@ export async function insertAttendanceAction(userId: number): Promise<{ message:
 }
 
 
+/**
+ * シフトを挿入するサーバーアクションを呼び出す関数
+ * @param shiftData シフトデータ（単一または複数のShiftQuery型）
+ * @returns 挿入されたシフトデータまたは null
+ */
+export async function insertShiftAction(shiftData: Shift | Shift[]): Promise<Shift[] | null> {
+  return await handleServerAction(() => insertShift(shiftData));
+}
