@@ -61,6 +61,7 @@ export const ModalContent: React.FC = () => {
       display={modalMode === "register" ? "flex" : "none"}
       justifyContent="center"
       alignItems="center"
+      sx={{ gap: 1 }}
     >
       {/* タイムドロップダウンを表示する場合 */}
       <TimeDropdown
