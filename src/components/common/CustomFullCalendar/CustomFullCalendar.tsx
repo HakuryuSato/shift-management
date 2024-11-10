@@ -18,7 +18,7 @@ import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/user/useCalendarShiftPersonal";
-import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllMembers";
+import { useCalendarShift } from "@/hooks/common/CustomFullCalendar/useCalendarShift";
 import { useCalendarClickHandlers } from "@/hooks/common/CustomFullCalendar/useCalendarClickHandlers";
 
 
@@ -59,7 +59,7 @@ export function CustomFullCalendar() {
   useCalendarShiftPersonal();
 
   // 全員用シフト
-  useCalendarShiftAllMembers();
+  useCalendarShift();
 
 
   // handleClick用Hooks
