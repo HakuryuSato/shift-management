@@ -7,6 +7,7 @@ import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { useCalendarViewToggleStore } from "@/stores/user/calendarViewToggleSlice";
 import { useModalTopBarStore } from "@/stores/common/modalTopBarSlice";
 import { useModalContent } from "@/hooks/common/Modal/useModalContent"
+import { isUserCalendarEventOnDate } from "@/utils/client/isUserCalendarEventOnDate";
 
 
 /**
@@ -31,6 +32,15 @@ export const useCalendarClickHandlers = () => {
 
 
     // イベントクリック ---------------------------------------------------------------------------------------------------
+    // クリックされたEventをフルカレStoreにsetした際 モーダルを更新
+    useEffect(() => {
+        if (customFullCalendarClickedEvent) {
+            // モーダル関連初期化
+            initializeModalsAfterClieckedEvent();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [customFullCalendarClickedEvent]);
+
     // 各種モーダルの状態を初期化するための関数
     const initializeModalsAfterClieckedEvent = () => {
 
@@ -57,20 +67,28 @@ export const useCalendarClickHandlers = () => {
         console.log("選択されたイベント情報:", eventInfo);
     }
 
-    // クリックされたEventをフルカレStoreにset後 モーダルを更新
-    useEffect(() => {
-        if (customFullCalendarClickedEvent) {
-            // モーダル関連初期化
-            initializeModalsAfterClieckedEvent();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [customFullCalendarClickedEvent]);
+
+
 
 
 
     // 日付クリック  ---------------------------------------------------------------------------------------------------
+    // クリックされたDateをフルカレStoreにsetした際 モーダルを更新
+    useEffect(() => {
+        if (customFullCalendarClickedDate) {
+            console.log("選択された日付情報:", customFullCalendarClickedDate);
+            // モーダル関連初期化
+            initializeModalsAfterClieckedDate(customFullCalendarClickedDate);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [customFullCalendarClickedDate]);
+
+
+
     const initializeModalsAfterClieckedDate = (customFullCalendarClickedDate: DateClickArg) => {
         // イベントがあるかどうかを判定
+        console.log(customFullCalendarPersonalShiftEvents)
 
 
         // userかつ、個人シフトかつ、その日にイベントがない？
@@ -94,28 +112,25 @@ export const useCalendarClickHandlers = () => {
         openModal();
     }
 
+
+    // フルカレンダーの日付クリック時に呼ばれる関数
     const handleClickDate = (dateInfo: DateClickArg) => {
-        // その日に既に自分のシフトが存在しないか？
+        console.log(dateInfo.dateStr)
 
 
+        // userかつ個人画面以外　または　すでに該当ユーザーのイベントが存在する なら終了
+        if ((customFullCalendarRole === 'user' && calendarViewMode !== 'PERSONAL_SHIFT')
+            || isUserCalendarEventOnDate(dateInfo.dateStr, userId, customFullCalendarPersonalShiftEvents))
+            return;
 
+
+        // 日付データを状態にセット
         setCustomFullCalendarClickedDate(dateInfo);
-
 
     };
 
 
 
-    // クリックされたDateをフルカレStoreにset後 モーダルを更新
-    useEffect(() => {
-        if (customFullCalendarClickedDate) {
-            console.log("選択された日付情報:", customFullCalendarClickedDate);
-            // モーダル関連初期化
-            initializeModalsAfterClieckedDate(customFullCalendarClickedDate);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [customFullCalendarClickedDate]);
 
 
 
