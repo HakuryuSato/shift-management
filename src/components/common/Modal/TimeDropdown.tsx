@@ -70,7 +70,7 @@ export const TimeDropdown: React.FC<TimeDropdownProps> = ({
       variant="outlined"
       size="small"
       error={error}
-      sx={{ minWidth: 120 }}
+      sx={{ minWidth: 120 ,textAlign: 'center'}}
       disabled={disabled}
     >
       {label && <InputLabel>{label}</InputLabel>}
@@ -89,5 +89,3 @@ export const TimeDropdown: React.FC<TimeDropdownProps> = ({
     </FormControl>
   );
 };
-
-
