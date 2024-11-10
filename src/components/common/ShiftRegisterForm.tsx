@@ -128,8 +128,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       setEndTime(selectedEventShiftTime.split("-")[1]);
     } else {
       const { start_time, end_time } = getUserOptions();
-      setStartTime(start_time);
-      setEndTime(end_time);
+      setStartTime(start_time || '08:30');
+      setEndTime(end_time|| '18:00');
       setUserOptions({ start_time: startTime, end_time: endTime });
     }
 
