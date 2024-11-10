@@ -25,7 +25,7 @@ export const getUserOptions = (): InterFaceUserOptions => {
 
 // ユーザーオプションをクッキーに保存
 export const setUserOptions = (options: InterFaceUserOptions) => {
-  Cookies.set(COOKIE_USER_OPTIONS, JSON.stringify(options), { expires: 365 });
+  Cookies.set(COOKIE_USER_OPTIONS, JSON.stringify(options), { expires: 3650 });
   // console.log("User options updated:", options);
 };
 
