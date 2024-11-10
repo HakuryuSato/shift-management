@@ -26,38 +26,35 @@ export const useCalendarClickHandlers = () => {
     const { modalContentInitialize } = useModalContent()
     const setModalMode = useModalContainerStore((state) => state.setModalMode)
 
+
+    // イベントクリック ---------------------------------------------------------------------------------------------------
     // 各種モーダルの状態を初期化するための関数
     const initializeModalsAfterClieckedEvent = (customFullCalendarClickedEvent: EventClickArg) => {
         // userかつ自分のイベントの場合
         if (customFullCalendarRole === "user" && customFullCalendarClickedEvent.event.extendedProps.user_id == userId) {
-            // シフト画面なら編集アイコンを表示
+            // シフト個人画面 または全員画面 なら編集アイコンを表示
             if (calendarViewMode === 'PERSONAL_SHIFT' || calendarViewMode === 'ALL_MEMBERS_SHIFT') {
                 showModalTopBarEditIcons()
-            } else {
+            } else { // シフト全員画面or出退勤なら編集アイコン非表示
                 hideModalTopBarEditIcons()
             }
-            modalContentInitialize('eventClick')
-            setModalMode('confirm')
-            openModal();
+
         }
 
-        // // adminの場合（未実装）
-        // if (customFullCalendarRole === "admin") {
-        //     console.log("管理者としての処理を実行します。");
-        // }
+        // adminの場合 編集可能
+        if (customFullCalendarRole === "admin") {
+            showModalTopBarEditIcons()
+        }
+
+        modalContentInitialize('eventClick')
+        setModalMode('confirm')
+        openModal();
     }
 
-    // イベントクリック後、
-    useEffect(() => {
-        if (customFullCalendarClickedEvent) {
-            // モーダル関連初期化
-            initializeModalsAfterClieckedEvent(customFullCalendarClickedEvent);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [customFullCalendarClickedEvent]);
-
+    // フルカレンダーのイベントクリック時に呼ばれる関数
     const handleClickEvent = (eventInfo: EventClickArg) => {
-        // 終日イベント(祝日のみ)なら終了
+        // 以下条件をどれか満たすなら終了
+        // 終日イベント(祝日)
         if (eventInfo.event.allDay) return;
 
         // フルカレStoreにクリックされたEvent情報保存
@@ -67,10 +64,28 @@ export const useCalendarClickHandlers = () => {
         console.log("選択されたイベント情報:", eventInfo);
     }
 
+    // フルカレStoreにクリックされたEvent情報保存後 モーダルを更新
+    useEffect(() => {
+        if (customFullCalendarClickedEvent) {
+            // モーダル関連初期化
+            initializeModalsAfterClieckedEvent(customFullCalendarClickedEvent);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [customFullCalendarClickedEvent]);
+
+
+
+    // 日付クリック  ---------------------------------------------------------------------------------------------------
+
 
     const handleClickDate = (info: DateClickArg) => {
+        // その日に既に自分のシフトが存在しないか？
+
+
         console.log("日付がクリックされました:", info.dateStr);
     };
+
+
 
 
 
