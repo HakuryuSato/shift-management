@@ -3,7 +3,7 @@ import { useModalContentStore } from '@/stores/common/modalContentSlice';
 import { useCustomFullCalendarStore } from '@/stores/common/customFullCalendarSlice';
 import { useModalContainerStore } from '@/stores/common/modalContainerSlice';
 import { toJapanDateString } from '@/utils/toJapanDateString'
-import { getUserOptions } from '@/utils/userOptions';
+import { getUserOptions, setUserOptions } from '@/utils/userOptions';
 
 
 export const useModalContent = () => {
@@ -53,21 +53,24 @@ export const useModalContent = () => {
         // setModalContentSelectedUserName('');
         const { start_time, end_time } = getUserOptions();
         // ここでCookieから値取得
-        setModalContentSelectedStartTime(start_time);
-        setModalContentSelectedEndTime(end_time);
+        setModalContentSelectedStartTime(start_time || '');
+        setModalContentSelectedEndTime(end_time || '');
       }
     }
   };
 
 
   // その他のハンドラ
-  const handleChangeStartTime = (newStartTime: string) => {
+  const handleChangeStartEndTime = (newStartTime: string, newEndTime: string) => {
     setModalContentSelectedStartTime(newStartTime);
+    setModalContentSelectedEndTime(newEndTime);
+    setUserOptions({ start_time: newStartTime, end_time: newEndTime });
   };
 
-  const handleChangeEndTime = (newEndTime: string) => {
-    setModalContentSelectedEndTime(newEndTime);
-  };
+  // const handleChangeEndTime = (newEndTime: string) => {
+  //   setModalContentSelectedEndTime(newEndTime);
+  //   setUserOptions({ end_time: newEndTime });
+  // };
 
   const handleChangeSelectedUser = (newUserName: string) => {
     setModalContentSelectedUserName(newUserName);
@@ -75,8 +78,7 @@ export const useModalContent = () => {
 
   return {
     modalContentInitialize,
-    handleChangeStartTime,
-    handleChangeEndTime,
+    handleChangeStartEndTime,
     handleChangeSelectedUser,
   };
 };
