@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-interface TimeInputProps {
+interface OldTimeInputProps {
   initialValue?: string;
   onReturn: (time: string) => void;
 }
 
-const TimeInput: React.FC<TimeInputProps> = ({ initialValue, onReturn }) => {
+//　廃止予定
+const OldTimeInput: React.FC<OldTimeInputProps> = ({ initialValue, onReturn }) => {
   const [selectedTime, setSelectedTime] = useState(initialValue || "");
 
   // 固定の時間オプションリスト
@@ -62,4 +63,4 @@ const TimeInput: React.FC<TimeInputProps> = ({ initialValue, onReturn }) => {
   );
 };
 
-export default TimeInput;
+export default OldTimeInput;
