@@ -33,13 +33,12 @@ export const useCalendarClickHandlers = () => {
             // シフト画面なら編集アイコンを表示
             if (calendarViewMode === 'PERSONAL_SHIFT' || calendarViewMode === 'ALL_MEMBERS_SHIFT') {
                 showModalTopBarEditIcons()
-                setModalMode('confirm')
-                modalContentInitialize('eventClick')
-                openModal();
             } else {
                 hideModalTopBarEditIcons()
-                openModal();
             }
+            modalContentInitialize('eventClick')
+            setModalMode('confirm')
+            openModal();
         }
 
         // // adminの場合（未実装）
