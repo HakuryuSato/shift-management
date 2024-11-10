@@ -12,7 +12,7 @@ export interface ShiftQuery {
 
 // DBの構造と同じ型 + サバアクの送信で使用している型
 export interface Shift {
-    shift_id: number;
+    shift_id?: number;
     user_id: number;
     start_time: string; // ISO文字列
     end_time?: string;
