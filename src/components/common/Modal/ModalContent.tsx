@@ -35,6 +35,13 @@ export const ModalContent: React.FC = () => {
       justifyContent="center"
       sx={{ gap: 2 }}
     >
+      {/* 選択された日付 */}
+      <Box>
+        <Typography variant={modalMode === "register" ? "body1" : "h5"}>
+          {modalContentSelectedDate}
+        </Typography>
+      </Box>
+
       {/* 管理者なら */}
       {modalRole === "admin" && (
         <>
@@ -49,11 +56,6 @@ export const ModalContent: React.FC = () => {
           </Box>
         </>
       )}
-
-      {/* 選択された日付 */}
-      <Box>
-        <Typography variant="h6">{modalContentSelectedDate}</Typography>
-      </Box>
 
       {/* 登録用 */}
       <Box
