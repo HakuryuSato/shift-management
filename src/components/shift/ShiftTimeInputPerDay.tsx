@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, ToggleButton, Typography } from "@mui/material";
-import OldTimeDropdown from "../common/OldTimeDropdown";
+import {TimeDropdown} from "../common/Modal/TimeDropdown";
 import type { AutoShiftTime } from "@/customTypes/AutoShiftTypes";
 
 interface ShiftTimeInputPerDayProps {
@@ -128,7 +128,7 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
           {dayTime.is_enabled && (
             // 曜日が有効な場合のみ、時間入力表示
             <>
-              <OldTimeDropdown
+              <TimeDropdown
                 label="開始時間"
                 value={dayTime.start_time}
                 disabled={disabled}
@@ -136,7 +136,7 @@ const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({
                   handleTimeChange(dayTime.day_of_week, "start_time", value)}
               />
               <Typography variant="body1">-</Typography>
-              <OldTimeDropdown
+              <TimeDropdown
                 label="終了時間"
                 value={dayTime.end_time}
                 disabled={disabled}

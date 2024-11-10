@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   FormControl,
   FormHelperText,
@@ -13,15 +14,20 @@ interface TimeDropdownProps {
   onChange: (time: string) => void;
   error?: boolean;
   helperText?: string;
+  disabled?: boolean; // 廃止予定
+  display?: "none" | "block"
 }
+
 
 export const TimeDropdown: React.FC<TimeDropdownProps> = ({
   label,
-  value = "",
+  value,
   onChange,
   error = false,
   helperText = "",
+  disabled,
 }) => {
+  // 定数
   const timeOptions = [
     "07:30",
     "08:00",
@@ -52,7 +58,10 @@ export const TimeDropdown: React.FC<TimeDropdownProps> = ({
     "21:00",
   ];
 
+  // 関数
+  // 時間を'HH:mm'形式にフォーマットする関数
   function formatTime(timeStr: string): string {
+    // 長さが8(HH:mm:ss)ならHH:mmに変換
     return timeStr.length === 8 ? timeStr.slice(0, 5) : timeStr;
   }
 
@@ -62,10 +71,11 @@ export const TimeDropdown: React.FC<TimeDropdownProps> = ({
       size="small"
       error={error}
       sx={{ minWidth: 120 }}
+      disabled={disabled}
     >
       {label && <InputLabel>{label}</InputLabel>}
       <Select
-        value={formatTime(value) || ""}
+        value={formatTime(value!) || ""}
         onChange={(e) => onChange(e.target.value)}
         label={label}
       >
@@ -79,3 +89,5 @@ export const TimeDropdown: React.FC<TimeDropdownProps> = ({
     </FormControl>
   );
 };
+
+
