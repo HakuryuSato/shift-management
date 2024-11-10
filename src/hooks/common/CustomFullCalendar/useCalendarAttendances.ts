@@ -34,7 +34,6 @@ export function useCalendarAttendances() {
   useEffect(() => {
     if (attendances) {
       const formattedEvents = formatEventsForFullCalendar(attendances,);
-      console.log(formattedEvents)
       setCustomFullCalendarAttendanceEvents(formattedEvents);
     }
   }, [attendances, customFullCalendarCurrentMonth, isUserCalendarViewVisible, setCustomFullCalendarAttendanceEvents]);
