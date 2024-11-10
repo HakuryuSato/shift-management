@@ -1,4 +1,3 @@
-// import { EventInput } from '@fullcalendar/core';
 import { CustomFullCalendarEvent } from '@/customTypes/CustomFullCalendarEvent';
 import { Shift } from '../customTypes/Shift';
 import { Attendance } from '../customTypes/Attendance';
