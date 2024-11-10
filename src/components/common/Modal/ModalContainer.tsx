@@ -34,13 +34,13 @@ export const ModalContainer: React.FC = () => {
             }}
         >
             <Box
-                sx={{
+                sx={{ // モーダル全体
                     display: "flex",
                     flexDirection: "column",
                     backgroundColor: "white",
                     borderRadius: 2,
                     width: 400,
-                    padding: 2,
+                    padding: 2, // モーダル全体の要素の外枠
                 }}
             >
                 {/* TopBar */}
@@ -54,7 +54,7 @@ export const ModalContainer: React.FC = () => {
                     sx={{
                         display: "flex",
                         justifyContent: "center",
-                        marginTop: 2,
+                        marginTop: 4,
                     }}
                 >
                     <Button
