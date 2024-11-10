@@ -32,22 +32,13 @@ export const useCalendarClickHandlers = () => {
 
     // イベントクリック ---------------------------------------------------------------------------------------------------
     // 各種モーダルの状態を初期化するための関数
-    const initializeModalsAfterClieckedEvent = (customFullCalendarClickedEvent: EventClickArg) => {
-        // userかつ自分のイベントの場合
-        if (customFullCalendarRole === "user" && customFullCalendarClickedEvent.event.extendedProps.user_id == userId) {
-            // シフト個人画面 または全員画面 なら編集アイコンを表示
-            if (calendarViewMode === 'PERSONAL_SHIFT' || calendarViewMode === 'ALL_MEMBERS_SHIFT') {
-                showModalTopBarEditIcons()
-            } else { // シフト全員画面or出退勤なら編集アイコン非表示
-                hideModalTopBarEditIcons()
-            }
+    const initializeModalsAfterClieckedEvent = () => {
 
-        }
-
-        // adminの場合 編集可能
-        if (customFullCalendarRole === "admin") {
-            showModalTopBarEditIcons()
-        }
+        // (user かつ シフト個人画面) または 管理者 なら編集アイコンを表示
+        // 出退勤なら編集アイコン非表示
+        const shouldShowEditIcons = (customFullCalendarRole === "user" && calendarViewMode === 'PERSONAL_SHIFT')
+            || customFullCalendarRole === "admin";
+        shouldShowEditIcons ? showModalTopBarEditIcons() : hideModalTopBarEditIcons();
 
         modalContentInitialize('eventClick')
         setModalMode('confirm')
@@ -56,10 +47,10 @@ export const useCalendarClickHandlers = () => {
 
     // フルカレンダーのイベントクリック時に呼ばれる関数
     const handleClickEvent = (eventInfo: EventClickArg) => {
-        // 終日イベント(祝日)なら終了
-        if (eventInfo.event.allDay) return;
+        // 終日イベント(祝日) または ユーザーかつ全員シフト画面 なら終了
+        if (eventInfo.event.allDay || (customFullCalendarRole === "user" && calendarViewMode === 'ALL_MEMBERS_SHIFT')) return;
 
-        // フルカレStoreにクリックされたEvent情報保存
+        // フルカレStoreにクリックされたEvent情報保存 -> useEffectが実行
         setCustomFullCalendarClickedEvent(eventInfo);
 
         // 選択されたイベント情報を表示
@@ -70,7 +61,7 @@ export const useCalendarClickHandlers = () => {
     useEffect(() => {
         if (customFullCalendarClickedEvent) {
             // モーダル関連初期化
-            initializeModalsAfterClieckedEvent(customFullCalendarClickedEvent);
+            initializeModalsAfterClieckedEvent();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customFullCalendarClickedEvent]);
@@ -80,6 +71,7 @@ export const useCalendarClickHandlers = () => {
     // 日付クリック  ---------------------------------------------------------------------------------------------------
     const initializeModalsAfterClieckedDate = (customFullCalendarClickedDate: DateClickArg) => {
         // イベントがあるかどうかを判定
+
 
         // userかつ、個人シフトかつ、その日にイベントがない？
         // if (customFullCalendarRole === "user" && customFullCalendarClickedDate.event.extendedProps.user_id == userId) {
