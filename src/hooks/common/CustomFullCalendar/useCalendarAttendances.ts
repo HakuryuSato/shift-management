@@ -7,7 +7,6 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 
-
 export function useCalendarAttendances() {
   const setCustomFullCalendarAttendanceEvents = useCustomFullCalendarStore(
     (state) => state.setCustomFullCalendarAttendanceEvents
@@ -22,20 +21,18 @@ export function useCalendarAttendances() {
 
   const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth);
 
-
   const { data: attendances, mutate } = useSWR(
-    isUserCalendarViewVisible
-      ? ['attendances', userId, start_date, end_date].join('-')
-      : null,
+    isUserCalendarViewVisible ? `attendances-${userId}-${start_date}-${end_date}` : null,
     () => fetchAttendance({ user_id: userId, start_date, end_date })
   );
 
-
   useEffect(() => {
     if (attendances) {
-      const formattedEvents = formatEventsForFullCalendar(attendances,);
+      const formattedEvents = formatEventsForFullCalendar(attendances);
       setCustomFullCalendarAttendanceEvents(formattedEvents);
     }
-  }, [attendances, customFullCalendarCurrentMonth, isUserCalendarViewVisible, setCustomFullCalendarAttendanceEvents]);
+  }, [attendances, setCustomFullCalendarAttendanceEvents]);
 
+  // データの再取得を行う関数を返す
+  return { mutateAttendances: mutate };
 }

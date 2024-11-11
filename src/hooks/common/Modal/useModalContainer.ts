@@ -4,10 +4,8 @@ import { useUserHomeStore } from "@/stores/user/userHomeSlice"
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice"
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
 import { toJapanISOString } from "@/utils/toJapanISOString";
-import { useCalendarShift } from "../CustomFullCalendar/useCalendarShift";
-
-import useSWR, { mutate } from 'swr';
-
+import { useCalendarShiftAllMembers } from "../CustomFullCalendar/useCalendarShiftAllmembers";
+import { useCalendarShiftPersonal } from "../CustomFullCalendar/useCalendarShiftPersonal";
 
 export const useModalContainer = () => {
     const modalMode = useModalContainerStore((state) => state.modalMode);
@@ -17,11 +15,12 @@ export const useModalContainer = () => {
     const customFullCalendarSelectedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate)
     const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime)
     const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime)
-    const {updateCalendarShift} = useCalendarShift()
-    
+    const { mutateAllShifts } = useCalendarShiftAllMembers()
+    const { mutatePersonalShifts } = useCalendarShiftPersonal()
+
 
     // 確認、保存、削除のテキストが入る親モーダルのボタン
-    const handleClickModalContainerButton = async() => {
+    const handleClickModalContainerButton = async () => {
         // ModalModeに応じて条件分岐、apiClientを呼び出して処理を行う
         if (modalMode === 'register') {
             // ユーザーの場合
@@ -38,14 +37,7 @@ export const useModalContainer = () => {
                     end_time: toJapanISOString(endDateTime)
                 });
 
-
-                // // await mutate()
-                // await mutate('/api/getShift', undefined, { revalidate: true })
-
-
-
-                
-            } else if (customFullCalendarRole === 'admin') { // 管理者の場合は、
+            } else if (customFullCalendarRole === 'admin') { // 管理者の場合
 
             }
 
@@ -58,8 +50,9 @@ export const useModalContainer = () => {
             // 複数登録の処理をここに追加
         }
 
-        // // 変更をカレンダーに反映
-        await updateCalendarShift();
+        // データを再取得し変更をカレンダーに反映
+        await mutateAllShifts();
+        await mutatePersonalShifts();
 
 
         // モーダルを閉じる

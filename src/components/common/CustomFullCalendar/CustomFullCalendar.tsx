@@ -12,15 +12,13 @@ import { useSwipeable } from "react-swipeable";
 // Store
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
-import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 
 // Hooks
 import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
-import { useCalendarShiftPersonal } from "@/hooks/user/useCalendarShiftPersonal";
-import { useCalendarShift } from "@/hooks/common/CustomFullCalendar/useCalendarShift";
+import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
+import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllmembers";
 import { useCalendarClickHandlers } from "@/hooks/common/CustomFullCalendar/useCalendarClickHandlers";
-
 
 // FullCalendar用設定群
 import { renderEventContent } from "./renderEventContnt";
@@ -30,22 +28,40 @@ export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
 
   // State群 ---------------------------------------------------------------------------------------------------
-  const {
-    customFullCalendarRole,
-    customFullCalendarBgColorsPerDay,
-    setCustomFullCalendarStartDate,
-    setCustomFullCalendarEndDate,
-    setCustomFullCalendarCurrentYear,
-    setCustomFullCalendarCurrentMonth,
-    customFullCalendarHolidayEvents,
-    customFullCalendarAttendanceEvents,
-    customFullCalendarPersonalShiftEvents,
-    customFullCalendarAllMembersShiftEvents,
-  } = useCustomFullCalendarStore();
+  const customFullCalendarRole = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarRole,
+  );
+  const customFullCalendarBgColorsPerDay = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarBgColorsPerDay,
+  );
+  const setCustomFullCalendarStartDate = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarStartDate,
+  );
+  const setCustomFullCalendarEndDate = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarEndDate,
+  );
+  const setCustomFullCalendarCurrentYear = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarCurrentYear,
+  );
+  const setCustomFullCalendarCurrentMonth = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarCurrentMonth,
+  );
+  const customFullCalendarHolidayEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarHolidayEvents,
+  );
+  const customFullCalendarAttendanceEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarAttendanceEvents,
+  );
+  const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarPersonalShiftEvents,
+  );
+  const customFullCalendarAllMembersShiftEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarAllMembersShiftEvents,
+  );
 
-  
-
-  const { calendarViewMode } = useCalendarViewToggleStore();
+  const calendarViewMode = useCalendarViewToggleStore((state) =>
+    state.calendarViewMode
+  );
 
   // Hooks  ---------------------------------------------------------------------------------------------------
   // 各種データをCustomFullCalendarSoreに設定
@@ -59,11 +75,10 @@ export function CustomFullCalendar() {
   useCalendarShiftPersonal();
 
   // 全員用シフト
-  useCalendarShift();
-
+  useCalendarShiftAllMembers();
 
   // handleClick用Hooks
-  const { handleClickDate,handleClickEvent} = useCalendarClickHandlers()
+  const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
 
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え
@@ -73,8 +88,8 @@ export function CustomFullCalendar() {
     trackMouse: true, // マウスでのテストを可能にする（オプション）
   });
 
-  // FullCalendar設定群、MUIに以降して外部化するので、一部廃止予定  ---------------------------------------------------------------------------------------------------
-
+  
+  // フルカレ用イベント
   const customFullCalendarEvents = [
     ...customFullCalendarHolidayEvents,
     ...(calendarViewMode === "ATTENDANCE"
@@ -85,6 +100,7 @@ export function CustomFullCalendar() {
       ? customFullCalendarAllMembersShiftEvents
       : []),
   ];
+
 
   return (
     <div {...reactSwipeHandlers}>
