@@ -12,20 +12,39 @@ import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
+import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
+import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
 // サーバーアクション
 import { insertAttendanceStamp } from "@/app/actions/insertAttendanceStamp";
 
 export function UserQrCodeReader() {
-  const { isQRCodeReaderVisible, hideQRCodeReader } = useUserQrCodeReaderViewStore();
-  const { setIsUserHomeFABVisible } = useUserHomeFABStore();
-  const { userId } = useUserHomeStore();
-  const { showUserSnackBar } = useUserSnackBarStore();
+  const isQRCodeReaderVisible = useUserQrCodeReaderViewStore((state) =>
+    state.isQRCodeReaderVisible
+  );
+  const hideQRCodeReader = useUserQrCodeReaderViewStore((state) =>
+    state.hideQRCodeReader
+  );
+  const setIsUserHomeFABVisible = useUserHomeFABStore((state) =>
+    state.setIsUserHomeFABVisible
+  );
+  const userId = useUserHomeStore((state) => state.userId);
+  const showUserSnackBar = useUserSnackBarStore((state) =>
+    state.showUserSnackBar
+  );
+  const setIsUserCalendarViewVisible = useUserCalendarViewStore((state) =>
+    state.setIsUserCalendarViewVisible
+  );
+  const showUserHomeAppBar = useUserHomeAppBarStore((state) =>
+    state.showUserHomeAppBar
+  );
 
   // 閉じる
   const handleClose = () => {
     hideQRCodeReader();
     setIsUserHomeFABVisible(true);
+    setIsUserCalendarViewVisible(true);
+    showUserHomeAppBar();
   };
 
   // エラー時
@@ -45,8 +64,7 @@ export function UserQrCodeReader() {
         const res = await insertAttendanceStamp(userId);
         handleClose();
 
-        showUserSnackBar(res.message,"success");
-
+        showUserSnackBar(res.message, "success");
       } catch (error) {
         console.error(error);
         handleClose();

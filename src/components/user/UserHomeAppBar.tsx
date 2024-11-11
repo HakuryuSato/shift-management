@@ -27,25 +27,28 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice";
 import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
 
-export function UserHomeAppBar() {
-  const {
-    userHomeAppBarCurrentView,
-    setUserHomeAppBarCurrentView,
-    isUserHomeAppBarDrawerOpen,
-    openUserHomeAppBarDrawer,
-    closeUserHomeAppBarDrawer,
-    userHomeAppBarMenuItems,
-  } = useUserHomeAppBarStore();
 
-  const { customFullCalendarCurrentMonth } = useCustomFullCalendarStore();
-  const { setIsUserCalendarViewVisible } = useUserCalendarViewStore();
-  const { setIsUserHomeFABVisible } = useUserHomeFABStore();
+export function UserHomeAppBar() {
+  const userHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.userHomeAppBarCurrentView);
+  const setUserHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.setUserHomeAppBarCurrentView);
+  const isUserHomeAppBarDrawerOpen = useUserHomeAppBarStore((state) => state.isUserHomeAppBarDrawerOpen);
+  const openUserHomeAppBarDrawer = useUserHomeAppBarStore((state) => state.openUserHomeAppBarDrawer);
+  const closeUserHomeAppBarDrawer = useUserHomeAppBarStore((state) => state.closeUserHomeAppBarDrawer);
+  const userHomeAppBarMenuItems = useUserHomeAppBarStore((state) => state.userHomeAppBarMenuItems);
+  const isUserHomeAppBarVisible = useUserHomeAppBarStore((state)=>state.isUserHomeAppBarVisible)
+  const customFullCalendarCurrentMonth = useCustomFullCalendarStore((state) => state.customFullCalendarCurrentMonth);
+  const setIsUserCalendarViewVisible = useUserCalendarViewStore((state) => state.setIsUserCalendarViewVisible);
+  const setIsUserHomeFABVisible = useUserHomeFABStore((state) => state.setIsUserHomeFABVisible);
 
   // 現在のビューがHomeかどうかを判定
   const isHomeView = userHomeAppBarCurrentView === "Home";
 
   // 左のボタン：Homeではハンバーガーメニュー、それ以外では戻るアイコン
   const LeftButtonIcon = isHomeView ? MenuIcon : ArrowBackIcon;
+
+  if (!isUserHomeAppBarVisible) {
+    return null;
+  }
 
   const handleLeftButtonClick = () => {
     if (isHomeView) {

@@ -4,11 +4,25 @@ import QrCodeIcon from "@mui/icons-material/QrCode";
 import AddIcon from "@mui/icons-material/Add";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
+import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
+import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
 export function UserHomeFAB() {
-  const { isUserHomeFABVisible, fabIconType, setIsUserHomeFABVisible } =
-    useUserHomeFABStore();
-  const { showQRCodeReader } = useUserQrCodeReaderViewStore();
+  const isUserHomeFABVisible = useUserHomeFABStore((state) =>
+    state.isUserHomeFABVisible
+  );
+  const fabIconType = useUserHomeFABStore((state) => state.fabIconType);
+  const setIsUserHomeFABVisible = useUserHomeFABStore((state) =>
+    state.setIsUserHomeFABVisible
+  );
+  const showQRCodeReader = useUserQrCodeReaderViewStore((state) =>
+    state.showQRCodeReader
+  );
+  const setIsUserCalendarViewVisible = useUserCalendarViewStore((state) =>
+    state.setIsUserCalendarViewVisible
+  );
+  const hideUserHomeAppBar = useUserHomeAppBarStore((state)=>state.hideUserHomeAppBar)
+
 
   if (!isUserHomeFABVisible) return null;
 
@@ -16,6 +30,8 @@ export function UserHomeFAB() {
     if (fabIconType === "qr") {
       showQRCodeReader();
       setIsUserHomeFABVisible(false);
+      setIsUserCalendarViewVisible(false);
+      hideUserHomeAppBar()
     } else if (fabIconType === "plus") {
       // シフト追加用
     }
