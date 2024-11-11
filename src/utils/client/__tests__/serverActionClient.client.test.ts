@@ -12,7 +12,7 @@ import { deleteUser } from '@/app/actions/deleteUser';
 import { insertUser } from '@/app/actions/insertUser';
 import { insertAttendance } from '@/app/actions/insertAttendance';
 import { deleteUser, insertUser, insertAttendance } from '../serverActionClient';
-import { User } from '@/customTypes/User';
+import { User } from '@/types/User';
 
 describe('serverActionClient', () => {
   let consoleErrorMock: jest.SpyInstance;

@@ -9,8 +9,8 @@ import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShif
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
 
 // 型
-import type { User } from '@/customTypes/User';
-import type { Shift } from '@/customTypes/Shift';
+import type { User } from '@/types/User';
+import type { Shift } from '@/types/Shift';
 
 
 // サーバーアクションのエラーハンドリングを共通化する関数  ---------------------------------------------------------------------------------------------------

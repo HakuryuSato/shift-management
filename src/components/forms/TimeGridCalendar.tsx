@@ -24,7 +24,7 @@ import downloadWeeklyShiftTableXlsx from "@utils/downloadWeeklyShiftTableXlsx";
 // fetch
 import fetchUpdateShift from "@/utils/fetchUpdateShift";
 // 型
-import InterFaceShiftQuery from "@/customTypes/InterFaceShiftQuery";
+import InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 
 // スタイル
 import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更

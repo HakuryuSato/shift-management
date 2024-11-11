@@ -22,7 +22,7 @@ import {
 import type {
   AutoShiftSettings,
   AutoShiftTime,
-} from "@/customTypes/AutoShiftTypes";
+} from "@/types/AutoShiftTypes";
 
 interface AutoShiftSettingsFormProps {
   userId: number;

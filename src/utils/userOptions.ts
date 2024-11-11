@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import type InterFaceUserOptions from "@customTypes/InterFaceUserOptions";
+import type InterFaceUserOptions from "@/types/InterFaceUserOptions";
 
 // 定数
 const deffault_work_start_time: string = "08:30";

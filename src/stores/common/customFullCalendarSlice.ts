@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 
-import type { CustomFullCalendarEvent } from '@/customTypes/CustomFullCalendarEvent';
+import type { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
 
 interface CustomFullCalendarStoreState {
   // 共通の状態

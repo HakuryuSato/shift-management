@@ -8,8 +8,8 @@ import { ja } from "date-fns/locale";
 
 // 型
 // import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
-import type InterFaceAdminShiftTable from "@customTypes/InterFaceAdminShiftTable";
+import type InterFaceTableUsers from "@/types/InterFaceTableUsers";
+import type InterFaceAdminShiftTable from "@/types/InterFaceAdminShiftTable";
 
 // 独自
 import Button from "@ui/Button";

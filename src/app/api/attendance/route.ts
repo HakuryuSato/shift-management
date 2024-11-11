@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/server/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import { AttendanceQuery } from '@/customTypes/Attendance';
+import { AttendanceQuery } from '@/types/Attendance';
 
 
 

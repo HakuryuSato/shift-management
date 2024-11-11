@@ -1,10 +1,10 @@
-import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/customTypes/ApiResponses';
-import { AttendanceQuery, Attendance, AttendanceAPIResponse } from '@customTypes/Attendance';
-import type { Holiday } from "@/customTypes/Holiday";
-import type { AutoShiftSettings } from "@/customTypes/AutoShiftTypes";
-import type { Shift,ShiftQuery } from "@/customTypes/Shift";
-import type { User } from "@/customTypes/User";
+import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
+import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/types/ApiResponses';
+import { AttendanceQuery, Attendance, AttendanceAPIResponse } from '@/types/Attendance';
+import type { Holiday } from "@/types/Holiday";
+import type { AutoShiftSettings } from "@/types/AutoShiftTypes";
+import type { Shift,ShiftQuery } from "@/types/Shift";
+import type { User } from "@/types/User";
 
 /*
 

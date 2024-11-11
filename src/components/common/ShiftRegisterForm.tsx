@@ -17,7 +17,7 @@ import DaySelector from "@components/common/DaySelector";
 import {toJapanDateString} from "@/utils/toJapanDateString";
 
 // 型
-import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
+import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 
 type ShiftRegisterFormProps = {
   isOpen: boolean;

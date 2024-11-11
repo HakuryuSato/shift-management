@@ -4,7 +4,7 @@ jest.mock('@/utils/server/handleSupabaseRequest', () => ({
 
 import { insertUser } from '../insertUser';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
-import { User } from '@/customTypes/User';
+import { User } from '@/types/User';
 
 describe('actions/insertUser', () => {
   const mockHandleSupabaseRequest = handleSupabaseRequest as jest.MockedFunction<typeof handleSupabaseRequest>;

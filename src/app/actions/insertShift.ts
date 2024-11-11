@@ -1,6 +1,6 @@
 'use server';
 
-import type { Shift } from '@/customTypes/Shift';
+import type { Shift } from '@/types/Shift';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 
 /**

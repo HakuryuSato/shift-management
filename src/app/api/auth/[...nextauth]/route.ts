@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { CustomNextAuthUser } from "@/customTypes/CustomNextAuthUser";
+import type { CustomNextAuthUser } from "@/types/CustomNextAuthUser";
 import { JWT } from "next-auth/jwt";
 
 

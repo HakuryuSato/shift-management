@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/utils/server/supabaseClient';
-import type InterFaceShiftQuery from '@/customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@/types/InterFaceShiftQuery';
 
 export async function POST(req: NextRequest) {
     const requestData = await req.json();
