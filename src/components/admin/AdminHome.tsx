@@ -1,5 +1,5 @@
 "use client";
-import { AdminAttendanceView } from "./AdminAttendanceView";
+import { AdminAttendanceView } from "./AttendanceView/AdminAttendanceView";
 
 export function AdminHome() {
     return (

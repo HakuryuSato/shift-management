@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { AdminUserManagementForm } from "../AdminUserManagementForm";
+import { AdminUserManagementForm } from "../AttendanceView/AdminUserManagementForm";
 import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
 import { act } from "react";
 

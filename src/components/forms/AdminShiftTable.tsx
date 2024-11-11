@@ -18,7 +18,7 @@ import createTableForAdminShift from "@utils/createTableForAdminShift";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
 import {toJapanDateString} from "@utils/toJapanDateString";
 
-import { AdminUserManagementForm } from "../admin/AdminUserManagementForm";
+import { AdminUserManagementForm } from "../admin/AttendanceView/AdminUserManagementForm";
 
 // store
 import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
