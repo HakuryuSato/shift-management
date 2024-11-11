@@ -62,6 +62,11 @@ export const ModalContainer: React.FC = () => {
                     <Button
                         variant="contained"
                         onClick={() => handleClickModalContainerButton()}
+                        sx={{
+                            backgroundColor: modalMode === "delete"
+                                ? "red"
+                                : "default",
+                        }}
                     >
                         {modeText[modalMode]}
                     </Button>

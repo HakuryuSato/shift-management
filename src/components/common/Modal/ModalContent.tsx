@@ -35,9 +35,16 @@ export const ModalContent: React.FC = () => {
       justifyContent="center"
       sx={{ gap: 2 }}
     >
+      <Box display={modalMode === "delete" ? "block" : "none"}>
+        <Typography>このシフトを削除しますか？</Typography>
+      </Box>
       {/* 選択された日付 */}
       <Box>
-        <Typography variant={modalMode === "register" ? "body1" : "h5"}>
+        <Typography
+          variant={modalMode === "register" || modalMode === "update"
+            ? "body1"
+            : "h5"}
+        >
           {modalContentSelectedDate}
         </Typography>
       </Box>
@@ -59,7 +66,9 @@ export const ModalContent: React.FC = () => {
 
       {/* 登録または更新なら */}
       <Box
-        display={modalMode === "register" || modalMode === "update" ? "flex" : "none"}
+        display={modalMode === "register" || modalMode === "update"
+          ? "flex"
+          : "none"}
         justifyContent="center"
         alignItems="center"
         sx={{ gap: 1 }}
@@ -94,9 +103,6 @@ export const ModalContent: React.FC = () => {
       </Box>
 
       {/* 削除モードのテキスト表示 */}
-      <Box display={modalMode === "delete" ? "block" : "none"}>
-        <Typography>このシフトを削除しますか？</Typography>
-      </Box>
     </Box>
   );
 };

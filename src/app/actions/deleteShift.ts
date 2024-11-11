@@ -16,5 +16,5 @@ export async function deleteShift(shiftId: Number): Promise<any> {
       .eq('shift_id', shiftId);
   });
 
-  return { success: true };
+  return data;
 }
