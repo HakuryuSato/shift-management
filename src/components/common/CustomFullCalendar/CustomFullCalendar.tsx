@@ -77,9 +77,6 @@ export function CustomFullCalendar() {
   // 全員用シフト
   useCalendarShiftAllMembers();
 
-  // handleClick用Hooks
-  const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
-
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え
   const reactSwipeHandlers = useSwipeable({
@@ -88,8 +85,11 @@ export function CustomFullCalendar() {
     trackMouse: true, // マウスでのテストを可能にする（オプション）
   });
 
-  
-  // フルカレ用イベント
+  // Click
+  const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
+
+
+  // フルカレ用イベント(ViewModeに応じて異なるデータ表示)
   const customFullCalendarEvents = [
     ...customFullCalendarHolidayEvents,
     ...(calendarViewMode === "ATTENDANCE"
