@@ -3,7 +3,7 @@
 // サーバーアクション関数(サーバーアクションと同じ名称でこのクライアントから実行するため、serverAction xx でインポートしています)
 import { deleteUser as serverActionDeleteUser } from '@/app/actions/deleteUser';
 import { insertUser as serverActionInsertUser } from '@/app/actions/insertUser';
-import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
+import { insertAttendanceStamp as serverActionInsertAttendance } from '@/app/actions/insertAttendanceStamp';
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';

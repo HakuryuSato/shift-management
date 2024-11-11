@@ -51,15 +51,15 @@ export async function GET(request: NextRequest) {
         const endDateISOString = endDate.toISOString();
 
         let query = supabase
-            .from('attendances')
+            .from('attendance_stamps')
             .select(`
                 attendance_id,
                 user_id,
-                start_time,
-                end_time
+                stamp_start_time,
+                stamp_end_time
             `)
-            .gte('start_time', startDateISOString)
-            .lte('start_time', endDateISOString);
+            .gte('stamp_start_time', startDateISOString)
+            .lte('stamp_start_time', endDateISOString);
 
         if (user_id !== '*') {
             query = query.eq('user_id', user_id);

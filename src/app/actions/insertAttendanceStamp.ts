@@ -6,7 +6,7 @@ import { toJapanISOString } from '@/utils/toJapanISOString';
 // 共通のsupabase関数を使う形式にリファクタリングすること
 // 既に存在するなら新たに作成ではなく、end_time更新とすること
 
-export async function insertAttendance(userId:number) {
+export async function insertAttendanceStamp(userId:number) {
 
   // 今日の日付を取得（時刻は00:00:00にリセット）
   const today = new Date();
@@ -14,11 +14,11 @@ export async function insertAttendance(userId:number) {
 
   // 今日の出勤記録を取得
   const { data: attendanceData, error } = await supabase
-    .from('attendances')
+    .from('attendance_stamps')
     .select('*')
     .eq('user_id', userId)
-    .gte('start_time', toJapanISOString(today))
-    .order('start_time', { ascending: false })
+    .gte('stamp_start_time', toJapanISOString(today))
+    .order('stamp_start_time', { ascending: false })
     .limit(1);
 
   if (error) {
@@ -31,7 +31,7 @@ export async function insertAttendance(userId:number) {
     if (!attendance.end_time) {
       // end_timeが未設定の場合、終了時間を設定
       const { error: updateError } = await supabase
-        .from('attendances')
+        .from('attendance_stamps')
         .update({ end_time: toJapanISOString(new Date()) })
         .eq('attendance_id', attendance.attendance_id);
 
@@ -43,10 +43,10 @@ export async function insertAttendance(userId:number) {
     } else {
       // 既に開始・終了時間がある場合、新たな出勤記録を作成
       const { error: insertError } = await supabase
-        .from('attendances')
+        .from('attendances_stamps')
         .insert({
           user_id: userId,
-          start_time: toJapanISOString(new Date()),
+         stamp_start_time: toJapanISOString(new Date()),
         });
 
       if (insertError) {
@@ -58,10 +58,10 @@ export async function insertAttendance(userId:number) {
   } else {
     // 今日の記録がない場合、新しい出勤記録を作成
     const { error: insertError } = await supabase
-      .from('attendances')
+      .from('attendance_stamps')
       .insert({
         user_id: userId,
-        start_time: toJapanISOString(new Date()),
+       stamp_start_time: toJapanISOString(new Date()),
       });
 
     if (insertError) {

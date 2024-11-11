@@ -14,7 +14,7 @@ import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
 
 // サーバーアクション
-import { insertAttendance } from "@actions/insertAttendance";
+import { insertAttendanceStamp } from "@/app/actions/insertAttendanceStamp";
 
 export function UserQrCodeReader() {
   const { isQRCodeReaderVisible, hideQRCodeReader } = useUserQrCodeReaderViewStore();
@@ -42,7 +42,7 @@ export function UserQrCodeReader() {
     const decodedText = code.rawValue;
     if (decodedText === "ATTENDANCE_QR") {
       try {
-        const res = await insertAttendance(userId);
+        const res = await insertAttendanceStamp(userId);
         handleClose();
 
         showUserSnackBar(res.message,"success");

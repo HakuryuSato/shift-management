@@ -10,7 +10,7 @@ jest.mock('@/app/actions/insertAttendance', () => ({
 
 import { deleteUser } from '@/app/actions/deleteUser';
 import { insertUser } from '@/app/actions/insertUser';
-import { insertAttendance } from '@/app/actions/insertAttendance';
+import { insertAttendanceStamp } from '@/app/actions/insertAttendanceStamp';
 import { deleteUser, insertUser, insertAttendance } from '../serverActionClient';
 import { User } from '@/types/User';
 
@@ -54,8 +54,8 @@ describe('serverActionClient', () => {
     },
     {
       actionName: 'insertAttendanceAction',
-      mockFunction: insertAttendance as jest.Mock,
-      actionFunction: insertAttendance,
+      mockFunction: insertAttendanceStamp as jest.Mock,
+      actionFunction: insertAttendanceStamp,
       args: [1],
       mockResolvedValue: { message: 'Attendance recorded' },
       mockRejectedError: 'Attendance failed'
