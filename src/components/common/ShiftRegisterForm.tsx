@@ -2,7 +2,7 @@
 // モーダルウィンドウとして表示される
 
 // 基盤
-import TimeInput from "@ui/TimeInput";
+import OldTimeInput from "@/components/ui/OldTimeInput";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
@@ -14,7 +14,7 @@ import fetchUserData from "@/utils/fetchUserData";
 import ShiftEditToolBar from "@components/common/ShiftEditToolBar";
 import ShiftDeleteForm from "./ShiftDeleteForm";
 import DaySelector from "@components/common/DaySelector";
-import toJapanDateString from "@/utils/toJapanDateString";
+import {toJapanDateString} from "@/utils/toJapanDateString";
 
 // 型
 import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
@@ -128,8 +128,8 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       setEndTime(selectedEventShiftTime.split("-")[1]);
     } else {
       const { start_time, end_time } = getUserOptions();
-      setStartTime(start_time);
-      setEndTime(end_time);
+      setStartTime(start_time || '08:30');
+      setEndTime(end_time|| '18:00');
       setUserOptions({ start_time: startTime, end_time: endTime });
     }
 
@@ -333,12 +333,12 @@ const ShiftRegisterForm: React.FC<ShiftRegisterFormProps> = (
       {/* 時間入力  確認モードでない(シフトidなし) または編集モード または曜日でまとめて */}
       {(!selectedShiftId || isEditMode || isMultiple) && (
         <div className="flex justify-center items-center space-x-2">
-          <TimeInput
+          <OldTimeInput
             initialValue={startTime}
             onReturn={(selectedTime) => setStartTime(selectedTime)}
           />
           <a className="pt-3">-</a>
-          <TimeInput
+          <OldTimeInput
             initialValue={endTime}
             onReturn={(selectedTime) => setEndTime(selectedTime)}
           />

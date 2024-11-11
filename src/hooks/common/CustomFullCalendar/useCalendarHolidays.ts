@@ -4,14 +4,14 @@ import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSli
 import type { Holiday } from "@/customTypes/Holiday";
 import { useEffect, useCallback } from 'react';
 
-export function useHolidaysForCustomFullCalendar() {
+export function useCalendarHolidays() {
   const {
     setCustomFullCalendarHolidayEvents,
   } = useCustomFullCalendarStore();
 
   const { data: holidays } = useSWR<Holiday[]>('holidays', fetchHolidays);
 
-  // 祝日データを一度だけ設定する関数
+  // 祝日データを設定する関数
   const updateHolidayEvents = useCallback(() => {
     if (holidays) {
       const holidayEvents = holidays.map((holiday: Holiday) => ({

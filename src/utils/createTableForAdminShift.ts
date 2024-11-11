@@ -6,7 +6,7 @@ import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
 import type { Holiday } from '@/customTypes/Holiday';
 
 // 変換用
-import toJapanDateString from './toJapanDateString';
+import {toJapanDateString} from './toJapanDateString';
 
 
 

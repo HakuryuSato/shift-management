@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/utils/server/supabaseClient';
-import toJapanDateString from '@/utils/toJapanDateString';
+import {toJapanDateString} from '@/utils/toJapanDateString';
 import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
 import type { Holiday } from '@/customTypes/Holiday';
 import type InterFaceTableUsers from '@/customTypes/InterFaceTableUsers';

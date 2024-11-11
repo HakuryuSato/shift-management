@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     const apiKey = process.env.GOOGLE_CALENDAR_API_KEY!;
-    const calendarId = 'japanese__ja@holiday.calendar.google.com';
+    const calendarId = 'ja.japanese.official#holiday@group.v.calendar.google.com';
 
     // 3か月後まで取得
     const now = new Date();

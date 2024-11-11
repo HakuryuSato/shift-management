@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, ToggleButton, Typography } from "@mui/material";
-import TimeDropdown from "../common/TimeDropdown";
+import {TimeDropdown} from "../common/Modal/TimeDropdown";
 import type { AutoShiftTime } from "@/customTypes/AutoShiftTypes";
 
 interface ShiftTimeInputPerDayProps {
@@ -11,6 +11,8 @@ interface ShiftTimeInputPerDayProps {
 
 /*
 曜日ごとに時間を入力するためのコンポーネント
+注意：OldTimeDropDownを使用しているので、切替後に対応して
+
 */
 
 const ShiftTimeInputPerDay: React.FC<ShiftTimeInputPerDayProps> = ({

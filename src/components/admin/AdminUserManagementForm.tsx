@@ -11,8 +11,8 @@ import {
     Typography,
 } from "@mui/material";
 import {
-    deleteUserAction,
-    insertUserAction,
+    deleteUser,
+    insertUser,
 } from "@/utils/client/serverActionClient";
 
 export function AdminUserManagementForm() {
@@ -58,7 +58,7 @@ export function AdminUserManagementForm() {
         }
 
         if (mode === "register") {
-            await insertUserAction({
+            await insertUser({
                 user_name: userName,
                 employment_type: employmentType,
             });
@@ -69,7 +69,7 @@ export function AdminUserManagementForm() {
     };
 
     const handleConfirmDelete = async () => {
-        await deleteUserAction(userName);
+        await deleteUser(userName);
         setIsConfirmDeleteOpen(false);
         handleClose();
     };

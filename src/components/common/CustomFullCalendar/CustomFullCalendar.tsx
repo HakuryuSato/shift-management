@@ -14,21 +14,13 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 
 // Hooks
-import { useAttendanceForCalendar } from "@/hooks/useAttendanceForCalendar";
-import { useHolidaysForCustomFullCalendar } from "@/hooks/useHolidaysForCustomFullCalendar";
-import { usePersonalShiftsForCalendar } from "@/hooks/usePersonalShiftsForCalendar";
-import { useAllShiftsForCalendar } from "@/hooks/useAllShiftsForCalendar";
+import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
+import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
+import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
+import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllmembers";
+import { useCalendarClickHandlers } from "@/hooks/common/CustomFullCalendar/useCalendarClickHandlers";
 
-// クリックイベント群
-import {
-  handleClickDate,
-  handleClickDownloadWeeklyData,
-  handleClickEvent,
-  handleClickMultipleInput,
-  handleClickToAttendance,
-} from "./clickHandlers";
-
-// フルカレンダー用設定
+// FullCalendar用設定群
 import { renderEventContent } from "./renderEventContnt";
 import { dayCellClassNames } from "./dayCellClassNames";
 
@@ -36,33 +28,54 @@ export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
 
   // State群 ---------------------------------------------------------------------------------------------------
-  const {
-    customFullCalendarRole,
-    customFullCalendarBgColorsPerDay,
-    setCustomFullCalendarStartDate,
-    setCustomFullCalendarEndDate,
-    setCustomFullCalendarCurrentYear,
-    setCustomFullCalendarCurrentMonth,
-    customFullCalendarHolidayEvents,
-    customFullCalendarAttendanceEvents,
-    customFullCalendarPersonalShiftEvents,
-    customFullCalendarAllMembersShiftEvents,
-  } = useCustomFullCalendarStore();
+  const customFullCalendarRole = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarRole,
+  );
+  const customFullCalendarBgColorsPerDay = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarBgColorsPerDay,
+  );
+  const setCustomFullCalendarStartDate = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarStartDate,
+  );
+  const setCustomFullCalendarEndDate = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarEndDate,
+  );
+  const setCustomFullCalendarCurrentYear = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarCurrentYear,
+  );
+  const setCustomFullCalendarCurrentMonth = useCustomFullCalendarStore(
+    (state) => state.setCustomFullCalendarCurrentMonth,
+  );
+  const customFullCalendarHolidayEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarHolidayEvents,
+  );
+  const customFullCalendarAttendanceEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarAttendanceEvents,
+  );
+  const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarPersonalShiftEvents,
+  );
+  const customFullCalendarAllMembersShiftEvents = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarAllMembersShiftEvents,
+  );
 
-  const { calendarViewMode } = useCalendarViewToggleStore();
+  const calendarViewMode = useCalendarViewToggleStore((state) =>
+    state.calendarViewMode
+  );
 
   // Hooks  ---------------------------------------------------------------------------------------------------
-  // 祝日データををフルカレ用のStateに設定
-  useHolidaysForCustomFullCalendar();
+  // 各種データをCustomFullCalendarSoreに設定
+  // 祝日
+  useCalendarHolidays();
 
-  // 出退勤データをStateに設定
-  useAttendanceForCalendar();
+  // 出退勤
+  useCalendarAttendances();
 
-  // 個人用シフトデータ
-  usePersonalShiftsForCalendar();
+  // 個人用シフト
+  useCalendarShiftPersonal();
 
-  // 全員用シフトデータ
-  useAllShiftsForCalendar();
+  // 全員用シフト
+  useCalendarShiftAllMembers();
 
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え
@@ -72,8 +85,11 @@ export function CustomFullCalendar() {
     trackMouse: true, // マウスでのテストを可能にする（オプション）
   });
 
-  // FullCalendar設定群、MUIに以降して外部化するので、一部廃止予定  ---------------------------------------------------------------------------------------------------
+  // Click
+  const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
 
+
+  // フルカレ用イベント(ViewModeに応じて異なるデータ表示)
   const customFullCalendarEvents = [
     ...customFullCalendarHolidayEvents,
     ...(calendarViewMode === "ATTENDANCE"
@@ -84,7 +100,6 @@ export function CustomFullCalendar() {
       ? customFullCalendarAllMembersShiftEvents
       : []),
   ];
-
 
 
   return (
@@ -101,29 +116,25 @@ export function CustomFullCalendar() {
         initialView={customFullCalendarRole === "admin"
           ? "timeGridWeek"
           : "dayGridMonth"}
-
         height="auto"
         locale={jaLocale}
         events={customFullCalendarEvents}
         eventClick={handleClickEvent}
         dateClick={handleClickDate}
-
         headerToolbar={false}
         footerToolbar={false}
-
         // 月や週遷移時の日付再設定
         datesSet={(dateInfo) => {
-        if (customFullCalendarRole === "admin") {
-          setCustomFullCalendarStartDate(new Date(dateInfo.start));
-          setCustomFullCalendarEndDate(new Date(dateInfo.end));
-        } else {
-          const fullCalendarDate = new Date(dateInfo.start);
-          fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
-          setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
-          setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth());
-        }
-      }}
-
+          if (customFullCalendarRole === "admin") {
+            setCustomFullCalendarStartDate(new Date(dateInfo.start));
+            setCustomFullCalendarEndDate(new Date(dateInfo.end));
+          } else {
+            const fullCalendarDate = new Date(dateInfo.start);
+            fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
+            setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
+            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth());
+          }
+        }}
         // 日付セルに適用するCSSを定義
         dayCellClassNames={(info) =>
           dayCellClassNames(

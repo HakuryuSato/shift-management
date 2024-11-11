@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
-import toJapanDateString from './toJapanDateString';
+import {toJapanDateString} from './toJapanDateString';
 
 // FullCalendar用の型メモ
 type ShiftEvent = {

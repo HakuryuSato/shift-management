@@ -1,4 +1,4 @@
-import toJapanDateString from './toJapanDateString';
+import {toJapanDateString} from './toJapanDateString';
 
 export function toJapanISOString(date: Date = new Date()): string {
   const dateString = toJapanDateString(date);

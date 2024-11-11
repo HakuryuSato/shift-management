@@ -16,7 +16,7 @@ import Button from "@ui/Button";
 import formatShiftsForTable from "@utils/formatShiftsForTable";
 import createTableForAdminShift from "@utils/createTableForAdminShift";
 import downloadShiftTableXlsx from "@utils/downloadShiftTableXlsx";
-import toJapanDateString from "@utils/toJapanDateString";
+import {toJapanDateString} from "@utils/toJapanDateString";
 
 import { AdminUserManagementForm } from "../admin/AdminUserManagementForm";
 
