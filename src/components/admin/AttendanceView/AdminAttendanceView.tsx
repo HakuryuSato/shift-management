@@ -1,10 +1,10 @@
 "use client";
 import { AttendanceTable } from "./AttendanceTable";
 
-export function AdminAttendanceView() {
+export const AdminAttendanceView: React.FC = () => {
     return (
         <>
             <AttendanceTable />
         </>
     );
-}
+};
