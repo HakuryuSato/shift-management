@@ -1,5 +1,5 @@
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice"
-import { insertShift } from "@/app/actions/insertShift"
+import { insertShift, updateShift, deleteShift } from "@/utils/client/serverActionClient"
 import { useUserHomeStore } from "@/stores/user/userHomeSlice"
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice"
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
@@ -13,6 +13,7 @@ export const useModalContainer = () => {
     const userId = useUserHomeStore((state) => state.userId);
     const customFullCalendarRole = useCustomFullCalendarStore((state) => state.customFullCalendarRole);
     const customFullCalendarSelectedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate)
+    const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent)
     const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime)
     const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime)
     const { mutateAllShifts } = useCalendarShiftAllMembers()
@@ -22,7 +23,7 @@ export const useModalContainer = () => {
     // 確認、保存、削除のテキストが入る親モーダルのボタン
     const handleClickModalContainerButton = async () => {
         // ModalModeに応じて条件分岐、apiClientを呼び出して処理を行う
-        if (modalMode === 'register') {
+        if (modalMode === 'register') { // 登録  ---------------------------------------------------------------------------------------------------
             // ユーザーの場合
             if (customFullCalendarRole === 'user') {
                 // 選択された日付と開始・終了時刻を組み合わせてISO形式の日時文字列を生成
@@ -42,9 +43,22 @@ export const useModalContainer = () => {
             }
 
 
-        } else if (modalMode === 'delete') {
-            // 削除処理をここに追加
-        } else if (modalMode === 'update') {
+        } else if (modalMode === 'delete') { // 削除 ---------------------------------------------------------------------------------------------------
+            console.log('deleteShift(Number(customFullCalendarClickedEvent?.event.id))')
+            await deleteShift(Number(customFullCalendarClickedEvent?.event.id))
+
+        } else if (modalMode === 'update') { // 更新  ---------------------------------------------------------------------------------------------------
+            // クリックされたイベントからシフト情報を作る
+
+            const selectedEventDate = customFullCalendarClickedEvent?.event.startStr.split('T')[0] // YYYY-MM-DD
+
+            await updateShift({
+                shift_id: Number(customFullCalendarClickedEvent?.event.id),
+                start_time: `${selectedEventDate} ${modalContentSelectedStartTime}`,
+                end_time: `${selectedEventDate} ${modalContentSelectedEndTime}`,
+            })
+
+
             // 更新処理をここに追加
         } else if (modalMode === 'multiple-register') {
             // 複数登録の処理をここに追加
@@ -56,7 +70,7 @@ export const useModalContainer = () => {
 
 
         // モーダルを閉じる
-        await closeModal();
+        closeModal();
     };
 
     return { handleClickModalContainerButton };

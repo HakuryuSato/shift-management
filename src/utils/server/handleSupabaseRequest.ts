@@ -18,9 +18,9 @@ export async function handleSupabaseRequest<T>(queryBuilder: QueryBuilder<T>): P
     throw new Error(error.message || 'Supabaseクエリ中にエラーが発生しました');
   }
 
-  if (data === null) {
-    throw new Error('データが取得できませんでした');
-  }
+  // if (data === null) {
+  //   throw new Error('データが取得できませんでした');
+  // }
 
   return data as T;
 }

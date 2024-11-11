@@ -20,10 +20,8 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
     const response = await fetch(url, options);
     const result = await response.json();
 
-
-
     if (response.ok && result && 'data' in result) {
-      console.log(result.data)
+      console.log('apiClient:',result.data)
       return result.data as T;
     } else {
       console.error(`Error fetching ${url}:`, result);

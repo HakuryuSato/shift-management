@@ -57,14 +57,14 @@ export const ModalContent: React.FC = () => {
         </>
       )}
 
-      {/* 登録用 */}
+      {/* 登録または更新なら */}
       <Box
-        display={modalMode === "register" ? "flex" : "none"}
+        display={modalMode === "register" || modalMode === "update" ? "flex" : "none"}
         justifyContent="center"
         alignItems="center"
         sx={{ gap: 1 }}
       >
-        {/* タイムドロップダウンを表示する場合 */}
+        {/* タイムドロップダウンを表示 */}
         <TimeDropdown
           label="開始時間"
           value={modalContentSelectedStartTime}

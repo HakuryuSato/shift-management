@@ -11,7 +11,7 @@ jest.mock('@/app/actions/insertAttendance', () => ({
 import { deleteUser } from '@/app/actions/deleteUser';
 import { insertUser } from '@/app/actions/insertUser';
 import { insertAttendance } from '@/app/actions/insertAttendance';
-import { deleteUserAction, insertUserAction, insertAttendanceAction } from '../serverActionClient';
+import { deleteUser, insertUser, insertAttendance } from '../serverActionClient';
 import { User } from '@/customTypes/User';
 
 describe('serverActionClient', () => {
@@ -39,7 +39,7 @@ describe('serverActionClient', () => {
     {
       actionName: 'deleteUserAction',
       mockFunction: deleteUser as jest.Mock,
-      actionFunction: deleteUserAction,
+      actionFunction: deleteUser,
       args: ['TestUser'],
       mockResolvedValue: { success: true },
       mockRejectedError: 'Deletion failed'
@@ -47,7 +47,7 @@ describe('serverActionClient', () => {
     {
       actionName: 'insertUserAction',
       mockFunction: insertUser as jest.Mock,
-      actionFunction: insertUserAction,
+      actionFunction: insertUser,
       args: [{ user_name: 'TestUser', employment_type: 'part_time' } as User],
       mockResolvedValue: { user_id: 1, user_name: 'TestUser', employment_type: 'part_time' },
       mockRejectedError: 'Insertion failed'
@@ -55,7 +55,7 @@ describe('serverActionClient', () => {
     {
       actionName: 'insertAttendanceAction',
       mockFunction: insertAttendance as jest.Mock,
-      actionFunction: insertAttendanceAction,
+      actionFunction: insertAttendance,
       args: [1],
       mockResolvedValue: { message: 'Attendance recorded' },
       mockRejectedError: 'Attendance failed'

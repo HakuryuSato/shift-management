@@ -1,10 +1,12 @@
 'use client'
 
-// サーバーアクション関数
-import { deleteUser } from '@/app/actions/deleteUser';
-import { insertUser } from '@/app/actions/insertUser';
-import { insertAttendance } from '@/app/actions/insertAttendance';
-import { insertShift } from '@/app/actions/insertShift';
+// サーバーアクション関数(サーバーアクションと同じ名称でこのクライアントから実行するため、serverAction xx でインポートしています)
+import { deleteUser as serverActionDeleteUser } from '@/app/actions/deleteUser';
+import { insertUser as serverActionInsertUser } from '@/app/actions/insertUser';
+import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
+import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
+import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
+import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
 
 // 型
 import type { User } from '@/customTypes/User';
@@ -15,10 +17,10 @@ import type { Shift } from '@/customTypes/Shift';
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
   try {
     const data = await action();
+    console.log('serverActionClient:', data)
     return data;
   } catch (error: any) {
     console.error('サーバーアクション実行中にエラーが発生しました:', error.message || error);
-    // 必要に応じてユーザーへのエラーメッセージ表示やログ送信を行う
     return null;
   }
 }
@@ -26,14 +28,13 @@ export async function handleServerAction<T>(action: () => Promise<T>): Promise<T
 
 
 // サーバーアクション呼び出し関数群  ---------------------------------------------------------------------------------------------------
-
 /**
  * ユーザーを削除するサーバーアクションを呼び出す関数
  * @param userName ユーザー名
  * @returns 削除されたユーザーデータまたは null
  */
-export async function deleteUserAction(userName: string): Promise<any | null> {
-  return await handleServerAction(() => deleteUser(userName));
+export async function deleteUser(userName: string): Promise<any | null> {
+  return await handleServerAction(() => serverActionDeleteUser(userName));
 }
 
 /**
@@ -41,8 +42,8 @@ export async function deleteUserAction(userName: string): Promise<any | null> {
  * @param user ユーザーオブジェクト
  * @returns 挿入されたユーザーデータまたは null
  */
-export async function insertUserAction(user: User): Promise<User | null> {
-  return await handleServerAction(() => insertUser(user));
+export async function insertUser(user: User): Promise<User | null> {
+  return await handleServerAction(() => serverActionInsertUser(user));
 }
 
 /**
@@ -50,8 +51,8 @@ export async function insertUserAction(user: User): Promise<User | null> {
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
-export async function insertAttendanceAction(userId: number): Promise<{ message: string } | null> {
-  return await handleServerAction(() => insertAttendance(userId));
+export async function insertAttendance(userId: number): Promise<{ message: string } | null> {
+  return await handleServerAction(() => serverActionInsertAttendance(userId));
 }
 
 
@@ -60,6 +61,24 @@ export async function insertAttendanceAction(userId: number): Promise<{ message:
  * @param shiftData シフトデータ（単一または複数のShiftQuery型）
  * @returns 挿入されたシフトデータまたは null
  */
-export async function insertShiftAction(shiftData: Shift | Shift[]): Promise<Shift[] | null> {
-  return await handleServerAction(() => insertShift(shiftData));
+export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[] | null> {
+  return await handleServerAction(() => serverActionInsertShift(shiftData));
+}
+
+/**
+ * シフトを更新するサーバーアクションを呼び出す関数
+ * @param shiftData 更新するシフトデータ
+ * @returns 更新されたシフトデータまたは null
+ */
+export async function updateShift(shiftData: Shift): Promise<Shift[] | null> {
+  return await handleServerAction(() => serverActionUpdateShift(shiftData));
+}
+
+/**
+ * シフトを削除するサーバーアクションを呼び出す関数
+ * @param shiftId シフトID
+ * @returns 削除されたシフトデータまたは null
+ */
+export async function deleteShift(shiftId: Number): Promise<Shift | null> {
+  return await handleServerAction(() => serverActionDeleteShift(shiftId));
 }

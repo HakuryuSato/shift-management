@@ -19,7 +19,9 @@ export const ModalContainer: React.FC = () => {
     const modeText: { [key: string]: string } = {
         confirm: "確認",
         register: "保存",
+        update: "保存",
         delete: "削除",
+
         "multiple-register": "保存",
     };
 
