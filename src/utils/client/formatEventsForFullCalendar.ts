@@ -1,7 +1,7 @@
 import { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
-import { Shift } from '../types/Shift';
-import { Attendance } from '../types/Attendance';
-import { User } from '../types/User';
+import { Shift } from '../../types/Shift';
+import { Attendance } from '../../types/Attendance';
+import { User } from '../../types/User';
 
 // 共通のベース型を定義
 type ShiftOrAttendance = Shift | Attendance;

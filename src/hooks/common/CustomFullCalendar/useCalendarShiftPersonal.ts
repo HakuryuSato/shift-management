@@ -4,7 +4,7 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import { fetchShifts } from '@/utils/client/apiClient';
-import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';
+import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullCalendar';
 
 export function useCalendarShiftPersonal() {
   const userId = useUserHomeStore((state) => state.userId);
