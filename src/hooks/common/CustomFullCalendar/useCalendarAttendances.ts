@@ -4,7 +4,7 @@ import { fetchAttendance } from '@/utils/client/apiClient';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullCalendar';
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
-import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
+
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils'
 
