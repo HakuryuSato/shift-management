@@ -3,7 +3,7 @@
 // サーバーアクション関数(サーバーアクションと同じ名称でこのクライアントから実行するため、serverAction xx でインポートしています)
 import { deleteUser as serverActionDeleteUser } from '@/app/actions/deleteUser';
 import { insertUser as serverActionInsertUser } from '@/app/actions/insertUser';
-import { insertAttendanceStamp as serverActionInsertAttendance } from '@/app/actions/insertAttendanceStamp';
+import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
@@ -11,9 +11,9 @@ import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShif
 // 型
 import type { User } from '@/types/User';
 import type { Shift } from '@/types/Shift';
+import type { AttendanceStamp } from '@/types/Attendance'
 
-
-// サーバーアクションのエラーハンドリングを共通化する関数  ---------------------------------------------------------------------------------------------------
+// サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
   try {
     const data = await action();
@@ -27,7 +27,9 @@ export async function handleServerAction<T>(action: () => Promise<T>): Promise<T
 
 
 
-// サーバーアクション呼び出し関数群  ---------------------------------------------------------------------------------------------------
+// サーバーアクション呼び出し関数群 -------------------------------------------------
+
+// ユーザー関連 ---------------------------------------------------------------------------------------------------
 /**
  * ユーザーを削除するサーバーアクションを呼び出す関数
  * @param userName ユーザー名
@@ -46,16 +48,19 @@ export async function insertUser(user: User): Promise<User | null> {
   return await handleServerAction(() => serverActionInsertUser(user));
 }
 
+// 出退勤関連  ---------------------------------------------------------------------------------------------------
 /**
- * 出退勤を挿入するサーバーアクションを呼び出す関数
+ * 出退勤を挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入や更新はサーバーアクション側で処理している)
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
-export async function insertAttendance(userId: number): Promise<{ message: string } | null> {
-  return await handleServerAction(() => serverActionInsertAttendance(userId));
+export async function punchAttendance(userId: number): Promise<AttendanceStamp[] | null> {
+  return await handleServerAction(() => serverActionpunchAttendance(userId));
 }
 
 
+
+// シフト関連 ---------------------------------------------------------------------------------------------------
 /**
  * シフトを挿入するサーバーアクションを呼び出す関数
  * @param shiftData シフトデータ（単一または複数のShiftQuery型）

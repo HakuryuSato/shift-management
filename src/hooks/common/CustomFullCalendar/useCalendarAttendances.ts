@@ -6,24 +6,32 @@ import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullC
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import { calcDateRangeForMonth } from '@/utils/calcDateRangeForMonth';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
+import { getTimeRangeISOStrings } from '@/utils/common/dateUtils'
 
 export function useCalendarAttendances() {
   const setCustomFullCalendarAttendanceEvents = useCustomFullCalendarStore(
     (state) => state.setCustomFullCalendarAttendanceEvents
   );
-  const customFullCalendarCurrentMonth = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarCurrentMonth
+
+  const customFullCalendarStartDate = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarStartDate
   );
+  const customFullCalendarEndDate = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarEndDate)
+
   const userId = useUserHomeStore((state) => state.userId);
   const isUserCalendarViewVisible = useUserCalendarViewStore(
     (state) => state.isUserCalendarViewVisible
   );
 
-  const { start_date, end_date } = calcDateRangeForMonth(customFullCalendarCurrentMonth);
+  const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('range', customFullCalendarStartDate, customFullCalendarEndDate)
 
+  // カレンダーを表示している、かつリクエストに必要なデータが全てあるなら取得
   const { data: attendances, mutate } = useSWR(
-    isUserCalendarViewVisible ? `attendances-${userId}-${start_date}-${end_date}` : null,
-    () => fetchAttendance({ user_id: userId, start_date, end_date })
+    isUserCalendarViewVisible && userId && startTimeISO && endTimeISO
+      ? `attendances-${userId}-${startTimeISO}-${endTimeISO}`
+      : null,
+    () => fetchAttendance({ user_id: userId, startTimeISO, endTimeISO })
   );
 
   useEffect(() => {

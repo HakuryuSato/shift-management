@@ -16,7 +16,7 @@ import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
 import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
 // サーバーアクション
-import { insertAttendanceStamp } from "@/app/actions/insertAttendanceStamp";
+import { punchAttendance } from "@/utils/client/serverActionClient";
 
 export function UserQrCodeReader() {
   const isQRCodeReaderVisible = useUserQrCodeReaderViewStore((state) =>
@@ -61,10 +61,9 @@ export function UserQrCodeReader() {
     const decodedText = code.rawValue;
     if (decodedText === "ATTENDANCE_QR") {
       try {
-        const res = await insertAttendanceStamp(userId);
+        await punchAttendance(userId);
         handleClose();
-
-        showUserSnackBar(res.message, "success");
+        showUserSnackBar("打刻完了しました", "success");
       } catch (error) {
         console.error(error);
         handleClose();

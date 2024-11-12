@@ -1,9 +1,9 @@
 import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/types/ApiResponses';
-import { AttendanceQuery, Attendance, AttendanceAPIResponse } from '@/types/Attendance';
+import { AttendanceQuery, AttendanceStamp } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
 import type { AutoShiftSettings } from "@/types/AutoShiftTypes";
-import type { Shift,ShiftQuery } from "@/types/Shift";
+import type { Shift, ShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 
 /*
@@ -21,7 +21,7 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
     const result = await response.json();
 
     if (response.ok && result && 'data' in result) {
-      console.log('apiClient:',result.data)
+      console.log('apiClient:', result.data)
       return result.data as T;
     } else {
       console.error(`Error fetching ${url}:`, result);
@@ -41,7 +41,7 @@ export async function fetchUserByUsername(username: string): Promise<User | null
 }
 
 // ユーザー 一覧取得 API名称はusersに変更予定
-export async function fetchUsers():Promise<User[]> {
+export async function fetchUsers(): Promise<User[]> {
   return await handleFetch<User[]>(`/api/getUserData`);
 }
 
@@ -101,21 +101,21 @@ export async function sendAutoShiftSettings(autoShiftSettingData: any) {
 // 出退勤データ取得
 export async function fetchAttendance(
   params: AttendanceQuery = {}
-): Promise<Attendance[]> {
-  const { user_id = '*', start_date, end_date } = params;
+): Promise<AttendanceStamp[]> {
+  // 展開
+  const { user_id = '*', startTimeISO, endTimeISO } = params;
 
+  // 開始終了時間の指定なければ終了
+  if (!startTimeISO || !endTimeISO) return [];
   const queryParams = new URLSearchParams();
 
-  if (user_id) {
-    queryParams.append('user_id', user_id.toString());
-  }
+  // id指定があれば設定
+  queryParams.append('user_id', user_id.toString());
+  queryParams.append('start_time', startTimeISO);
+  queryParams.append('end_time', endTimeISO);
 
-  if (start_date && end_date) {
-    queryParams.append('start_date', start_date);
-    queryParams.append('end_date', end_date);
-  }
-
-  return await handleFetch<Attendance[]>(
+  return await handleFetch<AttendanceStamp[]>(
     `/api/attendance_stamps?${queryParams.toString()}`
   );
+
 }
