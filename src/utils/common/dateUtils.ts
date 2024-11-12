@@ -36,6 +36,7 @@ export function toJapanISOString(date: Date): string {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
   }
   
+  // monthモードは廃止予定？（全てのAPIが開始終了時間の範囲指定で取得する場合不要になる？）
   export function getTimeRangeISOStrings(
     mode: 'day' | 'month' | 'range',
     date1: Date,
