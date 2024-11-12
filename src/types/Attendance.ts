@@ -15,7 +15,7 @@ export interface Attendance {
 
 
 // DBの型
-export type AttendanceResults = {
+export type AttendanceResult = {
   attendance_id: number; // 外部キーとしてのattendance_id
   work_start_time: string | null; // work_start_timeはnullableにすることでデータの欠損に対応
   work_end_time: string | null;
