@@ -115,7 +115,7 @@ export async function fetchAttendance(
   queryParams.append('end_time', endTimeISO);
 
   return await handleFetch<AttendanceStamp[]>(
-    `/api/attendance_stamps?${queryParams.toString()}`
+    `/api/attendance/stamps?${queryParams.toString()}`
   );
 
 }

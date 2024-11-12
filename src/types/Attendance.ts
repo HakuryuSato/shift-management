@@ -13,24 +13,12 @@ export interface Attendance {
   end_time?: string | null;
 }
 
-// 廃止予定
-export interface AttendanceAPIResponse {
-  data: Attendance[];
-  error?: string;
-}
-
-export interface AttendanceStampsQueryRequest {
-  user_id?: string;
-  start_time?: string;
-  end_time?: string;
-}
-
 
 // DBの型
 export type AttendanceResults = {
   attendance_id: number; // 外部キーとしてのattendance_id
-  work_start_time: Date | null; // work_start_timeはnullableにすることでデータの欠損に対応
-  work_end_time: Date | null;
+  work_start_time: string | null; // work_start_timeはnullableにすることでデータの欠損に対応
+  work_end_time: string | null;
   work_minutes: number | null;
   overtime_minutes: number | null;
   rest_minutes: number | null;

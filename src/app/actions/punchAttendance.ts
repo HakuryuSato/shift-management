@@ -32,12 +32,16 @@ export async function punchAttendance(userId: number): Promise<AttendanceStamp[]
     });
 
     if (data && data.length > 0) { // データがあるなら
-        const attendance = data[0];
+        const attendance_id = data[0]?.attendance_id;
+
         // end_timeを更新
-        return await updateAttendanceStamp(attendance.attendance_id, nowISO);
+        return await updateAttendanceStamp(attendance_id, nowISO);
+
+        // ここでAttendanceResultsを作成更新(awaitしないで)
+
+        
     } else { // ないなら
         // 新しい出勤記録を作成
-        console.log(nowISO)
         return await insertAttendanceStamp(userId, nowISO);
     }
 }

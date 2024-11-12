@@ -29,7 +29,7 @@ export function useCalendarAttendances() {
   // カレンダーを表示している、かつリクエストに必要なデータが全てあるなら取得
   const { data: attendances, mutate } = useSWR(
     isUserCalendarViewVisible && userId && startTimeISO && endTimeISO
-      ? `attendances-${userId}-${startTimeISO}-${endTimeISO}`
+      ? `attendances/stamps-${userId}-${startTimeISO}-${endTimeISO}`
       : null,
     () => fetchAttendance({ user_id: userId, startTimeISO, endTimeISO })
   );
