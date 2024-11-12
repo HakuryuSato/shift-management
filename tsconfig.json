@@ -29,7 +29,6 @@
       "@app/*": ["./src/app/*"],
       "@api/*": ["./src/app/api/*"],
       "@utils/*": ["./src/utils/*"],
-      // "@customTypes/*": ["./src/customTypes/*"],
       "@styles/*": ["./src/styles/*"],
       "@common/*": ["./src/common/*"],
       "@stores/*": ["./src/stores/*"],
