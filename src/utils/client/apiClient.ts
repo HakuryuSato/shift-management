@@ -111,8 +111,8 @@ export async function fetchAttendance(
   }
 
   if (start_date && end_date) {
-    queryParams.append('stamp_start_date', start_date);
-    queryParams.append('stamp_end_date', end_date);
+    queryParams.append('start_date', start_date);
+    queryParams.append('end_date', end_date);
   }
 
   return await handleFetch<Attendance[]>(

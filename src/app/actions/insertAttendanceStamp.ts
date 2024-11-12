@@ -6,7 +6,7 @@ import { toJapanISOString } from '@/utils/toJapanISOString';
 // 共通のsupabase関数を使う形式にリファクタリングすること
 // 既に存在するなら新たに作成ではなく、end_time更新とすること
 
-export async function insertAttendanceStamp(userId:number) {
+export async function insertAttendanceStamp(userId: number) {
 
   // 今日の日付を取得（時刻は00:00:00にリセット）
   const today = new Date();
@@ -17,8 +17,8 @@ export async function insertAttendanceStamp(userId:number) {
     .from('attendance_stamps')
     .select('*')
     .eq('user_id', userId)
-    .gte('stamp_start_time', toJapanISOString(today))
-    .order('stamp_start_time', { ascending: false })
+    .gte('start_time', toJapanISOString(today))
+    .order('start_time', { ascending: false })
     .limit(1);
 
   if (error) {
@@ -46,7 +46,7 @@ export async function insertAttendanceStamp(userId:number) {
         .from('attendances_stamps')
         .insert({
           user_id: userId,
-         stamp_start_time: toJapanISOString(new Date()),
+          start_time: toJapanISOString(new Date()),
         });
 
       if (insertError) {
@@ -61,7 +61,7 @@ export async function insertAttendanceStamp(userId:number) {
       .from('attendance_stamps')
       .insert({
         user_id: userId,
-       stamp_start_time: toJapanISOString(new Date()),
+        start_time: toJapanISOString(new Date()),
       });
 
     if (insertError) {

@@ -33,7 +33,7 @@ export type AttendanceResults = {
 export type AttendanceStamps = {
   attendance_id: bigint; // 自動インクリメント
   user_id: bigint; // 外部キーとしてのuser_id
-  stamp_start_time: Date;
-  stamp_end_time: Date | null; // nullableに設定
+  start_time: Date;
+  end_time: Date | null; // nullableに設定
   created_at: Date;
 };

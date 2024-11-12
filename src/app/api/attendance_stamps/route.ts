@@ -55,11 +55,11 @@ export async function GET(request: NextRequest) {
             .select(`
                 attendance_id,
                 user_id,
-                stamp_start_time,
-                stamp_end_time
+                start_time,
+                end_time
             `)
-            .gte('stamp_start_time', startDateISOString)
-            .lte('stamp_start_time', endDateISOString);
+            .gte('start_time', startDateISOString)
+            .lte('start_time', endDateISOString);
 
         if (user_id !== '*') {
             query = query.eq('user_id', user_id);
