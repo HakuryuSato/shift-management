@@ -1,10 +1,7 @@
-// src/utils/server/__tests__/generateAttendanceResult.server.test.ts
-
 import { generateAttendanceResult } from '../generateAttendanceResult';
 import { AttendanceStamp } from '@/types/Attendance';
 import { Holiday } from '@/types/Holiday';
 import { fetchHolidays } from '@/utils/client/apiClient';
-import { toJapanISOString } from '@/utils/common/dateUtils';
 
 jest.mock('@/utils/client/apiClient', () => ({
     fetchHolidays: jest.fn(),
@@ -22,8 +19,8 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 1,
             user_id: 1,
-            start_time: '2023-10-01T08:25:00',
-            end_time: '2023-10-01T18:00:00',
+            start_time: '2023-10-02T08:25:00', // 月曜日に変更
+            end_time: '2023-10-02T18:00:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -35,8 +32,8 @@ describe('generateAttendanceResult', () => {
         expect(result).toHaveLength(1);
         const attendanceResult = result[0];
 
-        expect(attendanceResult.work_start_time).toBe('2023-10-01T08:30:00');
-        expect(attendanceResult.work_end_time).toBe('2023-10-01T18:00:00');
+        expect(attendanceResult.work_start_time).toBe('2023-10-02T08:30:00');
+        expect(attendanceResult.work_end_time).toBe('2023-10-02T18:00:00');
         expect(attendanceResult.rest_minutes).toBe(60);
         expect(attendanceResult.work_minutes).toBe(480);
         expect(attendanceResult.overtime_minutes).toBe(30);
@@ -46,8 +43,8 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 2,
             user_id: 1,
-            start_time: '2023-10-01T12:58:00',
-            end_time: '2023-10-01T18:01:00',
+            start_time: '2023-10-02T12:58:00', // 月曜日に変更
+            end_time: '2023-10-02T18:01:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -57,8 +54,8 @@ describe('generateAttendanceResult', () => {
         expect(result).toHaveLength(1);
         const attendanceResult = result[0];
 
-        expect(attendanceResult.work_start_time).toBe('2023-10-01T13:00:00');
-        expect(attendanceResult.work_end_time).toBe('2023-10-01T18:00:00');
+        expect(attendanceResult.work_start_time).toBe('2023-10-02T13:00:00');
+        expect(attendanceResult.work_end_time).toBe('2023-10-02T18:00:00');
         expect(attendanceResult.rest_minutes).toBe(0);
         expect(attendanceResult.work_minutes).toBe(300);
         expect(attendanceResult.overtime_minutes).toBe(0);
@@ -68,8 +65,8 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 3,
             user_id: 1,
-            start_time: '2023-10-01T08:30:00',
-            end_time: '2023-10-01T23:58:00',
+            start_time: '2023-10-02T08:30:00', // 月曜日に変更
+            end_time: '2023-10-02T23:58:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -79,8 +76,8 @@ describe('generateAttendanceResult', () => {
         expect(result).toHaveLength(1);
         const attendanceResult = result[0];
 
-        expect(attendanceResult.work_start_time).toBe('2023-10-01T08:30:00');
-        expect(attendanceResult.work_end_time).toBe('2023-10-02T00:00:00');
+        expect(attendanceResult.work_start_time).toBe('2023-10-02T08:30:00');
+        expect(attendanceResult.work_end_time).toBe('2023-10-03T00:00:00');
         expect(attendanceResult.rest_minutes).toBe(60);
         expect(attendanceResult.work_minutes).toBe(480);
         expect(attendanceResult.overtime_minutes).toBe(390);
@@ -90,15 +87,37 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 4,
             user_id: 1,
-            start_time: '2023-10-01T08:25:00',
-            end_time: '2023-10-01T18:00:00',
+            start_time: '2023-10-09T08:25:00', // 2023-10-09は体育の日（祝日）
+            end_time: '2023-10-09T18:00:00',
         };
 
         const holiday: Holiday = {
-            title: 'Some Holiday',
-            date: '2023-10-01',
+            title: '体育の日',
+            date: '2023-10-09',
         };
         mockedFetchHolidays.mockResolvedValue([holiday]);
+
+        const result = await generateAttendanceResult(attendanceStamp);
+
+        expect(result).toHaveLength(1);
+        const attendanceResult = result[0];
+
+        expect(attendanceResult.work_start_time).toBe('2023-10-09T08:30:00');
+        expect(attendanceResult.work_end_time).toBe('2023-10-09T18:00:00');
+        expect(attendanceResult.rest_minutes).toBe(60);
+        expect(attendanceResult.work_minutes).toBe(0);
+        expect(attendanceResult.overtime_minutes).toBe(510);
+    });
+
+    test('日曜日勤務の場合、全時間が残業時間として計算される', async () => {
+        const attendanceStamp: AttendanceStamp = {
+            attendance_id: 7,
+            user_id: 1,
+            start_time: '2023-10-01T08:25:00', // 日曜日
+            end_time: '2023-10-01T18:00:00',
+        };
+
+        mockedFetchHolidays.mockResolvedValue([]);
 
         const result = await generateAttendanceResult(attendanceStamp);
 
@@ -116,8 +135,8 @@ describe('generateAttendanceResult', () => {
         const incompleteAttendanceStamp: AttendanceStamp = {
             attendance_id: undefined as any, // 型エラー回避のため `undefined` に変更
             user_id: 1,
-            start_time: '2023-10-01T08:25:00',
-            end_time: '2023-10-01T18:00:00',
+            start_time: '2023-10-02T08:25:00',
+            end_time: '2023-10-02T18:00:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -132,7 +151,7 @@ describe('generateAttendanceResult', () => {
             attendance_id: 5,
             user_id: 1,
             start_time: undefined as any, // 型エラー回避のため `undefined` に変更
-            end_time: '2023-10-01T18:00:00',
+            end_time: '2023-10-02T18:00:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -146,7 +165,7 @@ describe('generateAttendanceResult', () => {
         const incompleteAttendanceStamp: AttendanceStamp = {
             attendance_id: 6,
             user_id: 1,
-            start_time: '2023-10-01T08:25:00',
+            start_time: '2023-10-02T08:25:00',
             end_time: null,
         };
 
@@ -161,8 +180,8 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 8,
             user_id: 1,
-            start_time: '2023-10-01T08:30:00',
-            end_time: '2023-10-01T08:30:00',
+            start_time: '2023-10-02T08:30:00',
+            end_time: '2023-10-02T08:30:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -181,8 +200,8 @@ describe('generateAttendanceResult', () => {
         const attendanceStamp: AttendanceStamp = {
             attendance_id: 9,
             user_id: 1,
-            start_time: '2023-10-01T22:30:00',
-            end_time: '2023-10-02T06:00:00',
+            start_time: '2023-10-02T22:30:00', // 月曜日に変更
+            end_time: '2023-10-03T06:00:00',
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -192,8 +211,8 @@ describe('generateAttendanceResult', () => {
         expect(result).toHaveLength(1);
         const attendanceResult = result[0];
 
-        expect(attendanceResult.work_start_time).toBe('2023-10-01T22:30:00');
-        expect(attendanceResult.work_end_time).toBe('2023-10-02T06:00:00');
+        expect(attendanceResult.work_start_time).toBe('2023-10-02T22:30:00');
+        expect(attendanceResult.work_end_time).toBe('2023-10-03T06:00:00');
         expect(attendanceResult.rest_minutes).toBe(0);
         expect(attendanceResult.work_minutes).toBe(450);
         expect(attendanceResult.overtime_minutes).toBe(0);

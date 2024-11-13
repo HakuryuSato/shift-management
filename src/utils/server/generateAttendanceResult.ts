@@ -15,6 +15,13 @@ function isHoliday(date: Date, holidayDates: Set<string>): boolean {
 }
 
 /**
+ *  日曜日かどうかを判定する関数
+ */
+function isSunday(date: Date): boolean {
+    return date.getDay() === 0; // 日曜日は0を返す
+}
+
+/**
  * 時間を30分単位に丸める
  */
 function roundToNearest30Minutes(date: Date): Date {
@@ -61,9 +68,10 @@ function calculateWorkMinutes(totalMinutes: number, restMinutes: number): number
  */
 function calculateOvertimeMinutes(
     workMinutes: number,
-    isHoliday: boolean
+    isHoliday: boolean,
+    isSunday: boolean
 ): { workMinutes: number; overtimeMinutes: number } {
-    if (isHoliday) {
+    if (isHoliday || isSunday) {
         return { workMinutes: 0, overtimeMinutes: workMinutes };
     } else if (workMinutes > 480) {
         return { workMinutes: 480, overtimeMinutes: workMinutes - 480 };
@@ -113,9 +121,13 @@ export async function generateAttendanceResult(
     // 祝日判定
     const isHolidayFlag = isHoliday(roundedStartDate, holidayDates);
 
+    // 日曜日判定
+    const isSundayFlag = isSunday(roundedStartDate);
+
     const { workMinutes, overtimeMinutes } = calculateOvertimeMinutes(
         workMinutesAfterReduceRest,
-        isHolidayFlag
+        isHolidayFlag,
+        isSundayFlag
     );
 
     return [
