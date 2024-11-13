@@ -13,6 +13,7 @@ export async function updateAttendanceStamp(attendanceId: number, endTimeISO: st
     return supabase
       .from('attendance_stamps')
       .update({ end_time: endTimeISO })
-      .eq('attendance_id', attendanceId);
+      .eq('attendance_id', attendanceId)
+      .select();
   });
 }
