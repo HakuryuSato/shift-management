@@ -23,7 +23,9 @@ export type AttendanceResult = {
   overtime_minutes: number | null;
   rest_minutes: number | null;
   created_at?: string;
+  user_id?:number; // 外部キーから取得
 };
+
 
 
 // DBの型
