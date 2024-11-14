@@ -8,7 +8,7 @@ export const AdminHome: React.FC = () => {
         <>
             <AdminHomeTopBar />
             <AdminAttendanceView />
-            <AdminHomeBottomBar />
+            {/* <AdminHomeBottomBar /> */}
         </>
     );
 };
