@@ -14,7 +14,7 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 
 // Hooks
-import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
+import { useCalendarAttendanceStamps } from "@/hooks/common/CustomFullCalendar/useCalendarAttendancesStamps";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
 import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllmembers";
@@ -69,7 +69,7 @@ export function CustomFullCalendar() {
   useCalendarHolidays();
 
   // 出退勤
-  useCalendarAttendances();
+  useCalendarAttendanceStamps();
 
   // 個人用シフト
   useCalendarShiftPersonal();
