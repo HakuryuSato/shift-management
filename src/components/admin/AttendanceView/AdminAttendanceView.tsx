@@ -1,10 +1,10 @@
 "use client";
-import { AttendanceTable } from "./AttendanceTable";
+import { AllMembersMonthlyTable } from "./AllMembersMonthlyTable";
 
 export const AdminAttendanceView: React.FC = () => {
     return (
         <>
-            <AttendanceTable />
+            <AllMembersMonthlyTable />
         </>
     );
 };
