@@ -1,6 +1,6 @@
 import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/types/ApiResponses';
-import { AttendanceQuery, AttendanceStamp } from '@/types/Attendance';
+import { AttendanceQuery, AttendanceStamp, AttendanceResult } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
 import type { AutoShiftSettings } from "@/types/AutoShiftTypes";
 import type { Shift, ShiftQuery } from "@/types/Shift";
@@ -98,8 +98,8 @@ export async function sendAutoShiftSettings(autoShiftSettingData: any) {
 }
 
 // 出退勤  ---------------------------------------------------------------------------------------------------
-// 出退勤データ取得
-export async function fetchAttendance(
+// 打刻データ取得
+export async function fetchAttendanceStamps(
   params: AttendanceQuery = {}
 ): Promise<AttendanceStamp[]> {
   // 展開
@@ -118,4 +118,24 @@ export async function fetchAttendance(
     `/api/attendance/stamps?${queryParams.toString()}`
   );
 
+}
+
+// 集計結果データ取得
+export async function fetchAttendanceResults(params: {
+  user_id: number | string;
+  startTimeISO: string;
+  endTimeISO: string;
+}): Promise<AttendanceResult[]> {
+  const { user_id = '*', startTimeISO, endTimeISO } = params;
+
+  if (!startTimeISO || !endTimeISO) return [];
+
+  const queryParams = new URLSearchParams();
+  queryParams.append('user_id', user_id.toString());
+  queryParams.append('start_time', startTimeISO);
+  queryParams.append('end_time', endTimeISO);
+
+  return await handleFetch<AttendanceResult[]>(
+    `/api/attendance/results?${queryParams.toString()}`
+  );
 }
