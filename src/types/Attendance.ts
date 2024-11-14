@@ -23,7 +23,9 @@ export type AttendanceResult = {
   overtime_minutes: number | null;
   rest_minutes: number | null;
   created_at?: string;
-  user_id?:number; // 外部キーから取得
+  attendance_stamps?: { // クエリで結合
+    user_id?: string | number;
+  };
 };
 
 
@@ -35,4 +37,18 @@ export type AttendanceStamp = {
   start_time: string; // ISO文字列
   end_time: string | null; // nullableに設定
   created_at?: string;
+};
+
+// 個人用出退勤テーブルの型
+export type AttendanceRow = {
+  date: string;
+  regularHours: string;
+  overtimeHours: string;
+  startTime: string;
+  endTime: string;
+  breakHours: string;
+  stampStartTime: string;
+  stampEndTime: string;
+  attendanceId?: number;
+  isEditable: boolean;
 };

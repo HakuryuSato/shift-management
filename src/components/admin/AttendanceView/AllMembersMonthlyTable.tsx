@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react';
-import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
-import { useAdminHomeUsersData } from '@/hooks/admin/useAdminHomeUsersData';
-import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
-import { useAdminAttendanceViewResult } from '@/hooks/admin/useAdminAttendanceViewResult';
+// src/components/admin/AttendanceView/AllMembersMonthlyTable.tsx
+import React, { useEffect } from "react";
+import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
+import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
+import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
+import { useAdminAttendanceViewResult } from "@/hooks/admin/useAdminAttendanceViewResult";
+import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/useAllMembersMonthlyTableClickHandlers";
+import { useAdminAttendanceViewStamps } from "@/hooks/admin/useAdminAttendanceViewStamps";
+import { TableStyle } from "@/styles/TableStyle";
 import {
-  getPreviousMonthSpecificDate,
   getCurrentMonthSpecificDate,
-} from '@/utils/common/dateUtils';
+  getPreviousMonthSpecificDate,
+} from "@/utils/common/dateUtils";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  TableContainer,
-} from '@mui/material';
-import type { User } from '@/types/User';
+} from "@mui/material";
 
 export function AllMembersMonthlyTable() {
   // ユーザー情報を取得するカスタムフックを呼び出す
@@ -27,13 +30,16 @@ export function AllMembersMonthlyTable() {
   const {
     setAdminAttendanceViewDateRange,
     adminAttendanceViewAllMembersMonthlyResult,
-    hideAllMembersMonthlyTable,
-    showPersonalAttendanceTable,
-    setAdminAttendanceViewSelectedUser: setSelectedUser,
   } = useAdminAttendanceViewStore();
 
   // 出退勤データを取得するカスタムフックを呼び出す
   useAdminAttendanceViewResult();
+
+  // 打刻データを取得するカスタムフックを呼び出す
+  useAdminAttendanceViewStamps();
+
+  // クリックハンドラーを取得
+  const { handleClickUserName } = useAllMembersMonthlyTableClickHandlers();
 
   useEffect(() => {
     // 先月の26日 0時
@@ -52,19 +58,19 @@ export function AllMembersMonthlyTable() {
   // ユーザーごとにデータを集計
   const userAttendanceData = adminHomeUsersData.map((user) => {
     const userResults = adminAttendanceViewAllMembersMonthlyResult.filter(
-      (result) => result.attendance_stamps?.user_id === user.user_id
+      (result) => result.attendance_stamps?.user_id === user.user_id,
     );
 
     const workDays = userResults.length;
 
     const totalWorkMinutes = userResults.reduce(
       (sum, result) => sum + (result.work_minutes ?? 0),
-      0
+      0,
     );
 
     const totalOvertimeMinutes = userResults.reduce(
       (sum, result) => sum + (result.overtime_minutes ?? 0),
-      0
+      0,
     );
 
     // 分を時間に変換し、0.5単位で丸め、少数第一位まで表示
@@ -79,44 +85,49 @@ export function AllMembersMonthlyTable() {
     };
   });
 
-  // ユーザー名がクリックされたときのハンドラー
-  const handleClickUserName = (user: User) => {
-    setSelectedUser(user);
-    hideAllMembersMonthlyTable();
-    showPersonalAttendanceTable();
-  };
-
   return (
     <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>種別</TableCell>
-            <TableCell>名前</TableCell>
-            <TableCell>出勤日数</TableCell>
-            <TableCell>出勤時数</TableCell>
-            <TableCell>時間外時数</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {userAttendanceData.map(({ user, workDays, workHours, overtimeHours }) => (
-            <TableRow key={user.user_id}>
-              <TableCell>{user.employment_type === 'full_time' ? '正社員' : 'アルバイト'}</TableCell>
-              <TableCell>
-                <span
-                  onClick={() => handleClickUserName(user)}
-                  style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
-                >
-                  {user.user_name}
-                </span>
-              </TableCell>
-              <TableCell>{workDays}</TableCell>
-              <TableCell>{workHours.toFixed(1)}</TableCell>
-              <TableCell>{overtimeHours.toFixed(1)}</TableCell>
+      <TableStyle>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>種別</TableCell>
+              <TableCell>名前</TableCell>
+              <TableCell>出勤日数</TableCell>
+              <TableCell>出勤時数</TableCell>
+              <TableCell>時間外時数</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {userAttendanceData.map((
+              { user, workDays, workHours, overtimeHours },
+            ) => (
+              <TableRow key={user.user_id}>
+                <TableCell>
+                  {user.employment_type === "full_time"
+                    ? "正社員"
+                    : "アルバイト"}
+                </TableCell>
+                <TableCell>
+                  <span
+                    onClick={() => handleClickUserName(user)}
+                    style={{
+                      color: "blue",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {user.user_name}
+                  </span>
+                </TableCell>
+                <TableCell>{workDays}</TableCell>
+                <TableCell>{workHours.toFixed(1)}</TableCell>
+                <TableCell>{overtimeHours.toFixed(1)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableStyle>
     </TableContainer>
   );
 }

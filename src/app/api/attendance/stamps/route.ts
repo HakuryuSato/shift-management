@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         }
 
         const data = await handleSupabaseRequest<AttendanceStamp[]>(async (supabase) => {
-            return supabase
+            const query = supabase
                 .from('attendance_stamps')
                 .select(`
                     attendance_id,
@@ -28,8 +28,14 @@ export async function GET(request: NextRequest) {
                     end_time
                 `)
                 .gte('start_time', startTimeISO)
-                .lte('start_time', endTimeISO)
-                .eq('user_id', userId);
+                .lte('start_time', endTimeISO);
+            
+            // userIdが'*'でない場合のみフィルタを追加
+            if (userId !== '*') {
+                query.eq('user_id', userId);
+            }
+
+            return query;
         });
 
         return data;

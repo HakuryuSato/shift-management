@@ -102,22 +102,22 @@ export async function sendAutoShiftSettings(autoShiftSettingData: any) {
 export async function fetchAttendanceStamps(
   params: AttendanceQuery = {}
 ): Promise<AttendanceStamp[]> {
-  // 展開
-  const { user_id = '*', startTimeISO, endTimeISO } = params;
+  const { user_id, startTimeISO, endTimeISO } = params;
 
-  // 開始終了時間の指定なければ終了
   if (!startTimeISO || !endTimeISO) return [];
+
   const queryParams = new URLSearchParams();
 
-  // id指定があれば設定
-  queryParams.append('user_id', user_id.toString());
+  if (user_id && user_id !== '*') {
+    queryParams.append('user_id', user_id.toString());
+  }
+
   queryParams.append('start_time', startTimeISO);
   queryParams.append('end_time', endTimeISO);
 
   return await handleFetch<AttendanceStamp[]>(
     `/api/attendance/stamps?${queryParams.toString()}`
   );
-
 }
 
 // 集計結果データ取得
