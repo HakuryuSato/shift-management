@@ -20,18 +20,31 @@ export async function GET(request: NextRequest) {
         }
 
         return await handleSupabaseRequest<AttendanceResult[]>(async (supabase) => {
-            return supabase
-                .from('attendance_results')
-                .select(`
-                *,
-                attendance_stamps!inner(user_id)
-            `)
-                .gte('attendance_stamps.start_time', startTimeISO)
-                .lte('attendance_stamps.end_time', endTimeISO)
-                .eq('attendance_stamps.user_id', userId)
-                .eq('attendance_results.attendance_id', attendanceId);
+            const query = supabase
+              .from('attendance_results')
+              .select(`
+                attendance_id,
+                work_start_time,
+                work_end_time,
+                work_minutes,
+                overtime_minutes,
+                rest_minutes,
+                attendance_stamps (
+                  user_id
+                )
+              `)
+              .gte('work_start_time', startTimeISO)
+              .lte('work_end_time', endTimeISO);
+      
+            if (attendanceId && attendanceId !== '*') {
+              query.eq('attendance_id', attendanceId);
+            }
+      
+            if (userId && userId !== '*') {
+              query.eq('attendance_stamps.user_id', userId);
+            }
+      
+            return query;
+          });
         });
-
-
-    });
-}
+      }
