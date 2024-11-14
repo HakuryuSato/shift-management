@@ -24,6 +24,10 @@ export const AdminHomeTopBar: React.FC = () => {
                 シフト画面へ
             </Button>
 
+            {/* Modeに応じて、表示内容を変更、
+            シフトならカスタムフルカレの開始終了日、
+            出退勤ならAttendanceViewの開始終了日
+             */}
             <Typography variant="h6">{monthText}月</Typography>
 
             <Box  display="flex" gap={2}>
