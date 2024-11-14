@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { AttendanceResult } from '@/types/Attendance';
 
 interface AdminAttendanceViewStore {
   isVisibleAdminAttendanceView: boolean;
@@ -9,6 +10,10 @@ interface AdminAttendanceViewStore {
   hideAdminAttendanceView: () => void;
   setAdminAttendanceViewDate: (date: Date) => void;
   setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void;
+
+  // attendance_resultを追加
+  adminAttendanceViewAllMembersMonthlyResult: AttendanceResult[] | null;
+  setAdminAttendanceViewAllMembersMonthlyResult: (data: AttendanceResult[]) => void;
 }
 
 export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set) => ({
@@ -22,4 +27,9 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
   setAdminAttendanceViewDate: (date) => set({ adminAttendanceViewCurrentDate: date }),
   setAdminAttendanceViewDateRange: (startDate, endDate) =>
     set({ adminAttendanceViewStartDate: startDate, adminAttendanceViewEndDate: endDate }),
+
+   // attendance_resultを追加
+  adminAttendanceViewAllMembersMonthlyResult: null,
+  setAdminAttendanceViewAllMembersMonthlyResult: (data) =>
+    set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 }));
