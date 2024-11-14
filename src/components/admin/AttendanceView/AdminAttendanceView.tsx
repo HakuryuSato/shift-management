@@ -1,10 +1,17 @@
 "use client";
+import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { AllMembersMonthlyTable } from "./AllMembersMonthlyTable";
+import { PersonalAttendanceTable } from "./PersonalAttendanceTable";
 
 export const AdminAttendanceView: React.FC = () => {
+    const {
+        isVisibleAllMembersMonthlyTable,
+        isVisiblePersonalAttendanceTable,
+    } = useAdminAttendanceViewStore();
     return (
         <>
-            <AllMembersMonthlyTable />
+            {isVisibleAllMembersMonthlyTable && <AllMembersMonthlyTable />}
+            {isVisiblePersonalAttendanceTable && <PersonalAttendanceTable />}
         </>
     );
 };
