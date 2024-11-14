@@ -1,26 +1,30 @@
+// src/hooks/admin/useAdminAttendanceTopBar.ts
 import { useCallback } from 'react';
-import { useStore } from 'zustand';
-
-type AdminAttendanceTopBarStore = {
-    monthText: string;
-};
+import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
 
 export const useAdminAttendanceTopBar = () => {
+    const { adminHomeMode, setAdminHomeMode } = useAdminHomeStore();
 
     const handleClickToShiftPage = useCallback(() => {
-        console.log("シフト画面へ移動");
-    }, []);
+        if (adminHomeMode === 'SHIFT') {
+            setAdminHomeMode('MONTHLY_ATTENDANCE');
+        } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
+            setAdminHomeMode('SHIFT');
+        } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
+            setAdminHomeMode('MONTHLY_ATTENDANCE');
+        }
+    }, [adminHomeMode, setAdminHomeMode]);
 
     const handleClickUserRegister = useCallback(() => {
-        console.log("ユーザー登録処理");
+        console.log('ユーザー登録処理');
     }, []);
 
     const handleClickUserDelete = useCallback(() => {
-        console.log("ユーザー削除処理");
+        console.log('ユーザー削除処理');
     }, []);
 
     const handleClickExcelDownload = useCallback(() => {
-        console.log("Excelダウンロード処理");
+        console.log('Excelダウンロード処理');
     }, []);
 
     return {
@@ -28,5 +32,6 @@ export const useAdminAttendanceTopBar = () => {
         handleClickUserRegister,
         handleClickUserDelete,
         handleClickExcelDownload,
+        adminHomeMode,
     };
 };

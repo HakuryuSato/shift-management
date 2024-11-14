@@ -75,120 +75,118 @@ export function PersonalAttendanceTable() {
       <h2>{adminAttendanceViewSelectedUser.user_name}さんの出退勤データ</h2>
       <TableContainer component={Paper}>
         <TableStyle>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>日付</TableCell>
-                <TableCell>平日普通(H)</TableCell>
-                <TableCell>平日時間外(H)</TableCell>
-                <TableCell>開始</TableCell>
-                <TableCell>終了</TableCell>
-                <TableCell>休憩</TableCell>
-                <TableCell>打刻開始</TableCell>
-                <TableCell>打刻終了</TableCell>
-                <TableCell>編集</TableCell>
+          <TableHead>
+            <TableRow>
+              <TableCell>日付</TableCell>
+              <TableCell>平日普通(H)</TableCell>
+              <TableCell>平日時間外(H)</TableCell>
+              <TableCell>開始</TableCell>
+              <TableCell>終了</TableCell>
+              <TableCell>休憩</TableCell>
+              <TableCell>打刻開始</TableCell>
+              <TableCell>打刻終了</TableCell>
+              <TableCell>編集</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>
+                  {row.isEditable
+                    ? (
+                      <input
+                        type="number"
+                        value={row.regularHours}
+                        step="0.5"
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "regularHours",
+                            e.target.value,
+                          )}
+                      />
+                    )
+                    : (
+                      row.regularHours
+                    )}
+                </TableCell>
+                <TableCell>
+                  {row.isEditable
+                    ? (
+                      <input
+                        type="number"
+                        value={row.overtimeHours}
+                        step="0.5"
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "overtimeHours",
+                            e.target.value,
+                          )}
+                      />
+                    )
+                    : (
+                      row.overtimeHours
+                    )}
+                </TableCell>
+                <TableCell>
+                  {row.isEditable
+                    ? (
+                      <input
+                        type="time"
+                        value={row.startTime}
+                        onChange={(e) =>
+                          handleRowChange(index, "startTime", e.target.value)}
+                      />
+                    )
+                    : (
+                      row.startTime
+                    )}
+                </TableCell>
+                <TableCell>
+                  {row.isEditable
+                    ? (
+                      <input
+                        type="time"
+                        value={row.endTime}
+                        onChange={(e) =>
+                          handleRowChange(index, "endTime", e.target.value)}
+                      />
+                    )
+                    : (
+                      row.endTime
+                    )}
+                </TableCell>
+                <TableCell>
+                  {row.isEditable
+                    ? (
+                      <input
+                        type="number"
+                        value={row.breakHours}
+                        step="0.5"
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "breakHours",
+                            e.target.value,
+                          )}
+                      />
+                    )
+                    : (
+                      row.breakHours
+                    )}
+                </TableCell>
+                <TableCell>{row.stampStartTime}</TableCell>
+                <TableCell>{row.stampEndTime}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEditClick(index)}>
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>
-                    {row.isEditable
-                      ? (
-                        <input
-                          type="number"
-                          value={row.regularHours}
-                          step="0.5"
-                          onChange={(e) =>
-                            handleRowChange(
-                              index,
-                              "regularHours",
-                              e.target.value,
-                            )}
-                        />
-                      )
-                      : (
-                        row.regularHours
-                      )}
-                  </TableCell>
-                  <TableCell>
-                    {row.isEditable
-                      ? (
-                        <input
-                          type="number"
-                          value={row.overtimeHours}
-                          step="0.5"
-                          onChange={(e) =>
-                            handleRowChange(
-                              index,
-                              "overtimeHours",
-                              e.target.value,
-                            )}
-                        />
-                      )
-                      : (
-                        row.overtimeHours
-                      )}
-                  </TableCell>
-                  <TableCell>
-                    {row.isEditable
-                      ? (
-                        <input
-                          type="time"
-                          value={row.startTime}
-                          onChange={(e) =>
-                            handleRowChange(index, "startTime", e.target.value)}
-                        />
-                      )
-                      : (
-                        row.startTime
-                      )}
-                  </TableCell>
-                  <TableCell>
-                    {row.isEditable
-                      ? (
-                        <input
-                          type="time"
-                          value={row.endTime}
-                          onChange={(e) =>
-                            handleRowChange(index, "endTime", e.target.value)}
-                        />
-                      )
-                      : (
-                        row.endTime
-                      )}
-                  </TableCell>
-                  <TableCell>
-                    {row.isEditable
-                      ? (
-                        <input
-                          type="number"
-                          value={row.breakHours}
-                          step="0.5"
-                          onChange={(e) =>
-                            handleRowChange(
-                              index,
-                              "breakHours",
-                              e.target.value,
-                            )}
-                        />
-                      )
-                      : (
-                        row.breakHours
-                      )}
-                  </TableCell>
-                  <TableCell>{row.stampStartTime}</TableCell>
-                  <TableCell>{row.stampEndTime}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleEditClick(index)}>
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+            ))}
+          </TableBody>
         </TableStyle>
       </TableContainer>
     </>
