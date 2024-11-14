@@ -14,20 +14,12 @@ export async function handleApiRequest<T>(handler: () => Promise<T>): Promise<Ne
     let message = 'サーバーエラーが発生しました';
     let status = 500;
 
+    // supabaseのエラーをそのまま返す
     if (error instanceof Error) {
-      // Supabaseのエラーメッセージをそのまま利用
       message = error.message;
     }
 
-    // if (error instanceof Error) {
-    //   // 特定のエラーメッセージに基づいてステータスコードを設定
-    //   if (error.message === 'データが取得できませんでした') {
-    //     status = 404;
-    //     message = 'データが見つかりません';
-    //   } else {
-    //     message = '内部サーバーエラー';
-    //   }
-    // }
+
 
     return NextResponse.json({ error: message }, { status });
   }
