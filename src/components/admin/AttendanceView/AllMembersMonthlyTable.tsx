@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
 import { useAdminHomeUsersData } from '@/hooks/admin/useAdminHomeUsersData';
+import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
+import { useAdminAttendanceViewResult } from '@/hooks/admin/useAdminAttendanceViewResult';
+import {
+  getPreviousMonthSpecificDate,
+  getCurrentMonthSpecificDate,
+} from '@/utils/common/dateUtils';
 import {
   Table,
   TableBody,
@@ -10,34 +16,103 @@ import {
   Paper,
   TableContainer,
 } from '@mui/material';
-
+import type { User } from '@/types/User';
 
 export function AllMembersMonthlyTable() {
   // ユーザー情報を取得するカスタムフックを呼び出す
   useAdminHomeUsersData();
-
   const { adminHomeUsersData } = useAdminHomeStore();
 
-  if (!adminHomeUsersData) {
+  // 日付範囲の状態を取得
+  const {
+    setAdminAttendanceViewDateRange,
+    adminAttendanceViewAllMembersMonthlyResult,
+    hideAllMembersMonthlyTable,
+    showPersonalAttendanceTable,
+    setAdminAttendanceViewSelectedUser: setSelectedUser,
+  } = useAdminAttendanceViewStore();
+
+  // 出退勤データを取得するカスタムフックを呼び出す
+  useAdminAttendanceViewResult();
+
+  useEffect(() => {
+    // 先月の26日 0時
+    const startDate = getPreviousMonthSpecificDate(26, 0, 0, 0);
+    // 今月の25日 23時59分59秒
+    const endDate = getCurrentMonthSpecificDate(25, 23, 59, 59);
+
+    // 状態を更新
+    setAdminAttendanceViewDateRange(startDate, endDate);
+  }, [setAdminAttendanceViewDateRange]);
+
+  if (!adminHomeUsersData || !adminAttendanceViewAllMembersMonthlyResult) {
     return <div>Loading...</div>;
   }
+
+  // ユーザーごとにデータを集計
+  const userAttendanceData = adminHomeUsersData.map((user) => {
+    const userResults = adminAttendanceViewAllMembersMonthlyResult.filter(
+      (result) => result.attendance_stamps?.user_id === user.user_id
+    );
+
+    const workDays = userResults.length;
+
+    const totalWorkMinutes = userResults.reduce(
+      (sum, result) => sum + (result.work_minutes ?? 0),
+      0
+    );
+
+    const totalOvertimeMinutes = userResults.reduce(
+      (sum, result) => sum + (result.overtime_minutes ?? 0),
+      0
+    );
+
+    // 分を時間に変換し、0.5単位で丸め、少数第一位まで表示
+    const workHours = Math.round((totalWorkMinutes / 60) * 2) / 2;
+    const overtimeHours = Math.round((totalOvertimeMinutes / 60) * 2) / 2;
+
+    return {
+      user,
+      workDays,
+      workHours,
+      overtimeHours,
+    };
+  });
+
+  // ユーザー名がクリックされたときのハンドラー
+  const handleClickUserName = (user: User) => {
+    setSelectedUser(user);
+    hideAllMembersMonthlyTable();
+    showPersonalAttendanceTable();
+  };
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>ユーザー名</TableCell>
-            {/* 必要に応じて他のカラムを追加 */}
+            <TableCell>種別</TableCell>
+            <TableCell>名前</TableCell>
+            <TableCell>出勤日数</TableCell>
+            <TableCell>出勤時数</TableCell>
+            <TableCell>時間外時数</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {adminHomeUsersData.map((user) => (
+          {userAttendanceData.map(({ user, workDays, workHours, overtimeHours }) => (
             <TableRow key={user.user_id}>
+              <TableCell>{user.employment_type === 'full_time' ? '正社員' : 'アルバイト'}</TableCell>
               <TableCell>
-                {user.user_name}({user.employment_type === 'full_time' ? '正社員' : 'バイト'})
+                <span
+                  onClick={() => handleClickUserName(user)}
+                  style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}
+                >
+                  {user.user_name}
+                </span>
               </TableCell>
-              {/* 必要に応じて他のカラムを追加 */}
+              <TableCell>{workDays}</TableCell>
+              <TableCell>{workHours.toFixed(1)}</TableCell>
+              <TableCell>{overtimeHours.toFixed(1)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
