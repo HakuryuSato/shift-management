@@ -7,11 +7,12 @@ import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/pu
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
+import { updateAttendanceResult as serverActionUpdateAttendanceResult } from '@/app/actions/updateAttendanceResult';
 
 // 型
 import type { User } from '@/types/User';
 import type { Shift } from '@/types/Shift';
-import type { AttendanceStamp } from '@/types/Attendance'
+import type { AttendanceStamp, AttendanceResult } from '@/types/Attendance'
 
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
@@ -50,12 +51,21 @@ export async function insertUser(user: User): Promise<User | null> {
 
 // 出退勤関連  ---------------------------------------------------------------------------------------------------
 /**
- * 出退勤を挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入や更新はサーバーアクション側で処理している)
+ * 出退勤を挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入はサーバーアクション側で処理している)
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
 export async function punchAttendance(userId: number): Promise<AttendanceStamp[] | null> {
   return await handleServerAction(() => serverActionpunchAttendance(userId));
+}
+
+/**
+ * 出退勤を更新するサーバーアクションを呼び出す関数
+ * @param attendanceData 出勤データ
+ * @returns 更新された出勤データ
+ */
+export async function updateAttendanceResult(attendanceData: AttendanceResult): Promise<AttendanceResult[] | null> {
+  return await handleServerAction(() => serverActionUpdateAttendanceResult(attendanceData));
 }
 
 
