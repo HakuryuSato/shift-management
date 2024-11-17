@@ -1,27 +1,23 @@
 import React from "react";
 import { useAdminAttendanceViewStamps } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewStamps";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
-import {
-  Paper,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalEditableCell } from "./AttendanceTablePersonalEditableCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/AttendanceTablePersonalSlice";
 
 export function AttendanceTablePersonal() {
-  // データ取得
-  const { rows } = usePersonalAttendanceTableData();
+
+  // storeの値を取得
+  const { AttendanceTablePersonalTableRows } = useAttendanceTablePersonalStore((
+    state,
+  ) => state.AttendanceTablePersonalTableRows);
 
   // ハンドラー取得
   const {
     editingCell,
     handleClickCell,
-    handleCellChange,
     handleBlur,
   } = usePersonalAttendanceTableClickHandlers();
 
@@ -41,7 +37,7 @@ export function AttendanceTablePersonal() {
         </TableRow>
       </TableHead>
       <TableBody>
-        {rows.map((row, index) => (
+        {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.date}</TableCell>
             <AttendanceTablePersonalEditableCell
@@ -51,7 +47,6 @@ export function AttendanceTablePersonal() {
               isEditing={editingCell?.rowIndex === index &&
                 editingCell?.field === "regularHours"}
               onClick={handleClickCell}
-              onChange={handleCellChange}
               onBlur={handleBlur}
             />
             <AttendanceTablePersonalEditableCell
@@ -61,7 +56,6 @@ export function AttendanceTablePersonal() {
               isEditing={editingCell?.rowIndex === index &&
                 editingCell?.field === "overtimeHours"}
               onClick={handleClickCell}
-              onChange={handleCellChange}
               onBlur={handleBlur}
             />
             <TableCell>

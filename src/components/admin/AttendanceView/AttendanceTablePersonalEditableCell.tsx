@@ -8,11 +8,6 @@ interface EditableCellProps {
   field: keyof AttendanceRow;
   isEditing: boolean;
   onClick: (rowIndex: number, field: keyof AttendanceRow) => void;
-  onChange: (
-    rowIndex: number,
-    field: keyof AttendanceRow,
-    value: string,
-  ) => void;
   onBlur: () => void;
 }
 
@@ -22,7 +17,6 @@ export function AttendanceTablePersonalEditableCell({
   field,
   isEditing,
   onClick,
-  onChange,
   onBlur,
 }: EditableCellProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,7 +40,6 @@ export function AttendanceTablePersonalEditableCell({
         ? (
           <TextField
             value={value}
-            onChange={(e) => onChange(rowIndex, field, e.target.value)}
             onBlur={onBlur}
             inputRef={inputRef}
             inputProps={{
