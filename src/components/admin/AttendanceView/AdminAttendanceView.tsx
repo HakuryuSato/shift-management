@@ -1,7 +1,7 @@
 "use client";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
-import { AllMembersMonthlyTable } from "./AllMembersMonthlyTable";
-import { PersonalAttendanceTable } from "./PersonalAttendanceTable";
+import { AttendanceTableAllMembers } from "./AttendanceTableAllMembers";
+import { AttendanceTablePersonal } from "./AttendanceTablePersonal";
 
 export const AdminAttendanceView: React.FC = () => {
     const {
@@ -10,8 +10,8 @@ export const AdminAttendanceView: React.FC = () => {
     } = useAdminAttendanceViewStore();
     return (
         <>
-            {isVisibleAllMembersMonthlyTable && <AllMembersMonthlyTable />}
-            {isVisiblePersonalAttendanceTable && <PersonalAttendanceTable />}
+            {isVisibleAllMembersMonthlyTable && <AttendanceTableAllMembers />}
+            {isVisiblePersonalAttendanceTable && <AttendanceTablePersonal />}
         </>
     );
 };

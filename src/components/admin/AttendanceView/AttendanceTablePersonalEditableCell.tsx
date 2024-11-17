@@ -1,17 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import { TableCell, TextField } from "@mui/material";
+import type { AttendanceRow } from "@/types/Attendance";
 
 interface EditableCellProps {
   value: string;
   rowIndex: number;
-  field: string;
+  field: keyof AttendanceRow;
   isEditing: boolean;
-  onClick: (rowIndex: number, field: string) => void;
-  onChange: (rowIndex: number, field: string, value: string) => void;
+  onClick: (rowIndex: number, field: keyof AttendanceRow) => void;
+  onChange: (
+    rowIndex: number,
+    field: keyof AttendanceRow,
+    value: string
+  ) => void;
   onBlur: () => void;
 }
 
-export function PersonalAttendanceTableEditableCell({
+export function AttendanceTablePersonalEditableCell({
   value,
   rowIndex,
   field,

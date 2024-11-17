@@ -5,11 +5,10 @@ import { fetchAttendanceStamps } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
 
 export function useAdminAttendanceViewStamps() {
-  const {
-    adminAttendanceViewStartDate,
-    adminAttendanceViewEndDate,
-    setAdminAttendanceViewAllMembersMonthlyStamps,
-  } = useAdminAttendanceViewStore();
+  const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
+  const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
+  const setAdminAttendanceViewAllMembersMonthlyStamps = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyStamps);
+  
 
   const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(
     'range',

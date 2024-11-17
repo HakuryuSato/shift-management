@@ -5,7 +5,7 @@ import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewS
 import { useAdminAttendanceViewResult } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewResult";
 import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
 import { useAdminAttendanceViewStamps } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewStamps";
-import { TableStyle } from "@/styles/TableStyle";
+import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import {
   getCurrentMonthSpecificDate,
   getPreviousMonthSpecificDate,
@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-export function AllMembersMonthlyTable() {
+export function AttendanceTableAllMembers() {
   // ユーザー情報を取得するカスタムフックを呼び出す
   useAdminHomeUsersData();
   const adminHomeUsersData = useAdminHomeStore((state)=>state.adminHomeUsersData);
@@ -87,7 +87,7 @@ export function AllMembersMonthlyTable() {
 
   return (
     <TableContainer component={Paper}>
-      <TableStyle>
+      <TableStyleAttendanceAllMembers>
         <Table>
           <TableHead>
             <TableRow>
@@ -127,7 +127,7 @@ export function AllMembersMonthlyTable() {
             ))}
           </TableBody>
         </Table>
-      </TableStyle>
+      </TableStyleAttendanceAllMembers>
     </TableContainer>
   );
 }

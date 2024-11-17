@@ -5,13 +5,12 @@ import type { AttendanceRow } from "@/types/Attendance";
 
 // 個人出退勤テーブル用のデータを整形、SetするためのHooks
 export function usePersonalAttendanceTableData() {
-  const {
-    adminAttendanceViewSelectedUser,
-    adminAttendanceViewStartDate,
-    adminAttendanceViewEndDate,
-    adminAttendanceViewAllMembersMonthlyResult,
-    adminAttendanceViewAllMembersMonthlyStamps,
-  } = useAdminAttendanceViewStore();
+  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore((state) => state.adminAttendanceViewSelectedUser);
+  const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
+  const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
+  const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.adminAttendanceViewAllMembersMonthlyResult);
+  const adminAttendanceViewAllMembersMonthlyStamps = useAdminAttendanceViewStore((state) => state.adminAttendanceViewAllMembersMonthlyStamps);
+  
 
   const [rows, setRows] = useState<AttendanceRow[]>([]);
   const [editingCell, setEditingCell] = useState<{

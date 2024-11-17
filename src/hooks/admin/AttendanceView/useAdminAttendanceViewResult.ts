@@ -5,11 +5,10 @@ import { fetchAttendanceResults } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
 
 export function useAdminAttendanceViewResult() {
-    const {
-        adminAttendanceViewStartDate,
-        adminAttendanceViewEndDate,
-        setAdminAttendanceViewAllMembersMonthlyResult,
-    } = useAdminAttendanceViewStore();
+    const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
+    const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
+    const setAdminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyResult);
+    
 
     const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(
         'range',

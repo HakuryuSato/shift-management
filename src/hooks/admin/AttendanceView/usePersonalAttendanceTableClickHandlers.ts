@@ -3,7 +3,7 @@ import { usePersonalAttendanceTableData } from "./usePersonalAttendanceTableData
 import type { AttendanceRow } from "@/types/Attendance";
 
 export function usePersonalAttendanceTableClickHandlers() {
-  const { setEditingCell, setRows } = usePersonalAttendanceTableData();
+  const { setEditingCell, setRows, editingCell } = usePersonalAttendanceTableData();
 
   const handleClickCell = useCallback(
     (rowIndex: number, field: keyof AttendanceRow) => {
@@ -12,8 +12,12 @@ export function usePersonalAttendanceTableClickHandlers() {
     [setEditingCell]
   );
 
-  const handleChangeCellInput = useCallback(
-    (rowIndex: number, field: keyof AttendanceRow, value: string) => {
+  const handleCellChange = useCallback(
+    (
+      rowIndex: number,
+      field: keyof AttendanceRow,
+      value: string
+    ) => {
       setRows((prevRows) =>
         prevRows.map((row, idx) =>
           idx === rowIndex ? { ...row, [field]: value } : row
@@ -24,5 +28,14 @@ export function usePersonalAttendanceTableClickHandlers() {
     [setRows]
   );
 
-  return { handleClickCell, handleChangeCellInput };
+  const handleBlur = useCallback(() => {
+    setEditingCell(null);
+  }, [setEditingCell]);
+
+  return {
+    editingCell,
+    handleClickCell,
+    handleCellChange,
+    handleBlur,
+  };
 }
