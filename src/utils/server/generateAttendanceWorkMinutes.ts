@@ -1,6 +1,6 @@
 'use server';
 
-import { AttendanceStamp, AttendanceResult } from '@/types/Attendance';
+import { Attendance } from '@/types/Attendance';
 import { Holiday } from '@/types/Holiday';
 import { toJapanISOString, toJapanDateISOString } from '@/utils/common/dateUtils';
 import { fetchHolidays } from '@/utils/client/apiClient';
@@ -81,15 +81,15 @@ function calculateOvertimeMinutes(
 }
 
 /**
- * AttendanceStampをAttendanceResultに変換
+ * 打刻(stamp)を補正後(adjust)に変換して返す
  */
-export async function generateAttendanceResult(
-    attendanceStamp: AttendanceStamp
-): Promise<AttendanceResult[]> {
-    const { attendance_id, start_time, end_time } = attendanceStamp;
+export async function generateAttendanceWorkMinutes(
+    attendance: Attendance
+): Promise<Partial<Attendance>[]> {
+    const { attendance_id, user_id, stamp_start_time, stamp_end_time } = attendance;
 
     // 必須項目が欠けている場合は空の配列を返す
-    if (!attendance_id || !start_time || !end_time) {
+    if (!attendance_id || !stamp_start_time || !stamp_end_time) {
         return [];
     }
 
@@ -98,8 +98,8 @@ export async function generateAttendanceResult(
     const holidayDates = new Set(holidays.map((holiday) => holiday.date));
 
     // 開始時間と終了時間をパースして30分単位に丸める
-    const startDate = new Date(start_time);
-    const endDate = new Date(end_time);
+    const startDate = new Date(stamp_start_time);
+    const endDate = new Date(stamp_end_time);
     const roundedStartDate = roundToNearest30Minutes(new Date(startDate));
     const roundedEndDate = roundToNearest30Minutes(new Date(endDate));
 
@@ -133,8 +133,8 @@ export async function generateAttendanceResult(
     return [
         {
             attendance_id,
-            work_start_time: toJapanISOString(roundedStartDate),
-            work_end_time: toJapanISOString(roundedEndDate),
+            adjusted_start_time: toJapanISOString(roundedStartDate),
+            adjusted_end_time: toJapanISOString(roundedEndDate),
             work_minutes: workMinutes,
             overtime_minutes: overtimeMinutes,
             rest_minutes: restMinutes,
