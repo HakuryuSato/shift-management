@@ -11,7 +11,7 @@ interface EditableCellProps {
   onChange: (
     rowIndex: number,
     field: keyof AttendanceRow,
-    value: string
+    value: string,
   ) => void;
   onBlur: () => void;
 }
@@ -42,30 +42,25 @@ export function AttendanceTablePersonalEditableCell({
         "&:hover": { backgroundColor: "lightgrey" },
       }}
     >
-      {isEditing ? (
-        <TextField
-          value={value}
-          onChange={(e) => onChange(rowIndex, field, e.target.value)}
-          onBlur={onBlur}
-          inputRef={inputRef}
-          inputProps={{
-            style: {
-              textAlign: "center",
-              padding: "0",
-              fontSize: "0.8rem",
-            },
-          }}
-          variant="standard"
-          size="small"
-          sx={{
-            margin: 0,
-            padding: 0,
-            width: "100%",
-          }}
-        />
-      ) : (
-        value
-      )}
+      {isEditing
+        ? (
+          <TextField
+            value={value}
+            onChange={(e) => onChange(rowIndex, field, e.target.value)}
+            onBlur={onBlur}
+            inputRef={inputRef}
+            inputProps={{
+              style: {
+                textAlign: "center",
+                padding: "0",
+                fontSize: "0.8rem",
+              },
+            }}
+            variant="standard"
+            size="small"
+          />
+        )
+        : value}
     </TableCell>
   );
 }

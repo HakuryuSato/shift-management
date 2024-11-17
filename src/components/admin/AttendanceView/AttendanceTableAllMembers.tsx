@@ -23,8 +23,9 @@ import {
 export function AttendanceTableAllMembers() {
   // ユーザー情報を取得するカスタムフックを呼び出す
   useAdminHomeUsersData();
-  const adminHomeUsersData = useAdminHomeStore((state)=>state.adminHomeUsersData);
-  
+  const adminHomeUsersData = useAdminHomeStore((state) =>
+    state.adminHomeUsersData
+  );
 
   // 日付範囲の状態を取得
   const {
@@ -86,48 +87,44 @@ export function AttendanceTableAllMembers() {
   });
 
   return (
-    <TableContainer component={Paper}>
-      <TableStyleAttendanceAllMembers>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>種別</TableCell>
-              <TableCell>名前</TableCell>
-              <TableCell>出勤日数</TableCell>
-              <TableCell>出勤時数</TableCell>
-              <TableCell>時間外時数</TableCell>
+    <TableStyleAttendanceAllMembers>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>種別</TableCell>
+            <TableCell>名前</TableCell>
+            <TableCell>出勤日数</TableCell>
+            <TableCell>出勤時数</TableCell>
+            <TableCell>時間外時数</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {userAttendanceData.map((
+            { user, workDays, workHours, overtimeHours },
+          ) => (
+            <TableRow key={user.user_id}>
+              <TableCell>
+                {user.employment_type === "full_time" ? "正社員" : "アルバイト"}
+              </TableCell>
+              <TableCell>
+                <span
+                  onClick={() => handleClickUserName(user)}
+                  style={{
+                    color: "blue",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                  }}
+                >
+                  {user.user_name}
+                </span>
+              </TableCell>
+              <TableCell>{workDays}</TableCell>
+              <TableCell>{workHours.toFixed(1)}</TableCell>
+              <TableCell>{overtimeHours.toFixed(1)}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {userAttendanceData.map((
-              { user, workDays, workHours, overtimeHours },
-            ) => (
-              <TableRow key={user.user_id}>
-                <TableCell>
-                  {user.employment_type === "full_time"
-                    ? "正社員"
-                    : "アルバイト"}
-                </TableCell>
-                <TableCell>
-                  <span
-                    onClick={() => handleClickUserName(user)}
-                    style={{
-                      color: "blue",
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {user.user_name}
-                  </span>
-                </TableCell>
-                <TableCell>{workDays}</TableCell>
-                <TableCell>{workHours.toFixed(1)}</TableCell>
-                <TableCell>{overtimeHours.toFixed(1)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableStyleAttendanceAllMembers>
-    </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
+    </TableStyleAttendanceAllMembers>
   );
 }

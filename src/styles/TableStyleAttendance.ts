@@ -13,10 +13,5 @@ export const TableStyleAttendance = ({ theme }: { theme: Theme }) => ({
   "& tr:nth-of-type(even) td": {
     backgroundColor: theme.palette.action.hover,
   },
-  "& td:nth-of-type(2), & th:nth-of-type(2)": {
-    borderRight: "2px solid #ccc",
-  },
-  "& tr:nth-of-type(3) th": {
-    borderBottom: "2px solid #ccc",
-  },
+
 });
