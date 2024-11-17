@@ -3,14 +3,14 @@ import type { AttendanceResult, AttendanceStamp } from '@/types/Attendance';
 import type { User } from '@/types/User';
 
 interface AdminAttendanceViewStore {
-  // 既存の状態
+
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
   adminAttendanceViewAllMembersMonthlyResult: AttendanceResult[] | null;
   setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void;
   setAdminAttendanceViewAllMembersMonthlyResult: (data: AttendanceResult[]) => void;
 
-  // 新たに追加する状態と関数
+
   isVisibleAllMembersMonthlyTable: boolean;
   showAllMembersMonthlyTable: () => void;
   hideAllMembersMonthlyTable: () => void;
@@ -27,7 +27,7 @@ interface AdminAttendanceViewStore {
 }
 
 export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set) => ({
-  // 既存の状態と関数
+
   adminAttendanceViewStartDate: new Date(),
   adminAttendanceViewEndDate: new Date(),
   adminAttendanceViewAllMembersMonthlyResult: null,
@@ -36,7 +36,7 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
   setAdminAttendanceViewAllMembersMonthlyResult: (data) =>
     set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 
-  // 新たに追加する状態と関数
+
   isVisibleAllMembersMonthlyTable: true,
   showAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: true }),
   hideAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: false }),
