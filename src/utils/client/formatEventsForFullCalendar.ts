@@ -3,55 +3,70 @@ import { Shift } from '../../types/Shift';
 import { Attendance } from '../../types/Attendance';
 import { User } from '../../types/User';
 
-// 共通のベース型を定義
-type ShiftOrAttendance = Shift | Attendance;
+// 関数のオーバーロードを定義
+export function formatEventsForFullCalendar(records: Shift[], users?: User[]): CustomFullCalendarEvent[];
+export function formatEventsForFullCalendar(records: Attendance[], users?: User[]): CustomFullCalendarEvent[];
 
-
-// DBから取得したシフトまたは出退勤データをFullCalendar用に変換するための関数
-// 引数のusersはユーザー名をフルカレに表示する必要がある場合に使用する
-export function formatEventsForFullCalendar<T extends ShiftOrAttendance>(
-    records: T[],
-    users?: User[]
+// 実装本体
+export function formatEventsForFullCalendar(
+  records: Shift[] | Attendance[],
+  users?: User[]
 ): CustomFullCalendarEvent[] {
+  if (records.length === 0) {
+    return [];
+  }
 
-    // 最初のレコードから型を定義
-    const isShift = records.length > 0 && 'shift_id' in records[0];
-    const idField = isShift ? 'shift_id' : 'attendance_id';
-
-
-    const userMap = new Map<number, string>();
-    // ユーザー名がある場合、ユーザー名の探索高速化のためMapを作成
-    if (users) {
-        users.forEach((user) => {
-            if (user.user_id !== undefined && user.user_name !== undefined) {
-                userMap.set(user.user_id, user.user_name);
-            }
-        });
-    }
-
-    return records.map((record) => {
-
-        const id = record[idField as keyof ShiftOrAttendance];
-
-        // ユーザー名を設定
-        // const user_name = userMap.get(record.user_id) || '';
-        const user_name = typeof record.user_id === 'number' 
-    ? userMap.get(record.user_id) || '' 
-    : '';
-
-        // end_time が null の場合は undefined に変換
-        const endTime = record.end_time ?? undefined;
-
-        return {
-            id: String(id),
-            start: record.start_time,
-            end: endTime,
-            title: user_name,
-            display: 'block',
-            extendedProps: {
-                user_id: record.user_id,
-                user_name: user_name,
-            },
-        } as CustomFullCalendarEvent;
+  const userMap = new Map<number, string>();
+  if (users) {
+    users.forEach((user) => {
+      if (user.user_id !== undefined && user.user_name !== undefined) {
+        userMap.set(user.user_id, user.user_name);
+      }
     });
+  }
+
+  // 型ガード関数を定義
+  const isShiftArray = (records: Shift[] | Attendance[]): records is Shift[] =>
+    'shift_id' in records[0];
+
+  if (isShiftArray(records)) {
+    // Shift型の処理
+    return records.map((record) => {
+      const id = record.shift_id ?? '';
+      const user_name = record.user_id ? userMap.get(record.user_id) || '' : '';
+      const endTime = record.end_time ?? undefined;
+
+      return {
+        id: String(id),
+        start: record.start_time,
+        end: endTime,
+        title: user_name,
+        display: 'block',
+        extendedProps: {
+          user_id: record.user_id,
+          user_name: user_name,
+        },
+      } as CustomFullCalendarEvent;
+    });
+  } else {
+    // Attendance型の処理
+    return records.map((record) => {
+      const id = record.attendance_id;
+      const user_name = record.user_id ? userMap.get(record.user_id) || '' : '';
+      const startTime = record.adjusted_start_time ?? record.stamp_start_time;
+      const endTime = record.adjusted_end_time ?? record.stamp_end_time ?? undefined;
+
+      return {
+        id: String(id),
+        start: startTime,
+        end: endTime,
+        title: user_name,
+        display: 'block',
+        extendedProps: {
+          user_id: record.user_id,
+          user_name: user_name,
+        },
+      } as CustomFullCalendarEvent;
+    });
+  }
 }
