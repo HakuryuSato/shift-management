@@ -8,11 +8,13 @@ import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/Attendanc
 import { useAttendanceTablePersonalStore } from "@/stores/admin/AttendanceTablePersonalSlice";
 
 export function AttendanceTablePersonal() {
+  // 個人用出退勤データをStoreにセット
+  usePersonalAttendanceTableData();
 
   // storeの値を取得
-  const { AttendanceTablePersonalTableRows } = useAttendanceTablePersonalStore((
-    state,
-  ) => state.AttendanceTablePersonalTableRows);
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalTableRows
+  );
 
   // ハンドラー取得
   const {
@@ -44,8 +46,10 @@ export function AttendanceTablePersonal() {
               value={row.regularHours}
               rowIndex={index}
               field="regularHours"
-              isEditing={editingCell?.rowIndex === index &&
-                editingCell?.field === "regularHours"}
+              isEditing={
+                editingCell?.rowIndex === index &&
+                editingCell?.field === "regularHours"
+              }
               onClick={handleClickCell}
               onBlur={handleBlur}
             />
@@ -53,8 +57,10 @@ export function AttendanceTablePersonal() {
               value={row.overtimeHours}
               rowIndex={index}
               field="overtimeHours"
-              isEditing={editingCell?.rowIndex === index &&
-                editingCell?.field === "overtimeHours"}
+              isEditing={
+                editingCell?.rowIndex === index &&
+                editingCell?.field === "overtimeHours"
+              }
               onClick={handleClickCell}
               onBlur={handleBlur}
             />

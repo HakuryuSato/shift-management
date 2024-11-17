@@ -7,7 +7,7 @@ import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/pu
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
-import { updateAttendanceResult as serverActionUpdateAttendanceResult } from '@/app/actions/updateAttendanceResult';
+import { upsertAttendanceResult as serverActionUpsertAttendanceResult } from '@/app/actions/upsertAttendanceResult';
 
 // 型
 import type { User } from '@/types/User';
@@ -51,7 +51,7 @@ export async function insertUser(user: User): Promise<User | null> {
 
 // 出退勤関連  ---------------------------------------------------------------------------------------------------
 /**
- * 出退勤を挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入はサーバーアクション側で処理している)
+ * 出退勤StampとResultを挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入はサーバーアクション側で処理している)
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
@@ -60,14 +60,13 @@ export async function punchAttendance(userId: number): Promise<AttendanceStamp[]
 }
 
 /**
- * 出退勤を更新するサーバーアクションを呼び出す関数
- * @param attendanceData 出勤データ
- * @returns 更新された出勤データ
+ * 出退勤データを更新または挿入するサーバーアクションを呼び出す関数
+ * @param attendanceData 出勤データ（単一または複数のAttendanceResult型）
+ * @returns 挿入または更新された出勤データまたは null
  */
-export async function updateAttendanceResult(attendanceData: AttendanceResult): Promise<AttendanceResult[] | null> {
-  return await handleServerAction(() => serverActionUpdateAttendanceResult(attendanceData));
+export async function upsertAttendanceResult(attendanceData: AttendanceResult | AttendanceResult[]): Promise<AttendanceResult[] | null> {
+  return await handleServerAction(() => serverActionUpsertAttendanceResult(attendanceData));
 }
-
 
 
 // シフト関連 ---------------------------------------------------------------------------------------------------

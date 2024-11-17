@@ -1,5 +1,4 @@
-// src/hooks/admin/AttendanceView/usePersonalAttendanceTableData.ts
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import {
   generateDateRange,
@@ -31,6 +30,28 @@ export function usePersonalAttendanceTableData() {
     (state) => state.setAttendanceTablePersonalTableRows
   );
 
+  // 出退勤結果をMapに変換
+  const attendanceResultMap = useMemo(() => {
+    const map = new Map();
+    adminAttendanceViewAllMembersMonthlyResult?.forEach((result) => {
+      const dateString = result.work_start_time?.split('T')[0];
+      const key = `${result.attendance_stamps?.user_id}_${dateString}`;
+      map.set(key, result);
+    });
+    return map;
+  }, [adminAttendanceViewAllMembersMonthlyResult]);
+
+  // 打刻データをMapに変換
+  const attendanceStampMap = useMemo(() => {
+    const map = new Map();
+    adminAttendanceViewAllMembersMonthlyStamps?.forEach((stamp) => {
+      const dateString = stamp.start_time?.split('T')[0];
+      const key = `${stamp.user_id}_${dateString}`;
+      map.set(key, stamp);
+    });
+    return map;
+  }, [adminAttendanceViewAllMembersMonthlyStamps]);
+
   useEffect(() => {
     if (!adminAttendanceViewSelectedUser) return;
 
@@ -42,20 +63,13 @@ export function usePersonalAttendanceTableData() {
 
     const newRows: AttendanceRow[] = dateRange.map((date) => {
       const dateString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+      const key = `${adminAttendanceViewSelectedUser.user_id}_${dateString}`;
 
       // 当日の出退勤結果を取得
-      const attendanceResult = adminAttendanceViewAllMembersMonthlyResult?.find(
-        (result) =>
-          result.attendance_stamps?.user_id === adminAttendanceViewSelectedUser.user_id &&
-          result.work_start_time?.startsWith(dateString)
-      );
+      const attendanceResult = attendanceResultMap.get(key);
 
       // 当日の打刻データを取得
-      const attendanceStamp = adminAttendanceViewAllMembersMonthlyStamps?.find(
-        (stamp) =>
-          stamp.user_id === adminAttendanceViewSelectedUser.user_id &&
-          stamp.start_time.startsWith(dateString)
-      );
+      const attendanceStamp = attendanceStampMap.get(key);
 
       // 日付のフォーマット 'MM/DD(曜日)'
       const formattedDate = formatDateStringToMM_DD_Day(date);
@@ -108,8 +122,8 @@ export function usePersonalAttendanceTableData() {
     adminAttendanceViewSelectedUser,
     adminAttendanceViewStartDate,
     adminAttendanceViewEndDate,
-    adminAttendanceViewAllMembersMonthlyResult,
-    adminAttendanceViewAllMembersMonthlyStamps,
+    attendanceResultMap,
+    attendanceStampMap,
     setPersonalAttendanceTableRows,
   ]);
 }

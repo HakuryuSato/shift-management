@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TableCell, TextField } from "@mui/material";
 import type { AttendanceRow } from "@/types/Attendance";
 
@@ -8,7 +8,11 @@ interface EditableCellProps {
   field: keyof AttendanceRow;
   isEditing: boolean;
   onClick: (rowIndex: number, field: keyof AttendanceRow) => void;
-  onBlur: () => void;
+  onBlur: (
+    rowIndex: number,
+    field: keyof AttendanceRow,
+    newValue: string,
+  ) => void;
 }
 
 export function AttendanceTablePersonalEditableCell({
@@ -20,6 +24,7 @@ export function AttendanceTablePersonalEditableCell({
   onBlur,
 }: EditableCellProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -27,6 +32,13 @@ export function AttendanceTablePersonalEditableCell({
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  // isEditingが切り替わったときにinputValueをリセット
+  useEffect(() => {
+    if (!isEditing) {
+      setInputValue(value);
+    }
+  }, [isEditing, value]);
 
   return (
     <TableCell
@@ -39,16 +51,19 @@ export function AttendanceTablePersonalEditableCell({
       {isEditing
         ? (
           <TextField
-            value={value}
-            onBlur={onBlur}
-            inputRef={inputRef}
+            type="number"
             inputProps={{
+              step: "0.1",
               style: {
                 textAlign: "center",
                 padding: "0",
                 fontSize: "0.8rem",
               },
             }}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onBlur={() => onBlur(rowIndex, field, inputValue)}
+            inputRef={inputRef}
             variant="standard"
             size="small"
           />
