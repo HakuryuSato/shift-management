@@ -117,3 +117,56 @@ export function generateDateRange(startDate: Date, endDate: Date): Date[] {
   }
   return dates;
 }
+
+/**
+ * 指定日が属する週の開始日を取得
+ * @param date 対象日
+ * @returns 週の開始日
+ */
+export function getStartOfWeek(date: Date): Date {
+  const start = new Date(date);
+  const day = start.getDay();
+  const diff = start.getDate() - day + (day === 0 ? -6 : 1); // 月曜日基準
+  start.setDate(diff);
+  start.setHours(0, 0, 0, 0);
+  return start;
+}
+
+/**
+ * 指定日が属する週の終了日を取得
+ * @param date 対象日
+ * @returns 週の終了日
+ */
+export function getEndOfWeek(date: Date): Date {
+  const end = new Date(getStartOfWeek(date));
+  end.setDate(end.getDate() + 6); // 週末日は月曜日+6
+  end.setHours(23, 59, 59, 999);
+  return end;
+}
+
+/**
+ * 日付を'MM/DD(曜日)'の形式にフォーマットする関数
+ * @param date Dateオブジェクト
+ * @returns フォーマットされた日付文字列
+ */
+export function formatDateStringToMM_DD_Day(date: Date): string {
+  const options = {
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'short',
+  } as const;
+  return date.toLocaleDateString('ja-JP', options);
+}
+
+/**
+ * 時刻を'HH:mm'の形式にフォーマットする関数
+ * @param date Dateオブジェクト
+ * @returns フォーマットされた時刻文字列
+ */
+export function formatTimeStringToHH_MM(date: Date): string {
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+  } as const;
+  return date.toLocaleTimeString('ja-JP', options);
+}
