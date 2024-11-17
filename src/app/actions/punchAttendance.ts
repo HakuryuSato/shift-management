@@ -1,61 +1,73 @@
 'use server';
 
 // サーバーアクション
-import { insertAttendanceStamp } from './insertAttendanceStamp';
-import { updateAttendanceStamp } from './updateAttendanceStamp';
-import { upsertAttendanceResult } from './upsertAttendanceResult';
+import { insertAttendance } from './insertAttendance';
+import { updateAttendance } from './updateAttendance';
 
 // utils
 import { getTimeRangeISOStrings, toJapanISOString } from '@/utils/common/dateUtils';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
-import { generateAttendanceResult } from '@/utils/server/generateAttendanceResult';
+import { generateAttendanceWorkMinutes } from '@/utils/server/generateAttendanceWorkMinutes';
 
 // 型
-import type { AttendanceStamp } from '@/types/Attendance';
-
+import type { Attendance } from '@/types/Attendance';
 
 /**
  * 出退勤の打刻を行うサーバーアクション
  * @param userId ユーザーID
- * @returns AttendanceStamp
+ * @returns 更新または作成された Attendance データ
  */
-export async function punchAttendance(userId: number): Promise<AttendanceStamp[]> {
-    const now = new Date();
-    const nowISO = toJapanISOString(now);
+export async function punchAttendance(userId: number): Promise<Attendance[]> {
+  const now = new Date();
+  const nowISO = toJapanISOString(now);
 
-    // 当日の時間範囲を取得
-    const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('day', now);
+  // 当日の時間範囲を取得
+  const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('day', now);
 
-    // 当日の出勤記録を取得
-    const data = await handleSupabaseRequest<AttendanceStamp[]>(async (supabase) => {
-        return supabase
-            .from('attendance_stamps')
-            .select('*')
-            .eq('user_id', userId)
-            .gte('start_time', startTimeISO)
-            .lte('start_time', endTimeISO)
-            .order('start_time', { ascending: false })
-            .limit(1);
+  // 当日の出勤記録を取得
+  const existingAttendance = await handleSupabaseRequest<Attendance[]>(async (supabase) => {
+    return supabase
+      .from('attendances')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('stamp_start_time', startTimeISO)
+      .lte('stamp_start_time', endTimeISO)
+      .order('stamp_start_time', { ascending: false })
+      .limit(1);
+  });
+
+  if (existingAttendance && existingAttendance.length > 0) {
+    // 出勤データが既に存在する場合
+    const attendanceId = existingAttendance[0].attendance_id;
+
+    // stamp_end_time を更新
+    const updatedAttendance = await updateAttendance({
+      attendance_id: attendanceId,
+      stamp_end_time: nowISO,
     });
 
-    if (data && data.length > 0) { // データがあるなら
-        const attendance_id = data[0]?.attendance_id;
+    // 非同期で勤務時間や残業時間を計算し、データを更新
+    generateAttendanceWorkMinutes(updatedAttendance[0])
+      .then(async (result) => {
+        await updateAttendance({
+          attendance_id: attendanceId,
+          ...result,
+        });
+      })
+      .catch((error) => {
+        console.error('Error generating attendance result:', error);
+        throw new Error('Failed to calculate attendance result.');
+      });
 
-        // end_timeを更新
-        const attendanceStamp = await updateAttendanceStamp(attendance_id, nowISO);
+    return updatedAttendance;
+  } else {
+    // 出勤データが存在しない場合、新しいレコードを作成
+    const newAttendance = await insertAttendance({
+      user_id: userId,
+      stamp_start_time: nowISO,
 
-        // 非同期で時間を計算してresultテーブルにupsert
-        generateAttendanceResult(attendanceStamp[0])
-            .then(attendanceResult => {
-                upsertAttendanceResult(attendanceResult);
-            })
-            .catch(console.error); // エラーハンドリングを追加
+    });
 
-        return attendanceStamp
-
-
-    } else { // ないなら
-        // 新しい出勤記録を作成
-        return await insertAttendanceStamp(userId, nowISO);
-    }
+    return newAttendance;
+  }
 }
