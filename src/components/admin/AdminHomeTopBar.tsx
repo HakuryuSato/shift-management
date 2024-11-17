@@ -1,7 +1,7 @@
 // src/components/admin/AdminHomeTopBar.tsx
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { useAdminAttendanceTopBar } from '@/hooks/admin/useAdminAttendanceTopBar';
+import { useAdminAttendanceTopBar } from '@/hooks/admin/useAdminHomeTopBar';
 
 export const AdminHomeTopBar: React.FC = () => {
   const {

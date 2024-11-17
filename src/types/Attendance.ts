@@ -50,5 +50,4 @@ export type AttendanceRow = {
   stampStartTime: string;
   stampEndTime: string;
   attendanceId?: number;
-  isEditable: boolean;
 };

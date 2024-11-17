@@ -1,11 +1,10 @@
-// src/components/admin/AttendanceView/AllMembersMonthlyTable.tsx
 import React, { useEffect } from "react";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
-import { useAdminAttendanceViewResult } from "@/hooks/admin/useAdminAttendanceViewResult";
-import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/useAllMembersMonthlyTableClickHandlers";
-import { useAdminAttendanceViewStamps } from "@/hooks/admin/useAdminAttendanceViewStamps";
+import { useAdminAttendanceViewResult } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewResult";
+import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
+import { useAdminAttendanceViewStamps } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewStamps";
 import { TableStyle } from "@/styles/TableStyle";
 import {
   getCurrentMonthSpecificDate,
@@ -24,7 +23,8 @@ import {
 export function AllMembersMonthlyTable() {
   // ユーザー情報を取得するカスタムフックを呼び出す
   useAdminHomeUsersData();
-  const { adminHomeUsersData } = useAdminHomeStore();
+  const adminHomeUsersData = useAdminHomeStore((state)=>state.adminHomeUsersData);
+  
 
   // 日付範囲の状態を取得
   const {

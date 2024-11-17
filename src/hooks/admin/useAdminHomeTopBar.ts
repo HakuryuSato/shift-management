@@ -1,19 +1,25 @@
-// src/hooks/admin/useAdminAttendanceTopBar.ts
 import { useCallback } from 'react';
 import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
+import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 
 export const useAdminAttendanceTopBar = () => {
-    const { adminHomeMode, setAdminHomeMode } = useAdminHomeStore();
+    const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
+    const setAdminHomeMode = useAdminHomeStore((state) => state.setAdminHomeMode);
+    const hidePersonalAttendanceTable = useAdminAttendanceViewStore((state) => state.hidePersonalAttendanceTable);
+    const showAllMembersMonthlyTable = useAdminAttendanceViewStore((state) => state.showAllMembersMonthlyTable);
 
-    const handleClickToShiftPage = useCallback(() => {
+    const handleClickTopLeftButton = useCallback(() => {
         if (adminHomeMode === 'SHIFT') {
             setAdminHomeMode('MONTHLY_ATTENDANCE');
         } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
             setAdminHomeMode('SHIFT');
         } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
             setAdminHomeMode('MONTHLY_ATTENDANCE');
+            hidePersonalAttendanceTable();
+            showAllMembersMonthlyTable();
+
         }
-    }, [adminHomeMode, setAdminHomeMode]);
+    }, [adminHomeMode, hidePersonalAttendanceTable, setAdminHomeMode, showAllMembersMonthlyTable]);
 
     const handleClickUserRegister = useCallback(() => {
         console.log('ユーザー登録処理');
@@ -28,7 +34,7 @@ export const useAdminAttendanceTopBar = () => {
     }, []);
 
     return {
-        handleClickToShiftPage,
+        handleClickToShiftPage: handleClickTopLeftButton,
         handleClickUserRegister,
         handleClickUserDelete,
         handleClickExcelDownload,
