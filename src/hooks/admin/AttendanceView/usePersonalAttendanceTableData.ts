@@ -1,22 +1,35 @@
-import { useEffect, useState } from "react";
-import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
-import { generateDateRange } from "@/utils/common/dateUtils";
-import type { AttendanceRow } from "@/types/Attendance";
+// src/hooks/admin/AttendanceView/usePersonalAttendanceTableData.ts
+import { useEffect } from 'react';
+import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
+import {
+  generateDateRange,
+  formatDateStringToMM_DD_Day,
+  formatTimeStringToHH_MM,
+} from '@/utils/common/dateUtils';
+import type { AttendanceRow } from '@/types/Attendance';
+import { useAttendanceTablePersonalStore } from '@/stores/admin/AttendanceTablePersonalSlice';
 
-// 個人出退勤テーブル用のデータを整形、SetするためのHooks
+// 個人出退勤テーブル用のデータを整形し、ストアにセットするためのフック
 export function usePersonalAttendanceTableData() {
-  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore((state) => state.adminAttendanceViewSelectedUser);
-  const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
-  const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
-  const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.adminAttendanceViewAllMembersMonthlyResult);
-  const adminAttendanceViewAllMembersMonthlyStamps = useAdminAttendanceViewStore((state) => state.adminAttendanceViewAllMembersMonthlyStamps);
-  
+  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewSelectedUser
+  );
+  const adminAttendanceViewStartDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewStartDate
+  );
+  const adminAttendanceViewEndDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewEndDate
+  );
+  const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewAllMembersMonthlyResult
+  );
+  const adminAttendanceViewAllMembersMonthlyStamps = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewAllMembersMonthlyStamps
+  );
 
-  const [rows, setRows] = useState<AttendanceRow[]>([]);
-  const [editingCell, setEditingCell] = useState<{
-    rowIndex: number;
-    field: keyof AttendanceRow;
-  } | null>(null);
+  const setPersonalAttendanceTableRows = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalTableRows
+  );
 
   useEffect(() => {
     if (!adminAttendanceViewSelectedUser) return;
@@ -28,13 +41,12 @@ export function usePersonalAttendanceTableData() {
     );
 
     const newRows: AttendanceRow[] = dateRange.map((date) => {
-      const dateString = date.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+      const dateString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
 
       // 当日の出退勤結果を取得
       const attendanceResult = adminAttendanceViewAllMembersMonthlyResult?.find(
         (result) =>
-          result.attendance_stamps?.user_id ===
-            adminAttendanceViewSelectedUser.user_id &&
+          result.attendance_stamps?.user_id === adminAttendanceViewSelectedUser.user_id &&
           result.work_start_time?.startsWith(dateString)
       );
 
@@ -46,12 +58,7 @@ export function usePersonalAttendanceTableData() {
       );
 
       // 日付のフォーマット 'MM/DD(曜日)'
-      const dateOptions = {
-        month: "2-digit",
-        day: "2-digit",
-        weekday: "short",
-      } as const;
-      const formattedDate = date.toLocaleDateString("ja-JP", dateOptions);
+      const formattedDate = formatDateStringToMM_DD_Day(date);
 
       // 平日普通(H)
       const workMinutes = attendanceResult?.work_minutes ?? 0;
@@ -63,24 +70,12 @@ export function usePersonalAttendanceTableData() {
 
       // 開始と終了
       const startTime = attendanceResult?.work_start_time
-        ? new Date(attendanceResult.work_start_time).toLocaleTimeString(
-            "ja-JP",
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )
-        : "";
+        ? formatTimeStringToHH_MM(new Date(attendanceResult.work_start_time))
+        : '';
 
       const endTime = attendanceResult?.work_end_time
-        ? new Date(attendanceResult.work_end_time).toLocaleTimeString(
-            "ja-JP",
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )
-        : "";
+        ? formatTimeStringToHH_MM(new Date(attendanceResult.work_end_time))
+        : '';
 
       // 休憩
       const restMinutes = attendanceResult?.rest_minutes ?? 0;
@@ -88,18 +83,12 @@ export function usePersonalAttendanceTableData() {
 
       // 打刻開始と終了
       const stampStartTime = attendanceStamp?.start_time
-        ? new Date(attendanceStamp.start_time).toLocaleTimeString("ja-JP", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : "";
+        ? formatTimeStringToHH_MM(new Date(attendanceStamp.start_time))
+        : '';
 
       const stampEndTime = attendanceStamp?.end_time
-        ? new Date(attendanceStamp.end_time).toLocaleTimeString("ja-JP", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : "";
+        ? formatTimeStringToHH_MM(new Date(attendanceStamp.end_time))
+        : '';
 
       return {
         date: formattedDate,
@@ -114,14 +103,13 @@ export function usePersonalAttendanceTableData() {
       };
     });
 
-    setRows(newRows);
+    setPersonalAttendanceTableRows(newRows);
   }, [
     adminAttendanceViewSelectedUser,
     adminAttendanceViewStartDate,
     adminAttendanceViewEndDate,
     adminAttendanceViewAllMembersMonthlyResult,
     adminAttendanceViewAllMembersMonthlyStamps,
+    setPersonalAttendanceTableRows,
   ]);
-
-  return { rows, setRows, editingCell, setEditingCell };
 }
