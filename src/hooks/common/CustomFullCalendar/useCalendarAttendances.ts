@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import { fetchAttendanceStamps } from '@/utils/client/apiClient';
+import { fetchAttendances } from '@/utils/client/apiClient';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullCalendar';
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
@@ -8,7 +8,7 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils'
 
-export function useCalendarAttendanceStamps() {
+export function useCalendarAttendance() {
   const setCustomFullCalendarAttendanceEvents = useCustomFullCalendarStore(
     (state) => state.setCustomFullCalendarAttendanceEvents
   );
@@ -31,7 +31,7 @@ export function useCalendarAttendanceStamps() {
     isUserCalendarViewVisible && userId && startTimeISO && endTimeISO
       ? `attendances/stamps-${userId}-${startTimeISO}-${endTimeISO}`
       : null,
-    () => fetchAttendanceStamps({ user_id: userId, startTimeISO, endTimeISO })
+    () => fetchAttendances({ user_id: userId, filterStartTimeISO:startTimeISO, filterEndTimeISO:endTimeISO, filterTimeType:'stamp'})
   );
 
   useEffect(() => {

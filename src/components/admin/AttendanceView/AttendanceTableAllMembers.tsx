@@ -57,7 +57,7 @@ export function AttendanceTableAllMembers() {
   // ユーザーごとにデータを集計
   const userAttendanceData = adminHomeUsersData.map((user) => {
     const userResults = adminAttendanceViewAllMembersMonthlyResult.filter(
-      (result) => result.attendance_stamps?.user_id === user.user_id,
+      (result) => result.user_id === user.user_id,
     );
 
     const workDays = userResults.length;

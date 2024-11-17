@@ -12,7 +12,7 @@ import { upsertAttendanceResult as serverActionUpsertAttendanceResult } from '@/
 // 型
 import type { User } from '@/types/User';
 import type { Shift } from '@/types/Shift';
-import type { AttendanceStamp, AttendanceResult } from '@/types/Attendance'
+import type { Attendance, Attendance } from '@/types/Attendance'
 
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
@@ -55,7 +55,7 @@ export async function insertUser(user: User): Promise<User | null> {
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
-export async function punchAttendance(userId: number): Promise<AttendanceStamp[] | null> {
+export async function punchAttendance(userId: number): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionpunchAttendance(userId));
 }
 
@@ -64,7 +64,7 @@ export async function punchAttendance(userId: number): Promise<AttendanceStamp[]
  * @param attendanceData 出勤データ（単一または複数のAttendanceResult型）
  * @returns 挿入または更新された出勤データまたは null
  */
-export async function upsertAttendanceResult(attendanceData: AttendanceResult | AttendanceResult[]): Promise<AttendanceResult[] | null> {
+export async function upsertAttendanceResult(attendanceData: Attendance | Attendance[]): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionUpsertAttendanceResult(attendanceData));
 }
 

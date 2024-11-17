@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
-import { fetchAttendanceStamps } from '@/utils/client/apiClient';
+import { fetchAttendances } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
 
 export function useAdminAttendanceViewStamps() {
@@ -18,7 +18,7 @@ export function useAdminAttendanceViewStamps() {
 
   const { data, error, mutate } = useSWR(
     ['attendanceStamps', startTimeISO, endTimeISO],
-    () => fetchAttendanceStamps({ user_id: '*', startTimeISO, endTimeISO })
+    () => fetchAttendances({ filterStartTimeISO:startTimeISO, filterEndTimeISO:endTimeISO,filterTimeType:'adjusted' })
   );
 
   useEffect(() => {

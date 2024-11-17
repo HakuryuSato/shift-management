@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import type { AttendanceResult, AttendanceStamp } from '@/types/Attendance';
+import type { Attendance, Attendance } from '@/types/Attendance';
 import type { User } from '@/types/User';
 
 interface AdminAttendanceViewStore {
 
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
-  adminAttendanceViewAllMembersMonthlyResult: AttendanceResult[] | null;
+  adminAttendanceViewAllMembersMonthlyResult: Attendance[] | null;
   setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void;
-  setAdminAttendanceViewAllMembersMonthlyResult: (data: AttendanceResult[]) => void;
+  setAdminAttendanceViewAllMembersMonthlyResult: (data: Attendance[]) => void;
 
 
   isVisibleAllMembersMonthlyTable: boolean;
@@ -19,8 +19,8 @@ interface AdminAttendanceViewStore {
   showPersonalAttendanceTable: () => void;
   hidePersonalAttendanceTable: () => void;
 
-  adminAttendanceViewAllMembersMonthlyStamps: AttendanceStamp[] | null;
-  setAdminAttendanceViewAllMembersMonthlyStamps: (data: AttendanceStamp[]) => void;
+  adminAttendanceViewAllMembersMonthlyStamps: Attendance[] | null;
+  setAdminAttendanceViewAllMembersMonthlyStamps: (data: Attendance[]) => void;
 
   adminAttendanceViewSelectedUser: User | null;
   setAdminAttendanceViewSelectedUser: (user: User) => void;
