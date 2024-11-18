@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Attendance, Attendance } from '@/types/Attendance';
+import type { Attendance } from '@/types/Attendance';
 import type { User } from '@/types/User';
 
 interface AdminAttendanceViewStore {
@@ -18,9 +18,6 @@ interface AdminAttendanceViewStore {
   isVisiblePersonalAttendanceTable: boolean;
   showPersonalAttendanceTable: () => void;
   hidePersonalAttendanceTable: () => void;
-
-  adminAttendanceViewAllMembersMonthlyStamps: Attendance[] | null;
-  setAdminAttendanceViewAllMembersMonthlyStamps: (data: Attendance[]) => void;
 
   adminAttendanceViewSelectedUser: User | null;
   setAdminAttendanceViewSelectedUser: (user: User) => void;
@@ -48,7 +45,4 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
   adminAttendanceViewSelectedUser: null,
   setAdminAttendanceViewSelectedUser: (user) => set({ adminAttendanceViewSelectedUser: user }),
 
-  adminAttendanceViewAllMembersMonthlyStamps: null,
-  setAdminAttendanceViewAllMembersMonthlyStamps: (data) =>
-    set({ adminAttendanceViewAllMembersMonthlyStamps: data }),
 }));
