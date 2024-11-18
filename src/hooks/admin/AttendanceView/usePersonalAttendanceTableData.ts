@@ -69,11 +69,11 @@ export function usePersonalAttendanceTableData() {
       const overtimeHours = Math.round((overtimeMinutes / 60) * 2) / 2;
 
       // 開始と終了
-      const startTime = attendance?.adjusted_start_time
+      const adjustedStartTime = attendance?.adjusted_start_time
         ? formatTimeStringToHH_MM(new Date(attendance.adjusted_start_time))
         : '';
 
-      const endTime = attendance?.adjusted_end_time
+      const adjustedEndTime = attendance?.adjusted_end_time
         ? formatTimeStringToHH_MM(new Date(attendance.adjusted_end_time))
         : '';
 
@@ -82,23 +82,23 @@ export function usePersonalAttendanceTableData() {
       const breakHours = Math.round((restMinutes / 60) * 2) / 2;
 
       // 打刻開始と終了
-      const stampStartTime = attendance?.stampStartTime
-        ? formatTimeStringToHH_MM(new Date(attendance.stampStartTime))
+      const stampStartTime = attendance?.stamp_start_time
+        ? formatTimeStringToHH_MM(new Date(attendance.stamp_start_time))
         : '';
 
-      const stampEndTime = attendance?.stampEndTime
-        ? formatTimeStringToHH_MM(new Date(attendance.stampEndTime))
+      const stampEndTime = attendance?.stamp_end_time
+        ? formatTimeStringToHH_MM(new Date(attendance.stamp_end_time))
         : '';
 
       return {
         date: formattedDate,
         regularHours: regularHours.toFixed(1),
         overtimeHours: overtimeHours.toFixed(1),
-        startTime,
-        endTime,
+        adjustedStartTime: adjustedStartTime,
+        adjustedEndTime: adjustedEndTime,
         breakHours: breakHours.toFixed(1),
-        stampStartTime,
-        stampEndTime,
+        stampStartTime:stampStartTime,
+        stampEndTime:stampEndTime,
         attendanceId: attendance?.attendance_id,
       };
     });

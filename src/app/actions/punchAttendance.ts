@@ -49,10 +49,7 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
     // 非同期で勤務時間や残業時間を計算し、データを更新
     generateAttendanceWorkMinutes(updatedAttendance[0])
       .then(async (result) => {
-        await updateAttendance({
-          attendance_id: attendanceId,
-          ...result,
-        });
+        await updateAttendance(result);
       })
       .catch((error) => {
         console.error('Error generating attendance result:', error);
@@ -65,7 +62,6 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
     const newAttendance = await insertAttendance({
       user_id: userId,
       stamp_start_time: nowISO,
-
     });
 
     return newAttendance;

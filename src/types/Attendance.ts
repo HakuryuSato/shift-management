@@ -1,7 +1,7 @@
 // GETリクエスト用の型
 export type AttendanceQuery = Partial<Pick<Attendance, 'user_id'>> & {
   filterStartTimeISO?: string;
-  filterEndTimeISO?: string;   
+  filterEndTimeISO?: string;
   filterTimeType?: 'stamp' | 'adjusted';
 };
 
@@ -25,8 +25,8 @@ export type AttendanceRow = {
   date: string;
   regularHours: string;
   overtimeHours: string;
-  startTime: string;
-  endTime: string;
+  adjustedStartTime: string;
+  adjustedEndTime: string;
   breakHours: string;
   stampStartTime: string;
   stampEndTime: string;

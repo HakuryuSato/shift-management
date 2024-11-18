@@ -66,7 +66,7 @@ export function AttendanceTablePersonal() {
               {row.stampStartTime} - {row.stampEndTime}
             </TableCell>
             <TableCell>
-              {row.startTime} - {row.endTime}
+              {row.adjustedStartTime} - {row.adjustedEndTime}
             </TableCell>
             <TableCell>{row.breakHours}</TableCell>
           </TableRow>

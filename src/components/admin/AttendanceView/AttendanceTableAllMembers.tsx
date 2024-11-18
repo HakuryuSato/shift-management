@@ -82,7 +82,7 @@ export function AttendanceTableAllMembers() {
 
   return (
     <TableStyleAttendanceAllMembers>
-      <Table>
+
         <TableHead>
           <TableRow>
             <TableCell>種別</TableCell>
@@ -118,7 +118,6 @@ export function AttendanceTableAllMembers() {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
     </TableStyleAttendanceAllMembers>
   );
 }
