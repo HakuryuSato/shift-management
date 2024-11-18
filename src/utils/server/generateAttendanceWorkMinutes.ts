@@ -6,6 +6,76 @@ import { toJapanISOString, toJapanDateISOString } from '@/utils/common/dateUtils
 import { fetchHolidays } from '@/utils/client/apiClient';
 
 
+
+/** メイン関数
+ * 打刻(stamp)を補正後(adjust)に変換して返す
+ * @attendance:
+ * params
+ */
+export async function generateAttendanceWorkMinutes(
+    attendance: Attendance
+): Promise<Partial<Attendance>> {
+    const { attendance_id, stamp_start_time, stamp_end_time } = attendance;
+
+    // 必須項目が欠けている場合は空の配列を返す
+    if (!attendance_id || !stamp_start_time || !stamp_end_time) {
+        return {};
+    }
+
+    // 祝日データを取得して日付の辞書を作成
+    const holidays: Holiday[] = await fetchHolidays();
+    const holidayDates = new Set(holidays.map((holiday) => holiday.date));
+
+    // 開始時間と終了時間をパースして30分単位に丸める
+    const startDate = new Date(stamp_start_time);
+    const endDate = new Date(stamp_end_time);
+    const roundedStartDate = roundToNearest30Minutes(new Date(startDate));
+    const roundedEndDate = roundToNearest30Minutes(new Date(endDate));
+
+    // 合計分数取得
+    const totalWorkMinutes = (roundedEndDate.getTime() - roundedStartDate.getTime()) / (1000 * 60);
+
+    // 開始終了分数(日付の開始から何分か)
+    const startMinutes = roundedStartDate.getHours() * 60 + roundedStartDate.getMinutes();
+    // 終了時間がもし24時になる(日付がstartより大きいかつ0分)なら分数を1440に固定
+    const endMinutes =
+        roundedEndDate.getHours() === 0 && roundedEndDate.getDate() > startDate.getDate()
+            ? 1440
+            : roundedEndDate.getHours() * 60 + roundedEndDate.getMinutes();
+
+    // 休憩時間を計算
+    const restMinutes = calculateRestMinutes(startMinutes, endMinutes);
+    const workMinutesAfterReduceRest = calculateWorkMinutes(totalWorkMinutes, restMinutes);
+
+    // 祝日判定
+    const isHolidayFlag = isHoliday(roundedStartDate, holidayDates);
+
+    // 日曜日判定
+    const isSundayFlag = isSunday(roundedStartDate);
+
+    const { workMinutes, overtimeMinutes } = calculateOvertimeMinutes(
+        workMinutesAfterReduceRest,
+        isHolidayFlag,
+        isSundayFlag
+    );
+
+    return {
+            attendance_id:attendance_id,
+            adjusted_start_time: toJapanISOString(roundedStartDate),
+            adjusted_end_time: toJapanISOString(roundedEndDate),
+            work_minutes: workMinutes,
+            overtime_minutes: overtimeMinutes,
+            rest_minutes: restMinutes,
+        };
+    
+}
+
+
+
+
+
+
+// 以下補助関数群  ---------------------------------------------------------------------------------------------------
 /**
  * 祝日かどうかを判定する関数
  */
@@ -80,64 +150,3 @@ function calculateOvertimeMinutes(
     }
 }
 
-/**
- * 打刻(stamp)を補正後(adjust)に変換して返す
- */
-export async function generateAttendanceWorkMinutes(
-    attendance: Attendance
-): Promise<Partial<Attendance>[]> {
-    const { attendance_id, user_id, stamp_start_time, stamp_end_time } = attendance;
-
-    // 必須項目が欠けている場合は空の配列を返す
-    if (!attendance_id || !stamp_start_time || !stamp_end_time) {
-        return [];
-    }
-
-    // 祝日データを取得して日付の辞書を作成
-    const holidays: Holiday[] = await fetchHolidays();
-    const holidayDates = new Set(holidays.map((holiday) => holiday.date));
-
-    // 開始時間と終了時間をパースして30分単位に丸める
-    const startDate = new Date(stamp_start_time);
-    const endDate = new Date(stamp_end_time);
-    const roundedStartDate = roundToNearest30Minutes(new Date(startDate));
-    const roundedEndDate = roundToNearest30Minutes(new Date(endDate));
-
-    // 合計分数取得
-    const totalWorkMinutes = (roundedEndDate.getTime() - roundedStartDate.getTime()) / (1000 * 60);
-
-    // 開始終了分数(日付の開始から何分か)
-    const startMinutes = roundedStartDate.getHours() * 60 + roundedStartDate.getMinutes();
-    // 終了時間がもし24時になる(日付がstartより大きいかつ0分)なら分数を1440に固定
-    const endMinutes =
-        roundedEndDate.getHours() === 0 && roundedEndDate.getDate() > startDate.getDate()
-            ? 1440
-            : roundedEndDate.getHours() * 60 + roundedEndDate.getMinutes();
-
-    // 休憩時間を計算
-    const restMinutes = calculateRestMinutes(startMinutes, endMinutes);
-    const workMinutesAfterReduceRest = calculateWorkMinutes(totalWorkMinutes, restMinutes);
-
-    // 祝日判定
-    const isHolidayFlag = isHoliday(roundedStartDate, holidayDates);
-
-    // 日曜日判定
-    const isSundayFlag = isSunday(roundedStartDate);
-
-    const { workMinutes, overtimeMinutes } = calculateOvertimeMinutes(
-        workMinutesAfterReduceRest,
-        isHolidayFlag,
-        isSundayFlag
-    );
-
-    return [
-        {
-            attendance_id,
-            adjusted_start_time: toJapanISOString(roundedStartDate),
-            adjusted_end_time: toJapanISOString(roundedEndDate),
-            work_minutes: workMinutes,
-            overtime_minutes: overtimeMinutes,
-            rest_minutes: restMinutes,
-        },
-    ];
-}

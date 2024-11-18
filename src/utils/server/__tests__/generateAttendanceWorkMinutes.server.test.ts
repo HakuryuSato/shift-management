@@ -1,4 +1,4 @@
-// src/utils/server/__tests__/generateAttendanceWorkMinutes.test.ts
+// src/utils/server/__tests__/generateAttendanceWorkMinutes.server.test.ts
 
 import { generateAttendanceWorkMinutes } from '../generateAttendanceWorkMinutes';
 import { Attendance } from '@/types/Attendance';
@@ -33,12 +33,9 @@ describe('generateAttendanceWorkMinutes', () => {
         mockedFetchHolidays.mockResolvedValue([]);
 
         // Act
-        const result = await generateAttendanceWorkMinutes(attendance);
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         // Assert
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
-
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T08:30:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-02T18:00:00');
         expect(attendanceResult.rest_minutes).toBe(60);
@@ -61,10 +58,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T13:00:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-02T18:00:00');
@@ -88,10 +82,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T08:30:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-03T00:00:00');
@@ -104,7 +95,7 @@ describe('generateAttendanceWorkMinutes', () => {
         const attendance: Attendance = {
             attendance_id: 4,
             user_id: 1,
-            stamp_start_time: '2023-10-09T08:25:00', // 2023-10-09は体育の日（祝日）
+            stamp_start_time: '2023-10-09T08:25:00', // 2023-10-09は祝日
             stamp_end_time: '2023-10-09T18:00:00',
             adjusted_start_time: null,
             adjusted_end_time: null,
@@ -114,15 +105,12 @@ describe('generateAttendanceWorkMinutes', () => {
         };
 
         const holiday: Holiday = {
-            title: '体育の日',
+            title: 'スポーツの日',
             date: '2023-10-09',
         };
         mockedFetchHolidays.mockResolvedValue([holiday]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-09T08:30:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-09T18:00:00');
@@ -146,10 +134,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-01T08:30:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-01T18:00:00');
@@ -158,7 +143,7 @@ describe('generateAttendanceWorkMinutes', () => {
         expect(attendanceResult.overtime_minutes).toBe(510);
     });
 
-    test('必須項目が欠けている場合は空の配列を返す', async () => {
+    test('必須項目が欠けている場合は空のオブジェクトを返す', async () => {
         const incompleteAttendance: Attendance = {
             attendance_id: undefined as any, // 型エラー回避のため `undefined` に変更
             user_id: 1,
@@ -173,12 +158,12 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(incompleteAttendance);
+        const attendanceResult = await generateAttendanceWorkMinutes(incompleteAttendance);
 
-        expect(result).toEqual([]);
+        expect(attendanceResult).toEqual({});
     });
 
-    test('開始時間が存在しない場合は空の配列を返す', async () => {
+    test('開始時間が存在しない場合は空のオブジェクトを返す', async () => {
         const incompleteAttendance: Attendance = {
             attendance_id: 5,
             user_id: 1,
@@ -193,12 +178,12 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(incompleteAttendance);
+        const attendanceResult = await generateAttendanceWorkMinutes(incompleteAttendance);
 
-        expect(result).toEqual([]);
+        expect(attendanceResult).toEqual({});
     });
 
-    test('終了時間が存在しない場合は空の配列を返す', async () => {
+    test('終了時間が存在しない場合は空のオブジェクトを返す', async () => {
         const incompleteAttendance: Attendance = {
             attendance_id: 6,
             user_id: 1,
@@ -213,9 +198,9 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(incompleteAttendance);
+        const attendanceResult = await generateAttendanceWorkMinutes(incompleteAttendance);
 
-        expect(result).toEqual([]);
+        expect(attendanceResult).toEqual({});
     });
 
     test('開始時間と終了時間が同じ場合、労働時間は0として計算される', async () => {
@@ -233,10 +218,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.work_minutes).toBe(0);
         expect(attendanceResult.overtime_minutes).toBe(0);
@@ -258,10 +240,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
         mockedFetchHolidays.mockResolvedValue([]);
 
-        const result = await generateAttendanceWorkMinutes(attendance);
-
-        expect(result).toHaveLength(1);
-        const attendanceResult = result[0];
+        const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
         expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T22:30:00');
         expect(attendanceResult.adjusted_end_time).toBe('2023-10-03T06:00:00');
