@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/AttendanceTablePersonalSlice";
 import type { AttendanceRow } from "@/types/Attendance";
-import { updateAttendanceResult } from "@/utils/client/serverActionClient";
+import { updateAttendance } from "@/utils/client/serverActionClient";
 
 export function usePersonalAttendanceTableClickHandlers() {
   const {
@@ -43,7 +43,7 @@ export function usePersonalAttendanceTableClickHandlers() {
           }
 
           // サーバーに更新を送信
-          const updatedResult = await updateAttendanceResult(updateData);
+          const updatedResult = await updateAttendance(updateData);
 
           if (updatedResult && updatedResult.length > 0) {
             // ストアの該当行を更新
