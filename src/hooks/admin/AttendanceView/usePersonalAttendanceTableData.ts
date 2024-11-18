@@ -22,36 +22,24 @@ export function usePersonalAttendanceTableData() {
   const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
     (state) => state.adminAttendanceViewAllMembersMonthlyResult
   );
-  const adminAttendanceViewAllMembersMonthlyStamps = useAdminAttendanceViewStore(
-    (state) => state.adminAttendanceViewAllMembersMonthlyStamps
-  );
 
   const setPersonalAttendanceTableRows = useAttendanceTablePersonalStore(
     (state) => state.setAttendanceTablePersonalTableRows
   );
 
   // 出退勤結果をMapに変換
-  const attendanceResultMap = useMemo(() => {
+  const attendancetMap = useMemo(() => {
     const map = new Map();
-    adminAttendanceViewAllMembersMonthlyResult?.forEach((result) => {
-      const dateString = result.work_start_time?.split('T')[0];
-      const key = `${result.attendance_stamps?.user_id}_${dateString}`;
-      map.set(key, result);
+    adminAttendanceViewAllMembersMonthlyResult?.forEach((attendance) => {
+      const dateString = attendance.adjusted_start_time?.split('T')[0];
+      const key = `${attendance.user_id}_${dateString}`;
+      map.set(key, attendance);
     });
     return map;
   }, [adminAttendanceViewAllMembersMonthlyResult]);
 
-  // 打刻データをMapに変換
-  const attendanceStampMap = useMemo(() => {
-    const map = new Map();
-    adminAttendanceViewAllMembersMonthlyStamps?.forEach((stamp) => {
-      const dateString = stamp.start_time?.split('T')[0];
-      const key = `${stamp.user_id}_${dateString}`;
-      map.set(key, stamp);
-    });
-    return map;
-  }, [adminAttendanceViewAllMembersMonthlyStamps]);
 
+  // テーブル用のデータ作成
   useEffect(() => {
     if (!adminAttendanceViewSelectedUser) return;
 
@@ -66,42 +54,40 @@ export function usePersonalAttendanceTableData() {
       const key = `${adminAttendanceViewSelectedUser.user_id}_${dateString}`;
 
       // 当日の出退勤結果を取得
-      const attendanceResult = attendanceResultMap.get(key);
+      const attendance = attendancetMap.get(key);
 
-      // 当日の打刻データを取得
-      const attendanceStamp = attendanceStampMap.get(key);
 
       // 日付のフォーマット 'MM/DD(曜日)'
       const formattedDate = formatDateStringToMM_DD_Day(date);
 
       // 平日普通(H)
-      const workMinutes = attendanceResult?.work_minutes ?? 0;
+      const workMinutes = attendance?.work_minutes ?? 0;
       const regularHours = Math.round((workMinutes / 60) * 2) / 2;
 
       // 平日時間外(H)
-      const overtimeMinutes = attendanceResult?.overtime_minutes ?? 0;
+      const overtimeMinutes = attendance?.overtime_minutes ?? 0;
       const overtimeHours = Math.round((overtimeMinutes / 60) * 2) / 2;
 
       // 開始と終了
-      const startTime = attendanceResult?.work_start_time
-        ? formatTimeStringToHH_MM(new Date(attendanceResult.work_start_time))
+      const startTime = attendance?.adjusted_start_time
+        ? formatTimeStringToHH_MM(new Date(attendance.adjusted_start_time))
         : '';
 
-      const endTime = attendanceResult?.work_end_time
-        ? formatTimeStringToHH_MM(new Date(attendanceResult.work_end_time))
+      const endTime = attendance?.adjusted_end_time
+        ? formatTimeStringToHH_MM(new Date(attendance.adjusted_end_time))
         : '';
 
       // 休憩
-      const restMinutes = attendanceResult?.rest_minutes ?? 0;
+      const restMinutes = attendance?.rest_minutes ?? 0;
       const breakHours = Math.round((restMinutes / 60) * 2) / 2;
 
       // 打刻開始と終了
-      const stampStartTime = attendanceStamp?.start_time
-        ? formatTimeStringToHH_MM(new Date(attendanceStamp.start_time))
+      const stampStartTime = attendance?.stampStartTime
+        ? formatTimeStringToHH_MM(new Date(attendance.stampStartTime))
         : '';
 
-      const stampEndTime = attendanceStamp?.end_time
-        ? formatTimeStringToHH_MM(new Date(attendanceStamp.end_time))
+      const stampEndTime = attendance?.stampEndTime
+        ? formatTimeStringToHH_MM(new Date(attendance.stampEndTime))
         : '';
 
       return {
@@ -113,7 +99,7 @@ export function usePersonalAttendanceTableData() {
         breakHours: breakHours.toFixed(1),
         stampStartTime,
         stampEndTime,
-        attendanceId: attendanceResult?.attendance_id,
+        attendanceId: attendance?.attendance_id,
       };
     });
 
@@ -122,8 +108,7 @@ export function usePersonalAttendanceTableData() {
     adminAttendanceViewSelectedUser,
     adminAttendanceViewStartDate,
     adminAttendanceViewEndDate,
-    attendanceResultMap,
-    attendanceStampMap,
+    attendancetMap,
     setPersonalAttendanceTableRows,
   ]);
 }
