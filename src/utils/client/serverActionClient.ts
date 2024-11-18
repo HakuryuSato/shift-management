@@ -3,16 +3,17 @@
 // サーバーアクション関数(サーバーアクションと同じ名称でこのクライアントから実行するため、serverAction xx でインポートしています)
 import { deleteUser as serverActionDeleteUser } from '@/app/actions/deleteUser';
 import { insertUser as serverActionInsertUser } from '@/app/actions/insertUser';
-import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
+import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
+import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
 import { upsertAttendanceResult as serverActionUpsertAttendanceResult } from '@/app/actions/upsertAttendanceResult';
 
 // 型
 import type { User } from '@/types/User';
 import type { Shift } from '@/types/Shift';
-import type { Attendance, Attendance } from '@/types/Attendance'
+import type { Attendance } from '@/types/Attendance'
 
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
@@ -66,6 +67,15 @@ export async function punchAttendance(userId: number): Promise<Attendance[] | nu
  */
 export async function upsertAttendanceResult(attendanceData: Attendance | Attendance[]): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionUpsertAttendanceResult(attendanceData));
+}
+
+/**
+ * 出退勤データを更新するサーバーアクションを呼び出す関数
+ * @param attendanceData 出勤データ（単一または複数のAttendanceResult型）
+ * @returns 挿入または更新された出勤データまたは null
+ */
+export async function updateAttendance(attendanceData: Partial<Attendance>): Promise<Attendance[] | null> {
+  return await handleServerAction(() => serverActionUpdateAttendance(attendanceData));
 }
 
 
