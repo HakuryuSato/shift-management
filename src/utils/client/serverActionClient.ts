@@ -8,7 +8,7 @@ import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShif
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
 import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
-import { upsertAttendanceResult as serverActionUpsertAttendanceResult } from '@/app/actions/upsertAttendanceResult';
+
 
 // 型
 import type { User } from '@/types/User';
@@ -60,14 +60,6 @@ export async function punchAttendance(userId: number): Promise<Attendance[] | nu
   return await handleServerAction(() => serverActionpunchAttendance(userId));
 }
 
-/**
- * 出退勤データを更新または挿入するサーバーアクションを呼び出す関数
- * @param attendanceData 出勤データ（単一または複数のAttendanceResult型）
- * @returns 挿入または更新された出勤データまたは null
- */
-export async function upsertAttendanceResult(attendanceData: Attendance | Attendance[]): Promise<Attendance[] | null> {
-  return await handleServerAction(() => serverActionUpsertAttendanceResult(attendanceData));
-}
 
 /**
  * 出退勤データを更新するサーバーアクションを呼び出す関数
