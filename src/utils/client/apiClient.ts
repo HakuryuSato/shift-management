@@ -129,22 +129,3 @@ export async function fetchAttendances(
   );
 }
 
-// 集計結果データ取得
-export async function fetchAttendanceResults(params: {
-  user_id: number | string;
-  startTimeISO: string;
-  endTimeISO: string;
-}): Promise<Attendance[]> {
-  const { user_id = '*', startTimeISO, endTimeISO } = params;
-
-  if (!startTimeISO || !endTimeISO) return [];
-
-  const queryParams = new URLSearchParams();
-  queryParams.append('user_id', user_id.toString());
-  queryParams.append('start_time', startTimeISO);
-  queryParams.append('end_time', endTimeISO);
-
-  return await handleFetch<Attendance[]>(
-    `/api/attendance/results?${queryParams.toString()}`
-  );
-}
