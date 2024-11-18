@@ -1,5 +1,4 @@
 import React from "react";
-import { useAdminAttendanceViewStamps } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewStamps";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
@@ -23,8 +22,7 @@ export function AttendanceTablePersonal() {
     handleBlur,
   } = usePersonalAttendanceTableClickHandlers();
 
-  // 打刻データの取得
-  useAdminAttendanceViewStamps();
+
 
   return (
     <TableStyleAttendancePersonal>

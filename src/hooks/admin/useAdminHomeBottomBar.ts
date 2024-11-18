@@ -8,7 +8,7 @@ export const useAdminHomeBottomBar = () => {
     if (adminHomeMode === 'SHIFT') {
       // SHIFTモードの際の前の週への処理をここに記述
 
-    } else if (adminHomeMode === 'ATTENDANCE') {
+    } else { // 出退勤
       // ATTENDANCEモードの際の前の週への処理をここに記述
     }
   }, [adminHomeMode]);
@@ -17,9 +17,9 @@ export const useAdminHomeBottomBar = () => {
     if (adminHomeMode === 'SHIFT') {
       // SHIFTモードの際の次の週への処理をここに記述
 
-    } else if (adminHomeMode === 'ATTENDANCE') {
+    } else {
       // ATTENDANCEモードの際の次の週への処理をここに記述
-      
+
     }
   }, [adminHomeMode]);
 

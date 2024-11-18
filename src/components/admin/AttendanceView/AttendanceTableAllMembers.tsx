@@ -4,7 +4,6 @@ import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminAttendanceViewResult } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewResult";
 import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
-import { useAdminAttendanceViewStamps } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewStamps";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import {
   getCurrentMonthSpecificDate,
@@ -33,9 +32,6 @@ export function AttendanceTableAllMembers() {
 
   // 出退勤データを取得するカスタムフックを呼び出す
   useAdminAttendanceViewResult();
-
-  // 打刻データを取得するカスタムフックを呼び出す
-  useAdminAttendanceViewStamps();
 
   // クリックハンドラーを取得
   const { handleClickUserName } = useAllMembersMonthlyTableClickHandlers();
