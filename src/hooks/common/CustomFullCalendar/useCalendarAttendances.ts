@@ -6,7 +6,8 @@ import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullC
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
-import { getTimeRangeISOStrings } from '@/utils/common/dateUtils'
+import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
+// import { get } from '@/utils/common/dateUtils'
 
 export function useCalendarAttendance() {
   const setCustomFullCalendarAttendanceEvents = useCustomFullCalendarStore(
@@ -28,10 +29,10 @@ export function useCalendarAttendance() {
 
   // カレンダーを表示している、かつリクエストに必要なデータが全てあるなら取得
   const { data: attendances, mutate } = useSWR(
-    isUserCalendarViewVisible && userId && startTimeISO && endTimeISO
-      ? `attendances/stamps-${userId}-${startTimeISO}-${endTimeISO}`
+    isUserCalendarViewVisible && userId && customFullCalendarStartDate && customFullCalendarEndDate
+      ? `attendances/${userId}-${customFullCalendarStartDate}-${customFullCalendarEndDate}`
       : null,
-    () => fetchAttendances({ user_id: userId, filterStartTimeISO:startTimeISO, filterEndTimeISO:endTimeISO, filterTimeType:'stamp'})
+    () => fetchAttendances({ user_id: userId, startDate: startTimeISO, endDate: endTimeISO })
   );
 
   useEffect(() => {

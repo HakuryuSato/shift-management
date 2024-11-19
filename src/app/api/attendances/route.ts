@@ -14,33 +14,20 @@ export async function GET(request: NextRequest) {
         const userId = searchParams.get('user_id') || '*';
         const attendanceId = searchParams.get('attendance_id') || '*';
 
-        // adjustedまたはstampでの範囲指定
-        const adjustedStartTimeISO = searchParams.get('adjusted_start_time');
-        const adjustedEndTimeISO = searchParams.get('adjusted_end_time');
-        const stampStartTimeISO = searchParams.get('stamp_start_time');
-        const stampEndTimeISO = searchParams.get('stamp_end_time');
+        const filterStartDateISO = searchParams.get('filterStartDateISO');
+        const filterEndDateISO = searchParams.get('filterEndDateISO');
 
-        // 調整または打刻の開始終了時間どちらかが必要
-        if (!(adjustedStartTimeISO && adjustedEndTimeISO || stampStartTimeISO && stampEndTimeISO)) {
-            throw new Error('adjusted_start_timeとadjusted_end_time、またはstamp_start_timeとstamp_end_timeのいずれかが必須です');
+        // 開始終了時間が必要
+        if (!(filterStartDateISO && filterEndDateISO)) {
+            throw new Error('日付指定が必要です');
         }
 
         return await handleSupabaseRequest<Attendance[]>(async (supabase) => {
             const query = supabase
                 .from('attendances')
-                .select('*');
-
-            // adjusted時間でのフィルタリング
-            if (adjustedStartTimeISO && adjustedEndTimeISO) {
-                query.gte('adjusted_start_time', adjustedStartTimeISO)
-                    .lte('adjusted_end_time', adjustedEndTimeISO);
-            }
-
-            // stamp時間でのフィルタリング
-            if (stampStartTimeISO && stampEndTimeISO) {
-                query.gte('stamp_start_time', stampStartTimeISO)
-                    .lte('stamp_end_time', stampEndTimeISO);
-            }
+                .select('*')
+                .gte('work_date', filterStartDateISO)
+                .lte('work_date', filterEndDateISO);
 
             // userIdフィルタリング
             if (userId !== '*') {

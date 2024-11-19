@@ -102,30 +102,22 @@ export async function sendAutoShiftSettings(autoShiftSettingData: any) {
 export async function fetchAttendances(
   params: AttendanceQuery = {}
 ): Promise<Attendance[]> {
-  const { user_id, filterStartTimeISO, filterEndTimeISO, filterTimeType = 'stamp' } = params;
-
-  if (!filterStartTimeISO || !filterEndTimeISO) {
-    console.error('filterStartTimeISOとfilterEndTimeISOは必須です');
-    return [];
-  }
-
+  const { user_id, startDate: filterStartDateISO, endDate: filterEndDateISO } = params;
   const queryParams = new URLSearchParams();
 
   if (user_id) {
     queryParams.append('user_id', user_id.toString());
   }
 
-  // フィルタ時間種別に応じてクエリパラメータを追加
-  if (filterTimeType === 'adjusted') {
-    queryParams.append('adjusted_start_time', filterStartTimeISO);
-    queryParams.append('adjusted_end_time', filterEndTimeISO);
-  } else if (filterTimeType === 'stamp') {
-    queryParams.append('stamp_start_time', filterStartTimeISO);
-    queryParams.append('stamp_end_time', filterEndTimeISO);
+  if (filterStartDateISO && filterEndDateISO) {
+    queryParams.append('filterStartDateISO', filterStartDateISO)
+    queryParams.append('filterEndDateISO', filterEndDateISO)
+  } else {
+    console.error('filterStartTimeISOとfilterEndTimeISOは必須です');
+    return [];
   }
 
   return await handleFetch<Attendance[]>(
     `/api/attendances?${queryParams.toString()}`
   );
 }
-

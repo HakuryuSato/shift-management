@@ -30,8 +30,8 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
       .from('attendances')
       .select('*')
       .eq('user_id', userId)
-      .gte('stamp_start_time', startTimeISO)
-      .lte('stamp_start_time', endTimeISO)
+      .gte('work_date', startTimeISO)
+      .lte('work_date', endTimeISO)
       .order('stamp_start_time', { ascending: false })
       .limit(1);
   });
