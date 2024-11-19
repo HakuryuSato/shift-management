@@ -170,3 +170,16 @@ export function formatTimeStringToHH_MM(date: Date): string {
   } as const;
   return date.toLocaleTimeString('ja-JP', options);
 }
+
+/**
+ * 時間を分に変換する関数
+ * @param hoursString 
+ * @returns 
+ */
+export function hoursToMinutes(hoursString: string): number {
+  const hours = parseFloat(hoursString);
+  if (isNaN(hours)) {
+    return 0;
+  }
+  return hours * 60;
+}

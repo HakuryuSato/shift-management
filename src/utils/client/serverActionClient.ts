@@ -8,6 +8,7 @@ import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShif
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
 import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
+import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
 
 
 // 型
@@ -50,6 +51,13 @@ export async function insertUser(user: User): Promise<User | null> {
   return await handleServerAction(() => serverActionInsertUser(user));
 }
 
+
+
+
+
+
+
+
 // 出退勤関連  ---------------------------------------------------------------------------------------------------
 /**
  * 出退勤StampとResultを挿入するサーバーアクションを呼び出す関数(出退勤のみ挿入はサーバーアクション側で処理している)
@@ -58,6 +66,15 @@ export async function insertUser(user: User): Promise<User | null> {
  */
 export async function punchAttendance(userId: number): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionpunchAttendance(userId));
+}
+
+/**
+ * 出勤データを挿入するサーバーアクションを呼び出す関数
+ * @param attendanceData 挿入する出勤データ
+ * @returns 挿入された出勤データまたは null
+ */
+export async function insertAttendance(attendanceData: Partial<Attendance>): Promise<Attendance[] | null> {
+  return await handleServerAction(() => serverActionInsertAttendance(attendanceData));
 }
 
 
@@ -69,6 +86,16 @@ export async function punchAttendance(userId: number): Promise<Attendance[] | nu
 export async function updateAttendance(attendanceData: Partial<Attendance>): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionUpdateAttendance(attendanceData));
 }
+
+
+
+
+
+
+
+
+
+
 
 
 // シフト関連 ---------------------------------------------------------------------------------------------------

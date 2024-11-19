@@ -28,6 +28,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -54,6 +56,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -78,6 +82,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -102,6 +108,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         const holiday: Holiday = {
@@ -130,6 +138,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -154,6 +164,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -174,6 +186,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -194,6 +208,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -214,6 +230,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
@@ -236,6 +254,8 @@ describe('generateAttendanceWorkMinutes', () => {
             work_minutes: null,
             overtime_minutes: null,
             rest_minutes: null,
+            work_date: '',
+            special_event: null
         };
 
         mockedFetchHolidays.mockResolvedValue([]);
