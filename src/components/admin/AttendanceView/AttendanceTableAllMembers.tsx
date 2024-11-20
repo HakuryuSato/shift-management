@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
-import { useAdminAttendanceViewResult } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewResult";
+import { useAdminAttendanceView } from "@/hooks/admin/AttendanceView/useAdminAttendanceView";
 import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import {
@@ -31,7 +31,7 @@ export function AttendanceTableAllMembers() {
   } = useAdminAttendanceViewStore();
 
   // 出退勤データを取得するカスタムフックを呼び出す
-  useAdminAttendanceViewResult();
+  useAdminAttendanceView();
 
   // クリックハンドラーを取得
   const { handleClickUserName } = useAllMembersMonthlyTableClickHandlers();

@@ -4,7 +4,7 @@ import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewS
 import { fetchAttendances } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
 
-export function useAdminAttendanceViewResult() {
+export function useAdminAttendanceView() {
     const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
     const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
     const setAdminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyResult);
