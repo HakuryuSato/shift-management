@@ -41,7 +41,7 @@ function getJapanDateComponents(date: Date): {
 /**
  * DBのリクエスト送信用に日付を計算する関数
  * @param date Dateオブジェクト
- * @returns 日本時間のISO形式の文字列
+ * @returns 日本時間に基づいたISO形式の日時文字列（例: `2024-11-20T15:45:30`）
  */
 export function toJapanISOString(date: Date): string {
   const { year, month, day, hours, minutes, seconds } = getJapanDateComponents(date);
