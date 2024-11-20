@@ -1,42 +1,83 @@
-// DBのリクエスト送信用に日付を計算する関数群
+/**
+ * 日本時間におけるDateオブジェクトを取得する関数
+ * @param date 元のDateオブジェクト
+ * @returns 日本時間に調整されたDateオブジェクト
+ */
+function getJapanDate(date: Date): Date {
+  // 日本標準時 (UTC+9) へのオフセット計算
+  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
+  const japanTime = utc + 9 * 3600000;
+  return new Date(japanTime);
+}
+
+/**
+ * 日本時間の各種日時要素を取得する関数
+ * @param date Dateオブジェクト
+ * @returns 年、月、日、曜日、時間、分、秒を含むオブジェクト
+ */
+function getJapanDateComponents(date: Date): {
+  year: number;
+  month: number;
+  day: number;
+  weekday: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+} {
+  const japanDate = getJapanDate(date);
+  return {
+    year: japanDate.getUTCFullYear(),
+    month: japanDate.getUTCMonth() + 1, // 月は0始まりなので+1
+    day: japanDate.getUTCDate(),
+    weekday: japanDate.getUTCDay(), // 0 (日曜日) ～ 6 (土曜日)
+    hours: japanDate.getUTCHours(),
+    minutes: japanDate.getUTCMinutes(),
+    seconds: japanDate.getUTCSeconds(),
+  };
+}
+
+// 以下、既存の関数を修正
+
+/**
+ * DBのリクエスト送信用に日付を計算する関数
+ * @param date Dateオブジェクト
+ * @returns 日本時間のISO形式の文字列
+ */
 export function toJapanISOString(date: Date): string {
-  const japanOffset = 9 * 60; // 日本標準時（UTC+9）
-  const localOffset = date.getTimezoneOffset(); // ローカルタイムゾーンのオフセット
-  const diff = japanOffset + localOffset; // 差分計算
+  const { year, month, day, hours, minutes, seconds } = getJapanDateComponents(date);
 
-  const japanTime = new Date(date.getTime() + diff * 60000);
-
-  const yyyy = japanTime.getFullYear();
-  const MM = String(japanTime.getMonth() + 1).padStart(2, '0');
-  const dd = String(japanTime.getDate()).padStart(2, '0');
-  const HH = String(japanTime.getHours()).padStart(2, '0');
-  const mm = String(japanTime.getMinutes()).padStart(2, '0');
-  const ss = String(japanTime.getSeconds()).padStart(2, '0');
+  const yyyy = year;
+  const MM = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  const HH = String(hours).padStart(2, '0');
+  const mm = String(minutes).padStart(2, '0');
+  const ss = String(seconds).padStart(2, '0');
 
   return `${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}`;
 }
 
 export function getStartOfDay(date: Date): Date {
-  const start = new Date(date);
-  start.setHours(0, 0, 0, 0);
-  return start;
+  const japanDate = getJapanDate(date);
+  japanDate.setUTCHours(0, 0, 0, 0);
+  return japanDate;
 }
 
 export function getEndOfDay(date: Date): Date {
-  const end = new Date(date);
-  end.setHours(23, 59, 59, 999);
-  return end;
+  const japanDate = getJapanDate(date);
+  japanDate.setUTCHours(23, 59, 59, 999);
+  return japanDate;
 }
 
 export function getStartOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
+  const japanDate = getJapanDate(date);
+  return new Date(Date.UTC(japanDate.getUTCFullYear(), japanDate.getUTCMonth(), 1, 0, 0, 0, 0));
 }
 
 export function getEndOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+  const japanDate = getJapanDate(date);
+  return new Date(Date.UTC(japanDate.getUTCFullYear(), japanDate.getUTCMonth() + 1, 0, 23, 59, 59, 999));
 }
 
-// monthモードは廃止予定？（全てのAPIが開始終了時間の範囲指定で取得する場合不要になる？）
 export function getTimeRangeISOStrings(
   mode: 'day' | 'month' | 'range',
   date1: Date,
@@ -72,12 +113,12 @@ export function getTimeRangeISOStrings(
 }
 
 export const toJapanDateISOString = (date: Date = new Date()): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const { year, month, day } = getJapanDateComponents(date);
+  const yyyy = year;
+  const MM = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  return `${yyyy}-${MM}-${dd}`;
 };
-
 
 // 先月の特定日付を返す
 export function getPreviousMonthSpecificDate(
@@ -86,10 +127,10 @@ export function getPreviousMonthSpecificDate(
   minutes: number,
   seconds: number
 ): Date {
-  const date = new Date();
-  date.setMonth(date.getMonth() - 1);
-  date.setDate(day);
-  date.setHours(hours, minutes, seconds, 0);
+  const date = getJapanDate(new Date());
+  date.setUTCMonth(date.getUTCMonth() - 1);
+  date.setUTCDate(day);
+  date.setUTCHours(hours, minutes, seconds, 0);
   return date;
 }
 
@@ -100,20 +141,21 @@ export function getCurrentMonthSpecificDate(
   minutes: number,
   seconds: number
 ): Date {
-  const date = new Date();
-  date.setDate(day);
-  date.setHours(hours, minutes, seconds, 999);
+  const date = getJapanDate(new Date());
+  date.setUTCDate(day);
+  date.setUTCHours(hours, minutes, seconds, 999);
   return date;
 }
-
 
 // 日付の一覧を生成する
 export function generateDateRange(startDate: Date, endDate: Date): Date[] {
   const dates: Date[] = [];
-  const currentDate = new Date(startDate);
+  let currentDate = getStartOfDay(startDate);
+  endDate = getEndOfDay(endDate);
+
   while (currentDate <= endDate) {
     dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
   }
   return dates;
 }
@@ -124,12 +166,12 @@ export function generateDateRange(startDate: Date, endDate: Date): Date[] {
  * @returns 週の開始日
  */
 export function getStartOfWeek(date: Date): Date {
-  const start = new Date(date);
-  const day = start.getDay();
-  const diff = start.getDate() - day + (day === 0 ? -6 : 1); // 月曜日基準
-  start.setDate(diff);
-  start.setHours(0, 0, 0, 0);
-  return start;
+  const japanDate = getJapanDate(date);
+  const day = japanDate.getUTCDay();
+  const diff = japanDate.getUTCDate() - day + (day === 0 ? -6 : 1); // 月曜日基準
+  japanDate.setUTCDate(diff);
+  japanDate.setUTCHours(0, 0, 0, 0);
+  return japanDate;
 }
 
 /**
@@ -138,10 +180,10 @@ export function getStartOfWeek(date: Date): Date {
  * @returns 週の終了日
  */
 export function getEndOfWeek(date: Date): Date {
-  const end = new Date(getStartOfWeek(date));
-  end.setDate(end.getDate() + 6); // 週末日は月曜日+6
-  end.setHours(23, 59, 59, 999);
-  return end;
+  const startOfWeek = getStartOfWeek(date);
+  startOfWeek.setUTCDate(startOfWeek.getUTCDate() + 6); // 週末日は月曜日+6
+  startOfWeek.setUTCHours(23, 59, 59, 999);
+  return startOfWeek;
 }
 
 /**
@@ -150,12 +192,12 @@ export function getEndOfWeek(date: Date): Date {
  * @returns フォーマットされた日付文字列
  */
 export function formatDateStringToMM_DD_Day(date: Date): string {
-  const options = {
-    month: '2-digit',
-    day: '2-digit',
-    weekday: 'short',
-  } as const;
-  return date.toLocaleDateString('ja-JP', options);
+  const { month, day, weekday } = getJapanDateComponents(date);
+  const MM = String(month).padStart(2, '0');
+  const DD = String(day).padStart(2, '0');
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  const weekdayStr = weekdays[weekday];
+  return `${MM}/${DD}(${weekdayStr})`;
 }
 
 /**
@@ -164,17 +206,16 @@ export function formatDateStringToMM_DD_Day(date: Date): string {
  * @returns フォーマットされた時刻文字列
  */
 export function formatTimeStringToHH_MM(date: Date): string {
-  const options = {
-    hour: '2-digit',
-    minute: '2-digit',
-  } as const;
-  return date.toLocaleTimeString('ja-JP', options);
+  const { hours, minutes } = getJapanDateComponents(date);
+  const HH = String(hours).padStart(2, '0');
+  const mm = String(minutes).padStart(2, '0');
+  return `${HH}:${mm}`;
 }
 
 /**
  * 時間を分に変換する関数
  * @param hoursString 
- * @returns 
+ * @returns 分に変換された数値
  */
 export function hoursToMinutes(hoursString: string): number {
   const hours = parseFloat(hoursString);
