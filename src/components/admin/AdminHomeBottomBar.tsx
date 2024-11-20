@@ -1,20 +1,12 @@
 import React from "react";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, useTheme } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useAdminHomeBottomBar } from "../../hooks/admin/useAdminHomeBottomBar";
-import { blue } from "@mui/material/colors";
-
-const commonButtonStyles = {
-    backgroundColor: blue[500],
-    color: "white",
-    borderRadius: "8px",
-    "&:hover": {
-        backgroundColor: blue[700],
-    },
-};
+import { commonButtonStyle } from "@/styles/commonButtonStyle";
 
 export const AdminHomeBottomBar: React.FC = () => {
+    const theme = useTheme();
     const { handleClickPrevButton, handleClickNextButton } =
         useAdminHomeBottomBar();
 
@@ -22,13 +14,13 @@ export const AdminHomeBottomBar: React.FC = () => {
         <Box display="flex" justifyContent="space-between" padding={2}>
             <IconButton
                 onClick={() => handleClickPrevButton()}
-                sx={commonButtonStyles}
+                sx={commonButtonStyle}
             >
                 <ArrowBackIosNewIcon />
             </IconButton>
             <IconButton
                 onClick={() => handleClickNextButton()}
-                sx={commonButtonStyles}
+                sx={commonButtonStyle}
             >
                 <ArrowForwardIosIcon />
             </IconButton>

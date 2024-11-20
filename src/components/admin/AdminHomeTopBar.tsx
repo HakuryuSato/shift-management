@@ -3,6 +3,7 @@ import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBar";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
+import { commonButtonStyle } from "@/styles/commonButtonStyle";
 
 export const AdminHomeTopBar: React.FC = () => {
   const {
@@ -42,7 +43,7 @@ export const AdminHomeTopBar: React.FC = () => {
       p={2}
       position="relative"
     >
-      <Button variant="contained" onClick={handleClickToShiftPage}>
+      <Button sx={commonButtonStyle} onClick={handleClickToShiftPage}>
         {buttonText}
       </Button>
 
@@ -62,13 +63,13 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* ユーザー編集ボタンの表示制御 */}
         {isVisibleAdminHomeTopBarUserEditButtons && (
           <>
-            <Button variant="contained" onClick={handleClickUserRegister}>
+            <Button sx={commonButtonStyle}  onClick={handleClickUserRegister}>
               ユーザー登録
             </Button>
             <Button
-              variant="contained"
               onClick={handleClickUserDelete}
               sx={{
+                ...commonButtonStyle,
                 backgroundColor: "red",
                 color: "white",
                 "&:hover": { backgroundColor: "darkred" },
@@ -82,9 +83,9 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* Excelダウンロードボタンの表示制御 */}
         {isVisibleAdminHomeTopBarExcelDownloadButton && (
           <Button
-            variant="contained"
             onClick={handleClickExcelDownload}
             sx={{
+              ...commonButtonStyle,
               backgroundColor: "green",
               color: "white",
               "&:hover": { backgroundColor: "darkgreen" },
