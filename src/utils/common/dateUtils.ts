@@ -183,3 +183,15 @@ export function hoursToMinutes(hoursString: string): number {
   }
   return hours * 60;
 }
+
+
+/**
+ * 日付を 'YYYY年MM月' の形式にフォーマットする関数
+ * @param date Dateオブジェクト（省略時は現在日時）
+ * @returns フォーマットされた日付文字列
+ */
+export function formatJapanDateToYearMonth(date: Date = new Date()): string {
+  const yyyy = date.getFullYear();
+  const MM = String(date.getMonth() + 1).padStart(2, '0');
+  return `${yyyy}年${MM}月`;
+}
