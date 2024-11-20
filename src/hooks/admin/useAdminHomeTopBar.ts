@@ -29,6 +29,8 @@ export const useAdminAttendanceTopBar = () => {
         console.log('ユーザー削除処理');
     }, []);
 
+    // 押された時に、全員のビューならAttendanceViewSliceのadminAttendanceViewAllMembersMonthlyResultから取得
+    // 個人のビューならAttendanceTablePersonalSliceのAttendanceTablePersonalTableRowsから取得し、整形して出力
     const handleClickExcelDownload = useCallback(() => {
         console.log('Excelダウンロード処理');
     }, []);
