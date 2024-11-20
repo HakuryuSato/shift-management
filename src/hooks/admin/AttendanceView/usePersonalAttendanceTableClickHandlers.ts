@@ -82,9 +82,7 @@ export function usePersonalAttendanceTableClickHandlers() {
           }
         } else { // 存在しないなら
           // 日付を設定
-          const rowDate = AttendanceTablePersonalTableRows[rowIndex].formattedDate;
-          attendance.work_date = toJapanDateISOString(new Date(rowDate));
-
+          attendance.work_date = AttendanceTablePersonalTableRows[rowIndex].date;
 
           // 挿入ロジック
           const insertedResult = await insertAttendance(attendance);

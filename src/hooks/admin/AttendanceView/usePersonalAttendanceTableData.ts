@@ -27,11 +27,11 @@ export function usePersonalAttendanceTableData() {
     (state) => state.setAttendanceTablePersonalTableRows
   );
 
-  // 出退勤結果をMapに変換(検索高速化用)
+  // APIからの出退勤データをMapに変換(検索高速化用)
   const attendancetMap = useMemo(() => {
     const map = new Map();
     adminAttendanceViewAllMembersMonthlyResult?.forEach((attendance) => {
-      const dateString = attendance.adjusted_start_time?.split('T')[0];
+      const dateString = attendance.work_date?.split('T')[0];
       const key = `${attendance.user_id}_${dateString}`;
       map.set(key, attendance);
     });
@@ -90,7 +90,7 @@ export function usePersonalAttendanceTableData() {
         : '';
 
       return {
-        date: attendance?.work_date,
+        date: dateString,
         formattedDate: formattedDate,
         regularHours: regularHours.toFixed(1),
         overtimeHours: overtimeHours.toFixed(1),

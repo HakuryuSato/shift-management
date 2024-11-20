@@ -16,7 +16,7 @@ export interface Attendance {
   work_minutes: number | null; // 補正後の勤務時間 (分)
   overtime_minutes: number | null; // 残業時間 (分)
   rest_minutes: number | null; // 休憩時間 (分)
-  special_event:  '有給' | '振替出勤' | '振替休日' | null; // 特殊なイベント (nullable)
+  special_event: '有給' | '振替出勤' | '振替休日' | null; // 特殊なイベント (nullable)
   created_at?: string; // レコード作成日時
 };
 
@@ -24,7 +24,7 @@ export interface Attendance {
 
 // 個人用出退勤テーブルの型
 export type AttendanceRow = {
-  date:Date;
+  date: string; // YYYY-MM-DD
   formattedDate: string; // 'MM/DD(曜日) 有給' など。
   regularHours: string;
   overtimeHours: string;
