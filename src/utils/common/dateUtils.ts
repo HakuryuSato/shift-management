@@ -112,6 +112,11 @@ export function getTimeRangeISOStrings(
   return { startTimeISO, endTimeISO };
 }
 
+/**
+ * 日本時間の「YYYY-MM-DD」形式の日付文字列を取得する関数
+ * @param date 任意の日付オブジェクト（省略時は現在日時）
+ * @returns 日本時間でフォーマットされた「YYYY-MM-DD」形式の日付文字列
+ */
 export const toJapanDateISOString = (date: Date = new Date()): string => {
   const { year, month, day } = getJapanDateComponents(date);
   const yyyy = year;
