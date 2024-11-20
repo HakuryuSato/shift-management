@@ -39,7 +39,7 @@ export function AttendanceTablePersonal() {
       <TableBody>
         {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
-            <TableCell>{row.date}</TableCell>
+            <TableCell>{row.formattedDate}</TableCell>
             <AttendanceTablePersonalEditableCell
               value={row.regularHours}
               rowIndex={index}

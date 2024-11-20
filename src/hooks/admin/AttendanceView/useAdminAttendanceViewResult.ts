@@ -18,7 +18,7 @@ export function useAdminAttendanceViewResult() {
 
     const { data, error, mutate } = useSWR(
         ['attendanceResults', startTimeISO, endTimeISO],
-        () => fetchAttendances({ filterStartTimeISO: startTimeISO, filterEndTimeISO: endTimeISO, filterTimeType: 'adjusted' })
+        () => fetchAttendances({ startDate: startTimeISO, endDate: endTimeISO })
     );
 
     useEffect(() => {

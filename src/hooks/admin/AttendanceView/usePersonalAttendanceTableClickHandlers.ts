@@ -5,6 +5,7 @@ import { updateAttendance, insertAttendance } from "@/utils/client/serverActionC
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { hoursToMinutes } from '@/utils/common/dateUtils';
 import type { Attendance } from "@/types/Attendance";
+import { toJapanDateISOString } from "@/utils/common/dateUtils";
 
 export function usePersonalAttendanceTableClickHandlers() {
   const AttendanceTablePersonalEditingCell = useAttendanceTablePersonalStore(
@@ -37,6 +38,7 @@ export function usePersonalAttendanceTableClickHandlers() {
       field: keyof AttendanceRow,
       newValue: string
     ) => {
+      // 値に変更があるかチェック
       const originalRow = AttendanceTablePersonalTableRows[rowIndex];
       const originalValue = originalRow[field];
 
@@ -49,17 +51,23 @@ export function usePersonalAttendanceTableClickHandlers() {
           return;
         }
 
+        // 送信用attendanceデータ作成 -------------------------------------------------
         // user_idを指定
         const attendance: Partial<Attendance> = {
           user_id: userId,
         };
 
+        // 時間外または平日普通の時間を設定
         if (field === "regularHours") {
           attendance.work_minutes = hoursToMinutes(newValue);
         } else if (field === "overtimeHours") {
           attendance.overtime_minutes = hoursToMinutes(newValue);
         }
 
+
+
+
+        // もし既に存在する出退勤データなら
         if (attendanceId) {
           // 更新ロジック
           attendance.attendance_id = attendanceId;
@@ -72,19 +80,25 @@ export function usePersonalAttendanceTableClickHandlers() {
               )
             );
           }
-        } else {
+        } else { // 存在しないなら
+          // 日付を設定
+          const rowDate = AttendanceTablePersonalTableRows[rowIndex].formattedDate;
+          attendance.work_date = toJapanDateISOString(new Date(rowDate));
+
+
           // 挿入ロジック
           const insertedResult = await insertAttendance(attendance);
 
+          // ステートに戻り値を挿入し更新
           if (insertedResult && insertedResult.length > 0) {
             setAttendanceTablePersonalTableRows((prevRows) =>
               prevRows.map((row, idx) =>
                 idx === rowIndex
                   ? {
-                      ...row,
-                      [field]: newValue,
-                      attendanceId: insertedResult[0].attendance_id,
-                    }
+                    ...row,
+                    [field]: newValue,
+                    attendanceId: insertedResult[0].attendance_id,
+                  }
                   : row
               )
             );

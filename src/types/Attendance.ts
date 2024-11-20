@@ -24,7 +24,8 @@ export interface Attendance {
 
 // 個人用出退勤テーブルの型
 export type AttendanceRow = {
-  date: string;
+  date:Date;
+  formattedDate: string; // 'MM/DD(曜日) 有給' など。
   regularHours: string;
   overtimeHours: string;
   adjustedStartTime: string;

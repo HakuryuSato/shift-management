@@ -27,7 +27,7 @@ export function usePersonalAttendanceTableData() {
     (state) => state.setAttendanceTablePersonalTableRows
   );
 
-  // 出退勤結果をMapに変換
+  // 出退勤結果をMapに変換(検索高速化用)
   const attendancetMap = useMemo(() => {
     const map = new Map();
     adminAttendanceViewAllMembersMonthlyResult?.forEach((attendance) => {
@@ -55,7 +55,6 @@ export function usePersonalAttendanceTableData() {
 
       // 当日の出退勤結果を取得
       const attendance = attendancetMap.get(key);
-
 
       // 日付のフォーマット 'MM/DD(曜日)'
       const formattedDate = formatDateStringToMM_DD_Day(date);
@@ -91,14 +90,15 @@ export function usePersonalAttendanceTableData() {
         : '';
 
       return {
-        date: formattedDate,
+        date: attendance?.work_date,
+        formattedDate: formattedDate,
         regularHours: regularHours.toFixed(1),
         overtimeHours: overtimeHours.toFixed(1),
         adjustedStartTime: adjustedStartTime,
         adjustedEndTime: adjustedEndTime,
         breakHours: breakHours.toFixed(1),
-        stampStartTime:stampStartTime,
-        stampEndTime:stampEndTime,
+        stampStartTime: stampStartTime,
+        stampEndTime: stampEndTime,
         attendanceId: attendance?.attendance_id,
       };
     });
