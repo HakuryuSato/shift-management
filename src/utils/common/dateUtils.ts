@@ -224,3 +224,13 @@ export function hoursToMinutes(hoursString: string): number {
   }
   return hours * 60;
 }
+
+/**
+ * 日本時間の日付を「xx年xx月」の形式で返す関数
+ * @param date Dateオブジェクト
+ * @returns フォーマットされた日付文字列
+ */
+export function formatJapanDateToYearMonth(date: Date): string {
+  const { year, month } = getJapanDateComponents(date);
+  return `${year}年${month}月`;
+}
