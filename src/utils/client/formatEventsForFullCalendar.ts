@@ -53,8 +53,8 @@ export function formatEventsForFullCalendar(
     return records.map((record) => {
       const id = record.attendance_id;
       const user_name = record.user_id ? userMap.get(record.user_id) || '' : '';
-      const startTime = record.adjusted_start_time ?? record.stamp_start_time;
-      const endTime = record.adjusted_end_time ?? record.stamp_end_time ?? undefined;
+      const startTime = record.stamp_start_time ?? '';
+      const endTime = record.stamp_end_time ?? '';
 
       return {
         id: String(id),
