@@ -17,11 +17,11 @@ export const useAdminHomeTopBarStore = create<AdminHomeTopBarStore>((set) => ({
     adminHomeTopBarTitleText: '',
     setAdminHomeTopBarTitleText: (text: string) => set({ adminHomeTopBarTitleText: text }),
 
-    isVisibleAdminHomeTopBarUserEditButtons: false,
+    isVisibleAdminHomeTopBarUserEditButtons: true,
     showAdminHomeTopBarUserEditButtons: () => set({ isVisibleAdminHomeTopBarUserEditButtons: true }),
     hideAdminHomeTopBarUserEditButtons: () => set({ isVisibleAdminHomeTopBarUserEditButtons: false }),
 
-    isVisibleAdminHomeTopBarExcelDownloadButton: false,
+    isVisibleAdminHomeTopBarExcelDownloadButton: true,
     showAdminHomeTopBarExcelDownloadButton: () => set({ isVisibleAdminHomeTopBarExcelDownloadButton: true }),
     hideAdminHomeTopBarExcelDownloadButton: () => set({ isVisibleAdminHomeTopBarExcelDownloadButton: false }),
 }));

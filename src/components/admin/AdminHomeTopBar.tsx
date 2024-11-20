@@ -16,6 +16,13 @@ export const AdminHomeTopBar: React.FC = () => {
   const adminHomeTopBarTitleText = useAdminHomeTopBarStore((state) =>
     state.adminHomeTopBarTitleText
   );
+  const isVisibleAdminHomeTopBarUserEditButtons = useAdminHomeTopBarStore((
+    state,
+  ) => state.isVisibleAdminHomeTopBarUserEditButtons);
+
+  const isVisibleAdminHomeTopBarExcelDownloadButton = useAdminHomeTopBarStore((
+    state,
+  ) => state.isVisibleAdminHomeTopBarExcelDownloadButton);
 
   // ボタンのテキストをモードに応じて変更
   let buttonText = "";
@@ -33,41 +40,59 @@ export const AdminHomeTopBar: React.FC = () => {
       justifyContent="space-between"
       alignItems="center"
       p={2}
+      position="relative"
     >
       <Button variant="contained" onClick={handleClickToShiftPage}>
         {buttonText}
       </Button>
 
-      {/* モードに応じて、表示内容を変更 */}
-
-      <Typography variant="h6">{adminHomeTopBarTitleText}</Typography>
+      {/* タイトルテキスト モードに応じて、表示内容を変更 */}
+      <Typography
+        variant="h5"
+        sx={{
+          position: "absolute", // 親ボックスに対する絶対配置
+          left: "50%",
+          transform: "translateX(-50%)", // 水平方向に中央揃え
+        }}
+      >
+        {adminHomeTopBarTitleText}
+      </Typography>
 
       <Box display="flex" gap={2}>
-        <Button variant="contained" onClick={handleClickUserRegister}>
-          ユーザー登録
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleClickUserDelete}
-          sx={{
-            backgroundColor: "red",
-            color: "white",
-            "&:hover": { backgroundColor: "darkred" },
-          }}
-        >
-          ユーザー削除
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleClickExcelDownload}
-          sx={{
-            backgroundColor: "green",
-            color: "white",
-            "&:hover": { backgroundColor: "darkgreen" },
-          }}
-        >
-          Excelダウンロード
-        </Button>
+        {/* ユーザー編集ボタンの表示制御 */}
+        {isVisibleAdminHomeTopBarUserEditButtons && (
+          <>
+            <Button variant="contained" onClick={handleClickUserRegister}>
+              ユーザー登録
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleClickUserDelete}
+              sx={{
+                backgroundColor: "red",
+                color: "white",
+                "&:hover": { backgroundColor: "darkred" },
+              }}
+            >
+              ユーザー削除
+            </Button>
+          </>
+        )}
+
+        {/* Excelダウンロードボタンの表示制御 */}
+        {isVisibleAdminHomeTopBarExcelDownloadButton && (
+          <Button
+            variant="contained"
+            onClick={handleClickExcelDownload}
+            sx={{
+              backgroundColor: "green",
+              color: "white",
+              "&:hover": { backgroundColor: "darkgreen" },
+            }}
+          >
+            Excelダウンロード
+          </Button>
+        )}
       </Box>
     </Box>
   );
