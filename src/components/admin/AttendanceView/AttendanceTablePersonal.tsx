@@ -4,7 +4,7 @@ import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalEditableCell } from "./AttendanceTablePersonalEditableCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/temporary_attendanceTablePersonalSlice";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
 export function AttendanceTablePersonal() {
   // 個人用出退勤データをStoreにセット
