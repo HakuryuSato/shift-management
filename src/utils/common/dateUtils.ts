@@ -195,3 +195,23 @@ export function formatJapanDateToYearMonth(date: Date = new Date()): string {
   const MM = String(date.getMonth() + 1).padStart(2, '0');
   return `${yyyy}年${MM}月`;
 }
+
+
+/**
+ * 指定した基準日をもとに「26日から翌月25日まで」の日付範囲を取得する関数
+ * @param baseDate 基準となる日付
+ * @param offsetMonths 基準月からのオフセット
+ *   - 0: 現在の26日から翌月25日
+ *   - -1: 先月の26日から当月25日
+ *   - 1: 翌月の26日から翌々月25日
+ * @returns 指定した範囲の開始日と終了日（ローカルタイム）
+ */
+export function getCustomDateRangeFrom26To25(baseDate: Date, offsetMonths: number): { rangeStartDate: Date; rangeEndDate: Date } {
+  // 開始日: offsetMonths分前の26日
+  const rangeStartDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + offsetMonths - 1, 26, 0, 0, 0, 0);
+
+  // 終了日: offsetMonths分の月の25日
+  const rangeEndDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + offsetMonths, 25, 23, 59, 59, 999);
+
+  return { rangeStartDate, rangeEndDate };
+}
