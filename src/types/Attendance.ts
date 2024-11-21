@@ -1,3 +1,5 @@
+import type { User } from '@/types/User'
+
 // GETリクエスト用の型
 export type AttendanceQuery = Partial<Pick<Attendance, 'user_id'>> & {
   startDate?: string;
@@ -21,9 +23,8 @@ export interface Attendance {
 };
 
 
-
 // 個人用出退勤テーブルの型
-export type AttendanceRow = {
+export type AttendanceRowPersonal = {
   date: string; // YYYY-MM-DD
   formattedDate: string; // 'MM/DD(曜日) 有給' など。
   regularHours: string;
@@ -35,3 +36,11 @@ export type AttendanceRow = {
   stampEndTime: string;
   attendanceId?: number;
 };
+
+// 全員出退勤要約テーブルの型
+export type AttendanceRowAllMembers = {
+  user: User;
+  workDays: number;
+  workHours: number;
+  overtimeHours: number;
+}

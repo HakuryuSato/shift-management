@@ -18,7 +18,7 @@ export async function generateExcelFile(
   data: any[],
   columns: ColumnDefinition[],
   options?: ExcelOptions
-): Promise<Buffer> {
+): Promise<Buffer> { // 修正点
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(options?.sheetName || 'Sheet1');
 
@@ -54,6 +54,6 @@ export async function generateExcelFile(
   }
 
   // バッファとしてエクスポート
-  const buffer = await workbook.xlsx.writeBuffer();
-  return buffer;
+  const uint8Array = await workbook.xlsx.writeBuffer(); // Uint8Array 型
+  return Buffer.from(uint8Array); // 修正点: Buffer に変換
 }

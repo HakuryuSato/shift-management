@@ -1,10 +1,10 @@
 import { saveAs } from 'file-saver';
 import * as ExcelJS from 'exceljs';
-import { AttendanceRow } from '@/types/Attendance';
+import { AttendanceRowPersonal } from '@/types/Attendance';
 import { createWorkbook, addTableToWorksheet, saveWorkbook } from './excelUtils';
 
 export const downloadAttendanceTablePersonalXlsx = async (
-  attendanceRows: AttendanceRow[],
+  attendanceRows: AttendanceRowPersonal[],
   fileName: string
 ) => {
   const tableData = generateAttendancePersonalTableData(attendanceRows);
@@ -17,7 +17,7 @@ export const downloadAttendanceTablePersonalXlsx = async (
   await saveWorkbook(workbook, fileName);
 };
 
-const generateAttendancePersonalTableData = (attendanceRows: AttendanceRow[]): string[][] => {
+const generateAttendancePersonalTableData = (attendanceRows: AttendanceRowPersonal[]): string[][] => {
   const result: string[][] = [];
 
   // ヘッダー行

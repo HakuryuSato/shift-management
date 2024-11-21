@@ -5,7 +5,9 @@ import { fetchAttendances } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings, formatJapanDateToYearMonth } from '@/utils/common/dateUtils';
 import { useAdminHomeTopBarStore } from '@/stores/admin/adminHomeTopBarSlice';
 
+// attendanceViewの開始終了日、1ヶ月の全員の出退勤データ、TopBarのタイトルテキストを設定するカスタムHook
 export function useAdminAttendanceView() {
+
     const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
     const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
     const setAdminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyResult);
@@ -19,17 +21,18 @@ export function useAdminAttendanceView() {
     );
 
     // data：APIからのレスポンス
-    const { data, error, mutate } = useSWR(
+    const { data: responseData, error, mutate } = useSWR(
         ['attendanceResults', startTimeISO, endTimeISO],
         () => fetchAttendances({ startDate: startTimeISO, endDate: endTimeISO })
     );
 
     useEffect(() => {
-        if (data) {
-            setAdminAttendanceViewAllMembersMonthlyResult(data);
+        
+        if (responseData) {
+            setAdminAttendanceViewAllMembersMonthlyResult(responseData);
             setAdminHomeTopBarTitleText(formatJapanDateToYearMonth(adminAttendanceViewEndDate))
         }
-    }, [adminAttendanceViewEndDate, adminAttendanceViewStartDate, data, endTimeISO, setAdminAttendanceViewAllMembersMonthlyResult, setAdminHomeTopBarTitleText, startTimeISO]);
+    }, [adminAttendanceViewEndDate, adminAttendanceViewStartDate, responseData, endTimeISO, setAdminAttendanceViewAllMembersMonthlyResult, setAdminHomeTopBarTitleText, startTimeISO]);
 
-    return { data, error, mutateAttendanceResults: mutate };
+    return { data: responseData, error, mutateAttendanceResults: mutate };
 }

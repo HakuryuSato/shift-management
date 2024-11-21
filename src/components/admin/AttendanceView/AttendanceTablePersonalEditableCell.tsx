@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TableCell, TextField } from "@mui/material";
-import type { AttendanceRow } from "@/types/Attendance";
+import type { AttendanceRowPersonal } from "@/types/Attendance";
 
 interface EditableCellProps {
   value: string;
   rowIndex: number;
-  field: keyof AttendanceRow;
+  field: keyof AttendanceRowPersonal;
   isEditing: boolean;
-  onClick: (rowIndex: number, field: keyof AttendanceRow) => void;
+  onClick: (rowIndex: number, field: keyof AttendanceRowPersonal) => void;
   onBlur: (
     rowIndex: number,
-    field: keyof AttendanceRow,
+    field: keyof AttendanceRowPersonal,
     newValue: string,
   ) => void;
 }

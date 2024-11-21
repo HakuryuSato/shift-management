@@ -1,9 +1,19 @@
+// ライブラリ
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
+
+
+// Store
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
+
+// Utils
 import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
-import { useRouter } from "next/navigation";
+import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
+import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
 
 export const useAdminAttendanceTopBar = () => {
   // Home
@@ -25,7 +35,21 @@ export const useAdminAttendanceTopBar = () => {
   const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewDateRange
   );
+  const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewAllMembersMonthlyResult
+  );
 
+
+  // AllMembers
+  const adminAttendanceTableAllMembersRows = useAttendanceTableAllMembersStore(
+    (state) => state.adminAttendanceTableAllMembersRows
+  );
+
+
+  // Personal
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalTableRows
+  );
 
 
   // TopBar
@@ -35,9 +59,13 @@ export const useAdminAttendanceTopBar = () => {
   const setAdminHomeTopBarTitleText = useAdminHomeTopBarStore(
     (state) => state.setAdminHomeTopBarTitleText
   );
+  const adminHomeTopBarTitleText = useAdminHomeTopBarStore(
+    (state) => state.adminHomeTopBarTitleText
+  );
 
   const router = useRouter();
 
+  // 左上のモード切替ボタン ---------------------------------------------------------------------------------------------------
   const handleClickTopLeftButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       setAdminHomeMode("MONTHLY_ATTENDANCE");
@@ -70,12 +98,27 @@ export const useAdminAttendanceTopBar = () => {
     console.log("ユーザー削除処理");
   }, []);
 
-  // Excelダウンロード処理
+  // Excelダウンロード ---------------------------------------------------------------------------------------------------
   const handleClickExcelDownload = useCallback(() => {
-    console.log("Excelダウンロード処理");
-  }, []);
+    // シフト
+    if (adminHomeMode === 'SHIFT') {
 
-  // 「前へ」ボタンの処理を追加
+      // 出退勤要約
+    } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
+      downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, adminHomeTopBarTitleText + '.xlsx')
+      // 出退勤個人
+    } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
+      downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, adminHomeTopBarTitleText + '.xlsx')
+    }
+
+    // モード
+    console.log("Excelダウンロード処理");
+  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminHomeMode, adminHomeTopBarTitleText]);
+
+
+
+
+  // 日付範囲戻る ---------------------------------------------------------------------------------------------------
   const handleClickPrevButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       // SHIFTモードの際の前の週への処理をここに記述
@@ -88,7 +131,11 @@ export const useAdminAttendanceTopBar = () => {
     }
   }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
 
-  // 「次へ」ボタンの処理を追加
+
+
+
+
+  // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       // SHIFTモードの際の次の週への処理をここに記述

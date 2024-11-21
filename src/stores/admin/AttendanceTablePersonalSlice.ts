@@ -1,11 +1,11 @@
 import { create } from 'zustand';
-import type { AttendanceRow } from '@/types/Attendance';
+import type { AttendanceRowPersonal } from '@/types/Attendance';
 
 interface AttendanceTablePersonalStore {
-  AttendanceTablePersonalTableRows: AttendanceRow[];
-  setAttendanceTablePersonalTableRows: (rows: AttendanceRow[] | ((prevRows: AttendanceRow[]) => AttendanceRow[])) => void;
-  AttendanceTablePersonalEditingCell: { rowIndex: number; field: keyof AttendanceRow } | null;
-  setAttendanceTablePersonalEditingCell: (cell: { rowIndex: number; field: keyof AttendanceRow } | null) => void;
+  AttendanceTablePersonalTableRows: AttendanceRowPersonal[];
+  setAttendanceTablePersonalTableRows: (rows: AttendanceRowPersonal[] | ((prevRows: AttendanceRowPersonal[]) => AttendanceRowPersonal[])) => void;
+  AttendanceTablePersonalEditingCell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null;
+  setAttendanceTablePersonalEditingCell: (cell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null) => void;
 }
 
 export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalStore>((set) => ({

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/AttendanceTablePersonalSlice";
-import type { AttendanceRow } from "@/types/Attendance";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import type { AttendanceRowPersonal } from "@/types/Attendance";
 import { updateAttendance, insertAttendance } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { hoursToMinutes } from '@/utils/common/dateUtils';
@@ -26,7 +26,7 @@ export function usePersonalAttendanceTableClickHandlers() {
   );
 
   const handleClickCell = useCallback(
-    (rowIndex: number, field: keyof AttendanceRow) => {
+    (rowIndex: number, field: keyof AttendanceRowPersonal) => {
       setAttendanceTablePersonalEditingCell({ rowIndex, field });
     },
     [setAttendanceTablePersonalEditingCell]
@@ -35,7 +35,7 @@ export function usePersonalAttendanceTableClickHandlers() {
   const handleBlur = useCallback(
     async (
       rowIndex: number,
-      field: keyof AttendanceRow,
+      field: keyof AttendanceRowPersonal,
       newValue: string
     ) => {
       // 値に変更があるかチェック

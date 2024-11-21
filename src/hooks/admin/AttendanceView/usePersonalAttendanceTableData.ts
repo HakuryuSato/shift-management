@@ -5,8 +5,8 @@ import {
   formatDateStringToMM_DD_Day,
   formatTimeStringToHH_MM,
 } from '@/utils/common/dateUtils';
-import type { AttendanceRow } from '@/types/Attendance';
-import { useAttendanceTablePersonalStore } from '@/stores/admin/AttendanceTablePersonalSlice';
+import type { AttendanceRowPersonal } from '@/types/Attendance';
+import { useAttendanceTablePersonalStore } from '@/stores/admin/attendanceTablePersonalSlice';
 
 // 個人出退勤テーブル用のデータを整形し、ストアにセットするためのフック
 export function usePersonalAttendanceTableData() {
@@ -49,7 +49,7 @@ export function usePersonalAttendanceTableData() {
       adminAttendanceViewEndDate
     );
 
-    const newRows: AttendanceRow[] = dateRange.map((date) => {
+    const newRows: AttendanceRowPersonal[] = dateRange.map((date) => {
       const dateString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
       const key = `${adminAttendanceViewSelectedUser.user_id}_${dateString}`;
 

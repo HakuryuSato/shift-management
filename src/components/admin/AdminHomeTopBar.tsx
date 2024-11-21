@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBar";
+import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBarClickHandlers";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { commonButtonStyle } from "@/styles/commonButtonStyle";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -12,8 +12,8 @@ export const AdminHomeTopBar: React.FC = () => {
     handleClickUserRegister,
     handleClickUserDelete,
     handleClickExcelDownload,
-    handleClickPrevButton, // 追加
-    handleClickNextButton, // 追加
+    handleClickPrevButton,
+    handleClickNextButton,
     adminHomeMode,
   } = useAdminAttendanceTopBar();
 
