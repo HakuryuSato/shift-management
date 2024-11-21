@@ -1,9 +1,9 @@
 // 基盤
 
 // 型
-import type InterFaceAdminShiftTable from '@customTypes/InterFaceAdminShiftTable';
-import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
-import type { Holiday } from '@/customTypes/Holiday';
+import type InterFaceAdminShiftTable from '@/types/InterFaceAdminShiftTable';
+import type InterFaceTableUsers from "@/types/InterFaceTableUsers";
+import type { Holiday } from '@/types/Holiday';
 
 // 変換用
 import {toJapanDateString} from './toJapanDateString';

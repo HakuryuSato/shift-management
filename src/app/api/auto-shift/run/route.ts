@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/utils/server/supabaseClient';
 import {toJapanDateString} from '@/utils/toJapanDateString';
-import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
-import type { Holiday } from '@/customTypes/Holiday';
-import type InterFaceTableUsers from '@/customTypes/InterFaceTableUsers';
-import type { AutoShiftTime } from '@/customTypes/AutoShiftTypes';
+import type InterFaceShiftQuery from '@/types/InterFaceShiftQuery';
+import type { Holiday } from '@/types/Holiday';
+import type InterFaceTableUsers from '@/types/InterFaceTableUsers';
+import type { AutoShiftTime } from '@/types/AutoShiftTypes';
 
 /*
 シフトの自動登録設定に従い、

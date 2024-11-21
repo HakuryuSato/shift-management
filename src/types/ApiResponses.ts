@@ -1,6 +1,6 @@
-import InterFaceShiftQuery from './InterFaceShiftQuery';
-import { AutoShiftSettings } from './AutoShiftTypes';
-import { Holiday } from './Holiday';
+import InterFaceShiftQuery from '../types/InterFaceShiftQuery';
+import { AutoShiftSettings } from '../types/AutoShiftTypes';
+import { Holiday } from '../types/Holiday';
 
 // 共通のAPIレスポンス型
 export interface ApiSuccess<T> {

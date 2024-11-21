@@ -10,7 +10,7 @@ import DayGridCalendar from "@forms/DayGridCalendar";
 import UserLoginForm from "@components/forms/UserLoginForm";
 
 // 型
-import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
+import type InterFaceTableUsers from "@/types/InterFaceTableUsers";
 
 // クッキー名称
 const COOKIE_USER_LOGGED_IN = process.env

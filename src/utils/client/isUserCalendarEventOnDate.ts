@@ -1,4 +1,4 @@
-import { CustomFullCalendarEvent } from "@/customTypes/CustomFullCalendarEvent";
+import { CustomFullCalendarEvent } from "@/types/CustomFullCalendarEvent";
 
 /**
  * 指定した日付と userId に一致するイベントが存在するかを判定

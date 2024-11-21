@@ -1,6 +1,6 @@
 'use server';
 
-import type { Shift } from '@/customTypes/Shift';
+import type { Shift } from '@/types/Shift';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 
 /**
@@ -9,7 +9,7 @@ import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
  * @returns 挿入されたシフトデータ
  */
 export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> {
-  const data = await handleSupabaseRequest<Shift[]>(async (supabase) => {
+  return await handleSupabaseRequest<Shift[]>(async (supabase) => {
     const shiftArray = Array.isArray(shiftData) ? shiftData : [shiftData];
     return supabase
       .from('shifts')
@@ -17,5 +17,4 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
       .select();
   });
 
-  return data;
 }

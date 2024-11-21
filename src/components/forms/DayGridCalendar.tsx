@@ -24,8 +24,8 @@ import fetchSendShift from "@utils/fetchSendShift";
 import fetchUpdateShift from "@/utils/fetchUpdateShift";
 
 // 型
-import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
-import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
+import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
+import type InterFaceTableUsers from "@/types/InterFaceTableUsers";
 
 // スタイル
 import "@styles/custom-fullcalendar-styles.css"; // FullCalendarのボタン色変更

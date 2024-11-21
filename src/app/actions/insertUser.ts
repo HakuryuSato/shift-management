@@ -1,6 +1,6 @@
 'use server';
 
-import type { User } from '@/customTypes/User';
+import type { User } from '@/types/User';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 
 /**

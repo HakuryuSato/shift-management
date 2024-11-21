@@ -19,6 +19,10 @@ interface UserHomeAppBarState {
 
   // メニュー項目のリスト
   userHomeAppBarMenuItems: UserHomeAppBarMenuItem[];
+
+  isUserHomeAppBarVisible: boolean;
+  showUserHomeAppBar: () => void;
+  hideUserHomeAppBar: () => void;
 }
 
 export const useUserHomeAppBarStore = create<UserHomeAppBarState>((set) => ({
@@ -30,6 +34,7 @@ export const useUserHomeAppBarStore = create<UserHomeAppBarState>((set) => ({
     { id: 'Guide', label: '使い方' },
     // 将来的にメニュー項目を追加可能
   ],
+  isUserHomeAppBarVisible: true, // 初期状態は表示されている
 
   // 現在のビューを設定するアクション
   setUserHomeAppBarCurrentView: (view) => set({ userHomeAppBarCurrentView: view }),
@@ -37,4 +42,8 @@ export const useUserHomeAppBarStore = create<UserHomeAppBarState>((set) => ({
   // Drawerを操作するアクション
   openUserHomeAppBarDrawer: () => set({ isUserHomeAppBarDrawerOpen: true }),
   closeUserHomeAppBarDrawer: () => set({ isUserHomeAppBarDrawerOpen: false }),
+
+  // AppBar表示状態を操作するアクション
+  showUserHomeAppBar: () => set({ isUserHomeAppBarVisible: true }),
+  hideUserHomeAppBar: () => set({ isUserHomeAppBarVisible: false }),
 }));

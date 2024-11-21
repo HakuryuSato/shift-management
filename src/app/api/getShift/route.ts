@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/server/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
-import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@/types/InterFaceShiftQuery';
 
 // API群の整理時、このAPIの呼び出し方法をAttendanceと同じ形式にすること（start_date,end_dateの範囲までを指定し、API側で開始日0時から終了日23:59:59に変更する
 

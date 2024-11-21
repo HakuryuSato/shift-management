@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useUserHomeStore } from '@/stores/user/userHomeSlice';
-import type { CustomNextAuthUser } from '@/customTypes/CustomNextAuthUser';
+import type { CustomNextAuthUser } from '@/types/CustomNextAuthUser';
 
 export function useUserHomeUserSession() {
   const { setUserData } = useUserHomeStore();

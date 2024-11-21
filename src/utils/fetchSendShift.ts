@@ -1,4 +1,4 @@
-import type InterFaceShiftQuery from "@customTypes/InterFaceShiftQuery";
+import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 
 export default async function fetchSendShift(shiftData: InterFaceShiftQuery | InterFaceShiftQuery[]) {
     const response = await fetch("/api/sendShift", {

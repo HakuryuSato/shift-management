@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 
-import type { CustomFullCalendarEvent } from '@/customTypes/CustomFullCalendarEvent';
+import type { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
 
 interface CustomFullCalendarStoreState {
   // 共通の状態
@@ -13,7 +13,7 @@ interface CustomFullCalendarStoreState {
 
   // 以下二つは統合して随所で抽出するべきか？
   customFullCalendarCurrentYear: number;
-  customFullCalendarCurrentMonth: number;
+  customFullCalendarCurrentMonth: number; // 廃止予定
 
   // イベントの状態を3つに分割(ページ切替で再取得が発生しないように)
   customFullCalendarHolidayEvents: CustomFullCalendarEvent[];

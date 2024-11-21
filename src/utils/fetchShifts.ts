@@ -1,4 +1,4 @@
-import type InterFaceShiftQuery from '@customTypes/InterFaceShiftQuery';
+import type InterFaceShiftQuery from '@/types/InterFaceShiftQuery';
 
 type ShiftData = any;
 

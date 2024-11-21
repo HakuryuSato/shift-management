@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, ToggleButton, Typography } from "@mui/material";
 import {TimeDropdown} from "../common/Modal/TimeDropdown";
-import type { AutoShiftTime } from "@/customTypes/AutoShiftTypes";
+import type { AutoShiftTime } from "@/types/AutoShiftTypes";
 
 interface ShiftTimeInputPerDayProps {
   initialDayTimes: AutoShiftTime[];

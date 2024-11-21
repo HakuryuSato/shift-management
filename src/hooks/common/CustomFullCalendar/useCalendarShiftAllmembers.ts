@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { useUserCalendarViewStore } from '@/stores/user/userCalendarViewSlice';
 import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSlice';
 import { fetchShifts, fetchUsers } from '@/utils/client/apiClient';
-import { formatEventsForFullCalendar } from '@/utils/formatEventsForFullCalendar';
+import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullCalendar';
 import calcSumShiftHourPerDay from '@utils/calcSumShiftHourPerDay';
 
 export function useCalendarShiftAllMembers() {

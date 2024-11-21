@@ -1,10 +1,13 @@
 "use client";
 
+import { AdminHome } from "@/components/admin/AdminHome";
+import { SessionProvider } from "next-auth/react";
+
 const Home = () => {
   return (
-    <>
-      <b>管理者用ページ</b>
-    </>
+    <SessionProvider>
+      <AdminHome />
+    </SessionProvider>
   );
 };
 

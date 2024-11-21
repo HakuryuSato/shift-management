@@ -6,7 +6,7 @@ import Input from "@ui/Input";
 import Cookies from "js-cookie";
 import { useState } from "react";
 // import { supabase } from "@api/supabase";
-import type InterFaceTableUsers from "@customTypes/InterFaceTableUsers";
+import type InterFaceTableUsers from "@/types/InterFaceTableUsers";
 
 // API呼び出し
 import { fetchUserByUsername } from "@utils/client/apiClient";

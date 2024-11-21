@@ -14,7 +14,7 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 
 // Hooks
-import { useCalendarAttendances } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
+import { useCalendarAttendance } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
 import { useCalendarShiftAllMembers } from "@/hooks/common/CustomFullCalendar/useCalendarShiftAllmembers";
@@ -69,7 +69,7 @@ export function CustomFullCalendar() {
   useCalendarHolidays();
 
   // 出退勤
-  useCalendarAttendances();
+  useCalendarAttendance();
 
   // 個人用シフト
   useCalendarShiftPersonal();
@@ -88,7 +88,6 @@ export function CustomFullCalendar() {
   // Click
   const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
 
-
   // フルカレ用イベント(ViewModeに応じて異なるデータ表示)
   const customFullCalendarEvents = [
     ...customFullCalendarHolidayEvents,
@@ -100,7 +99,6 @@ export function CustomFullCalendar() {
       ? customFullCalendarAllMembersShiftEvents
       : []),
   ];
-
 
   return (
     <div {...reactSwipeHandlers}>
@@ -125,15 +123,21 @@ export function CustomFullCalendar() {
         footerToolbar={false}
         // 月や週遷移時の日付再設定
         datesSet={(dateInfo) => {
-          if (customFullCalendarRole === "admin") {
-            setCustomFullCalendarStartDate(new Date(dateInfo.start));
-            setCustomFullCalendarEndDate(new Date(dateInfo.end));
-          } else {
-            const fullCalendarDate = new Date(dateInfo.start);
+          // if (customFullCalendarRole === "admin") {
+          //   setCustomFullCalendarStartDate(new Date(dateInfo.start));
+          //   setCustomFullCalendarEndDate(new Date(dateInfo.end));
+          // } else {
+
+          const fullCalendarDate = new Date(dateInfo.start);
+          if (customFullCalendarRole === "user") {
             fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
-            setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
-            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth());
+            // setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
+            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth()); // バーに表示するために残す
           }
+          // }
+          // カレンダーの表示開始日と終了日を取得
+          setCustomFullCalendarStartDate(new Date(dateInfo.start));
+          setCustomFullCalendarEndDate(new Date(dateInfo.end));
         }}
         // 日付セルに適用するCSSを定義
         dayCellClassNames={(info) =>
