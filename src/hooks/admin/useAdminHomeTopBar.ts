@@ -3,6 +3,7 @@ import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
+import { useRouter } from "next/navigation";
 
 export const useAdminAttendanceTopBar = () => {
   // Home
@@ -35,6 +36,8 @@ export const useAdminAttendanceTopBar = () => {
     (state) => state.setAdminHomeTopBarTitleText
   );
 
+  const router = useRouter();
+
   const handleClickTopLeftButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       setAdminHomeMode("MONTHLY_ATTENDANCE");
@@ -42,7 +45,11 @@ export const useAdminAttendanceTopBar = () => {
         formatJapanDateToYearMonth(adminAttendanceViewEndDate)
       );
     } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
-      setAdminHomeMode("SHIFT");
+      // setAdminHomeMode("SHIFT");
+      router.push('/admin_kanrisha');
+
+
+
       // ここで、フルカレンダーの開始終了日をセット
     } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
       setAdminHomeMode("MONTHLY_ATTENDANCE");
@@ -53,15 +60,7 @@ export const useAdminAttendanceTopBar = () => {
         formatJapanDateToYearMonth(adminAttendanceViewEndDate)
       );
     }
-  }, [
-    adminAttendanceViewEndDate,
-    adminHomeMode,
-    hidePersonalAttendanceTable,
-    setAdminHomeMode,
-    setAdminHomeTopBarTitleText,
-    showAdminHomeTopBarUserEditButtons,
-    showAllMembersMonthlyTable,
-  ]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, hidePersonalAttendanceTable, router, setAdminHomeMode, setAdminHomeTopBarTitleText, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
 
   const handleClickUserRegister = useCallback(() => {
     console.log("ユーザー登録処理");
@@ -84,7 +83,7 @@ export const useAdminAttendanceTopBar = () => {
       // 先月の日付取得
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
-      
+
 
     }
   }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
