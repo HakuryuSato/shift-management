@@ -103,6 +103,11 @@ export const AdminHomeTopBar: React.FC = () => {
         alignItems="center"
         p={2}
       >
+        {/* タイトルテキスト */}
+        <Typography variant="h5">
+          {adminHomeTopBarTitleText}
+        </Typography>
+
         {/* Prevボタン */}
         {/* <IconButton size="small" onClick={handleClickPrevButton}>
           <ArrowBackIosNewIcon />
@@ -113,10 +118,6 @@ export const AdminHomeTopBar: React.FC = () => {
           <ArrowForwardIosIcon />
         </IconButton> */}
 
-        {/* タイトルテキスト */}
-        <Typography variant="h5">
-          {adminHomeTopBarTitleText}
-        </Typography>
       </Box>
     </>
   );
