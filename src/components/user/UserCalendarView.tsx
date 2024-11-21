@@ -30,6 +30,7 @@ export function UserCalendarView() {
       alignItems="center"
       justifyContent="center"
       style={{ minHeight: "auto" }}
+      paddingBottom={20}
     >
       {/* 正社員は出退勤モードのみ */}
       {employmentType !== "full_time" && <CalendarViewToggle />}
