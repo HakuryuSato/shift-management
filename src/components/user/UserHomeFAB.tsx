@@ -1,7 +1,7 @@
 import React from "react";
 import { Fab } from "@mui/material";
 import QrCodeIcon from "@mui/icons-material/QrCode";
-import AddIcon from "@mui/icons-material/Add";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
 import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
@@ -43,7 +43,7 @@ export function UserHomeFAB() {
       onClick={handleClick}
       sx={{ position: "fixed", bottom: 16, right: 16 }}
     >
-      {fabIconType === "qr" ? <QrCodeIcon /> : <AddIcon />}
+      {fabIconType === "qr" ? <QrCodeIcon /> : <CalendarMonth />}
     </Fab>
   );
 }
