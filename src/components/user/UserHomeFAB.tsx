@@ -9,7 +9,7 @@ import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
 export function UserHomeFAB() {
   const isUserHomeFABVisible = useUserHomeFABStore((state) =>
-    state.isUserHomeFABVisible
+    state.isVisibleUserHomeFAB
   );
   const fabIconType = useUserHomeFABStore((state) => state.fabIconType);
   const setIsUserHomeFABVisible = useUserHomeFABStore((state) =>
