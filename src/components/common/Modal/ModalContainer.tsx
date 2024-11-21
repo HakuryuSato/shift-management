@@ -1,8 +1,5 @@
 import React from "react";
-import { Box, Button, IconButton, Modal } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, Modal } from "@mui/material";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { ModalContent } from "./ModalContent";
 import { ModalTopBar } from "./ModalTopBar";
@@ -16,12 +13,11 @@ export const ModalContainer: React.FC = () => {
     const modalMode = useModalContainerStore((state) => state.modalMode);
     const { handleClickModalContainerButton } = useModalContainer();
 
-    const modeText: { [key: string]: string } = {
-        confirm: "確認",
-        register: "保存",
-        update: "保存",
-        delete: "削除",
-
+    const modeText = {
+        "confirm": "確認",
+        "register": "保存",
+        "update": "保存",
+        "delete": "削除",
         "multiple-register": "保存",
     };
 
