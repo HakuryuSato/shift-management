@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/temporary_attendanceTablePersonalSlice";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
 
 // Utils

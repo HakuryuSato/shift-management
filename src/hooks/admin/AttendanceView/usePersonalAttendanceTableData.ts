@@ -6,7 +6,7 @@ import {
   formatTimeStringToHH_MM,
 } from '@/utils/common/dateUtils';
 import type { AttendanceRowPersonal } from '@/types/Attendance';
-import { useAttendanceTablePersonalStore } from '@/stores/admin/temporary_attendanceTablePersonalSlice';
+import { useAttendanceTablePersonalStore } from '@/stores/admin/attendanceTablePersonalSlice';
 
 // 個人出退勤テーブル用のデータを整形し、ストアにセットするためのフック
 export function usePersonalAttendanceTableData() {
