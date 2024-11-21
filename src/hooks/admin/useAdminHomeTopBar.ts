@@ -2,20 +2,32 @@ import { useCallback } from "react";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
-import { formatJapanDateToYearMonth } from "@/utils/common/dateUtils";
+import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
 
 export const useAdminAttendanceTopBar = () => {
+  // Home
   const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
   const setAdminHomeMode = useAdminHomeStore((state) => state.setAdminHomeMode);
+
+  // MonthlyTable
   const hidePersonalAttendanceTable = useAdminAttendanceViewStore(
     (state) => state.hidePersonalAttendanceTable
   );
   const showAllMembersMonthlyTable = useAdminAttendanceViewStore(
     (state) => state.showAllMembersMonthlyTable
   );
+
+  // AttendanceView
   const adminAttendanceViewEndDate = useAdminAttendanceViewStore(
     (state) => state.adminAttendanceViewEndDate
   );
+  const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
+    (state) => state.setAdminAttendanceViewDateRange
+  );
+
+
+
+  // TopBar
   const showAdminHomeTopBarUserEditButtons = useAdminHomeTopBarStore(
     (state) => state.showAdminHomeTopBarUserEditButtons
   );
@@ -69,9 +81,13 @@ export const useAdminAttendanceTopBar = () => {
     if (adminHomeMode === "SHIFT") {
       // SHIFTモードの際の前の週への処理をここに記述
     } else {
-      // ATTENDANCEモードの際の前の週への処理をここに記述
+      // 先月の日付取得
+      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
+      
+
     }
-  }, [adminHomeMode]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
 
   // 「次へ」ボタンの処理を追加
   const handleClickNextButton = useCallback(() => {
@@ -87,8 +103,8 @@ export const useAdminAttendanceTopBar = () => {
     handleClickUserRegister,
     handleClickUserDelete,
     handleClickExcelDownload,
-    handleClickPrevButton, 
-    handleClickNextButton, 
+    handleClickPrevButton,
+    handleClickNextButton,
     adminHomeMode,
   };
 };
