@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/temporary_attendanceTablePersonalSlice";
 import type { AttendanceRowPersonal } from "@/types/Attendance";
 import { updateAttendance, insertAttendance } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
