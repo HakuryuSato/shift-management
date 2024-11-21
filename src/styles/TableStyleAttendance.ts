@@ -10,8 +10,9 @@ export const TableStyleAttendance = ({ theme }: { theme: Theme }) => ({
     fontSize: "0.8rem",
     minWidth: "150px",
   },
-  "& tr:nth-of-type(even) td": {
-    backgroundColor: theme.palette.action.hover,
-  },
+  // 背景色非表示に
+  // "& tr:nth-of-type(even) td": {
+  //   backgroundColor: theme.palette.action.hover,
+  // },
 
 });
