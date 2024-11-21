@@ -6,7 +6,7 @@ interface AdminAttendanceViewStore {
 
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
-  adminAttendanceViewAllMembersMonthlyResult: Attendance[] | null;
+  adminAttendanceViewAllMembersMonthlyResult: Attendance[] | null; // 1ヶ月の全ユーザーのattendanceデータ
   setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void;
   setAdminAttendanceViewAllMembersMonthlyResult: (data: Attendance[]) => void;
 
