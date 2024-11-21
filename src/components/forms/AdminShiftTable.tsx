@@ -2,7 +2,8 @@
 "use client";
 
 // 基盤
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState  } from "react";
+import { useRouter } from 'next/navigation';
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
 import { ja } from "date-fns/locale";
 
@@ -102,6 +103,8 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   useEffect(() => { // シフトデータ更新
     updateTable();
   }, []);
+  const router = useRouter();
+  
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
   const userRegistrationClick = () => {
@@ -116,6 +119,10 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
     downloadShiftTableXlsx(table, currentYear, currentMonth);
   };
 
+  const handleAttendanceButtonClick=()=>{
+    router.push('/dev/admin_kanrisha');
+  }
+
   return (
     <>
       <div id="header" className="flex">
@@ -124,6 +131,12 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
             <Button
               text="１週間の画面へ"
               onClick={onButtonClickBackToShiftApproval}
+            />
+          </div>
+          <div className="m-4">
+            <Button
+              text="出退勤の画面へ(試験的機能)"
+              onClick={handleAttendanceButtonClick}
             />
           </div>
         </div>
