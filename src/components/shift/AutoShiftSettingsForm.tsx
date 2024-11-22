@@ -147,6 +147,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           initialDayTimes={dayTimes}
           onChange={(data: AutoShiftTime[]) => setDayTimes(data)}
         />
+        
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {error}
@@ -165,6 +166,7 @@ const AutoShiftSettingsForm: React.FC<AutoShiftSettingsFormProps> = ({
           sx={{ mt: 2 }}
         />
       </DialogContent>
+
       <Button
         variant="contained"
         color="primary"

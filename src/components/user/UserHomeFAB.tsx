@@ -7,6 +7,8 @@ import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderView
 import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
 import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
+
 export function UserHomeFAB() {
   const isUserHomeFABVisible = useUserHomeFABStore((state) =>
     state.isVisibleUserHomeFAB
@@ -32,7 +34,7 @@ export function UserHomeFAB() {
       setIsUserHomeFABVisible(false);
       setIsUserCalendarViewVisible(false);
       hideUserHomeAppBar()
-    } else if (fabIconType === "plus") {
+    } else if (fabIconType === "calendar") {
       // シフト追加用
     }
   };
