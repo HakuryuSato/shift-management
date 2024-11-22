@@ -13,7 +13,7 @@ import ShiftTimeInputPerDay from "@/components/shift/ShiftTimeInputPerDay";
 import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister";
 import { useMultipleShiftRegisterClickHandlers } from "@/hooks/common/Modal/useMultipleShiftRegisterClickHandlers";
 
-const MultipleShiftRegister: React.FC = () => {
+export const MultipleShiftRegister: React.FC = () => {
   const {
     dayTimes,
     setDayTimes,
@@ -81,5 +81,3 @@ const MultipleShiftRegister: React.FC = () => {
     </>
   );
 };
-
-export default MultipleShiftRegister;
