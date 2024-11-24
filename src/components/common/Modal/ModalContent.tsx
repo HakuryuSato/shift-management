@@ -44,13 +44,16 @@ export const ModalContent: React.FC = () => {
 
       {/* 選択された日付 */}
       <Box>
-        <Typography
-          variant={modalMode === "register" || modalMode === "update"
-            ? "body1"
-            : "h5"}
-        >
-          {modalContentSelectedDate}
-        </Typography>
+        {/* 複数シフトの時だけ非表示 */}
+        {modalMode !== "multiple-register" && (
+          <Typography
+            variant={modalMode === "register" || modalMode === "update"
+              ? "body1"
+              : "h5"}
+          >
+            {modalContentSelectedDate}
+          </Typography>
+        )}
       </Box>
 
       {/* 管理者なら */}
