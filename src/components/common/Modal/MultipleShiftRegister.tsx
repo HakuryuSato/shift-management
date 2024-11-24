@@ -27,9 +27,9 @@ export const MultipleShiftRegister: React.FC = () => {
 
   return (
     <>
-      <DialogTitle>
-        自動シフト登録設定 {isAutoShiftEnabled ? "：現在有効" : ""}
-      </DialogTitle>
+      <Typography sx={{ textAlign: "center" }}>
+        曜日でまとめて登録{isAutoShiftEnabled ? "：現在有効" : ""}
+      </Typography>
 
       <DialogContent
         sx={{
@@ -41,10 +41,6 @@ export const MultipleShiftRegister: React.FC = () => {
           height: "100%",
         }}
       >
-        <Typography variant="body1">
-          *毎月20日に、翌月1日から月末まで自動登録します
-        </Typography>
-        <Box display="flex" alignItems="center" sx={{ m: 2 }} />
 
         <ShiftTimeInputPerDay
           disabled={isAutoShiftEnabled}
@@ -57,26 +53,36 @@ export const MultipleShiftRegister: React.FC = () => {
           </Alert>
         )}
 
-        <FormControlLabel
-          label="祝日も登録する"
-          control={
-            <Checkbox
-              checked={isHolidayIncluded}
-              onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-              disabled={isAutoShiftEnabled}
-            />
-          }
-          sx={{ mt: 2 }}
-        />
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          sx={{ mt: 2 }}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            mt: 2,
+          }}
         >
-          {isAutoShiftEnabled ? "無効にする" : "有効にする"}
-        </Button>
+          <FormControlLabel
+            label="祝日も登録する"
+            control={
+              <Checkbox
+                checked={isHolidayIncluded}
+                onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
+                disabled={isAutoShiftEnabled}
+              />
+            }
+          />
+
+          <FormControlLabel
+            label="毎月20日に自動で登録する"
+            control={
+              <Checkbox
+                checked={isHolidayIncluded}
+                onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
+                disabled={isAutoShiftEnabled}
+              />
+            }
+          />
+        </Box>
       </DialogContent>
     </>
   );
