@@ -9,14 +9,8 @@ import { CustomFullCalendarEvent } from "@/types/CustomFullCalendarEvent";
  */
 export const isUserCalendarEventOnDate = (date: string, userId: number, events: CustomFullCalendarEvent[]): boolean => {
     return events.some(event => {
-        // `event.start`が文字列ならそのまま使用し、DateならISO文字列へ変換
-        const eventDate = typeof event.start === "string"
-            ? event.start.split("T")[0]
-            : event.start instanceof Date
-                ? event.start.toISOString().split("T")[0]
-                : null;
-
+        // start が string 型の場合
+        const eventDate = event.start.split("T")[0];
         return eventDate === date && event.extendedProps?.user_id === userId;
     });
 };
-
