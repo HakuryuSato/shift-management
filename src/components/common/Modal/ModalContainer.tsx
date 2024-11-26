@@ -4,14 +4,19 @@ import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { ModalContent } from "./ModalContent";
 import { ModalTopBar } from "./ModalTopBar";
 import { useModalContainer } from "@/hooks/common/Modal/useModalContainer";
+import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
 export const ModalContainer: React.FC = () => {
+    // State
     const isModalVisible = useModalContainerStore((state) =>
         state.isModalVisible
     );
     const closeModal = useModalContainerStore((state) => state.closeModal);
     const modalMode = useModalContainerStore((state) => state.modalMode);
+
+    // Hooks
     const { handleClickModalContainerButton } = useModalContainer();
+    
 
     const modeText = {
         "confirm": "確認",
