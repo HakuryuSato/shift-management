@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// サーバーアクションに移行済みのため、切替後に廃止予定  ---------------------------------------------------------------------------------------------------
 // POST /api/auto_shift/settings
 export async function POST(req: NextRequest) {
   try {
