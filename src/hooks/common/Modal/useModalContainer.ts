@@ -15,10 +15,11 @@ import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftR
 
 
 // util関数
-import { toJapanISOString } from "@/utils/toJapanISOString";
+import { toJapanISOString, toJapanDateISOString } from "@/utils/common/dateUtils";
 
 // 型
-import type { AutoShiftSettings } from "@/types/AutoShift";
+import type { AutoShiftSettings, AutoShiftTime } from "@/types/AutoShift";
+import type { CustomFullCalendarEvent } from "@/types/CustomFullCalendarEvent";
 
 
 export const useModalContainer = () => {
@@ -38,8 +39,10 @@ export const useModalContainer = () => {
     const customFullCalendarSelectedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate)
     const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent)
     const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore((state) => state.customFullCalendarPersonalShiftEvents)
+    const customFullCalendarHolidayEvents = useCustomFullCalendarStore((state) => state.customFullCalendarHolidayEvents)
     const customFullCalendarStartDate = useCustomFullCalendarStore((state) => state.customFullCalendarStartDate)
     const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate)
+
 
 
     // Multiple Shift Register
@@ -120,10 +123,73 @@ export const useModalContainer = () => {
             }
 
             // MultipleShift用の処理 ---------------------------------------------------------------------------------------------------
-            // 
-            // customFullCalendarPersonalShiftEvents
 
+            // 個人のシフトイベントを日付（YYYY-MM-DD）をキーとしたMapに変換
+            const personalShiftEventsMap = new Map<string, CustomFullCalendarEvent>();
+            customFullCalendarPersonalShiftEvents.forEach((event: CustomFullCalendarEvent) => {
+                if(!event.start) return;
+                const dateStr = event.start.split('T')[0];
+                personalShiftEventsMap.set(dateStr, event);
+            });
 
+            // 祝日イベントを日付（YYYY-MM-DD）をキーとしたMapに変換
+            const holidayEventsMap = new Map<string, CustomFullCalendarEvent>();
+            customFullCalendarHolidayEvents.forEach((event: CustomFullCalendarEvent) => {
+                if(!event.start) return;
+                const dateStr = event.start.split('T')[0];
+                holidayEventsMap.set(dateStr, event);
+            });
+
+            // AutoShiftTimeを曜日をキーとしたMapに変換
+            const autoShiftTimeMap = new Map<number, AutoShiftTime>();
+            multipleShiftRegisterDayTimes.forEach((autoShiftTime) => {
+                autoShiftTimeMap.set(autoShiftTime.day_of_week, autoShiftTime);
+            });
+
+            // シフトを登録するためのデータを格納する配列
+            const shiftsToInsert = [];
+
+            // 開始日と終了日をDateオブジェクトに変換
+            let currentDate = new Date(customFullCalendarStartDate);
+            const endDate = new Date(customFullCalendarEndDate);
+
+            // 日付範囲内をループ
+            while (currentDate <= endDate) {
+                // 日付を日本時間のYYYY-MM-DD形式で取得
+                const dateStr = toJapanDateISOString(currentDate);
+                const weekDay = currentDate.getDay(); // 0 (日曜日) - 6 (土曜日)
+
+                // 当日のAutoShiftTimeを取得
+                const autoShiftTime = autoShiftTimeMap.get(weekDay);
+
+                // 以下の条件を満たす場合にシフトを登録
+                if (
+                    autoShiftTime &&
+                    autoShiftTime.is_enabled &&
+                    (!holidayEventsMap.has(dateStr) || multipleShiftRegisterIsHolidayIncluded) &&
+                    !personalShiftEventsMap.has(dateStr)
+                ) {
+                    // シフトデータを作成
+                    const startDateTimeStr = `${dateStr}T${autoShiftTime.start_time}:00`;
+                    const endDateTimeStr = `${dateStr}T${autoShiftTime.end_time}:00`;
+
+                    shiftsToInsert.push({
+                        user_id: userId,
+                        start_time: toJapanISOString(new Date(startDateTimeStr)),
+                        end_time: toJapanISOString(new Date(endDateTimeStr)),
+                    });
+                }
+
+                // 次の日付へ
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // シフトの一括登録
+            if (shiftsToInsert.length > 0) {
+                for (const shiftData of shiftsToInsert) {
+                    await insertShift(shiftData);
+                }
+            }
 
         }
 
