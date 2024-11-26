@@ -9,7 +9,7 @@ import {
   FormControlLabel,
   Typography,
 } from "@mui/material";
-import ShiftTimeInputPerDay from "@/components/shift/ShiftTimeInputPerDay";
+import ShiftTimeInputPerDay from "@/components/shift/OldShiftTimeInputPerDay";
 import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister";
 
 export const MultipleShiftRegister: React.FC = () => {

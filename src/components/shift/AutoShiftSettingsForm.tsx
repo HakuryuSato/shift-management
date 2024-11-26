@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import ShiftTimeInputPerDay from "./ShiftTimeInputPerDay";
+import ShiftTimeInputPerDay from "./OldShiftTimeInputPerDay";
 import {
   fetchAutoShiftSettings,
   sendAutoShiftSettings,
