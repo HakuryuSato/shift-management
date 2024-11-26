@@ -3,7 +3,7 @@ import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSet
 import { AttendanceQuery, Attendance } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
 import type { AutoShiftSettings } from "@/types/AutoShift";
-import type { Shift, ShiftQuery } from "@/types/Shift";
+import type { Shift, NewShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 
 /*
@@ -52,22 +52,45 @@ export async function fetchUsers(): Promise<User[]> {
 // シフト関連  ---------------------------------------------------------------------------------------------------
 // シフト取得
 export async function fetchShifts(
-  params: ShiftQuery = {}
+  params: NewShiftQuery = {}
 ): Promise<Shift[]> {
-  const {
-    user_id = '*',
-    year = new Date().getFullYear(),
-    month = new Date().getMonth() + 1,
-    start_time,
-    end_time,
-  } = params;
+  const { user_id, startTime: start_time, endTime: end_time } = params;
+  const queryParams = new URLSearchParams();
 
-  const query = start_time && end_time
-    ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
-    : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
+  if (user_id) {
+    queryParams.append('user_id', user_id.toString());
+  }
 
-  return await handleFetch<Shift[]>(query);
+  if (start_time && end_time) {
+    queryParams.append('filterStartTimeISO', start_time)
+    queryParams.append('filterEndTimeISO', end_time)
+  } else {
+    console.error('filterStartTimeISOとfilterEndTimeISOは必須です');
+    return [];
+  }
+
+  return await handleFetch<Shift[]>(
+    `/api/shifts?${queryParams.toString()}`
+  );
 }
+
+// export async function fetchShifts(
+//   params: ShiftQuery = {}
+// ): Promise<Shift[]> {
+//   const {
+//     user_id = '*',
+//     year = new Date().getFullYear(),
+//     month = new Date().getMonth() + 1,
+//     start_time,
+//     end_time,
+//   } = params;
+
+//   const query = start_time && end_time
+//     ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
+//     : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
+
+//   return await handleFetch<Shift[]>(query);
+// }
 
 
 

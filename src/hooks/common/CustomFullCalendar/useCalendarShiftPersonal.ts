@@ -6,14 +6,20 @@ import { useCustomFullCalendarStore } from '@stores/common/customFullCalendarSli
 import { fetchShifts } from '@/utils/client/apiClient';
 import { formatEventsForFullCalendar } from '@/utils/client/formatEventsForFullCalendar';
 
+import { toJapanISOString, getStartOfDay, getEndOfDay } from '@/utils/common/dateUtils';
+
 export function useCalendarShiftPersonal() {
   const userId = useUserHomeStore((state) => state.userId);
-  const { customFullCalendarCurrentMonth, setCustomFullCalendarPersonalShiftEvents } = useCustomFullCalendarStore();
+  const customFullCalendarCurrentMonth = useCustomFullCalendarStore((state) => state.customFullCalendarCurrentMonth);
+  const setCustomFullCalendarPersonalShiftEvents = useCustomFullCalendarStore((state) => state.setCustomFullCalendarPersonalShiftEvents);
+  const customFullCalendarStartDate = useCustomFullCalendarStore((state) => state.customFullCalendarStartDate);
+  const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate);
   const isUserCalendarViewVisible = useUserCalendarViewStore((state) => state.isUserCalendarViewVisible);
 
+  
   const { data: shifts, mutate } = useSWR(
-    isUserCalendarViewVisible ? `personal_shifts-${userId}-${customFullCalendarCurrentMonth}` : null,
-    () => fetchShifts({ user_id: userId, month: customFullCalendarCurrentMonth })
+    isUserCalendarViewVisible ? `personal_shifts-${userId}-${customFullCalendarStartDate}-${customFullCalendarEndDate}` : null,
+    () => fetchShifts({ user_id: userId, startTime: toJapanISOString(getStartOfDay(customFullCalendarStartDate)), endTime: toJapanISOString(getEndOfDay(customFullCalendarEndDate)) })
   );
 
   useEffect(() => {
