@@ -74,25 +74,6 @@ export async function fetchShifts(
   );
 }
 
-// export async function fetchShifts(
-//   params: ShiftQuery = {}
-// ): Promise<Shift[]> {
-//   const {
-//     user_id = '*',
-//     year = new Date().getFullYear(),
-//     month = new Date().getMonth() + 1,
-//     start_time,
-//     end_time,
-//   } = params;
-
-//   const query = start_time && end_time
-//     ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
-//     : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
-
-//   return await handleFetch<Shift[]>(query);
-// }
-
-
 
 // 祝日データの取得 ---------------------------------------------------------------------------------------------------
 export async function fetchHolidays(): Promise<Holiday[]> {
