@@ -1,5 +1,5 @@
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice"
-import { insertShift, updateShift, deleteShift } from "@/utils/client/serverActionClient"
+import { insertShift, updateShift, deleteShift, upsertAutoShift } from "@/utils/client/serverActionClient"
 import { useUserHomeStore } from "@/stores/user/userHomeSlice"
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice"
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
@@ -8,14 +8,24 @@ import { useCalendarShiftAllMembers } from "../CustomFullCalendar/useCalendarShi
 import { useCalendarShiftPersonal } from "../CustomFullCalendar/useCalendarShiftPersonal";
 
 export const useModalContainer = () => {
+    // Modal Container
     const modalMode = useModalContainerStore((state) => state.modalMode);
     const closeModal = useModalContainerStore((state) => state.closeModal);
+
+    // Modal Content
+    const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime)
+    const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime)
+
+    // User Home
     const userId = useUserHomeStore((state) => state.userId);
+
+    // Calendar
     const customFullCalendarRole = useCustomFullCalendarStore((state) => state.customFullCalendarRole);
     const customFullCalendarSelectedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate)
     const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent)
-    const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime)
-    const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime)
+    const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore((state) => state.customFullCalendarPersonalShiftEvents)
+
+    // useSWR mutate
     const { mutateAllShifts } = useCalendarShiftAllMembers()
     const { mutatePersonalShifts } = useCalendarShiftPersonal()
 
@@ -61,11 +71,12 @@ export const useModalContainer = () => {
 
             // 更新処理をここに追加
         } else if (modalMode === 'multiple-register') {
-            // 複数登録の処理をここに追加
-            // まとめて登録用のサーバーアクションを呼び出す？（曜日と時間を受け取り）
-            // サーバーアクション内で、getリクエストでshiftsからデータ取得し、登録されていない日付に登録？
-            // 毎月自動登録の設定をauto-shiftに送信する
-            // キャッシュでauto-shiftの状態も保存か？
+            
+            
+            // まとめて登録用のサーバーアクションを呼び出す（ロカストからAutoShiftSettingsの情報を取得しconstで作成、送信）
+            upsertAutoShift()
+
+            // isAutoShiftEnabledの値で別の処理(ここでは一旦console.log()してください)
 
         }
 
