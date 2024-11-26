@@ -42,13 +42,13 @@ export function useMultipleShiftRegister() {
     }
   }, [initialData]);
 
-  useEffect(() => {
-    if (fetchError) {
-      console.error(fetchError);
-      setError("自動シフト設定の取得に失敗しました。");
-      setDayTimes(defaultDayTimes);
-    }
-  }, [fetchError]);
+  // useEffect(() => {
+  //   if (fetchError) {
+  //     console.error(fetchError);
+  //     setError("自動シフト設定の取得に失敗しました。");
+  //     setDayTimes(defaultDayTimes);
+  //   }
+  // }, [fetchError]);
 
   return {
     dayTimes,

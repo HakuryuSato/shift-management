@@ -11,7 +11,7 @@ interface ShiftTimeInputPerDayProps {
 
 /*
 曜日ごとに時間を入力するためのコンポーネント
-注意：OldTimeDropDownを使用しているので、切替後に対応して
+注意：このコンポーネントはshiftにあるが使用中。
 
 */
 

@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import ShiftTimeInputPerDay from "@/components/shift/ShiftTimeInputPerDay";
 import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister";
-import { useMultipleShiftRegisterClickHandlers } from "@/hooks/common/Modal/useMultipleShiftRegisterClickHandlers";
 
 export const MultipleShiftRegister: React.FC = () => {
   const {
@@ -22,8 +21,6 @@ export const MultipleShiftRegister: React.FC = () => {
     isAutoShiftEnabled,
     error,
   } = useMultipleShiftRegister();
-
-  const { handleSubmit } = useMultipleShiftRegisterClickHandlers();
 
   return (
     <>
