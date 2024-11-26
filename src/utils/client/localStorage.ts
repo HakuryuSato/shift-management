@@ -1,3 +1,9 @@
+export const LOCAL_STORAGE_KEYS = {
+    MultipleShift_dayTimes: 'MultipleShift_dayTimes',
+    MultipleShift_isHolidayIncluded: 'MultipleShift_isHolidayIncluded',
+    MultipleShift_isEnabled: 'MultipleShift_isEnabled',
+  };
+
 export function getLocalStorageItem<T>(key: string, defaultValue: T): T {
     try {
         const storedValue = localStorage.getItem(key);
