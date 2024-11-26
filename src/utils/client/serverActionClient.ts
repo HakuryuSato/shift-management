@@ -9,12 +9,16 @@ import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShif
 import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
 import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
-
+import { upsertAutoShift as serverActionUpsertAutoShift } from '@/app/actions/upsertAutoShift';
 
 // 型
 import type { User } from '@/types/User';
 import type { Shift } from '@/types/Shift';
 import type { Attendance } from '@/types/Attendance'
+import type { AutoShiftSettings } from '@/types/AutoShift';
+
+
+
 
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
@@ -124,4 +128,27 @@ export async function updateShift(shiftData: Shift): Promise<Shift[] | null> {
  */
 export async function deleteShift(shiftId: Number): Promise<Shift | null> {
   return await handleServerAction(() => serverActionDeleteShift(shiftId));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// 自動シフト関連 ---------------------------------------------------------------------------------------------------
+/**
+ * 自動シフト設定をアップサートするサーバーアクションを呼び出す関数
+ * @param autoShiftData アップサートする自動シフトデータ
+ * @returns 成功メッセージまたは null
+ */
+export async function upsertAutoShift(
+  autoShiftData: AutoShiftSettings
+): Promise<{ message: string } | null> {
+  return await handleServerAction(() => serverActionUpsertAutoShift(autoShiftData));
 }
