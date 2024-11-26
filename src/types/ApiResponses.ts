@@ -1,5 +1,5 @@
 import InterFaceShiftQuery from '../types/InterFaceShiftQuery';
-import { AutoShiftSettings } from '../types/AutoShiftTypes';
+import { AutoShiftSettings } from './AutoShift';
 import { Holiday } from '../types/Holiday';
 
 // 共通のAPIレスポンス型

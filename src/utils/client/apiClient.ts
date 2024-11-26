@@ -2,7 +2,7 @@ import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/types/ApiResponses';
 import { AttendanceQuery, Attendance } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
-import type { AutoShiftSettings } from "@/types/AutoShiftTypes";
+import type { AutoShiftSettings } from "@/types/AutoShift";
 import type { Shift, ShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 

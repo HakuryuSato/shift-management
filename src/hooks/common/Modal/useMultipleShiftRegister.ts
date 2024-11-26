@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { fetchAutoShiftSettings } from "@/utils/client/apiClient";
 import { useUserHomeStore } from "@/stores/user/userHomeSlice";
-import type { AutoShiftSettings, AutoShiftTime } from "@/types/AutoShiftTypes";
+import type { AutoShiftSettings, AutoShiftTime } from "@/types/AutoShift";
 
 const defaultDayTimes: AutoShiftTime[] = Array.from(
   { length: 6 },
@@ -21,34 +21,29 @@ export function useMultipleShiftRegister() {
   const [isAutoShiftEnabled, setIsAutoShiftEnabled] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { data: initialData, error: fetchError, mutate } = useSWR(
+  const { data: autoShiftSettings, error: fetchError, mutate } = useSWR(
     user_id ? `/auto_shift_settings/${user_id}` : null,
     () => fetchAutoShiftSettings(String(user_id))
   );
 
+  // autoShiftSettingsがあるならば、取得？
+
+
   useEffect(() => {
-    if (initialData) {
+    if (autoShiftSettings) {
       setDayTimes(
-        initialData.auto_shift_times && initialData.auto_shift_times.length > 0
-          ? initialData.auto_shift_times
+        autoShiftSettings.auto_shift_times && autoShiftSettings.auto_shift_times.length > 0
+          ? autoShiftSettings.auto_shift_times
           : defaultDayTimes
       );
-      setIsHolidayIncluded(initialData.is_holiday_included || false);
-      setIsAutoShiftEnabled(initialData.is_enabled || false);
+      setIsHolidayIncluded(autoShiftSettings.is_holiday_included || false);
+      setIsAutoShiftEnabled(autoShiftSettings.is_enabled || false);
     } else {
       setDayTimes(defaultDayTimes);
       setIsHolidayIncluded(false);
       setIsAutoShiftEnabled(false);
     }
-  }, [initialData]);
-
-  // useEffect(() => {
-  //   if (fetchError) {
-  //     console.error(fetchError);
-  //     setError("自動シフト設定の取得に失敗しました。");
-  //     setDayTimes(defaultDayTimes);
-  //   }
-  // }, [fetchError]);
+  }, [autoShiftSettings]);
 
   return {
     dayTimes,

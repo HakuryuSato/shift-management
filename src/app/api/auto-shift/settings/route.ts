@@ -6,7 +6,7 @@ import {
   AutoShiftTime,
   AutoShiftSettingsUpsertData,
   AutoShiftTimeUpsertData,
-} from '@/types/AutoShiftTypes';
+} from '@/types/AutoShift';
 
 // GET /api/auto_shift/settings
 // 現在の設定の取得

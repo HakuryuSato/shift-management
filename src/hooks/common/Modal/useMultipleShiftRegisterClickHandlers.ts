@@ -1,7 +1,7 @@
 import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { sendAutoShiftSettings } from "@/utils/client/apiClient";
-import { AutoShiftSettings } from "@/types/AutoShiftTypes";
+import { AutoShiftSettings } from "@/types/AutoShift";
 import { useMultipleShiftRegister } from "./useMultipleShiftRegister";
 
 // クリックの処理は全てModalContainerに移動すること
