@@ -2,25 +2,35 @@ import React from "react";
 import {
   Alert,
   Box,
-  Button,
   Checkbox,
   DialogContent,
-  DialogTitle,
   FormControlLabel,
   Typography,
 } from "@mui/material";
 import ShiftTimeInputPerDay from "@/components/shift/OldShiftTimeInputPerDay";
 import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister";
+import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
 export const MultipleShiftRegister: React.FC = () => {
   const {
-    dayTimes,
     setDayTimes,
-    isHolidayIncluded,
     setIsHolidayIncluded,
-    isAutoShiftEnabled,
+    setIsAutoShiftEnabled,
     error,
   } = useMultipleShiftRegister();
+
+  const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore(
+    (state) => state.multipleShiftRegisterIsCronJobsEnabled,
+  );
+  const dayTimes = useMultipleShiftRegisterStore(
+    (state) => state.multipleShiftRegisterDayTimes,
+  );
+  const isHolidayIncluded = useMultipleShiftRegisterStore(
+    (state) => state.multipleShiftRegisterIsHolidayIncluded,
+  );
+  const isAutoShiftEnabled = useMultipleShiftRegisterStore(
+    (state) => state.multipleShiftRegisterIsAutoShiftEnabled,
+  );
 
   return (
     <>
@@ -38,9 +48,8 @@ export const MultipleShiftRegister: React.FC = () => {
           height: "100%",
         }}
       >
-
         <ShiftTimeInputPerDay
-          disabled={isAutoShiftEnabled}
+          disabled={multipleShiftRegisterIsCronJobsEnabled}
           initialDayTimes={dayTimes}
           onChange={(data) => setDayTimes(data)}
         />
@@ -63,8 +72,8 @@ export const MultipleShiftRegister: React.FC = () => {
             control={
               <Checkbox
                 checked={isHolidayIncluded}
-                onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-                disabled={isAutoShiftEnabled}
+                onChange={(event) => setIsHolidayIncluded(event.target.checked)}
+                disabled={multipleShiftRegisterIsCronJobsEnabled}
               />
             }
           />
@@ -73,9 +82,9 @@ export const MultipleShiftRegister: React.FC = () => {
             label="毎月20日に自動で登録する"
             control={
               <Checkbox
-                checked={isHolidayIncluded}
-                onChange={() => setIsHolidayIncluded(!isHolidayIncluded)}
-                disabled={isAutoShiftEnabled}
+                checked={isAutoShiftEnabled}
+                onChange={(event) => setIsAutoShiftEnabled(event.target.checked)}
+                disabled={multipleShiftRegisterIsCronJobsEnabled}
               />
             }
           />
