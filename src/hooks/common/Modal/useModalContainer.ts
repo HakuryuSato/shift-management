@@ -1,11 +1,25 @@
-import { useModalContainerStore } from "@/stores/common/modalContainerSlice"
+// サーバーアクション
 import { insertShift, updateShift, deleteShift, upsertAutoShift } from "@/utils/client/serverActionClient"
+
+// カスタムHooks
+import { useCalendarShiftAllMembers } from "../CustomFullCalendar/useCalendarShiftAllmembers";
+import { useCalendarShiftPersonal } from "../CustomFullCalendar/useCalendarShiftPersonal";
+
+// Store
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice"
 import { useUserHomeStore } from "@/stores/user/userHomeSlice"
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice"
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
+import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
+import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister"
+
+
+// util関数
 import { toJapanISOString } from "@/utils/toJapanISOString";
-import { useCalendarShiftAllMembers } from "../CustomFullCalendar/useCalendarShiftAllmembers";
-import { useCalendarShiftPersonal } from "../CustomFullCalendar/useCalendarShiftPersonal";
+
+// 型
+import type { AutoShiftSettings } from "@/types/AutoShift";
+
 
 export const useModalContainer = () => {
     // Modal Container
@@ -24,10 +38,20 @@ export const useModalContainer = () => {
     const customFullCalendarSelectedDate = useCustomFullCalendarStore((state) => state.customFullCalendarClickedDate)
     const customFullCalendarClickedEvent = useCustomFullCalendarStore((state) => state.customFullCalendarClickedEvent)
     const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore((state) => state.customFullCalendarPersonalShiftEvents)
+    const customFullCalendarStartDate = useCustomFullCalendarStore((state) => state.customFullCalendarStartDate)
+    const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate)
+
+
+    // Multiple Shift Register
+    const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore.getState().multipleShiftRegisterDayTimes;
+    const multipleShiftRegisterIsHolidayIncluded = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsHolidayIncluded;
+    const multipleShiftRegisterIsAutoShiftEnabled = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsAutoShiftEnabled;
+    const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsCronJobsEnabled;
 
     // useSWR mutate
     const { mutateAllShifts } = useCalendarShiftAllMembers()
     const { mutatePersonalShifts } = useCalendarShiftPersonal()
+    const { mutateAutoShiftSettings } = useMultipleShiftRegister()
 
 
     // 確認、保存、削除のテキストが入る親モーダルのボタン
@@ -69,14 +93,37 @@ export const useModalContainer = () => {
             })
 
 
-            // 更新処理をここに追加
+            // 曜日でまとめてなら
         } else if (modalMode === 'multiple-register') {
-            
-            
-            // まとめて登録用のサーバーアクションを呼び出す（ロカストからAutoShiftSettingsの情報を取得しconstで作成、送信）
-            upsertAutoShift()
 
-            // isAutoShiftEnabledの値で別の処理(ここでは一旦console.log()してください)
+
+            // AutoShift用の処理  ---------------------------------------------------------------------------------------------------
+            // AutoShift 送信用データ
+            const autoShiftData: AutoShiftSettings = {
+                user_id: userId,
+                is_holiday_included: multipleShiftRegisterIsHolidayIncluded,
+                is_enabled: multipleShiftRegisterIsAutoShiftEnabled,
+                auto_shift_times: multipleShiftRegisterDayTimes,
+            };
+
+            // シフト自動登録がサーバー側で有効の場合
+            if (multipleShiftRegisterIsCronJobsEnabled) {
+                // 解除してサーバーに送信
+                autoShiftData.is_enabled = false
+                await upsertAutoShift(autoShiftData)
+
+                // 再取得してIsCronJobsEnabledを更新(useMultipleShiftRegisterでuseEffect処理)
+                mutateAutoShiftSettings()
+            } else { // 無効の場合
+                //送信
+                await upsertAutoShift(autoShiftData)
+            }
+
+            // MultipleShift用の処理 ---------------------------------------------------------------------------------------------------
+            // 
+            // customFullCalendarPersonalShiftEvents
+
+
 
         }
 
