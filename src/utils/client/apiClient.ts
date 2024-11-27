@@ -6,10 +6,8 @@ import type { Shift, NewShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 
 /*
-
 [クライアントサイドからAPIを呼び出す関数群]
 response.dataからの展開はこの関数内で行い、展開後のデータをクライアントサイドへ返す。
-
 */
 
 // 共通のfetchエラーハンドリング関数
@@ -43,8 +41,6 @@ export async function fetchUserByUsername(username: string): Promise<User | null
 export async function fetchUsers(): Promise<User[]> {
   return await handleFetch<User[]>(`/api/users`);
 }
-
-
 
 
 
@@ -86,19 +82,19 @@ export async function fetchHolidays(): Promise<Holiday[]> {
 // }
 
 // 自動シフト設定の取得
-export async function fetchAutoShiftSettings(userId?: string): Promise<AutoShiftSettings | null> {
+export async function fetchAutoShiftSettings(userId?: string): Promise<AutoShiftSettings[]> {
   const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
-  return await handleFetch<AutoShiftSettings>(query);
+  return await handleFetch<AutoShiftSettings[]>(query);
 }
 
-// 自動シフト設定の保存 サーバーアクションに移行予定
-export async function sendAutoShiftSettings(autoShiftSettingData: any) {
-  return await handleFetch<AutoShiftSettings>("/api/auto-shift/settings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(autoShiftSettingData),
-  });
-}
+// // 自動シフト設定の保存 サーバーアクションに移行予定 // 切替後問題がなければ削除すること
+// export async function sendAutoShiftSettings(autoShiftSettingData: any) {
+//   return await handleFetch<AutoShiftSettings>("/api/auto-shift/settings", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(autoShiftSettingData),
+//   });
+// }
 
 // 出退勤  ---------------------------------------------------------------------------------------------------
 // 打刻データ取得
