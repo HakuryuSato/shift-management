@@ -4,9 +4,10 @@ import { signIn } from "next-auth/react";
 import {
   Box,
   Button,
+  CircularProgress,
+  Container,
   TextField,
   Typography,
-  Container,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 
@@ -19,8 +20,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true); // ローディング開始
     const res = await signIn("credentials", {
       redirect: false,
       input1,
@@ -28,6 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
       role,
     });
 
+    setLoading(false); // ローディング終了
     if (res && res.error) {
       setError("ログインに失敗しました。入力内容を確認してください。");
     } else if (res && res.ok) {
@@ -59,8 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
             onChange={(e) =>
               role === "user"
                 ? setInput2(e.target.value)
-                : setInput1(e.target.value)
-            }
+                : setInput1(e.target.value)}
             margin="normal"
           />
           {role === "admin" && (

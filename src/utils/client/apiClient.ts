@@ -1,16 +1,13 @@
 import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
-import type { GetShiftAPIResponse, AutoShiftSettingsAPIResponse, GetAutoShiftSettingsAPIResponse, GetHolidaysAPIResponse } from '@/types/ApiResponses';
 import { AttendanceQuery, Attendance } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
-import type { AutoShiftSettings } from "@/types/AutoShiftTypes";
-import type { Shift, ShiftQuery } from "@/types/Shift";
+import type { AutoShiftSettings } from "@/types/AutoShift";
+import type { Shift, NewShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 
 /*
-
 [クライアントサイドからAPIを呼び出す関数群]
 response.dataからの展開はこの関数内で行い、展開後のデータをクライアントサイドへ返す。
-
 */
 
 // 共通のfetchエラーハンドリング関数
@@ -47,28 +44,30 @@ export async function fetchUsers(): Promise<User[]> {
 
 
 
-
-
 // シフト関連  ---------------------------------------------------------------------------------------------------
 // シフト取得
 export async function fetchShifts(
-  params: ShiftQuery = {}
+  params: NewShiftQuery = {}
 ): Promise<Shift[]> {
-  const {
-    user_id = '*',
-    year = new Date().getFullYear(),
-    month = new Date().getMonth() + 1,
-    start_time,
-    end_time,
-  } = params;
+  const { user_id, startTime: start_time, endTime: end_time } = params;
+  const queryParams = new URLSearchParams();
 
-  const query = start_time && end_time
-    ? `/api/getShift?user_id=${user_id}&start_time=${start_time}&end_time=${end_time}`
-    : `/api/getShift?user_id=${user_id}&year=${year}&month=${month}`;
+  if (user_id) {
+    queryParams.append('user_id', user_id.toString());
+  }
 
-  return await handleFetch<Shift[]>(query);
+  if (start_time && end_time) {
+    queryParams.append('filterStartTimeISO', start_time)
+    queryParams.append('filterEndTimeISO', end_time)
+  } else {
+    console.error('filterStartTimeISOとfilterEndTimeISOは必須です');
+    return [];
+  }
+
+  return await handleFetch<Shift[]>(
+    `/api/shifts?${queryParams.toString()}`
+  );
 }
-
 
 
 // 祝日データの取得 ---------------------------------------------------------------------------------------------------
@@ -83,19 +82,19 @@ export async function fetchHolidays(): Promise<Holiday[]> {
 // }
 
 // 自動シフト設定の取得
-export async function fetchAutoShiftSettings(userId?: string): Promise<AutoShiftSettings | null> {
+export async function fetchAutoShiftSettings(userId?: string): Promise<AutoShiftSettings[]> {
   const query = userId ? `/api/auto-shift/settings?user_id=${userId}` : `/api/auto-shift/settings`;
-  return await handleFetch<AutoShiftSettings>(query);
+  return await handleFetch<AutoShiftSettings[]>(query);
 }
 
-// 自動シフト設定の保存 サーバーアクションに移行予定
-export async function sendAutoShiftSettings(autoShiftSettingData: any) {
-  return await handleFetch<AutoShiftSettings>("/api/auto-shift/settings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(autoShiftSettingData),
-  });
-}
+// // 自動シフト設定の保存 サーバーアクションに移行予定 // 切替後問題がなければ削除すること
+// export async function sendAutoShiftSettings(autoShiftSettingData: any) {
+//   return await handleFetch<AutoShiftSettings>("/api/auto-shift/settings", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(autoShiftSettingData),
+//   });
+// }
 
 // 出退勤  ---------------------------------------------------------------------------------------------------
 // 打刻データ取得

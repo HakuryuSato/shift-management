@@ -141,8 +141,11 @@ export const useAdminAttendanceTopBar = () => {
       // SHIFTモードの際の次の週への処理をここに記述
     } else {
       // ATTENDANCEモードの際の次の週への処理をここに記述
+      // 来月の日付取得
+      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
     }
-  }, [adminHomeMode]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
 
   return {
     handleClickToShiftPage: handleClickTopLeftButton,

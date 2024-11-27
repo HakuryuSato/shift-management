@@ -1,28 +1,34 @@
 import React from "react";
-import { Box, Button, IconButton, Modal } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, Modal } from "@mui/material";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { ModalContent } from "./ModalContent";
 import { ModalTopBar } from "./ModalTopBar";
 import { useModalContainer } from "@/hooks/common/Modal/useModalContainer";
+import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
 export const ModalContainer: React.FC = () => {
+    // State
     const isModalVisible = useModalContainerStore((state) =>
         state.isModalVisible
     );
     const closeModal = useModalContainerStore((state) => state.closeModal);
     const modalMode = useModalContainerStore((state) => state.modalMode);
+    const multipleShiftRegisterIsCronJobsEnabled =
+        useMultipleShiftRegisterStore((state) =>
+            state.multipleShiftRegisterIsCronJobsEnabled
+        );
+
+    // Hooks
     const { handleClickModalContainerButton } = useModalContainer();
 
-    const modeText: { [key: string]: string } = {
-        confirm: "確認",
-        register: "保存",
-        update: "保存",
-        delete: "削除",
-
-        "multiple-register": "保存",
+    const modeText = {
+        "confirm": "確認",
+        "register": "保存",
+        "update": "保存",
+        "delete": "削除",
+        "multiple-register": multipleShiftRegisterIsCronJobsEnabled
+            ? "解除"
+            : "保存",
     };
 
     return (
@@ -63,7 +69,9 @@ export const ModalContainer: React.FC = () => {
                         variant="contained"
                         onClick={() => handleClickModalContainerButton()}
                         sx={{
-                            backgroundColor: modalMode === "delete"
+                            backgroundColor: modalMode === "delete" ||
+                                    (modalMode === "multiple-register" &&
+                                        multipleShiftRegisterIsCronJobsEnabled)
                                 ? "red"
                                 : "default",
                         }}

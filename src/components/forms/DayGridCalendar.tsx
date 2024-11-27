@@ -13,7 +13,7 @@ import useSWR from "swr";
 import ShiftRegisterForm from "@components/common/ShiftRegisterForm";
 import formatShiftsForFullCalendarEvent from "@/utils/formatShiftsForFullCalendarEvent";
 import calcSumShiftHourPerDay from "@utils/calcSumShiftHourPerDay";
-import AutoShiftSettingsForm from "@components/shift/AutoShiftSettingsForm";
+// import AutoShiftSettingsForm from "@components/shift/AutoShiftSettingsForm";
 
 // 変換用関数
 import convertJtcToIsoString from "@utils/convertJtcToIsoString";
@@ -258,14 +258,14 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
     // await fetchSendShift(shiftData);
   };
 
-  const handleAutoShiftInputClick = () => {
-    setIsAutoShiftOpen(true)
-  };
+  // const handleAutoShiftInputClick = () => {
+  //   setIsAutoShiftOpen(true)
+  // };
 
-  const closeAutoShiftSettingsForm = async () => {
-    setIsAutoShiftOpen(false)
-    await updateEventData();
-  };
+  // const closeAutoShiftSettingsForm = async () => {
+  //   setIsAutoShiftOpen(false)
+  //   await updateEventData();
+  // };
   
 
   // 以下レンダリング-------------------------------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         }}
         footerToolbar={{
           left: "prev",
-          center: "multipleShiftInputButton autoShiftInputButton",
+          center: "multipleShiftInputButton",
           right: "next",
         }}
         customButtons={{
@@ -303,10 +303,10 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
             text: "曜日でまとめて",
             click: handleMutipleShiftInputClick,
           },
-          autoShiftInputButton:{
-            text: "自動入力設定",
-            click: handleAutoShiftInputClick,
-          }
+          // autoShiftInputButton:{
+          //   text: "自動入力設定",
+          //   click: handleAutoShiftInputClick,
+          // }
         }}
         dayCellClassNames={(info) => {
           const classes = [];
@@ -357,11 +357,11 @@ const DayGridCalendar: React.FC<DayGridCalendarProps> = (
         currentMonth={currentMonth}
       />
 
-        <AutoShiftSettingsForm
+        {/* <AutoShiftSettingsForm
         userId={userId}
         isOpen={isAutoShiftOpen}
         onClose={closeAutoShiftSettingsForm}
-        />
+        /> */}
       
 
     </div>

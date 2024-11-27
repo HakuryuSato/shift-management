@@ -1,4 +1,3 @@
-// src/components/user/UserHomeAppBar.tsx
 "use client";
 
 // ライブラリ
@@ -26,19 +25,30 @@ import {
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice";
 import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
-
+import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 
 export function UserHomeAppBar() {
+  // Home
+  const userName = useUserHomeStore((state) => state.userName);
+
+  // App Bar
   const userHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.userHomeAppBarCurrentView);
   const setUserHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.setUserHomeAppBarCurrentView);
   const isUserHomeAppBarDrawerOpen = useUserHomeAppBarStore((state) => state.isUserHomeAppBarDrawerOpen);
   const openUserHomeAppBarDrawer = useUserHomeAppBarStore((state) => state.openUserHomeAppBarDrawer);
   const closeUserHomeAppBarDrawer = useUserHomeAppBarStore((state) => state.closeUserHomeAppBarDrawer);
   const userHomeAppBarMenuItems = useUserHomeAppBarStore((state) => state.userHomeAppBarMenuItems);
-  const isUserHomeAppBarVisible = useUserHomeAppBarStore((state)=>state.isUserHomeAppBarVisible)
+  const isUserHomeAppBarVisible = useUserHomeAppBarStore((state)=>state.isUserHomeAppBarVisible);
+
+  // Calendar
   const customFullCalendarCurrentMonth = useCustomFullCalendarStore((state) => state.customFullCalendarCurrentMonth);
+
+  // Calendar View
   const setIsUserCalendarViewVisible = useUserCalendarViewStore((state) => state.setIsUserCalendarViewVisible);
+
+  // FAB
   const setIsUserHomeFABVisible = useUserHomeFABStore((state) => state.setIsUserHomeFABVisible);
+
 
   // 現在のビューがHomeかどうかを判定
   const isHomeView = userHomeAppBarCurrentView === "Home";
@@ -61,7 +71,7 @@ export function UserHomeAppBar() {
   // ビューを切り替える関数
   const handleChangeView = (view: UserHomeAppBarView) => {
     setUserHomeAppBarCurrentView(view);
-    
+
     // Home以外では非表示
     setIsUserHomeFABVisible(view === "Home");
     setIsUserCalendarViewVisible(view === "Home");
@@ -109,7 +119,7 @@ export function UserHomeAppBar() {
         <List>
           {/* タイトル部分 */}
           <Typography variant="h6" sx={{ padding: "8px" }}>
-            出退勤管理
+            {userName}
           </Typography>
           <Divider />
 

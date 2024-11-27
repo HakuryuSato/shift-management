@@ -4,7 +4,7 @@ import {toJapanDateString} from '@/utils/toJapanDateString';
 import type InterFaceShiftQuery from '@/types/InterFaceShiftQuery';
 import type { Holiday } from '@/types/Holiday';
 import type InterFaceTableUsers from '@/types/InterFaceTableUsers';
-import type { AutoShiftTime } from '@/types/AutoShiftTypes';
+import type { AutoShiftTime } from '@/types/AutoShift';
 
 /*
 シフトの自動登録設定に従い、

@@ -1,4 +1,13 @@
-// GETリクエストで使用している型
+import type { User } from '@/types/User'
+
+// 新たなGETリクエスト用の型
+export type NewShiftQuery = Partial<Pick<Shift, 'user_id'>> & {
+  startTime?: string;
+  endTime?: string;
+};
+
+
+// 廃止予定 GETリクエストで使用している型
 export interface ShiftQuery {
     user_id?: string | number,
     shift_id?: number,

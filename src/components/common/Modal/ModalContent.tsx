@@ -5,9 +5,11 @@ import { TimeDropdown } from "@/components/common/Modal/TimeDropdown";
 import { UserDropdown } from "./UserDropdown";
 import { useModalContent } from "@/hooks/common/Modal/useModalContent";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
+import { MultipleShiftRegister } from "./MultipleShiftRegister";
 
 export const ModalContent: React.FC = () => {
-  const { modalRole, modalMode } = useModalContainerStore();
+  const modalRole = useModalContainerStore((state) => state.modalRole);
+  const modalMode = useModalContainerStore((state) => state.modalMode);
 
   const {
     handleChangeStartEndTime,
@@ -35,18 +37,23 @@ export const ModalContent: React.FC = () => {
       justifyContent="center"
       sx={{ gap: 2 }}
     >
+      {/* 削除モードならテキスト*/}
       <Box display={modalMode === "delete" ? "block" : "none"}>
         <Typography>このシフトを削除しますか？</Typography>
       </Box>
+
       {/* 選択された日付 */}
       <Box>
-        <Typography
-          variant={modalMode === "register" || modalMode === "update"
-            ? "body1"
-            : "h5"}
-        >
-          {modalContentSelectedDate}
-        </Typography>
+        {/* 複数シフトの時だけ非表示 */}
+        {modalMode !== "multiple-register" && (
+          <Typography
+            variant={modalMode === "register" || modalMode === "update"
+              ? "body1"
+              : "h5"}
+          >
+            {modalContentSelectedDate}
+          </Typography>
+        )}
       </Box>
 
       {/* 管理者なら */}
@@ -64,7 +71,7 @@ export const ModalContent: React.FC = () => {
         </>
       )}
 
-      {/* 登録または更新なら */}
+      {/* 役職共通 登録または更新なら */}
       <Box
         display={modalMode === "register" || modalMode === "update"
           ? "flex"
@@ -102,7 +109,12 @@ export const ModalContent: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* 削除モードのテキスト表示 */}
+      {/* 複数シフト登録なら */}
+      <Box
+        display={(modalMode === "multiple-register") ? "block" : "none"}
+      >
+        <MultipleShiftRegister />
+      </Box>
     </Box>
   );
 };
