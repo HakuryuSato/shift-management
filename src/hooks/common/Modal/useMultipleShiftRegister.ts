@@ -113,11 +113,7 @@ export function useMultipleShiftRegister() {
 
     const isClonJobs = autoShiftSettings[0].is_enabled
     setMultipleShiftRegisterIsCronJobsEnabled(isClonJobs)
-
-    console.log('isClonJobs',isClonJobs)
-    console.log('multipleShiftRegisterIsCronJobsEnabled',multipleShiftRegisterIsCronJobsEnabled)
-    
-
+ 
   }, [autoShiftSettings, multipleShiftRegisterIsCronJobsEnabled, setMultipleShiftRegisterIsCronJobsEnabled]);
 
   return {
