@@ -13,17 +13,22 @@ export const ModalContainer: React.FC = () => {
     );
     const closeModal = useModalContainerStore((state) => state.closeModal);
     const modalMode = useModalContainerStore((state) => state.modalMode);
+    const multipleShiftRegisterIsCronJobsEnabled =
+        useMultipleShiftRegisterStore((state) =>
+            state.multipleShiftRegisterIsCronJobsEnabled
+        );
 
     // Hooks
     const { handleClickModalContainerButton } = useModalContainer();
-    
 
     const modeText = {
         "confirm": "確認",
         "register": "保存",
         "update": "保存",
         "delete": "削除",
-        "multiple-register": "保存",
+        "multiple-register": multipleShiftRegisterIsCronJobsEnabled
+            ? "解除"
+            : "保存",
     };
 
     return (
@@ -64,7 +69,9 @@ export const ModalContainer: React.FC = () => {
                         variant="contained"
                         onClick={() => handleClickModalContainerButton()}
                         sx={{
-                            backgroundColor: modalMode === "delete"
+                            backgroundColor: modalMode === "delete" ||
+                                    (modalMode === "multiple-register" &&
+                                        multipleShiftRegisterIsCronJobsEnabled)
                                 ? "red"
                                 : "default",
                         }}
