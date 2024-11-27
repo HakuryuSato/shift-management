@@ -7,7 +7,7 @@ import {
   FormControlLabel,
   Typography,
 } from "@mui/material";
-import ShiftTimeInputPerDay from "@/components/shift/OldShiftTimeInputPerDay";
+import {ShiftTimeInputPerDay} from "./ShiftTimeInputPerDay";
 import { useMultipleShiftRegister } from "@/hooks/common/Modal/useMultipleShiftRegister";
 import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
@@ -35,7 +35,7 @@ export const MultipleShiftRegister: React.FC = () => {
   return (
     <>
       <Typography sx={{ textAlign: "center" }}>
-        曜日でまとめて登録{isAutoShiftEnabled ? "：現在有効" : ""}
+        曜日でまとめて登録{multipleShiftRegisterIsCronJobsEnabled ? "：自動化中" : ""}
       </Typography>
 
       <DialogContent
