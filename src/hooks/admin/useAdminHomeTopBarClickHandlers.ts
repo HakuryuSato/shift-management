@@ -145,7 +145,7 @@ export const useAdminAttendanceTopBar = () => {
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
     }
-  }, [adminHomeMode]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
 
   return {
     handleClickToShiftPage: handleClickTopLeftButton,
