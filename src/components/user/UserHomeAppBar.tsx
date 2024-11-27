@@ -25,10 +25,12 @@ import {
 import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
 import { useUserCalendarViewStore } from "@stores/user/userCalendarViewSlice";
 import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
-import { useUserHomeUserSession } from "@/hooks/user/useUserHomeUserSession";
-
+import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 
 export function UserHomeAppBar() {
+  // Home
+  const userName = useUserHomeStore((state) => state.userName);
+
   // App Bar
   const userHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.userHomeAppBarCurrentView);
   const setUserHomeAppBarCurrentView = useUserHomeAppBarStore((state) => state.setUserHomeAppBarCurrentView);
@@ -46,7 +48,6 @@ export function UserHomeAppBar() {
 
   // FAB
   const setIsUserHomeFABVisible = useUserHomeFABStore((state) => state.setIsUserHomeFABVisible);
-
 
 
   // 現在のビューがHomeかどうかを判定
@@ -70,7 +71,7 @@ export function UserHomeAppBar() {
   // ビューを切り替える関数
   const handleChangeView = (view: UserHomeAppBarView) => {
     setUserHomeAppBarCurrentView(view);
-    
+
     // Home以外では非表示
     setIsUserHomeFABVisible(view === "Home");
     setIsUserCalendarViewVisible(view === "Home");
@@ -118,7 +119,7 @@ export function UserHomeAppBar() {
         <List>
           {/* タイトル部分 */}
           <Typography variant="h6" sx={{ padding: "8px" }}>
-            出退勤管理
+            {userName}
           </Typography>
           <Divider />
 
