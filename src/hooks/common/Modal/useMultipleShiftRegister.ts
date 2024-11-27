@@ -19,7 +19,7 @@ const defaultDayTimes: AutoShiftTime[] = Array.from(
 export function useMultipleShiftRegister() {
   const user_id = useUserHomeStore((state) => state.userId);
 
-  // Zustandストアから状態を個別に取得
+  // Multiple Shift Register
   const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore(
     (state) => state.multipleShiftRegisterDayTimes
   );
@@ -49,6 +49,10 @@ export function useMultipleShiftRegister() {
   );
   const setMultipleShiftRegisterError = useMultipleShiftRegisterStore(
     (state) => state.setMultipleShiftRegisterError
+  );
+  
+  const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore(
+    (state) => state.multipleShiftRegisterIsCronJobsEnabled
   );
 
 
@@ -107,10 +111,14 @@ export function useMultipleShiftRegister() {
   useEffect(() => {
     if (!autoShiftSettings) return
 
-    const isClonJobs = autoShiftSettings?.is_enabled
+    const isClonJobs = autoShiftSettings[0].is_enabled
     setMultipleShiftRegisterIsCronJobsEnabled(isClonJobs)
 
-  }, [autoShiftSettings, setMultipleShiftRegisterIsCronJobsEnabled]);
+    console.log('isClonJobs',isClonJobs)
+    console.log('multipleShiftRegisterIsCronJobsEnabled',multipleShiftRegisterIsCronJobsEnabled)
+    
+
+  }, [autoShiftSettings, multipleShiftRegisterIsCronJobsEnabled, setMultipleShiftRegisterIsCronJobsEnabled]);
 
   return {
     dayTimes: multipleShiftRegisterDayTimes,
