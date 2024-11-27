@@ -4,7 +4,7 @@ import { useUserHomeStore } from '@/stores/user/userHomeSlice';
 import type { CustomNextAuthUser } from '@/types/CustomNextAuthUser';
 
 export function useUserHomeUserSession() {
-  const { setUserData } = useUserHomeStore();
+  const setUserData = useUserHomeStore((state) => state.setUserData);
   const { data: session } = useSession();
 
 
