@@ -79,7 +79,7 @@ export const MultipleShiftRegister: React.FC = () => {
           />
 
           <FormControlLabel
-            label="毎月20日に自動で登録する"
+            label="毎月20日に翌月分を自動で登録する"
             control={
               <Checkbox
                 checked={isAutoShiftEnabled}
