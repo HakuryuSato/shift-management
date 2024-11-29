@@ -1,75 +1,24 @@
 "use client";
 
 // ライブラリ
-import React, { useCallback } from "react";
+import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import QrCodeIcon from "@mui/icons-material/QrCode2";
-import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 // 状態管理
-import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 import { useUserQrCodeReaderViewStore } from "@/stores/user/userQrCodeReaderViewSlice";
-import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
-import { useUserSnackBarStore } from "@/stores/user/userHomeSnackBarSlice";
-import { useUserCalendarViewStore } from "@/stores/user/userCalendarViewSlice";
-import { useUserHomeAppBarStore } from "@/stores/user/userHomeAppBarSlice";
 
-// サーバーアクション
-import { punchAttendance } from "@/utils/client/serverActionClient";
+// カスタムフック
+import { useUserQrCodeReaderView } from "@/hooks/user/useUserQrCodeReaderView";
 
 export function UserQrCodeReader() {
-  const isQRCodeReaderVisible = useUserQrCodeReaderViewStore((state) =>
-    state.isQRCodeReaderVisible
-  );
-  const hideQRCodeReader = useUserQrCodeReaderViewStore((state) =>
-    state.hideQRCodeReader
-  );
-  const setIsUserHomeFABVisible = useUserHomeFABStore((state) =>
-    state.setIsUserHomeFABVisible
-  );
-  const userId = useUserHomeStore((state) => state.userId);
-  const showUserSnackBar = useUserSnackBarStore((state) =>
-    state.showUserSnackBar
-  );
-  const setIsUserCalendarViewVisible = useUserCalendarViewStore((state) =>
-    state.setIsUserCalendarViewVisible
-  );
-  const showUserHomeAppBar = useUserHomeAppBarStore((state) =>
-    state.showUserHomeAppBar
+  const isQRCodeReaderVisible = useUserQrCodeReaderViewStore(
+    (state) => state.isQRCodeReaderVisible
   );
 
-  // 閉じる
-  const handleClose = () => {
-    hideQRCodeReader();
-    setIsUserHomeFABVisible(true);
-    setIsUserCalendarViewVisible(true);
-    showUserHomeAppBar();
-  };
-
-  // エラー時
-  const handleError = (error: any) => {
-    console.error("QRコードの読み取りエラー:", error);
-  };
-
-  // QRコード認識時
-  const handleScan = async (detectedCodes: IDetectedBarcode[]) => {
-    console.log("handleScan");
-    const code = detectedCodes[0];
-    if (!code) return;
-
-    const decodedText = code.rawValue;
-    if (decodedText === "ATTENDANCE_QR") {
-      try {
-        await punchAttendance(userId);
-        handleClose();
-        showUserSnackBar("打刻完了しました", "success");
-      } catch (error) {
-        console.error(error);
-        handleClose();
-      }
-    }
-  };
+  const { handleClose, handleError, handleScan } = useUserQrCodeReaderView();
 
   // Hooksの呼び出し後に条件分岐を行う
   if (!isQRCodeReaderVisible) return null;

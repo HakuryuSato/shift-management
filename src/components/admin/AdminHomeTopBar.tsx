@@ -109,14 +109,14 @@ export const AdminHomeTopBar: React.FC = () => {
         </Typography>
 
         {/* Prevボタン */}
-        {/* <IconButton size="small" onClick={handleClickPrevButton}>
+        <IconButton size="small" onClick={handleClickPrevButton}>
           <ArrowBackIosNewIcon />
-        </IconButton> */}
+        </IconButton>
 
         {/* Nextボタン */}
-        {/* <IconButton size="small" onClick={handleClickNextButton}>
+        <IconButton size="small" onClick={handleClickNextButton}>
           <ArrowForwardIosIcon />
-        </IconButton> */}
+        </IconButton>
 
       </Box>
     </>

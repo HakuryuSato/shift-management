@@ -1,12 +1,21 @@
+// ライブラリ
 import { useEffect, useMemo } from 'react';
+
+// Store
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
+import { useAttendanceTablePersonalStore } from '@/stores/admin/attendanceTablePersonalSlice';
+
+// Utils
 import {
   generateDateRange,
   formatDateStringToMM_DD_Day,
   formatTimeStringToHH_MM,
+  toJapanDateISOString,
 } from '@/utils/common/dateUtils';
+
+
 import type { AttendanceRowPersonal } from '@/types/Attendance';
-import { useAttendanceTablePersonalStore } from '@/stores/admin/attendanceTablePersonalSlice';
+
 
 // 個人出退勤テーブル用のデータを整形し、ストアにセットするためのフック
 export function usePersonalAttendanceTableData() {
@@ -50,7 +59,8 @@ export function usePersonalAttendanceTableData() {
     );
 
     const newRows: AttendanceRowPersonal[] = dateRange.map((date) => {
-      const dateString = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+
+      const dateString = toJapanDateISOString(date); // 'YYYY-MM-DD'
       const key = `${adminAttendanceViewSelectedUser.user_id}_${dateString}`;
 
       // 当日の出退勤結果を取得
