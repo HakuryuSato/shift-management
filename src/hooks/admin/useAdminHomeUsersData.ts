@@ -4,7 +4,7 @@ import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
 import { fetchUsers } from '@/utils/client/apiClient';
 
 export function useAdminHomeUsersData() {
-  const { setAdminHomeUsersData } = useAdminHomeStore();
+  const setAdminHomeUsersData = useAdminHomeStore((state) => state.setAdminHomeUsersData);
   const { data: usersData, error, mutate } = useSWR('users', fetchUsers);
 
   useEffect(() => {
