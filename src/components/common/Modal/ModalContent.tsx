@@ -68,16 +68,6 @@ export const ModalContent: React.FC = () => {
           {/* <Box display={modalMode === "register" ? "block" : "none"}>
             <UserDropdown />
           </Box> */}
-
-          {/* ユーザー登録または削除なら */}
-          <Box
-            display={(modalMode === "user-register" ||
-                modalMode === "user-delete")
-              ? "block"
-              : "none"}
-          >
-            <Input placeholder="ユーザー名を入力してください" />
-          </Box>
         </>
       )}
 
