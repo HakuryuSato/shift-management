@@ -1,15 +1,22 @@
-import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+// import React from "react";
+// import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+// import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 
+// export const UserDropdown: React.FC = () => {
+//   const adminHomeUsersData = useAdminHomeStore((state) =>
+//     state.adminHomeUsersData
+//   );
 
-export const UserDropdown: React.FC = () => (
-  <FormControl fullWidth>
-    <InputLabel>ユーザー名</InputLabel>
-    <Select>
-      <MenuItem value="User1">User1</MenuItem>
-      <MenuItem value="User2">User2</MenuItem>
-    </Select>
-  </FormControl>
-);
-
-
+//   return (
+//     <FormControl fullWidth>
+//       <InputLabel>ユーザー名</InputLabel>
+//       <Select>
+//         {adminHomeUsersData?.map((user, index) => (
+//           <MenuItem key={index} value={user.user_name}>
+//             {user.user_name}
+//           </MenuItem>
+//         ))}
+//       </Select>
+//     </FormControl>
+//   );
+// };

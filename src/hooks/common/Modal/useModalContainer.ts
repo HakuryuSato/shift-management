@@ -4,6 +4,7 @@ import { insertShift, updateShift, deleteShift, upsertAutoShift } from "@/utils/
 // カスタムHooks
 import { useCalendarShiftAllMembers } from "../CustomFullCalendar/useCalendarShiftAllmembers";
 import { useCalendarShiftPersonal } from "../CustomFullCalendar/useCalendarShiftPersonal";
+import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
 
 // Store
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice"
@@ -42,8 +43,6 @@ export const useModalContainer = () => {
     const customFullCalendarHolidayEvents = useCustomFullCalendarStore((state) => state.customFullCalendarHolidayEvents)
     const customFullCalendarStartDate = useCustomFullCalendarStore((state) => state.customFullCalendarStartDate)
     const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate)
-
-
 
     // Multiple Shift Register
     const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore.getState().multipleShiftRegisterDayTimes;

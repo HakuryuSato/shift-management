@@ -80,17 +80,17 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   };
 
   // モーダル閉じる
-  const closeModal = () => {
-    closeAdminUserManagementForm();
-    updateTable();
-  };
+  // const closeModal = () => {
+  //   closeAdminUserManagementForm();
+  //   updateTable();
+  // };
 
   // フック ---------------------------------------------------------------------------------------------------
-  const { openAdminUserManagementForm, closeAdminUserManagementForm } =
-    useAdminUserManagementFormStore();
-  const [managementModalMode, setManagementModalMode] = useState<
-    "register" | "delete"
-  >("register");
+  // const { openAdminUserManagementForm, closeAdminUserManagementForm } =
+  //   useAdminUserManagementFormStore();
+  // const [managementModalMode, setManagementModalMode] = useState<
+  //   "register" | "delete"
+  // >("register");
 
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear(),
@@ -107,13 +107,13 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
   
 
   // ハンドラー ---------------------------------------------------------------------------------------------------
-  const userRegistrationClick = () => {
-    openAdminUserManagementForm("register");
-  };
+  // const userRegistrationClick = () => {
+  //   openAdminUserManagementForm("register");
+  // };
 
-  const userDeleteClick = () => {
-    openAdminUserManagementForm("delete");
-  };
+  // const userDeleteClick = () => {
+  //   openAdminUserManagementForm("delete");
+  // };
 
   const handleCsvDownloadClick = () => {
     downloadShiftTableXlsx(table, currentYear, currentMonth);
@@ -142,7 +142,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
         </div>
 
         <div id="header-right" className="flex ml-auto">
-          <div className="m-4">
+          {/* <div className="m-4">
             <Button
               text="ユーザー登録"
               onClick={userRegistrationClick}
@@ -154,7 +154,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
               onClick={userDeleteClick}
               className="bg-red"
             />
-          </div>
+          </div> */}
 
           <div className="m-4">
             <Button
@@ -199,7 +199,7 @@ const AdminShiftTable: React.FC<AdminShiftTableProps> = ({
 
       {/* 表データ　ここまで  -------------------------------------------------*/}
 
-      <AdminUserManagementForm />
+      {/* <AdminUserManagementForm /> */}
     </>
   );
 };

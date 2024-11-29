@@ -2,13 +2,13 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-
 // Store
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
+import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
 
 // Utils
 import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
@@ -35,9 +35,9 @@ export const useAdminAttendanceTopBar = () => {
   const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewDateRange
   );
-  const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
-    (state) => state.adminAttendanceViewAllMembersMonthlyResult
-  );
+  // const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
+  //   (state) => state.adminAttendanceViewAllMembersMonthlyResult
+  // );
 
 
   // AllMembers
@@ -62,6 +62,16 @@ export const useAdminAttendanceTopBar = () => {
   const adminHomeTopBarTitleText = useAdminHomeTopBarStore(
     (state) => state.adminHomeTopBarTitleText
   );
+
+
+  // User Management Form
+  const openAdminUserManagementForm = useAdminUserManagementFormStore(
+    (state) => state.openAdminUserManagementForm
+  );
+
+
+
+
 
   const router = useRouter();
 
@@ -90,13 +100,17 @@ export const useAdminAttendanceTopBar = () => {
     }
   }, [adminAttendanceViewEndDate, adminHomeMode, hidePersonalAttendanceTable, router, setAdminHomeMode, setAdminHomeTopBarTitleText, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
 
+  // ユーザー登録
   const handleClickUserRegister = useCallback(() => {
-    console.log("ユーザー登録処理");
-  }, []);
+    openAdminUserManagementForm('register')
 
+  }, [openAdminUserManagementForm]);
+
+  // ユーザー削除
   const handleClickUserDelete = useCallback(() => {
-    console.log("ユーザー削除処理");
-  }, []);
+    openAdminUserManagementForm('delete')
+
+  }, [openAdminUserManagementForm]);
 
   // Excelダウンロード ---------------------------------------------------------------------------------------------------
   const handleClickExcelDownload = useCallback(() => {
