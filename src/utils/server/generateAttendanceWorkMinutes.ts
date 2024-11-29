@@ -6,6 +6,7 @@ import { toJapanISOString, toJapanDateISOString } from '@/utils/common/dateUtils
 import { fetchHolidays } from '@/utils/client/apiClient';
 
 
+// 注意：Vercelで実行される際はnew DateはUTCとなる
 
 /** メイン関数
  * 打刻(stamp)を補正後(adjust)に変換して返す
@@ -27,10 +28,10 @@ export async function generateAttendanceWorkMinutes(
     const holidayDates = new Set(holidays.map((holiday) => holiday.date));
 
     // 開始時間と終了時間をパースして30分単位に丸める
-    const startDate = new Date(stamp_start_time);
-    const endDate = new Date(stamp_end_time);
-    const roundedStartDate = roundToNearest30Minutes(new Date(startDate));
-    const roundedEndDate = roundToNearest30Minutes(new Date(endDate));
+    const startTime = new Date(toJapanISOString(new Date(stamp_start_time)));
+    const endTime = new Date(toJapanISOString(new Date(stamp_end_time)));
+    const roundedStartDate = roundToNearest30Minutes(startTime);
+    const roundedEndDate = roundToNearest30Minutes(endTime);
 
     // 合計分数取得
     const totalWorkMinutes = (roundedEndDate.getTime() - roundedStartDate.getTime()) / (1000 * 60);
@@ -39,7 +40,7 @@ export async function generateAttendanceWorkMinutes(
     const startMinutes = roundedStartDate.getHours() * 60 + roundedStartDate.getMinutes();
     // 終了時間がもし24時になる(日付がstartより大きいかつ0分)なら分数を1440に固定
     const endMinutes =
-        roundedEndDate.getHours() === 0 && roundedEndDate.getDate() > startDate.getDate()
+        roundedEndDate.getHours() === 0 && roundedEndDate.getDate() > startTime.getDate()
             ? 1440
             : roundedEndDate.getHours() * 60 + roundedEndDate.getMinutes();
 
