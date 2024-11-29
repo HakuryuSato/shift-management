@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 type ModalRole = 'user' | 'admin';
-type ModalMode = 'confirm' | 'register' | 'update' | 'delete' | 'multiple-register';
+type ModalMode = 'confirm' | 'register' | 'update' | 'delete' | 'multiple-register'| 'user-register' | 'user-delete';
 
 interface ModalContainerStoreState {
   isModalVisible: boolean;

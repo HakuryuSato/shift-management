@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Input, Typography } from "@mui/material";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { TimeDropdown } from "@/components/common/Modal/TimeDropdown";
 import { UserDropdown } from "./UserDropdown";
@@ -59,14 +59,24 @@ export const ModalContent: React.FC = () => {
       {/* 管理者なら */}
       {modalRole === "admin" && (
         <>
-          {/* 確認ならユーザー名表示 */}
+          {/* シフト確認ならユーザー名表示 */}
           <Box display={modalMode === "confirm" ? "block" : "none"}>
             <Typography>{modalContentSelectedUserName}</Typography>
           </Box>
 
-          {/* 登録ならユーザー選択表示 */}
+          {/* シフト登録ならユーザー選択表示 */}
           <Box display={modalMode === "register" ? "block" : "none"}>
             <UserDropdown />
+          </Box>
+
+          {/* ユーザー登録または削除なら */}
+          <Box
+            display={(modalMode === "user-register" ||
+                modalMode === "user-delete")
+              ? "block"
+              : "none"}
+          >
+            <Input placeholder="ユーザー名を入力してください" />
           </Box>
         </>
       )}

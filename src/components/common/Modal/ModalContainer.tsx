@@ -29,6 +29,8 @@ export const ModalContainer: React.FC = () => {
         "multiple-register": multipleShiftRegisterIsCronJobsEnabled
             ? "解除"
             : "保存",
+        "user-register": "登録",
+        "user-delete": "削除",
     };
 
     return (
@@ -70,6 +72,7 @@ export const ModalContainer: React.FC = () => {
                         onClick={() => handleClickModalContainerButton()}
                         sx={{
                             backgroundColor: modalMode === "delete" ||
+                                    modalMode === "user-delete" ||
                                     (modalMode === "multiple-register" &&
                                         multipleShiftRegisterIsCronJobsEnabled)
                                 ? "red"
