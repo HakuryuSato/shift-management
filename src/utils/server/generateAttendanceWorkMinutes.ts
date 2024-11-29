@@ -2,7 +2,7 @@
 
 import { Attendance } from '@/types/Attendance';
 import { Holiday } from '@/types/Holiday';
-import { toJapanISOString, toJapanDateISOString } from '@/utils/common/dateUtils';
+import { toJapanISOString, toJapanDateISOString, createJSTDateFromISO } from '@/utils/common/dateUtils';
 import { fetchHolidays } from '@/utils/client/apiClient';
 
 
@@ -28,8 +28,8 @@ export async function generateAttendanceWorkMinutes(
     const holidayDates = new Set(holidays.map((holiday) => holiday.date));
 
     // 開始時間と終了時間をパースして30分単位に丸める
-    const startTime = new Date(toJapanISOString(new Date(stamp_start_time)));
-    const endTime = new Date(toJapanISOString(new Date(stamp_end_time)));
+    const startTime = createJSTDateFromISO(stamp_start_time);
+    const endTime = createJSTDateFromISO(stamp_end_time);
     const roundedStartDate = roundToNearest30Minutes(startTime);
     const roundedEndDate = roundToNearest30Minutes(endTime);
 
@@ -61,14 +61,14 @@ export async function generateAttendanceWorkMinutes(
     );
 
     return {
-            attendance_id:attendance_id,
-            adjusted_start_time: toJapanISOString(roundedStartDate),
-            adjusted_end_time: toJapanISOString(roundedEndDate),
-            work_minutes: workMinutes,
-            overtime_minutes: overtimeMinutes,
-            rest_minutes: restMinutes,
-        };
-    
+        attendance_id: attendance_id,
+        adjusted_start_time: toJapanISOString(roundedStartDate),
+        adjusted_end_time: toJapanISOString(roundedEndDate),
+        work_minutes: workMinutes,
+        overtime_minutes: overtimeMinutes,
+        rest_minutes: restMinutes,
+    };
+
 }
 
 

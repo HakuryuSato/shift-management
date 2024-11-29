@@ -215,3 +215,16 @@ export function getCustomDateRangeFrom26To25(baseDate: Date, offsetMonths: numbe
 
   return { rangeStartDate, rangeEndDate };
 }
+
+/**
+ * JSTのISO文字列からDateオブジェクトを生成する関数
+ * @param dateString "YYYY-MM-DDTHH:mm:ss" の形式の文字列
+ * @returns JSTのDateオブジェクト
+ */
+export function createJSTDateFromISO(dateString: string): Date {
+  // JSTのタイムゾーンオフセットを追加
+  const dateTimeWithOffset = dateString + '+09:00';
+
+  // タイムゾーン付きの日時文字列からDateオブジェクトを作成
+  return new Date(dateTimeWithOffset);
+}
