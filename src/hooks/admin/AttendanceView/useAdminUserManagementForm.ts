@@ -1,6 +1,14 @@
+// ライブラリ
 import { useState } from 'react';
+
+// Store
 import { useAdminUserManagementFormStore } from '@/stores/admin/adminUserManagementFormSlice';
+
+// Utils
 import { insertUser, deleteUser } from '@/utils/client/serverActionClient';
+
+// Hooks
+import { useAdminHomeUsersData } from '@/hooks/admin/useAdminHomeUsersData';
 
 export function useAdminUserManagementForm() {
   const isAdminUserManagementFormVisible = useAdminUserManagementFormStore(
@@ -13,11 +21,15 @@ export function useAdminUserManagementForm() {
     (state) => state.closeAdminUserManagementForm
   );
 
+  // ユーザー登録削除後の更新用
+  const { mutateUsers } = useAdminHomeUsersData();
+
   const [userName, setUserName] = useState('');
   const [employmentType, setEmploymentType] = useState<'full_time' | 'part_time'>('full_time');
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [userNameHelperText, setUserNameHelperText] = useState('');
+
 
   const handleClose = () => {
     closeAdminUserManagementForm();
@@ -50,6 +62,7 @@ export function useAdminUserManagementForm() {
         user_name: userName,
         employment_type: employmentType,
       });
+      mutateUsers();
       handleClose();
     } else if (adminUserManagementFormMode === 'delete') {
       setIsConfirmDeleteOpen(true);
@@ -59,6 +72,7 @@ export function useAdminUserManagementForm() {
   const handleConfirmDelete = async () => {
     await deleteUser(userName);
     setIsConfirmDeleteOpen(false);
+    mutateUsers();
     handleClose();
   };
 
