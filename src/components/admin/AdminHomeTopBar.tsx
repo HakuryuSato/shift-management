@@ -58,7 +58,7 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* 右側のボタン群 */}
         <Box display="flex" alignItems="center" gap={1}>
           {/* ユーザー編集ボタン */}
-          {/* {isVisibleAdminHomeTopBarUserEditButtons && (
+          {isVisibleAdminHomeTopBarUserEditButtons && (
             <>
               <Button
                 sx={commonButtonStyle}
@@ -78,7 +78,7 @@ export const AdminHomeTopBar: React.FC = () => {
                 ユーザー削除
               </Button>
             </>
-          )} */}
+          )}
 
           {/* Excelダウンロードボタン */}
           {isVisibleAdminHomeTopBarExcelDownloadButton && (
