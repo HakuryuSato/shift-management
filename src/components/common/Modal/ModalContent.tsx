@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Input, Typography } from "@mui/material";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { TimeDropdown } from "@/components/common/Modal/TimeDropdown";
-import { UserDropdown } from "./UserDropdown";
+// import { UserDropdown } from "./UserDropdown";
 import { useModalContent } from "@/hooks/common/Modal/useModalContent";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
 import { MultipleShiftRegister } from "./MultipleShiftRegister";
@@ -65,9 +65,9 @@ export const ModalContent: React.FC = () => {
           </Box>
 
           {/* シフト登録ならユーザー選択表示 */}
-          <Box display={modalMode === "register" ? "block" : "none"}>
+          {/* <Box display={modalMode === "register" ? "block" : "none"}>
             <UserDropdown />
-          </Box>
+          </Box> */}
 
           {/* ユーザー登録または削除なら */}
           <Box
