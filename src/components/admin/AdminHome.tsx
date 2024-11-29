@@ -3,6 +3,7 @@
 import { AdminAttendanceView } from "./AttendanceView/AdminAttendanceView";
 import { AdminHomeTopBar } from "./AdminHomeTopBar";
 import { ModalContainer } from "../common/Modal/ModalContainer";
+import { AdminUserManagementForm } from "./AttendanceView/AdminUserManagementForm";
 
 
 // Hooks
@@ -17,6 +18,7 @@ export const AdminHome: React.FC = () => {
     return (
         <>
             <AdminHomeTopBar />
+            <AdminUserManagementForm/>
             <ModalContainer />
             <AdminAttendanceView />
         </>
