@@ -3,7 +3,7 @@
 import { Attendance } from '@/types/Attendance';
 import { Holiday } from '@/types/Holiday';
 import { toJapanISOString, toJapanDateISOString, createJSTDateFromISO } from '@/utils/common/dateUtils';
-import { fetchHolidays } from '@/utils/client/apiClient';
+import { getHolidays } from './api/holidays';
 
 
 // 注意：Vercelで実行される際はnew DateはUTCとなる
@@ -24,7 +24,7 @@ export async function generateAttendanceWorkMinutes(
     }
 
     // 祝日データを取得して日付の辞書を作成
-    const holidays: Holiday[] = await fetchHolidays();
+    const holidays: Holiday[] = await getHolidays();
     const holidayDates = new Set(holidays.map((holiday) => holiday.date));
 
     // 開始時間と終了時間をパースして30分単位に丸める
