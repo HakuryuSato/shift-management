@@ -32,10 +32,12 @@ export function useUserQrCodeReaderView() {
 
   // 閉じる
   const handleClose = useCallback(() => {
+    console.log(`[${new Date().toISOString()}] handleClose 開始`);
     hideQRCodeReader();
     setIsUserHomeFABVisible(true);
     setIsUserCalendarViewVisible(true);
     showUserHomeAppBar();
+    console.log(`[${new Date().toISOString()}] handleClose 終了`);
   }, [
     hideQRCodeReader,
     setIsUserHomeFABVisible,
@@ -49,26 +51,25 @@ export function useUserQrCodeReaderView() {
   }, []);
 
   // QRコード認識時
-  const handleScan = useCallback(
-    async (detectedCodes: IDetectedBarcode[]) => {
-      console.log("handleScan");
-      const code = detectedCodes[0];
-      if (!code) return;
+  const handleScan = async (detectedCodes: IDetectedBarcode[]) => {
+    try {
+      console.log(`[${new Date().toISOString()}] handleScan 開始`);
 
-      const decodedText = code.rawValue;
-      if (decodedText === "ATTENDANCE_QR") {
-        try {
-          await punchAttendance(userId);
-          handleClose();
-          showUserSnackBar("打刻完了しました", "success");
-        } catch (error) {
-          console.error(error);
-          handleClose();
-        }
-      }
-    },
-    [handleClose, showUserSnackBar, userId]
-  );
+      if (detectedCodes[0]?.rawValue === "ATTENDANCE_QR") {
+        console.log(`[${new Date().toISOString()}] handleScan punchAttendance 開始`);
+        await punchAttendance(userId);
+        console.log(`[${new Date().toISOString()}] handleScan punchAttendance 終了`);
+        showUserSnackBar("打刻完了しました", "success");
+        handleClose();
+        console.log(`[${new Date().toISOString()}] handleScan 終了`);
+      } 
+
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] handleScan エラー`, error);
+    }
+  };
+
+
 
   return { handleClose, handleError, handleScan };
 }
