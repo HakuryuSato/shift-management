@@ -100,7 +100,6 @@ export function UserQrCodeReader() {
         components={{ finder: false }} // UIコンポーネントを削除
         allowMultiple={false}
         formats={["qr_code"]}
-        constraints={{}}
         styles={{
           container: {
             position: "absolute",
