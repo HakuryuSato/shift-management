@@ -78,7 +78,7 @@ export function UserQrCodeReader() {
         <Box
           sx={{
             position: "relative",
-            transform: "translateY(-50px)", // 位置を上に移動
+            transform: "translateY(-50px)",
             width: "250px",
             height: "250px",
             border: "2px solid white",
