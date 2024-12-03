@@ -72,10 +72,10 @@ export function getTimeRangeISOStrings(
 }
 
 export const toJapanDateISOString = (date: Date = new Date()): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const { year, month, date: day } = getJapanDateComponents(date);
+  const monthStr = String(month + 1).padStart(2, '0');
+  const dayStr = String(day).padStart(2, '0');
+  return `${year}-${monthStr}-${dayStr}`;
 };
 
 
@@ -227,4 +227,25 @@ export function createJSTDateFromISO(dateString: string): Date {
 
   // タイムゾーン付きの日時文字列からDateオブジェクトを作成
   return new Date(dateTimeWithOffset);
+}
+
+export function getJapanDateComponents(date: Date): {
+  year: number;
+  month: number;
+  date: number;
+  hours: number;
+  minutes: number;
+  dayOfWeek: number; // 追加
+} {
+  const utcTime = date.getTime();
+  const japanTime = utcTime + 9 * 60 * 60 * 1000;
+  const japanDate = new Date(japanTime);
+  return {
+    year: japanDate.getUTCFullYear(),
+    month: japanDate.getUTCMonth(),
+    date: japanDate.getUTCDate(),
+    hours: japanDate.getUTCHours(),
+    minutes: japanDate.getUTCMinutes(),
+    dayOfWeek: japanDate.getUTCDay(), // 追加
+  };
 }
