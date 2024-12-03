@@ -1,9 +1,15 @@
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Success用アイコン
+import ErrorIcon from "@mui/icons-material/Error"; // Error用アイコン
+import InfoIcon from "@mui/icons-material/Info"; // Info用アイコン
+import WarningIcon from "@mui/icons-material/Warning"; // Warning用アイコン
 import { useUserSnackBarStore } from "@stores/user/userHomeSnackBarSlice";
+import { useTheme } from "@mui/material/styles"; // MUIのテーマを使用
 
 export function UserHomeSnackBar() {
+  const theme = useTheme(); // MUIテーマを取得
   const {
     isUserSnackBarVisible,
     snackBarMessage,
@@ -11,19 +17,35 @@ export function UserHomeSnackBar() {
     hideUserSnackBar,
   } = useUserSnackBarStore();
 
-  // 背景色を設定するためのマッピング
+  // MUIのパレットを利用した背景色を取得
   const getBackgroundColor = (status: 'success' | 'error' | 'info' | 'warning') => {
     switch (status) {
       case 'success':
-        return '#4caf50'; // 緑色
+        return theme.palette.success.main;
       case 'error':
-        return '#f44336'; // 赤色
+        return theme.palette.error.main;
       case 'info':
-        return '#ffffff'; // 白色
+        return theme.palette.info.main;
       case 'warning':
-        return '#ff9800'; // 警告用の赤色（オレンジ）
+        return theme.palette.warning.main;
       default:
-        return '#ffffff'; // デフォルトは白
+        return theme.palette.background.paper;
+    }
+  };
+
+  // アイコンを動的に切り替える
+  const getIcon = (status: 'success' | 'error' | 'info' | 'warning') => {
+    switch (status) {
+      case 'success':
+        return <CheckCircleIcon style={{ color: '#fff' }} />; // 白色アイコン
+      case 'error':
+        return <ErrorIcon style={{ color: '#fff' }} />; // 白色アイコン
+      case 'info':
+        return <InfoIcon style={{ color: '#fff' }} />; // 白色アイコン
+      case 'warning':
+        return <WarningIcon style={{ color: '#fff' }} />; // 白色アイコン
+      default:
+        return null;
     }
   };
 
@@ -37,7 +59,11 @@ export function UserHomeSnackBar() {
       <Alert
         onClose={hideUserSnackBar}
         severity={snackBarStatus}
-        style={{ backgroundColor: getBackgroundColor(snackBarStatus), color: snackBarStatus === 'info' ? '#000' : '#fff' }} // 色を動的に設定
+        style={{
+          backgroundColor: getBackgroundColor(snackBarStatus),
+          color: theme.palette.getContrastText(getBackgroundColor(snackBarStatus)),
+        }}
+        icon={getIcon(snackBarStatus)} // カスタムアイコンを使用
       >
         {snackBarMessage}
       </Alert>
