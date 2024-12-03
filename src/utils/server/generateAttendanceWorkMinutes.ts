@@ -2,7 +2,7 @@
 
 import { Attendance } from '@/types/Attendance';
 import { Holiday } from '@/types/Holiday';
-import { toJapanISOString, toJapanDateISOString, createJSTDateFromISO } from '@/utils/common/dateUtils';
+import { toJapanISOString, toJapanDateISOString, createJSTDateFromISO, getJapanDateComponents } from '@/utils/common/dateUtils';
 import { getHolidays } from './api/holidays';
 
 
@@ -36,13 +36,18 @@ export async function generateAttendanceWorkMinutes(
     // 合計分数取得
     const totalWorkMinutes = (roundedEndDate.getTime() - roundedStartDate.getTime()) / (1000 * 60);
 
+    // 日本時間の年月日・時間を取得
+    const startComponents = getJapanDateComponents(roundedStartDate);
+    const endComponents = getJapanDateComponents(roundedEndDate);
+
+    // 開始終了分数の計算
     // 開始終了分数(日付の開始から何分か)
-    const startMinutes = roundedStartDate.getHours() * 60 + roundedStartDate.getMinutes();
+    const startMinutes = startComponents.hours * 60 + startComponents.minutes;
     // 終了時間がもし24時になる(日付がstartより大きいかつ0分)なら分数を1440に固定
     const endMinutes =
-        roundedEndDate.getHours() === 0 && roundedEndDate.getDate() > startTime.getDate()
+        endComponents.hours === 0 && endComponents.date > startComponents.date
             ? 1440
-            : roundedEndDate.getHours() * 60 + roundedEndDate.getMinutes();
+            : endComponents.hours * 60 + endComponents.minutes;
 
     // 休憩時間を計算
     const restMinutes = calculateRestMinutes(startMinutes, endMinutes);
@@ -89,22 +94,44 @@ function isHoliday(date: Date, holidayDates: Set<string>): boolean {
  *  日曜日かどうかを判定する関数
  */
 function isSunday(date: Date): boolean {
-    return date.getDay() === 0; // 日曜日は0を返す
-}
+    const { dayOfWeek } = getJapanDateComponents(date);
+    return dayOfWeek === 0; // 日曜日は0
+  }
 
 /**
  * 時間を30分単位に丸める
  */
 function roundToNearest30Minutes(date: Date): Date {
-    const minutes = date.getMinutes();
+    // JSTのオフセット（+9時間）をミリ秒単位で計算
+    const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+    // UTC時間を取得
+    const utcTime = date.getTime();
+
+    // 日本時間に変換
+    const japanTime = utcTime + JST_OFFSET_MS;
+
+    // 日本時間での分を計算
+    const japanDate = new Date(japanTime);
+    const minutes = japanDate.getMinutes();
     const remainder = minutes % 30;
+
+    // 30分単位で丸め
     if (remainder < 15) {
-        date.setMinutes(minutes - remainder);
+        japanDate.setMinutes(minutes - remainder);
     } else {
-        date.setMinutes(minutes + (30 - remainder));
+        japanDate.setMinutes(minutes + (30 - remainder));
     }
-    date.setSeconds(0);
-    date.setMilliseconds(0);
+    japanDate.setSeconds(0);
+    japanDate.setMilliseconds(0);
+
+    // 再びUTC時間に変換
+    const roundedJapanTime = japanDate.getTime();
+    const roundedUtcTime = roundedJapanTime - JST_OFFSET_MS;
+
+    // 元のDateオブジェクトに反映
+    date.setTime(roundedUtcTime);
+
     return date;
 }
 
