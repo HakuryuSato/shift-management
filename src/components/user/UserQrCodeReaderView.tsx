@@ -15,7 +15,7 @@ import { useUserQrCodeReaderView } from "@/hooks/user/useUserQrCodeReaderView";
 
 export function UserQrCodeReader() {
   const isQRCodeReaderVisible = useUserQrCodeReaderViewStore(
-    (state) => state.isQRCodeReaderVisible
+    (state) => state.isQRCodeReaderVisible,
   );
 
   const { handleClose, handleError, handleScan } = useUserQrCodeReaderView();
@@ -97,7 +97,10 @@ export function UserQrCodeReader() {
       <Scanner
         onScan={handleScan}
         onError={handleError}
-        components={{ finder: false }}
+        components={{ finder: false }} // UIコンポーネントを削除
+        allowMultiple={false}
+        formats={["qr_code"]}
+        constraints={{}}
         styles={{
           container: {
             position: "absolute",
