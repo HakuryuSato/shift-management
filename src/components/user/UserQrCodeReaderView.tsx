@@ -68,30 +68,20 @@ export function UserQrCodeReader() {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          zIndex: 2,
         }}
       >
-        {/* QRアイコン */}
-        <Box
+        <QrCodeIcon
           sx={{
-            position: "relative",
-            transform: "translateY(-50px)",
-            width: "250px",
-            height: "250px",
-            border: "2px solid white",
-            borderRadius: "4px",
-            zIndex: 5,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            opacity: 0.7,
+            fontSize: 400,
+            color: "white",
+            opacity: 0.5,
+            transform: "translateY(-20%)", // 中央より少し上
           }}
-        >
-          <QrCodeIcon sx={{ fontSize: 120, opacity: 0.5, color: "white" }} />
-        </Box>
+        />
       </Box>
 
       <Scanner
@@ -100,6 +90,7 @@ export function UserQrCodeReader() {
         components={{ finder: false }} // UIコンポーネントを削除
         allowMultiple={false}
         formats={["qr_code"]}
+        // constraints={{frameRate:[max:30]}}
         styles={{
           container: {
             position: "absolute",
