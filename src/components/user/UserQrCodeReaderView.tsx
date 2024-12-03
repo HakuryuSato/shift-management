@@ -60,29 +60,19 @@ export function UserQrCodeReader() {
         出退勤用QRコードを読み込んでください
       </Typography>
 
-      {/* 背景 */}
-      <Box
+      {/* QRアイコン */}
+      <QrCodeIcon
         sx={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          top: "45%", // 中央よりやや上に配置
+          left: "50%",
+          transform: "translate(-50%, -50%)", // 左右は中央に
+          fontSize: 400,
+          color: "white",
+          opacity: 0.5,
           zIndex: 2,
         }}
-      >
-        <QrCodeIcon
-          sx={{
-            fontSize: 400,
-            color: "white",
-            opacity: 0.5,
-            transform: "translateY(-20%)", // 中央より少し上
-          }}
-        />
-      </Box>
+      />
 
       <Scanner
         onScan={handleScan}
