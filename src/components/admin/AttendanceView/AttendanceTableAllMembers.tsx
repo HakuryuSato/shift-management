@@ -30,8 +30,8 @@ export function AttendanceTableAllMembers() {
           <TableCell>種別</TableCell>
           <TableCell>名前</TableCell>
           <TableCell>出勤日数</TableCell>
-          <TableCell>出勤時数</TableCell>
-          <TableCell>時間外時数</TableCell>
+          <TableCell>平日普通</TableCell>
+          <TableCell>平日時間外</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
