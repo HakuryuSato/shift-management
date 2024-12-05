@@ -50,7 +50,7 @@ export function useMultipleShiftRegister() {
   const setMultipleShiftRegisterError = useMultipleShiftRegisterStore(
     (state) => state.setMultipleShiftRegisterError
   );
-  
+
   const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore(
     (state) => state.multipleShiftRegisterIsCronJobsEnabled
   );
@@ -109,12 +109,10 @@ export function useMultipleShiftRegister() {
 
   // mutateされたら自動シフト登録中かどうかを更新
   useEffect(() => {
-    if (!autoShiftSettings) return
-
-    const isClonJobs = autoShiftSettings[0].is_enabled
-    setMultipleShiftRegisterIsCronJobsEnabled(isClonJobs)
- 
+    const isClonJobs = autoShiftSettings?.[0]?.is_enabled ?? false;
+    setMultipleShiftRegisterIsCronJobsEnabled(isClonJobs);
   }, [autoShiftSettings, multipleShiftRegisterIsCronJobsEnabled, setMultipleShiftRegisterIsCronJobsEnabled]);
+
 
   return {
     dayTimes: multipleShiftRegisterDayTimes,
