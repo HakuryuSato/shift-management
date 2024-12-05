@@ -22,7 +22,7 @@ const generateAttendanceAllMembersTableData = (
   const result: string[][] = [];
 
   // ヘッダー行
-  const headers = ['種別', '名前', '出勤日数', '出勤時数', '時間外時数'];
+  const headers = ['種別', '名前', '出勤日数', '平日普通(H)', '平日時間外(H)'];
   result.push(headers);
 
   // データ行
