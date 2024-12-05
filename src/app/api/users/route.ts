@@ -1,3 +1,5 @@
+export const revalidate = 0; // 動的なエンドポイントとして定義(クエリパラメータがないためVercelで静的なAPIとして扱われるため)
+
 import { handleApiRequest } from '@/utils/server/handleApiRequest';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 
