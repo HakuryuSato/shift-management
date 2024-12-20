@@ -1,7 +1,7 @@
 "use client";
 
 //ライブラリ
-import React, { useEffect } from "react";
+import React from "react";
 
 // コンポーネント
 import { UserQrCodeReader } from "./UserQrCodeReaderView";
