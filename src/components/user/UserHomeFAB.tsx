@@ -4,9 +4,10 @@ import QrCodeIcon from "@mui/icons-material/QrCode";
 import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import { useUserHomeFABStore } from "@stores/user/userHomeFABSlice";
 import { useUserHomeFABClickHandlers } from "@/hooks/user/useUserHomeFABClickHandlers";
+import { useTheme } from "@mui/material/styles";
 
 export function UserHomeFAB() {
-
+  const theme = useTheme();
   // State
   const isUserHomeFABVisible = useUserHomeFABStore((state) =>
     state.isVisibleUserHomeFAB
@@ -22,7 +23,17 @@ export function UserHomeFAB() {
     <Fab
       color="primary"
       onClick={handleClickUserHomeFAB}
-      sx={{ position: "fixed", bottom: 16, right: 16 }}
+      sx={{
+        position: "fixed",
+        bottom: 16,
+        right: 16,
+        backgroundColor: fabIconType === "qr"
+          ? theme.palette.secondary.main
+          : theme.palette.primary.main,
+        "&:hover": fabIconType === "qr"
+          ? { backgroundColor: theme.palette.secondary.dark }
+          : undefined,
+      }}
     >
       {fabIconType === "qr" ? <QrCodeIcon /> : <CalendarMonth />}
     </Fab>

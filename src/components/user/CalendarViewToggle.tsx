@@ -4,6 +4,7 @@
 import React from "react";
 import { Box, Button, ButtonGroup } from "@mui/material";
 
+
 // Store
 import { useCalendarViewToggleStore } from "@/stores/user/calendarViewToggleSlice";
 import { useUserHomeFABStore } from "@/stores/user/userHomeFABSlice";
@@ -42,7 +43,15 @@ export function CalendarViewToggle() {
                     showUserHomeFAB();
                     setFABIconType("qr");
                 }}
-                sx={{ flex: 1 }}
+                sx={{
+                    flex: 1,
+                    color: calendarViewMode === "ATTENDANCE"
+                        ? "white"
+                        : "secondary.main",
+                    backgroundColor: calendarViewMode === "ATTENDANCE"
+                        ? "secondary.main"
+                        : "transparent",
+                }}
             >
                 出退勤
             </Button>
