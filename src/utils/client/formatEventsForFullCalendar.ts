@@ -1,7 +1,13 @@
-import { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
-import { Shift } from '../../types/Shift';
-import { Attendance } from '../../types/Attendance';
-import { User } from '../../types/User';
+//ライブラリ
+import { createTheme } from "@mui/material/styles";
+
+// 型
+import type { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
+import type { Shift } from '@/types/Shift';
+import type { Attendance } from '@/types/Attendance';
+import type { User } from '@/types/User';
+import { create } from "domain";
+
 
 // 関数のオーバーロードを定義
 export function formatEventsForFullCalendar(records: Shift[], users?: User[]): CustomFullCalendarEvent[];
@@ -12,6 +18,7 @@ export function formatEventsForFullCalendar(
   records: Shift[] | Attendance[],
   users?: User[]
 ): CustomFullCalendarEvent[] {
+
   if (records.length === 0) {
     return [];
   }
@@ -24,6 +31,10 @@ export function formatEventsForFullCalendar(
       }
     });
   }
+
+  // 出退勤イベントの色変更用
+  const muiPurpleColor = createTheme().palette.secondary.main;
+
 
   // 型ガード関数を定義
   const isShiftArray = (records: Shift[] | Attendance[]): records is Shift[] =>
@@ -62,6 +73,7 @@ export function formatEventsForFullCalendar(
         end: endTime,
         title: user_name,
         display: 'block',
+        color: muiPurpleColor,
         extendedProps: {
           user_id: record.user_id,
           user_name: user_name,
