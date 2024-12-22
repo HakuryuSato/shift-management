@@ -89,14 +89,14 @@ export function UserHomeAppBar() {
       {/* AppBar */}
       <AppBar position="static" sx={{ backgroundColor: "#f0f0f0" }}>
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             edge="start"
             aria-label="menu"
             onClick={handleLeftButtonClick}
             sx={{ color: "black" }}
           >
             <LeftButtonIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography
             variant="h6"
             component="div"
