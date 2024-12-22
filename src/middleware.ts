@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // 保護されたページ
-  const protectedPaths = ["/dev/user", "/dev/admin_kanrisha"];
+  const protectedPaths = ["/user", "/dev/admin_kanrisha"];
 
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
@@ -34,7 +34,7 @@ export async function middleware(req: NextRequest) {
       if (
         (pathname.startsWith("/dev/admin_kanrisha") &&
           token.user?.role !== "admin") ||
-        (pathname.startsWith("/dev/user") && token.user?.role !== "user")
+        (pathname.startsWith("/user") && token.user?.role !== "user")
       ) {
         const role = pathname.startsWith("/dev/admin_kanrisha")
           ? "admin"
@@ -51,5 +51,5 @@ export async function middleware(req: NextRequest) {
 
 // 未認証の場合にアクセスを制限するページ
 export const config = {
-  matcher: ["/dev/user/:path*", "/dev/admin_kanrisha/:path*"],
+  matcher: ["/user/:path*", "/dev/admin_kanrisha/:path*"],
 };

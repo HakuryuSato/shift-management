@@ -9,7 +9,7 @@ const Home = () => {
 
   useEffect(() => {
     // router.push('/dev/admin_kanrisha');
-    router.push('/dev/user');  
+    router.push('/user');  
   }, [router]);
 
   return null;
