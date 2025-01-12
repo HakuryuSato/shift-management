@@ -1,6 +1,6 @@
 # シフト管理 + QR出退勤管理アプリ
-<img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="300" />
-<img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="300" />
+<img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="200" />
+<img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="200" />
 
 
 実際に運用を行っている シフト / 出退勤の管理アプリとなります。  
