@@ -57,7 +57,7 @@
 
 
 ## インフラ構成図
-![インフラ構成図](documents/6_インフラ構成図.png)
+![ER図](documents/5_ER図.png)
 
 ## ER図
 ![ER図](documents/5_ER図.png)
