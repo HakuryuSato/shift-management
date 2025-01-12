@@ -1,22 +1,26 @@
 # シフト管理 + QR出退勤管理アプリ
+<img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="300" />
+<img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="300" />
+
+
 実際に運用を行っている シフト / 出退勤の管理アプリとなります。  
 
 本番環境同様の機能をテストいただけますが、
 データなどはデモ用となります。
 
-デモ用サイトパスワード：  
-デモ用ユーザー名：  
-デモ用管理者パスワード：  
+## デモ用ID / PW
+デモ用サイトパスワード：準備中  
+デモ用ユーザー名： 準備中  
+デモ用管理者パスワード： 準備中  
 
-デモ用ユーザーリンク：  
-デモ用管理者リンク:  
+## デモ用リンク
+デモ用ユーザーリンク（スマホ推奨）：  準備中  
+デモ用管理者リンク（PC推奨）:  準備中  
 
-デモ用出退勤打刻QR
+## デモ用出退勤打刻QR
+![ATTENDANCE_QR](https://github.com/user-attachments/assets/018e06c6-3f83-4142-a142-5dac9367729a)
 
 
-## 使用技術概略(詳細後述)
-- フロントエンド: React( Material-UI / FullCalendar )
-- バックエンド: Nextjs(API Routes) + supabase
 
 ## 実装機能一覧
 ### シフト関連機能
@@ -30,7 +34,7 @@
 - 集計結果Excelダウンロード
 
 
-## 使用技術詳細
+## 使用技術
 ### 共通
 - フレームワーク: Nextjs
 - 言語: TypeScript
@@ -51,5 +55,9 @@
 - 祝日用API: Holidays JP API
 - Excel生成用: exceljs
 
+
 ## インフラ構成図
 ![インフラ構成図](documents/6_インフラ構成図.png)
+
+## ER図
+![ER図](documents/5_ER図.png)
