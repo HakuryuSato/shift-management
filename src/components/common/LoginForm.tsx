@@ -35,7 +35,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
     if (res && res.error) {
       setError("ログインに失敗しました。入力内容を確認してください。");
     } else if (res && res.ok) {
-      router.push(role === "admin" ? "/dev/admin_kanrisha" : "/dev/user");
+      router.push(role === "admin" ? "/dev/admin_kanrisha" : "/user");
     }
   };
 
