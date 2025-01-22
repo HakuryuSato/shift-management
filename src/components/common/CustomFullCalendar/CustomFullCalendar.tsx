@@ -9,11 +9,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import { useSwipeable } from "react-swipeable";
 
-// Store
-import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSlice";
-import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
-
 // Hooks
+import { useCalendarStates } from "@/hooks/common/CustomFullCalendar/useCalendarStates";
 import { useCalendarAttendance } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
@@ -27,43 +24,18 @@ import { dayCellClassNames } from "./dayCellClassNames";
 export function CustomFullCalendar() {
   const calendarRef = useRef<FullCalendar>(null);
 
-  // State群 ---------------------------------------------------------------------------------------------------
-  const customFullCalendarRole = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarRole,
-  );
-  const customFullCalendarBgColorsPerDay = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarBgColorsPerDay,
-  );
-  const setCustomFullCalendarStartDate = useCustomFullCalendarStore(
-    (state) => state.setCustomFullCalendarStartDate,
-  );
-  const setCustomFullCalendarEndDate = useCustomFullCalendarStore(
-    (state) => state.setCustomFullCalendarEndDate,
-  );
-  const setCustomFullCalendarCurrentYear = useCustomFullCalendarStore(
-    (state) => state.setCustomFullCalendarCurrentYear,
-  );
-  const setCustomFullCalendarCurrentMonth = useCustomFullCalendarStore(
-    (state) => state.setCustomFullCalendarCurrentMonth,
-  );
-  const customFullCalendarHolidayEvents = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarHolidayEvents,
-  );
-  const customFullCalendarAttendanceEvents = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarAttendanceEvents,
-  );
-  const customFullCalendarPersonalShiftEvents = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarPersonalShiftEvents,
-  );
-  const customFullCalendarAllMembersShiftEvents = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarAllMembersShiftEvents,
-  );
+  const {
+    customFullCalendarRole,
+    customFullCalendarBgColorsPerDay,
+    setCustomFullCalendarStartDate,
+    setCustomFullCalendarEndDate,
+    setCustomFullCalendarCurrentYear,
+    setCustomFullCalendarCurrentMonth,
+    calendarViewMode,
+    customFullCalendarEvents,
+  } = useCalendarStates();
 
-  const calendarViewMode = useCalendarViewToggleStore((state) =>
-    state.calendarViewMode
-  );
-
-  // Hooks  ---------------------------------------------------------------------------------------------------
+  // Hooks ---------------------------------------------------------------------------------------------------
   // 各種データをCustomFullCalendarSoreに設定
   // 祝日
   useCalendarHolidays();
@@ -87,18 +59,6 @@ export function CustomFullCalendar() {
 
   // Click
   const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
-
-  // フルカレ用イベント(ViewModeに応じて異なるデータ表示)
-  const customFullCalendarEvents = [
-    ...customFullCalendarHolidayEvents,
-    ...(calendarViewMode === "ATTENDANCE"
-      ? customFullCalendarAttendanceEvents
-      : calendarViewMode === "PERSONAL_SHIFT"
-      ? customFullCalendarPersonalShiftEvents
-      : calendarViewMode === "ALL_MEMBERS_SHIFT"
-      ? customFullCalendarAllMembersShiftEvents
-      : []),
-  ];
 
   return (
     <div {...reactSwipeHandlers}>
