@@ -37,7 +37,6 @@ export const CalendarMonthChangeButton: React.FC<
     <Button
       variant="contained"
       onClick={handleClick}
-      startIcon={mode === "prev" ? <ChevronLeft /> : <ChevronRight />}
       sx={{
         backgroundColor: calendarViewMode === "ATTENDANCE"
           ? theme.palette.secondary.main
@@ -45,7 +44,10 @@ export const CalendarMonthChangeButton: React.FC<
         "&:hover": calendarViewMode === "ATTENDANCE"
           ? { backgroundColor: theme.palette.secondary.dark }
           : undefined,
+
       }}
-    />
+    >
+      {mode === "prev" ? <ChevronLeft /> : <ChevronRight />}
+    </Button>
   );
 };

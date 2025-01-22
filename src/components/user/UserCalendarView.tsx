@@ -35,7 +35,7 @@ export function UserCalendarView() {
       {/* 正社員は出退勤モードのみ */}
       {employmentType !== "full_time" && <CalendarViewToggle />}
       <CustomFullCalendar />
-      <Grid container justifyContent="left" spacing={0} sx={{pt:2,pl:2}}>
+      <Grid container justifyContent="left" spacing={1} sx={{pt:2,pl:2}}>
         <Grid item>
           <CalendarMonthChangeButton mode="prev" />
         </Grid>
