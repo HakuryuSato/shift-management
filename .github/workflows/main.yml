@@ -1,0 +1,24 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches:
+      - preview
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: main
+          commit-message: "Auto PR: Merge preview into main"
+          title: "Auto PR: Merge preview into main"
+          body: |
+            This Pull Request was automatically created.
+            Please review the Vercel Preview URL and approve.
