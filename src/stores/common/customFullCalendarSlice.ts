@@ -42,6 +42,7 @@ interface CustomFullCalendarStoreState {
   setCustomFullCalendarCurrentMonth: (month: number) => void;
   setCustomFullCalendarClickedDate: (dateInfo: DateClickArg | null) => void;
   setCustomFullCalendarClickedEvent: (eventInfo: EventClickArg | null) => void;
+  setCustomFullCalendarRef: (ref: FullCalendar) => void;
 }
 
 export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((set) => ({
