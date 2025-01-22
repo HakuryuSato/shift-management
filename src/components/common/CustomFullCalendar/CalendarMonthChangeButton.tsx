@@ -3,18 +3,18 @@ import { Button } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useCalendarViewToggleStore } from "@/stores/user/calendarViewToggleSlice";
 import { useTheme } from "@mui/material/styles";
+import { useCalendarStates } from "@/hooks/common/CustomFullCalendar/useCalendarStates";
 
 type CalendarMonthChangeButtonProps = {
   mode: "prev" | "next";
-  onClick: () => void; // クリック時のイベント
 };
 
 export const CalendarMonthChangeButton: React.FC<
   CalendarMonthChangeButtonProps
 > = ({
   mode,
-  onClick,
 }) => {
+  const { customFullCalendarRef } = useCalendarStates();
   
   const calendarViewMode = useCalendarViewToggleStore((state) =>
     state.calendarViewMode
@@ -22,10 +22,21 @@ export const CalendarMonthChangeButton: React.FC<
 
   const theme = useTheme();
 
+  const handleClick = () => {
+    if (customFullCalendarRef) {
+      const api = customFullCalendarRef.getApi();
+      if (mode === "prev") {
+        api.prev();
+      } else {
+        api.next();
+      }
+    }
+  };
+
   return (
     <Button
       variant="contained"
-      onClick={onClick}
+      onClick={handleClick}
       startIcon={mode === "prev" ? <ChevronLeft /> : <ChevronRight />}
       sx={{
         backgroundColor: calendarViewMode === "ATTENDANCE"
