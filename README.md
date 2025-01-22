@@ -1,21 +1,26 @@
 # シフト/出退勤管理アプリ
+## 概要
 実務案件として納品させていただいたシフト/出退勤の管理アプリとなります。  
 利用者数は約20名で現在も運用・保守を行っております。  
 
 <img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="200" />
 <img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="200" />
 
-本番環境同様の機能をテストいただけますが、
-データなどはデモ用となります。
-
-## デモ用ID / PW
-デモ用サイトパスワード：準備中  
-デモ用ユーザー名： 準備中  
-デモ用管理者パスワード： 準備中  
+本番環境同様の機能をテストいただけますが、データはデモ用となります。 
 
 ## デモ用リンク
-デモ用ユーザーリンク（スマホ推奨）：  準備中  
-デモ用管理者リンク（PC推奨）:  準備中  
+ユーザー側（スマホ Chrome推奨）    
+![image](https://github.com/user-attachments/assets/572a648c-2b36-4c15-aa2d-ebaa3f8a972f)
+
+管理者側（PC Chrome推奨）  
+[シフト/出退勤管理アプリ(管理者側)](https://shift-management-preview.vercel.app/login?role=admin)
+
+## デモ用ユーザー名 / PW
+ユーザー名：demo  
+サイトパスワード：demo  
+管理者パスワード：demo  
+
+
 
 ## デモ用出退勤打刻QR
 ![ATTENDANCE_QR](https://github.com/user-attachments/assets/018e06c6-3f83-4142-a142-5dac9367729a)
