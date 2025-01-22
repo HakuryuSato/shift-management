@@ -1,6 +1,6 @@
 # シフト/出退勤管理アプリ
 実務案件として納品したシフト/出退勤の管理アプリとなります。  
-利用者数は約20名で現在も運用保守を行っております。  
+利用者数は約20名で現在も運用・保守を行っております。  
 
 <img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="200" />
 <img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="200" />
