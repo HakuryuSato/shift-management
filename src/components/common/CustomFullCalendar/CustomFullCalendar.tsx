@@ -23,7 +23,10 @@ import { renderEventContent } from "./renderEventContnt";
 import { dayCellClassNames } from "./dayCellClassNames";
 
 export function CustomFullCalendar() {
-  const { setCustomFullCalendarRef } = useCustomFullCalendarStore();
+
+  const setCustomFullCalendarRef = useCustomFullCalendarStore((state) =>
+    state.setCustomFullCalendarRef
+  );
 
   const {
     customFullCalendarRef,
@@ -31,7 +34,6 @@ export function CustomFullCalendar() {
     customFullCalendarBgColorsPerDay,
     setCustomFullCalendarStartDate,
     setCustomFullCalendarEndDate,
-    setCustomFullCalendarCurrentYear,
     setCustomFullCalendarCurrentMonth,
     calendarViewMode,
     customFullCalendarEvents,
