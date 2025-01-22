@@ -80,6 +80,7 @@ export function UserQrCodeReader() {
         components={{ finder: false }} // UIコンポーネントを削除
         allowMultiple={false}
         formats={["qr_code"]}
+        scanDelay={100}
         constraints={{ frameRate: { max: 30 } }}
         styles={{
           container: {
