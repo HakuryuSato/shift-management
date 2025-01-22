@@ -3,6 +3,11 @@ import { useCustomFullCalendarStore } from "@stores/common/customFullCalendarSli
 import { useCalendarViewToggleStore } from "@stores/user/calendarViewToggleSlice";
 
 export const useCalendarStates = () => {
+  // CustomFullCalendarRef
+  const customFullCalendarRef = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarRef
+  );
+
   // CustomFullCalendarStore States
   const customFullCalendarRole = useCustomFullCalendarStore(
     (state) => state.customFullCalendarRole,
@@ -53,6 +58,7 @@ export const useCalendarStates = () => {
   ];
 
   return {
+    customFullCalendarRef,
     customFullCalendarRole,
     customFullCalendarBgColorsPerDay,
     setCustomFullCalendarStartDate,

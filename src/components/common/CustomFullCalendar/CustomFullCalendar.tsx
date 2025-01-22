@@ -1,7 +1,7 @@
 "use client";
 
 // ライブラリ
-import React, { useRef } from "react";
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,6 +11,7 @@ import { useSwipeable } from "react-swipeable";
 
 // Hooks
 import { useCalendarStates } from "@/hooks/common/CustomFullCalendar/useCalendarStates";
+import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 import { useCalendarAttendance } from "@/hooks/common/CustomFullCalendar/useCalendarAttendances";
 import { useCalendarHolidays } from "@/hooks/common/CustomFullCalendar/useCalendarHolidays";
 import { useCalendarShiftPersonal } from "@/hooks/common/CustomFullCalendar/useCalendarShiftPersonal";
@@ -22,9 +23,10 @@ import { renderEventContent } from "./renderEventContnt";
 import { dayCellClassNames } from "./dayCellClassNames";
 
 export function CustomFullCalendar() {
-  const calendarRef = useRef<FullCalendar>(null);
+  const { setCustomFullCalendarRef } = useCustomFullCalendarStore();
 
   const {
+    customFullCalendarRef,
     customFullCalendarRole,
     customFullCalendarBgColorsPerDay,
     setCustomFullCalendarStartDate,
@@ -52,8 +54,8 @@ export function CustomFullCalendar() {
   // イベントハンドラ  ---------------------------------------------------------------------------------------------------
   // 左右スワイプで月を切り替え
   const reactSwipeHandlers = useSwipeable({
-    onSwipedLeft: () => calendarRef.current?.getApi().next(),
-    onSwipedRight: () => calendarRef.current?.getApi().prev(),
+    onSwipedLeft: () => customFullCalendarRef?.getApi().next(),
+    onSwipedRight: () => customFullCalendarRef?.getApi().prev(),
     trackMouse: true, // マウスでのテストを可能にする（オプション）
   });
 
@@ -63,7 +65,11 @@ export function CustomFullCalendar() {
   return (
     <div {...reactSwipeHandlers}>
       <FullCalendar
-        ref={calendarRef}
+        ref={(ref) => {
+          if (ref) {
+            setCustomFullCalendarRef(ref);
+          }
+        }}
         // カレンダーの形式を指定
         plugins={[
           interactionPlugin,
