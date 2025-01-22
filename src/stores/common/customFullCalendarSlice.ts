@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
+import type FullCalendar from "@fullcalendar/react";
+
 
 import type { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
 
@@ -10,6 +12,7 @@ interface CustomFullCalendarStoreState {
   customFullCalendarBgColorsPerDay: Record<string, string>;
   customFullCalendarStartDate: Date;
   customFullCalendarEndDate: Date;
+  customFullCalendarRef: FullCalendar;
 
   // 以下二つは統合して随所で抽出するべきか？
   customFullCalendarCurrentYear: number;
@@ -39,6 +42,7 @@ interface CustomFullCalendarStoreState {
   setCustomFullCalendarCurrentMonth: (month: number) => void;
   setCustomFullCalendarClickedDate: (dateInfo: DateClickArg | null) => void;
   setCustomFullCalendarClickedEvent: (eventInfo: EventClickArg | null) => void;
+  setCustomFullCalendarRef: (ref: FullCalendar) => void;
 }
 
 export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((set) => ({
@@ -55,6 +59,7 @@ export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((
   customFullCalendarAttendanceEvents: [],
   customFullCalendarClickedDate: null,
   customFullCalendarClickedEvent: null,
+  customFullCalendarRef: {} as FullCalendar,
 
   // 状態を更新するアクション
   setCustomFullCalendarRole: (role) => set({ customFullCalendarRole: role }),
@@ -70,4 +75,6 @@ export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((
 
   setCustomFullCalendarClickedDate: (dateInfo) => set({ customFullCalendarClickedDate: dateInfo }),
   setCustomFullCalendarClickedEvent: (eventInfo) => set({ customFullCalendarClickedEvent: eventInfo }),  
+
+  setCustomFullCalendarRef: (ref: FullCalendar) => set({ customFullCalendarRef: ref }),
 }));
