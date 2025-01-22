@@ -68,7 +68,7 @@ export function CustomFullCalendar() {
     <div {...reactSwipeHandlers}>
       <FullCalendar
         ref={(ref) => {
-          if (ref) {
+          if (ref && ref !== customFullCalendarRef) {
             setCustomFullCalendarRef(ref);
           }
         }}
