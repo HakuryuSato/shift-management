@@ -9,7 +9,8 @@
 本番環境同様の機能をテストいただけますが、データはデモ用となります。 
 
 ## デモ用リンク
-ユーザー側（スマホ Chrome推奨）    
+ユーザー側（スマホ Chrome推奨）  
+*QRコードをスマートフォンで読み取ってご利用下さい。  
 ![image](https://github.com/user-attachments/assets/572a648c-2b36-4c15-aa2d-ebaa3f8a972f)
 
 管理者側（PC Chrome推奨）  
@@ -22,10 +23,43 @@
 
 
 
-## デモ用出退勤打刻QR
+## デモ用出退勤打刻用QR
 ![ATTENDANCE_QR](https://github.com/user-attachments/assets/018e06c6-3f83-4142-a142-5dac9367729a)
 
 
+## 使用技術
+### 共通
+- フレームワーク: Nextjs
+- 言語: TypeScript
+- テスト: Jest
+- 静的解析: ESLint
+
+### フロントエンド（Nextjs）
+#### 主要ライブラリ
+- FullCalendar（カレンダーUI）
+- Material-UI（UI） 
+- Zustand（状態管理）
+- yudiel/react-qr-scanner（QR読み取り）
+
+### バックエンド（Nextjs + supabase）
+### データベース
+- supabase
+
+#### 主要ライブラリ
+- NextAuth（認証）
+- Holidays JP API（祝日用API）
+- exceljs（Excel生成用）
+
+### インフラ
+- Vercel
+
+#### 利用サービス
+- Cron Jobs (シフト固定ユーザーのための自動登録用)
+## インフラ構成図
+![インフラ構成図](documents/6_インフラ構成図.png)
+
+## ER図
+![ER図](documents/5_ER図.png)
 
 ## 実装機能一覧
 ### 共通機能
@@ -51,37 +85,11 @@
 - お知らせ
 - 使い方
 
+## 非ユーザー利用機能
+- プロダクション環境による本番環境同様のテスト環境
+- GitHub Actionsによるデプロイ前チェック
 
-## 使用技術
-### 共通
-- フレームワーク: Nextjs
-- 言語: TypeScript
-- テスト: Jest
-- 静的解析: ESLint
-
-### フロントエンド
-#### 主要ライブラリ
-- FullCalendar（カレンダーUI）
-- Material-UI（UI） 
-- Zustand（状態管理）
-- yudiel/react-qr-scanner（QR読み取り）
-
-### バックエンド
-#### 主要ライブラリ
-- supabase
-- Nextjs API Routes / Server Actions
-- NextAuth（認証）
-- Holidays JP API（祝日用API）
-- exceljs（Excel生成用）
-
-### インフラ
-- Vercel
-
-#### 利用サービス
-- Cron Jobs (シフト固定ユーザーのための自動登録用)
-
-## インフラ構成図
-![インフラ構成図](documents/6_インフラ構成図.png)
-
-## ER図
-![ER図](documents/5_ER図.png)
+## セキュリティ
+- middlewareによるページのアクセス制限
+- ServerActionsによるCORS制限
+- Dependabotによる新規の脆弱性対策
