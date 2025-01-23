@@ -40,7 +40,7 @@ export const AdminHomeTopBar: React.FC = () => {
 
   return (
     <>
-      {/* 1行目 */}
+      {/* バー全体 */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -53,6 +53,29 @@ export const AdminHomeTopBar: React.FC = () => {
           <Button sx={commonButtonStyle} onClick={handleClickToShiftPage}>
             {buttonText}
           </Button>
+        </Box>
+
+
+        {/* 中央のボタン群 */}
+        <Box
+          display="flex"
+          alignItems="center"
+          // p={0}
+        >
+          {/* Prevボタン */}
+          <IconButton size="small" onClick={handleClickPrevButton}>
+            <ArrowBackIosNewIcon />
+          </IconButton>
+
+          {/* タイトルテキスト */}
+          <Typography variant="h5">
+            {adminHomeTopBarTitleText}
+          </Typography>
+
+          {/* Nextボタン */}
+          <IconButton size="small" onClick={handleClickNextButton}>
+            <ArrowForwardIosIcon />
+          </IconButton>
         </Box>
 
         {/* 右側のボタン群 */}
@@ -98,27 +121,6 @@ export const AdminHomeTopBar: React.FC = () => {
       </Box>
 
       {/* 2行目 */}
-      <Box
-        display="flex"
-        alignItems="center"
-        p={2}
-      >
-        {/* タイトルテキスト */}
-        <Typography variant="h5">
-          {adminHomeTopBarTitleText}
-        </Typography>
-
-        {/* Prevボタン */}
-        <IconButton size="small" onClick={handleClickPrevButton}>
-          <ArrowBackIosNewIcon />
-        </IconButton>
-
-        {/* Nextボタン */}
-        <IconButton size="small" onClick={handleClickNextButton}>
-          <ArrowForwardIosIcon />
-        </IconButton>
-
-      </Box>
     </>
   );
 };
