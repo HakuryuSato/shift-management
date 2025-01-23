@@ -47,6 +47,7 @@ export const AdminHomeTopBar: React.FC = () => {
         alignItems="center"
         p={2}
         boxShadow={3}
+        position="relative"
       >
         {/* 左側のボタン群 */}
         <Box display="flex" alignItems="center">
@@ -55,12 +56,15 @@ export const AdminHomeTopBar: React.FC = () => {
           </Button>
         </Box>
 
-
         {/* 中央のボタン群 */}
         <Box
           display="flex"
           alignItems="center"
-          // p={0}
+          position="absolute"
+          left="50%"
+          sx={{
+            transform: "translateX(-50%)",
+          }}
         >
           {/* Prevボタン */}
           <IconButton size="small" onClick={handleClickPrevButton}>
@@ -71,11 +75,12 @@ export const AdminHomeTopBar: React.FC = () => {
           <Typography variant="h5">
             {adminHomeTopBarTitleText}
           </Typography>
-
+          
           {/* Nextボタン */}
           <IconButton size="small" onClick={handleClickNextButton}>
             <ArrowForwardIosIcon />
           </IconButton>
+
         </Box>
 
         {/* 右側のボタン群 */}
