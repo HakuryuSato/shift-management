@@ -75,9 +75,8 @@ export function CustomFullCalendar() {
         // カレンダーの形式を指定
         plugins={[
           interactionPlugin,
-          ...(customFullCalendarRole === "admin"
-            ? [timeGridPlugin]
-            : [dayGridPlugin]),
+          dayGridPlugin,
+          ...(customFullCalendarRole === "admin" ? [timeGridPlugin] : []),
         ]}
         initialView={customFullCalendarRole === "admin"
           ? "timeGridWeek"
@@ -91,10 +90,10 @@ export function CustomFullCalendar() {
         footerToolbar={false}
         // 月や週遷移時の日付再設定
         datesSet={(dateInfo) => {
-          // if (customFullCalendarRole === "admin") {
-          //   setCustomFullCalendarStartDate(new Date(dateInfo.start));
-          //   setCustomFullCalendarEndDate(new Date(dateInfo.end));
-          // } else {
+          if (customFullCalendarRole === "admin") {
+            setCustomFullCalendarStartDate(new Date(dateInfo.start));
+            setCustomFullCalendarEndDate(new Date(dateInfo.end));
+          }
 
           const fullCalendarDate = new Date(dateInfo.start);
           if (customFullCalendarRole === "user") {
