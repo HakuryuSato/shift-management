@@ -1,6 +1,5 @@
 // ライブラリ
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 
 // Store
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
@@ -73,8 +72,6 @@ export const useAdminAttendanceTopBar = () => {
 
 
 
-  const router = useRouter();
-
   // 左上のモード切替ボタン ---------------------------------------------------------------------------------------------------
   const handleClickTopLeftButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
@@ -83,10 +80,7 @@ export const useAdminAttendanceTopBar = () => {
         formatJapanDateToYearMonth(adminAttendanceViewEndDate)
       );
     } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
-      // setAdminHomeMode("SHIFT");
-      router.push('/admin_kanrisha');
-
-
+      setAdminHomeMode("SHIFT");
 
       // ここで、フルカレンダーの開始終了日をセット
     } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
@@ -98,7 +92,7 @@ export const useAdminAttendanceTopBar = () => {
         formatJapanDateToYearMonth(adminAttendanceViewEndDate)
       );
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, hidePersonalAttendanceTable, router, setAdminHomeMode, setAdminHomeTopBarTitleText, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, hidePersonalAttendanceTable, setAdminHomeMode, setAdminHomeTopBarTitleText, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
 
   // ユーザー登録
   const handleClickUserRegister = useCallback(() => {
