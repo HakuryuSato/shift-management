@@ -117,30 +117,30 @@ function roundToNearest30Minutes(date: Date, isStart: boolean): Date {
     let minutes = japanDate.getMinutes();
 
     // // 30分単位で丸め
-    // if (isStart) { // 開始時間の場合
-    //     if (minutes < 30) {
-    //         minutes = 30;
-    //     } else {
-    //         minutes = 0;
-    //         hours += 1;
-    //     }
-    // } else { // 終了時間の場合
-    //     if (minutes < 30) {
-    //         minutes = 0;
-    //     } else {
-    //         minutes = 30;
-    //     }
-    // }
-
-    // japanDate.setHours(hours, minutes, 0, 0);
-
-    const remainder = minutes % 30;
-    // 30分単位で丸め
-    if (remainder < 15) {
-        japanDate.setMinutes(minutes - remainder);
-    } else {
-        japanDate.setMinutes(minutes + (30 - remainder));
+    if (isStart) { // 開始時間の場合
+        if (minutes < 30) {
+            minutes = 30;
+        } else {
+            minutes = 0;
+            hours += 1;
+        }
+    } else { // 終了時間の場合
+        if (minutes < 30) {
+            minutes = 0;
+        } else {
+            minutes = 30;
+        }
     }
+
+    japanDate.setHours(hours, minutes, 0, 0);
+
+    // const remainder = minutes % 30;
+    // // 30分単位で丸め
+    // if (remainder < 15) {
+    //     japanDate.setMinutes(minutes - remainder);
+    // } else {
+    //     japanDate.setMinutes(minutes + (30 - remainder));
+    // }
 
     // 再びUTC時間に変換
     const roundedJapanTime = japanDate.getTime();
