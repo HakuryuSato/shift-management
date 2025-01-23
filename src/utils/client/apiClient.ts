@@ -18,7 +18,7 @@ async function handleFetch<T>(url: string, options?: RequestInit): Promise<T> {
     const result = await response.json();
 
     if (response.ok && result && 'data' in result) {
-      console.log('apiClient:', result.data)
+      // console.log('apiClient:', result.data)
       return result.data as T;
     } else {
       console.error(`Error fetching ${url}:`, result);
