@@ -56,12 +56,12 @@ export function useUserQrCodeReaderView() {
       console.log(`[${new Date().toISOString()}] handleScan 開始`);
 
       if (detectedCodes[0]?.rawValue === "ATTENDANCE_QR") {
-        console.log(`[${new Date().toISOString()}] handleScan punchAttendance 開始`);
+        // console.log(`[${new Date().toISOString()}] handleScan punchAttendance 開始`);
         await punchAttendance(userId);
-        console.log(`[${new Date().toISOString()}] handleScan punchAttendance 終了`);
+        // console.log(`[${new Date().toISOString()}] handleScan punchAttendance 終了`);
         showUserSnackBar("打刻完了しました", "success");
         handleClose();
-        console.log(`[${new Date().toISOString()}] handleScan 終了`);
+        // console.log(`[${new Date().toISOString()}] handleScan 終了`);
       } 
 
     } catch (error) {
