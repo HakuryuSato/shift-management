@@ -20,7 +20,6 @@ export const AdminHome: React.FC = () => {
             <AdminHomeTopBar />
             <AdminUserManagementForm />
             <ModalContainer />
-            
             <AdminAttendanceView />
             <AdminShiftView />
         </>
