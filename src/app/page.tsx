@@ -8,7 +8,7 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/dev/admin_kanrisha');
+    router.push('/admin_kanrisha');
     // router.push('/user');  
   }, [router]);
 
