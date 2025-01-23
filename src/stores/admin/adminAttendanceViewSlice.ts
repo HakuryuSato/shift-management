@@ -34,7 +34,7 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
     set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 
 
-  isVisibleAllMembersMonthlyTable: true,
+  isVisibleAllMembersMonthlyTable: false,
   showAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: true }),
   hideAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: false }),
 
