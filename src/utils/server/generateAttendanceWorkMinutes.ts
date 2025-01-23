@@ -30,8 +30,8 @@ export async function generateAttendanceWorkMinutes(
     // 開始時間と終了時間をパースして30分単位に丸める
     const startTime = createJSTDateFromISO(stamp_start_time);
     const endTime = createJSTDateFromISO(stamp_end_time);
-    const roundedStartDate = roundToNearest30Minutes(startTime);
-    const roundedEndDate = roundToNearest30Minutes(endTime);
+    const roundedStartDate = roundToNearest30Minutes(startTime, true);
+    const roundedEndDate = roundToNearest30Minutes(endTime, false);
 
     // 合計分数取得
     const totalWorkMinutes = (roundedEndDate.getTime() - roundedStartDate.getTime()) / (1000 * 60);
@@ -96,12 +96,12 @@ function isHoliday(date: Date, holidayDates: Set<string>): boolean {
 function isSunday(date: Date): boolean {
     const { dayOfWeek } = getJapanDateComponents(date);
     return dayOfWeek === 0; // 日曜日は0
-  }
+}
 
 /**
  * 時間を30分単位に丸める
  */
-function roundToNearest30Minutes(date: Date): Date {
+function roundToNearest30Minutes(date: Date, isStart: boolean): Date {
     // JSTのオフセット（+9時間）をミリ秒単位で計算
     const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
@@ -113,17 +113,34 @@ function roundToNearest30Minutes(date: Date): Date {
 
     // 日本時間での分を計算
     const japanDate = new Date(japanTime);
-    const minutes = japanDate.getMinutes();
-    const remainder = minutes % 30;
+    let hours = japanDate.getHours();
+    let minutes = japanDate.getMinutes();
 
     // 30分単位で丸め
-    if (remainder < 15) {
-        japanDate.setMinutes(minutes - remainder);
-    } else {
-        japanDate.setMinutes(minutes + (30 - remainder));
+    if (isStart) { // 開始時間の場合
+        if (minutes < 30) {
+            minutes = 30;
+        } else {
+            minutes = 0;
+            hours += 1;
+        }
+    } else { // 終了時間の場合
+        if (minutes < 30) {
+            minutes = 0;
+        } else {
+            minutes = 30;
+        }
     }
-    japanDate.setSeconds(0);
-    japanDate.setMilliseconds(0);
+
+    japanDate.setHours(hours, minutes, 0, 0);
+
+    // const remainder = minutes % 30;
+    // // 30分単位で丸め
+    // if (remainder < 15) {
+    //     japanDate.setMinutes(minutes - remainder);
+    // } else {
+    //     japanDate.setMinutes(minutes + (30 - remainder));
+    // }
 
     // 再びUTC時間に変換
     const roundedJapanTime = japanDate.getTime();
