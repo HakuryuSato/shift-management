@@ -78,9 +78,14 @@ export function CustomFullCalendar() {
           dayGridPlugin,
           ...(customFullCalendarRole === "admin" ? [timeGridPlugin] : []),
         ]}
-        initialView={customFullCalendarRole === "admin"
-          ? "timeGridWeek"
-          : "dayGridMonth"}
+        initialView={customFullCalendarRole === "admin" ? "timeGridWeek" : "dayGridMonth"}
+        views={{
+          ...(customFullCalendarRole === "admin" ? {
+            timeGridWeek: {}, // adminの場合、timeGridWeekのみ許可
+          } : {
+            dayGridMonth: {}, // userの場合、dayGridMonthのみ許可
+          })
+        }}
         height="auto"
         locale={jaLocale}
         events={customFullCalendarEvents}
