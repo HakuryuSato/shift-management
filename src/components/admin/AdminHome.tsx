@@ -10,18 +10,22 @@ import { AdminShiftView } from "./AdminShiftView";
 import { useCommonHomeInitialize } from "@/hooks/user/useCommonHomeInitialize";
 import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 
+// Store
+import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
+
 export const AdminHome: React.FC = () => {
     // ユーザー情報を取得するカスタムフックを呼び出す
     useAdminHomeUsersData();
     useCommonHomeInitialize("admin");
+
+    const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
 
     return (
         <>
             <AdminHomeTopBar />
             <AdminUserManagementForm />
             <ModalContainer />
-            <AdminAttendanceView />
-            <AdminShiftView />
+            {adminHomeMode === 'SHIFT' ? <AdminShiftView /> : <AdminAttendanceView />}
         </>
     );
 };
