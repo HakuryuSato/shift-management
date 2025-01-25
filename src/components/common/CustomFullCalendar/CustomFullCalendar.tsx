@@ -23,7 +23,6 @@ import { renderEventContent } from "./renderEventContnt";
 import { dayCellClassNames } from "./dayCellClassNames";
 
 export function CustomFullCalendar() {
-
   const setCustomFullCalendarRef = useCustomFullCalendarStore((state) =>
     state.setCustomFullCalendarRef
   );
@@ -63,6 +62,11 @@ export function CustomFullCalendar() {
 
   // Click
   const { handleClickDate, handleClickEvent } = useCalendarClickHandlers();
+
+  // roleが設定されるまで待機
+  if (!customFullCalendarRole) {
+    return null;
+  }
 
   return (
     <div {...reactSwipeHandlers}>
