@@ -7,7 +7,7 @@ import { AdminUserManagementForm } from "./AttendanceView/AdminUserManagementFor
 import { AdminShiftView } from "./AdminShiftView";
 
 // Hooks
-import { useCommonHomeInitialize } from "@/hooks/user/useCommonHomeInitialize";
+import { useCommonHomeInitialize } from "@/hooks/common/useCommonHomeInitialize";
 import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 
 // Store

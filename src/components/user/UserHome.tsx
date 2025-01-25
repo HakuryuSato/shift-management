@@ -12,7 +12,7 @@ import { UserHomeAppBar } from "./UserHomeAppBar";
 import { ModalContainer } from "@/components/common/Modal/ModalContainer";
 
 // Hooks
-import { useCommonHomeInitialize } from "@/hooks/user/useCommonHomeInitialize";
+import { useCommonHomeInitialize } from "@/hooks/common/useCommonHomeInitialize";
 
 export function UserHome() {
   // User用に各種コンポーンネントの状態を設定
