@@ -8,7 +8,7 @@ import type { CustomFullCalendarEvent } from '@/types/CustomFullCalendarEvent';
 
 interface CustomFullCalendarStoreState {
   // 共通の状態
-  customFullCalendarRole: 'admin' | 'user';
+  customFullCalendarRole: 'admin' | 'user' | null;
   customFullCalendarBgColorsPerDay: Record<string, string>;
   customFullCalendarStartDate: Date;
   customFullCalendarEndDate: Date;
@@ -47,7 +47,7 @@ interface CustomFullCalendarStoreState {
 
 export const useCustomFullCalendarStore = create<CustomFullCalendarStoreState>((set) => ({
   // 初期状態
-  customFullCalendarRole: 'user',
+  customFullCalendarRole: null,
   customFullCalendarBgColorsPerDay: {},
   customFullCalendarStartDate: new Date(),
   customFullCalendarEndDate: new Date(),
