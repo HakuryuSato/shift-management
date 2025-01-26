@@ -21,7 +21,7 @@ export const UserDropdown: React.FC = () => {
         label="ユーザー名"
         sx={{ minWidth: '150px' }}
       >
-        {adminHomeUsersData?.map((user, index) => (
+        {adminHomeUsersData?.filter(user => user.employment_type === 'part_time').map((user, index) => (
           <MenuItem key={index} value={user.user_name}>
             {user.user_name}
           </MenuItem>
