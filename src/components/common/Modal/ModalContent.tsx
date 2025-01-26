@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Input, Typography } from "@mui/material";
 import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
 import { TimeDropdown } from "@/components/common/Modal/TimeDropdown";
-// import { UserDropdown } from "./UserDropdown";
+import { UserDropdown } from "./UserDropdown";
 import { useModalContent } from "@/hooks/common/Modal/useModalContent";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
 import { MultipleShiftRegister } from "./MultipleShiftRegister";
@@ -11,16 +11,12 @@ export const ModalContent: React.FC = () => {
   const modalRole = useModalContainerStore((state) => state.modalRole);
   const modalMode = useModalContainerStore((state) => state.modalMode);
 
-  const {
-    handleChangeStartEndTime,
-    handleChangeSelectedUser,
-  } = useModalContent();
-
+  // State
   const modalContentSelectedDate = useModalContentStore((state) =>
     state.modalContentSelectedDate
   );
-  const modalContentSelectedUserName = useModalContentStore((state) =>
-    state.modalContentSelectedUserName
+  const modalContentSelectedUser = useModalContentStore((state) =>
+    state.modalContentSelectedUser
   );
   const modalContentSelectedStartTime = useModalContentStore((state) =>
     state.modalContentSelectedStartTime
@@ -28,6 +24,13 @@ export const ModalContent: React.FC = () => {
   const modalContentSelectedEndTime = useModalContentStore((state) =>
     state.modalContentSelectedEndTime
   );
+
+  // 関数
+  const {
+    handleChangeStartEndTime,
+    handleChangeSelectedUser,
+  } = useModalContent();
+  
 
   return (
     <Box
@@ -61,13 +64,17 @@ export const ModalContent: React.FC = () => {
         <>
           {/* シフト確認ならユーザー名表示 */}
           <Box display={modalMode === "confirm" ? "block" : "none"}>
-            <Typography>{modalContentSelectedUserName}</Typography>
+            <Typography variant="h5">
+              {modalContentSelectedUser?.user_name}
+            </Typography>
           </Box>
 
           {/* シフト登録ならユーザー選択表示 */}
-          {/* <Box display={modalMode === "register" ? "block" : "none"}>
-            <UserDropdown />
-          </Box> */}
+          {
+            <Box display={modalMode === "register" ? "block" : "none"}>
+              <UserDropdown />
+            </Box>
+          }
         </>
       )}
 

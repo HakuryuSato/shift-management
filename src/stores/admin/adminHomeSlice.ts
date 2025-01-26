@@ -10,7 +10,7 @@ interface AdminHomeState {
 
 export const useAdminHomeStore = create<AdminHomeState>((set) => ({
   // 一時的に初期を出退勤にしている、あとでSHIFTに戻すこと
-  adminHomeMode: 'MONTHLY_ATTENDANCE',
+  adminHomeMode: 'SHIFT',
   setAdminHomeMode: (mode) => set({ adminHomeMode: mode }),
   adminHomeUsersData: null,
   setAdminHomeUsersData: (users) => set({ adminHomeUsersData: users }),

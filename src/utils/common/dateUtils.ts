@@ -186,6 +186,17 @@ export function hoursToMinutes(hoursString: string): number {
 
 
 /**
+ * 日付を 'YYYY年M月' の形式にフォーマットする関数（0詰めなし）
+ * @param date Dateオブジェクト（省略時は現在日時）
+ * @returns フォーマットされた日付文字列
+ */
+export function formatJapanDateToYearMonthNoZeroPadding(date: Date = new Date()): string {
+  const yyyy = date.getFullYear();
+  const M = date.getMonth() + 1;
+  return `${yyyy}年${M}月`;
+}
+
+/**
  * 日付を 'YYYY年MM月' の形式にフォーマットする関数
  * @param date Dateオブジェクト（省略時は現在日時）
  * @returns フォーマットされた日付文字列
@@ -227,6 +238,19 @@ export function createJSTDateFromISO(dateString: string): Date {
 
   // タイムゾーン付きの日時文字列からDateオブジェクトを作成
   return new Date(dateTimeWithOffset);
+}
+
+/**
+ * 日付を 'YYYY年MM月DD日' の形式にフォーマットする関数
+ * @param date Dateオブジェクト
+ * @returns フォーマットされた日付文字列
+ */
+export function formatJapanDateToYearMonthDay(date: Date): string {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 }
 
 export function getJapanDateComponents(date: Date): {

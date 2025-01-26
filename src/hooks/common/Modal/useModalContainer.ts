@@ -29,6 +29,7 @@ export const useModalContainer = () => {
     const closeModal = useModalContainerStore((state) => state.closeModal);
 
     // Modal Content
+    const modalContentSelectedUser = useModalContentStore((state) => state.modalContentSelectedUser)
     const modalContentSelectedStartTime = useModalContentStore((state) => state.modalContentSelectedStartTime)
     const modalContentSelectedEndTime = useModalContentStore((state) => state.modalContentSelectedEndTime)
 
@@ -60,23 +61,19 @@ export const useModalContainer = () => {
     const handleClickModalContainerButton = async () => {
         // ModalModeに応じて条件分岐、apiClientを呼び出して処理を行う
         if (modalMode === 'register') { // 登録  ---------------------------------------------------------------------------------------------------
-            // ユーザーの場合
-            if (customFullCalendarRole === 'user') {
-                // 選択された日付と開始・終了時刻を組み合わせてISO形式の日時文字列を生成
-                const startDateTime = new Date(`${customFullCalendarSelectedDate?.dateStr}T${modalContentSelectedStartTime}:00`);
-                const endDateTime = new Date(`${customFullCalendarSelectedDate?.dateStr}T${modalContentSelectedEndTime}:00`);
+            // 選択された日付と開始・終了時刻を組み合わせてISO形式の日時文字列を生成
+            const startDateTime = new Date(`${customFullCalendarSelectedDate?.dateStr}T${modalContentSelectedStartTime}:00`);
+            const endDateTime = new Date(`${customFullCalendarSelectedDate?.dateStr}T${modalContentSelectedEndTime}:00`);
 
+            // ユーザーIDを決定（ユーザーの場合はuserIdを、管理者の場合は選択されたユーザーのIDを使用）
+            const targetUserId = customFullCalendarRole === 'user' ? userId : modalContentSelectedUser?.user_id;
 
-                // Shift用のデータを作成して送信
-                await insertShift({
-                    user_id: userId,
-                    start_time: toJapanISOString(startDateTime),
-                    end_time: toJapanISOString(endDateTime)
-                });
-
-            } else if (customFullCalendarRole === 'admin') { // 管理者の場合
-
-            }
+            // Shift用のデータを作成して送信
+            await insertShift({
+                user_id: targetUserId,
+                start_time: toJapanISOString(startDateTime),
+                end_time: toJapanISOString(endDateTime)
+            });
 
 
         } else if (modalMode === 'delete') { // 削除 ---------------------------------------------------------------------------------------------------
@@ -126,7 +123,7 @@ export const useModalContainer = () => {
             // 個人のシフトイベントを日付（YYYY-MM-DD）をキーとしたMapに変換
             const personalShiftEventsMap = new Map<string, CustomFullCalendarEvent>();
             customFullCalendarPersonalShiftEvents.forEach((event: CustomFullCalendarEvent) => {
-                if(!event.start) return;
+                if (!event.start) return;
                 const dateStr = event.start.split('T')[0];
                 personalShiftEventsMap.set(dateStr, event);
             });
@@ -134,7 +131,7 @@ export const useModalContainer = () => {
             // 祝日イベントを日付（YYYY-MM-DD）をキーとしたMapに変換
             const holidayEventsMap = new Map<string, CustomFullCalendarEvent>();
             customFullCalendarHolidayEvents.forEach((event: CustomFullCalendarEvent) => {
-                if(!event.start) return;
+                if (!event.start) return;
                 const dateStr = event.start.split('T')[0];
                 holidayEventsMap.set(dateStr, event);
             });

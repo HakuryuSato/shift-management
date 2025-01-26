@@ -20,7 +20,7 @@ describe("middleware", () => {
   });
 
   it("未認証のユーザーが管理者ページにアクセスしようとした場合、ログインページにリダイレクトする", async () => {
-    const requestUrl = "https://localhost/dev/admin_kanrisha";
+    const requestUrl = "https://localhost/admin_kanrisha";
     const url = new URL(requestUrl);
     const req = { nextUrl: url, url: requestUrl } as any;
     mockGetToken.mockResolvedValue(null);
@@ -44,7 +44,7 @@ describe("middleware", () => {
   });
 
   it("管理者ユーザーが管理者ページにアクセスできる", async () => {
-    const requestUrl = "https://localhost/dev/admin_kanrisha";
+    const requestUrl = "https://localhost/admin_kanrisha";
     const url = new URL(requestUrl);
     const req = { nextUrl: url, url: requestUrl, headers: new Headers() } as any;
     mockGetToken.mockResolvedValue({ user: { role: "admin" } });
@@ -53,7 +53,7 @@ describe("middleware", () => {
   });
 
   it("非管理者ユーザーが管理者ページにアクセスしようとした場合、ログインページにリダイレクトする", async () => {
-    const requestUrl = "https://localhost/dev/admin_kanrisha";
+    const requestUrl = "https://localhost/admin_kanrisha";
     const url = new URL(requestUrl);
     const req = { nextUrl: url, url: requestUrl, headers: new Headers() } as any;
     mockGetToken.mockResolvedValue({ user: { role: "user" } });

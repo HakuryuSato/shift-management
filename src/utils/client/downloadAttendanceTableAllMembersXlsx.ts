@@ -1,4 +1,3 @@
-// src/utils/client/downloadAttendanceTableAllMembersXlsx.ts
 import type { AttendanceRowAllMembers } from '@/types/Attendance';
 import { createWorkbook, addTableToWorksheet, saveWorkbook } from './excelUtils';
 

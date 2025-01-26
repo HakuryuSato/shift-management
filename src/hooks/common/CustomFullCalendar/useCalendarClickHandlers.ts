@@ -10,10 +10,7 @@ import { useModalContent } from "@/hooks/common/Modal/useModalContent"
 import { isUserCalendarEventOnDate } from "@/utils/client/isUserCalendarEventOnDate";
 
 
-/**
- * 
- * @returns 
- */
+
 export const useCalendarClickHandlers = () => {
     const customFullCalendarRole = useCustomFullCalendarStore((state) => state.customFullCalendarRole);
     const userId = useUserHomeStore((state) => state.userId);
@@ -44,15 +41,8 @@ export const useCalendarClickHandlers = () => {
     // 各種モーダルの状態を初期化するための関数
     const initializeModalsAfterClieckedEvent = () => {
 
-        // (user かつ シフト個人画面) または 管理者 なら編集アイコンを表示
-        // 出退勤なら編集アイコン非表示
-        const shouldShowEditIcons = (customFullCalendarRole === "user" && calendarViewMode === 'PERSONAL_SHIFT')
-            || customFullCalendarRole === "admin";
-        shouldShowEditIcons ? showModalTopBarEditIcons() : hideModalTopBarEditIcons();
-
         modalContentInitialize('eventClick')
         setModalMode('confirm')
-        openModal();
     }
 
     // フルカレンダーのイベントクリック時に呼ばれる関数
@@ -63,20 +53,18 @@ export const useCalendarClickHandlers = () => {
         // フルカレStoreにクリックされたEvent情報保存 -> useEffectが実行
         setCustomFullCalendarClickedEvent(eventInfo);
 
+        showModalTopBarEditIcons()
+        openModal();
         // 選択されたイベント情報を表示
-        console.log("選択されたイベント情報:", eventInfo);
+        // console.log("選択されたイベント情報:", eventInfo);
     }
-
-
-
-
 
 
     // 日付クリック  ---------------------------------------------------------------------------------------------------
     // クリックされたDateをフルカレStoreにsetした際 モーダルを更新
     useEffect(() => {
         if (customFullCalendarClickedDate) {
-            console.log("選択された日付情報:", customFullCalendarClickedDate);
+            // console.log("選択された日付情報:", customFullCalendarClickedDate);
             // モーダル関連初期化
             initializeModalsAfterClieckedDate(customFullCalendarClickedDate);
         }
@@ -87,29 +75,9 @@ export const useCalendarClickHandlers = () => {
 
 
     const initializeModalsAfterClieckedDate = (customFullCalendarClickedDate: DateClickArg) => {
-        // イベントがあるかどうかを判定
-        console.log(customFullCalendarPersonalShiftEvents)
-
-
-        // userかつ、個人シフトかつ、その日にイベントがない？
-        // if (customFullCalendarRole === "user" && customFullCalendarClickedDate.event.extendedProps.user_id == userId) {
-        //     // シフト個人画面 または全員画面 なら編集アイコンを表示
-        //     if (calendarViewMode === 'PERSONAL_SHIFT' || calendarViewMode === 'ALL_MEMBERS_SHIFT') {
-        //         showModalTopBarEditIcons()
-        //     } else { // シフト全員画面or出退勤なら編集アイコン非表示
-        //         hideModalTopBarEditIcons()
-        //     }
-
-        // }
-
-        // adminの場合 編集可能
-        if (customFullCalendarRole === "admin") {
-            showModalTopBarEditIcons()
-        }
-
+        hideModalTopBarEditIcons()
         modalContentInitialize('dateClick')
         setModalMode('register')
-        openModal();
     }
 
 
@@ -117,16 +85,23 @@ export const useCalendarClickHandlers = () => {
     const handleClickDate = (dateInfo: DateClickArg) => {
         console.log(dateInfo.dateStr)
 
-
         // userかつ個人画面以外　または　すでに該当ユーザーのイベントが存在する なら終了
         if ((customFullCalendarRole === 'user' && calendarViewMode !== 'PERSONAL_SHIFT')
             || isUserCalendarEventOnDate(dateInfo.dateStr, userId, customFullCalendarPersonalShiftEvents))
             return;
 
+        // 管理者ならばテキストを整形
+        if(customFullCalendarRole === 'admin'){
+            // ISO文字列からYYYY-MM-DD部分を抽出
+            const formattedDate = dateInfo.dateStr.split('T')[0];
+            dateInfo.dateStr = formattedDate;
+        }
+
+        hideModalTopBarEditIcons()
+        openModal()
 
         // 日付データを状態にセット
         setCustomFullCalendarClickedDate(dateInfo);
-
     };
 
 

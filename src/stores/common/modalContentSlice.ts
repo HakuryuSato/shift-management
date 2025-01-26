@@ -1,26 +1,27 @@
 import { create } from 'zustand';
+import type { User } from '@/types/User';
 
 interface ModalContentStoreState {
   modalContentSelectedDate: string,
-  modalContentSelectedUserName: string,
+  modalContentSelectedUser: User | null,
   modalContentSelectedStartTime: string,
   modalContentSelectedEndTime: string,
 }
 
 export const useModalContentStore = create<ModalContentStoreState & {
   setModalContentSelectedDate: (date: string) => void;
-  setModalContentSelectedUserName: (userName: string) => void;
+  setModalContentSelectedUser: (user: User | null) => void;
   setModalContentSelectedStartTime: (startTime: string) => void;
   setModalContentSelectedEndTime: (endTime: string) => void;
 }>((set) => ({
   modalContentSelectedDate: '',
-  modalContentSelectedUserName: '',
+  modalContentSelectedUser: {} as User,
   modalContentSelectedStartTime: '',
   modalContentSelectedEndTime: '',
   setModalContentSelectedDate: (date) =>
     set({ modalContentSelectedDate: date }),
-  setModalContentSelectedUserName: (userName) =>
-    set({ modalContentSelectedUserName: userName }),
+  setModalContentSelectedUser: (user) =>
+    set({ modalContentSelectedUser: user }),
   setModalContentSelectedStartTime: (startTime) =>
     set({ modalContentSelectedStartTime: startTime }),
   setModalContentSelectedEndTime: (endTime) =>

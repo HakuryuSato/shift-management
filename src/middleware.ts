@@ -14,33 +14,33 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl; // アクセス要求されたURL
 
   // 誰でもアクセス可能なページ
-  if (pathname === "/login") {
+  if (pathname === "/login" || pathname === "/admin_login") {
     return NextResponse.next();
   }
 
   // 保護されたページ
-  const protectedPaths = ["/user", "/dev/admin_kanrisha"];
+  const protectedPaths = ["/user", "/admin_kanrisha"];
 
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
-      // 要求されたページに応じてloginページを返す(クエリパラメータにadminまたはuserを設定)
-      const role = pathname.startsWith("/dev/admin_kanrisha")
-        ? "admin"
-        : "user";
+      // 要求されたページに応じて適切なログインページにリダイレクト
       return NextResponse.redirect(
-        new URL(`/login?role=${role}`, req.url)
+        new URL(
+          pathname.startsWith("/admin_kanrisha") ? "/admin_login" : "/login",
+          req.url
+        )
       );
     } else {
       if (
-        (pathname.startsWith("/dev/admin_kanrisha") &&
+        (pathname.startsWith("/admin_kanrisha") &&
           token.user?.role !== "admin") ||
         (pathname.startsWith("/user") && token.user?.role !== "user")
       ) {
-        const role = pathname.startsWith("/dev/admin_kanrisha")
-          ? "admin"
-          : "user";
         return NextResponse.redirect(
-          new URL(`/login?role=${role}`, req.url)
+          new URL(
+            pathname.startsWith("/admin_kanrisha") ? "/admin_login" : "/login",
+            req.url
+          )
         );
       }
     }
@@ -51,5 +51,5 @@ export async function middleware(req: NextRequest) {
 
 // 未認証の場合にアクセスを制限するページ
 export const config = {
-  matcher: ["/user/:path*", "/dev/admin_kanrisha/:path*"],
+  matcher: ["/user/:path*", "/admin_kanrisha/:path*"],
 };
