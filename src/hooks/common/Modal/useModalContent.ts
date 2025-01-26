@@ -51,7 +51,7 @@ export const useModalContent = () => {
 
         // 状態を初期化
         setModalContentSelectedDate(dateStr);
-        // setModalContentSelectedUserName('');
+        setModalContentSelectedUser(null);
         const { start_time, end_time } = getUserOptions();
         // ここでCookieから値取得
         setModalContentSelectedStartTime(start_time || '');
