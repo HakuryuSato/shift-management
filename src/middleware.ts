@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl; // アクセス要求されたURL
 
   // 誰でもアクセス可能なページ
-  if (pathname === "/login") {
+  if (pathname === "/login" || pathname === "/admin_login") {
     return NextResponse.next();
   }
 
@@ -23,12 +23,12 @@ export async function middleware(req: NextRequest) {
 
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
-      // 要求されたページに応じてloginページを返す(クエリパラメータにadminまたはuserを設定)
-      const role = pathname.startsWith("/admin_kanrisha")
-        ? "admin"
-        : "user";
+      // 要求されたページに応じて適切なログインページにリダイレクト
       return NextResponse.redirect(
-        new URL(`/login?role=${role}`, req.url)
+        new URL(
+          pathname.startsWith("/admin_kanrisha") ? "/admin_login" : "/login",
+          req.url
+        )
       );
     } else {
       if (
@@ -36,11 +36,11 @@ export async function middleware(req: NextRequest) {
           token.user?.role !== "admin") ||
         (pathname.startsWith("/user") && token.user?.role !== "user")
       ) {
-        const role = pathname.startsWith("/admin_kanrisha")
-          ? "admin"
-          : "user";
         return NextResponse.redirect(
-          new URL(`/login?role=${role}`, req.url)
+          new URL(
+            pathname.startsWith("/admin_kanrisha") ? "/admin_login" : "/login",
+            req.url
+          )
         );
       }
     }
