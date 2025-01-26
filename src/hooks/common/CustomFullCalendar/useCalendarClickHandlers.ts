@@ -117,11 +117,18 @@ export const useCalendarClickHandlers = () => {
     const handleClickDate = (dateInfo: DateClickArg) => {
         console.log(dateInfo.dateStr)
 
-
         // userかつ個人画面以外　または　すでに該当ユーザーのイベントが存在する なら終了
         if ((customFullCalendarRole === 'user' && calendarViewMode !== 'PERSONAL_SHIFT')
             || isUserCalendarEventOnDate(dateInfo.dateStr, userId, customFullCalendarPersonalShiftEvents))
             return;
+
+        // 管理者ならばテキストを整形
+        if(customFullCalendarRole === 'admin'){
+            // ISO文字列からYYYY-MM-DD部分を抽出
+            const formattedDate = dateInfo.dateStr.split('T')[0];
+            dateInfo.dateStr = formattedDate;
+        }
+
 
 
         // 日付データを状態にセット
