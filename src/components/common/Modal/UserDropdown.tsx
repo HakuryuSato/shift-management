@@ -1,22 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
+import { useModalContentStore } from "@/stores/common/modalContentSlice";
 
 export const UserDropdown: React.FC = () => {
+  // ユーザー全員分
   const adminHomeUsersData = useAdminHomeStore((state) =>
     state.adminHomeUsersData
   );
-  const [selectedUser, setSelectedUser] = useState<string>("");
 
+  // 選択されたユーザー用State,Set関数
+  const modalContentSelectedUser = useModalContentStore(
+    (state) => state.modalContentSelectedUser
+  );
+  const setModalContentSelectedUser = useModalContentStore(
+    (state) => state.setModalContentSelectedUser
+  );
+
+  // 変更時にGlobalStateへ
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectedUser(event.target.value);
+    const selectedUserName = event.target.value;
+    
+    const selectedUser = adminHomeUsersData?.find(
+      (user) => user.user_name === selectedUserName
+    ) || null;
+    
+    setModalContentSelectedUser(selectedUser);
   };
 
   return (
     <FormControl fullWidth>
       <InputLabel>ユーザー名</InputLabel>
       <Select
-        value={selectedUser}
+        value={modalContentSelectedUser?.user_name}
         onChange={handleChange}
         label="ユーザー名"
         sx={{ minWidth: '150px' }}
