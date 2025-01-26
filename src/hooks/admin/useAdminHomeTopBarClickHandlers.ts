@@ -127,11 +127,14 @@ export const useAdminAttendanceTopBar = () => {
 
 
 
+  // Calendar
+  const calendarRef = useCustomFullCalendarStore((state) => state.customFullCalendarRef);
+
   // 日付範囲戻る ---------------------------------------------------------------------------------------------------
   const handleClickPrevButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       // SHIFTモードの際の前の週への処理
-      const calendarApi = useCustomFullCalendarStore.getState().customFullCalendarRef?.getApi();
+      const calendarApi = calendarRef?.getApi();
       if (calendarApi) {
         calendarApi.prev();
       }
@@ -139,20 +142,14 @@ export const useAdminAttendanceTopBar = () => {
       // 先月の日付取得
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
-
-
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
-
-
-
-
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
 
   // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       // SHIFTモードの際の次の週への処理
-      const calendarApi = useCustomFullCalendarStore.getState().customFullCalendarRef?.getApi();
+      const calendarApi = calendarRef?.getApi();
       if (calendarApi) {
         calendarApi.next();
       }
@@ -162,7 +159,7 @@ export const useAdminAttendanceTopBar = () => {
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
 
   return {
     handleClickToShiftPage: handleClickTopLeftButton,
