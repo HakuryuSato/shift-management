@@ -56,13 +56,6 @@ export const useAdminAttendanceTopBar = () => {
   const showAdminHomeTopBarUserEditButtons = useAdminHomeTopBarStore(
     (state) => state.showAdminHomeTopBarUserEditButtons
   );
-  const setAdminHomeTopBarTitleText = useAdminHomeTopBarStore(
-    (state) => state.setAdminHomeTopBarTitleText
-  );
-  const adminHomeTopBarTitleText = useAdminHomeTopBarStore(
-    (state) => state.adminHomeTopBarTitleText
-  );
-
 
   // User Management Form
   const openAdminUserManagementForm = useAdminUserManagementFormStore(
@@ -77,9 +70,6 @@ export const useAdminAttendanceTopBar = () => {
   const handleClickTopLeftButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
       setAdminHomeMode("MONTHLY_ATTENDANCE");
-      setAdminHomeTopBarTitleText(
-        formatJapanDateToYearMonth(adminAttendanceViewEndDate)
-      );
     } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
       setAdminHomeMode("SHIFT");
 
@@ -89,11 +79,8 @@ export const useAdminAttendanceTopBar = () => {
       hidePersonalAttendanceTable();
       showAllMembersMonthlyTable();
       showAdminHomeTopBarUserEditButtons();
-      setAdminHomeTopBarTitleText(
-        formatJapanDateToYearMonth(adminAttendanceViewEndDate)
-      );
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, hidePersonalAttendanceTable, setAdminHomeMode, setAdminHomeTopBarTitleText, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
+  }, [adminHomeMode, hidePersonalAttendanceTable, setAdminHomeMode, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
 
   // ユーザー登録
   const handleClickUserRegister = useCallback(() => {
@@ -114,15 +101,15 @@ export const useAdminAttendanceTopBar = () => {
 
       // 出退勤要約
     } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
-      downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, adminHomeTopBarTitleText + '.xlsx')
+      downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, 'adminHomeTopBarTitleText' + '.xlsx')
       // 出退勤個人
     } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
-      downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, adminHomeTopBarTitleText + '.xlsx')
+      downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, 'adminHomeTopBarTitleText' + '.xlsx')
     }
 
     // モード
     console.log("Excelダウンロード処理");
-  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminHomeMode, adminHomeTopBarTitleText]);
+  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminHomeMode]);
 
 
 
