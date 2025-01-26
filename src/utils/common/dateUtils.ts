@@ -229,6 +229,18 @@ export function createJSTDateFromISO(dateString: string): Date {
   return new Date(dateTimeWithOffset);
 }
 
+/**
+ * 日付を 'YYYY年MM月DD日' の形式にフォーマットする関数
+ * @param date Dateオブジェクト
+ * @returns フォーマットされた日付文字列
+ */
+export function formatJapanDateToYearMonthDay(date: Date): string {
+  const yyyy = date.getFullYear();
+  const MM = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}年${MM}月${dd}日`;
+}
+
 export function getJapanDateComponents(date: Date): {
   year: number;
   month: number;
