@@ -8,6 +8,7 @@ import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
 import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
+import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 
 // Utils
 import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
@@ -129,7 +130,11 @@ export const useAdminAttendanceTopBar = () => {
   // 日付範囲戻る ---------------------------------------------------------------------------------------------------
   const handleClickPrevButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
-      // SHIFTモードの際の前の週への処理をここに記述
+      // SHIFTモードの際の前の週への処理
+      const calendarApi = useCustomFullCalendarStore.getState().customFullCalendarRef?.getApi();
+      if (calendarApi) {
+        calendarApi.prev();
+      }
     } else {
       // 先月の日付取得
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
@@ -146,7 +151,11 @@ export const useAdminAttendanceTopBar = () => {
   // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
-      // SHIFTモードの際の次の週への処理をここに記述
+      // SHIFTモードの際の次の週への処理
+      const calendarApi = useCustomFullCalendarStore.getState().customFullCalendarRef?.getApi();
+      if (calendarApi) {
+        calendarApi.next();
+      }
     } else {
       // ATTENDANCEモードの際の次の週への処理をここに記述
       // 来月の日付取得
