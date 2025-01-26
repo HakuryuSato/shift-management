@@ -64,7 +64,7 @@ export const useCalendarClickHandlers = () => {
         setCustomFullCalendarClickedEvent(eventInfo);
 
         // 選択されたイベント情報を表示
-        console.log("選択されたイベント情報:", eventInfo);
+        // console.log("選択されたイベント情報:", eventInfo);
     }
 
 
@@ -76,7 +76,7 @@ export const useCalendarClickHandlers = () => {
     // クリックされたDateをフルカレStoreにsetした際 モーダルを更新
     useEffect(() => {
         if (customFullCalendarClickedDate) {
-            console.log("選択された日付情報:", customFullCalendarClickedDate);
+            // console.log("選択された日付情報:", customFullCalendarClickedDate);
             // モーダル関連初期化
             initializeModalsAfterClieckedDate(customFullCalendarClickedDate);
         }
