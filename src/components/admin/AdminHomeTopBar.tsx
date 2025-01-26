@@ -1,16 +1,10 @@
 import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import {
-  formatJapanDateToYearMonth,
-  formatJapanDateToYearMonthDay,
-} from "@/utils/common/dateUtils";
 import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBarClickHandlers";
-import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
-import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
+import { useAdminHomeTopBarState } from "@/hooks/admin/useAdminHomeTopBarState";
 import { commonButtonStyle } from "@/styles/commonButtonStyle";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 
 export const AdminHomeTopBar: React.FC = () => {
   const {
@@ -23,52 +17,13 @@ export const AdminHomeTopBar: React.FC = () => {
     adminHomeMode,
   } = useAdminAttendanceTopBar();
 
-  const isVisibleAdminHomeTopBarUserEditButtons = useAdminHomeTopBarStore(
-    (state) => state.isVisibleAdminHomeTopBarUserEditButtons,
-  );
-
-  const isVisibleAdminHomeTopBarExcelDownloadButton = useAdminHomeTopBarStore(
-    (state) => state.isVisibleAdminHomeTopBarExcelDownloadButton,
-  );
-
-  const customFullCalendarStartDate = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarStartDate,
-  );
-  const customFullCalendarEndDate = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarEndDate,
-  );
-  const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) =>
-    state.adminAttendanceViewEndDate
-  );
-  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore((state) =>
-    state.adminAttendanceViewSelectedUser
-  );
-
-  // モードに応じてボタンとタイトルのテキストを変更
-  let leftSideButtonText = "";
-  let titleText = "";
-  let downloadText = "";
-  if (adminHomeMode === "SHIFT") {
-    leftSideButtonText = "出退勤の画面へ";
-    titleText = `${
-      formatJapanDateToYearMonthDay(new Date(customFullCalendarStartDate))
-    } ─ ${
-      formatJapanDateToYearMonthDay(new Date(customFullCalendarEndDate)).slice(
-        5,
-      )
-    }`;
-    downloadText = "シフト表(Excel)ダウンロード";
-  } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
-    titleText = formatJapanDateToYearMonth(adminAttendanceViewEndDate);
-    leftSideButtonText = "シフト画面へ";
-    downloadText = "全体出勤表(Excel)ダウンロード";
-  } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
-    leftSideButtonText = "戻る";
-    titleText = `${
-      formatJapanDateToYearMonth(adminAttendanceViewEndDate)
-    } ${adminAttendanceViewSelectedUser?.user_name}`;
-    downloadText = "個人出勤表(Excel)ダウンロード";
-  }
+  const {
+    isVisibleAdminHomeTopBarUserEditButtons,
+    isVisibleAdminHomeTopBarExcelDownloadButton,
+    titleText,
+    leftSideButtonText,
+    downloadText,
+  } = useAdminHomeTopBarState(adminHomeMode);
 
   return (
     <>
@@ -117,7 +72,8 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* 右側のボタン群 */}
         <Box display="flex" alignItems="center" gap={1}>
           {/* ユーザー編集ボタン */}
-          {isVisibleAdminHomeTopBarUserEditButtons && adminHomeMode === "MONTHLY_ATTENDANCE" && (
+          {isVisibleAdminHomeTopBarUserEditButtons &&
+            adminHomeMode === "MONTHLY_ATTENDANCE" && (
             <>
               <Button
                 sx={commonButtonStyle}
