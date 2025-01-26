@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
@@ -28,11 +28,19 @@ export const UserDropdown: React.FC = () => {
     setModalContentSelectedUser(selectedUser);
   };
 
+  useEffect(() => {
+    // フィルタリングされたユーザーリストの最初のユーザーを自動選択
+    const filteredUsers = adminHomeUsersData?.filter(user => user.employment_type === 'part_time') || [];
+    if (filteredUsers.length > 0 && !modalContentSelectedUser) {
+      setModalContentSelectedUser(filteredUsers[0]);
+    }
+  }, [adminHomeUsersData, modalContentSelectedUser, setModalContentSelectedUser]);
+
   return (
     <FormControl fullWidth>
       <InputLabel>ユーザー名</InputLabel>
       <Select
-        value={modalContentSelectedUser?.user_name}
+        value={modalContentSelectedUser?.user_name || ''}
         onChange={handleChange}
         label="ユーザー名"
         sx={{ minWidth: '150px' }}
