@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
+import { formatJapanDateToYearMonthDay } from "@/utils/common/dateUtils";
 import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBarClickHandlers";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
@@ -30,26 +31,28 @@ export const AdminHomeTopBar: React.FC = () => {
   );
 
   const customFullCalendarStartDate = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarStartDate
+    (state) => state.customFullCalendarStartDate,
   );
   const customFullCalendarEndDate = useCustomFullCalendarStore(
-    (state) => state.customFullCalendarEndDate
+    (state) => state.customFullCalendarEndDate,
   );
 
-  
   // モードに応じてボタンとタイトルのテキストを変更
   let buttonText = "";
-  let titleText = ""
+  let titleText = "";
   if (adminHomeMode === "SHIFT") {
     buttonText = "出退勤の画面へ";
-    titleText=`${customFullCalendarStartDate} ~ ${customFullCalendarEndDate}`
-    
+    titleText = `${
+      formatJapanDateToYearMonthDay(new Date(customFullCalendarStartDate))
+    } ─ ${
+      formatJapanDateToYearMonthDay(new Date(customFullCalendarEndDate)).slice(
+        5,
+      )
+    }`;
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
     buttonText = "シフト画面へ";
-
   } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
     buttonText = "戻る";
-
   }
 
   return (
@@ -89,12 +92,11 @@ export const AdminHomeTopBar: React.FC = () => {
           <Typography variant="h5">
             {titleText}
           </Typography>
-          
+
           {/* Nextボタン */}
           <IconButton size="small" onClick={handleClickNextButton}>
             <ArrowForwardIosIcon />
           </IconButton>
-
         </Box>
 
         {/* 右側のボタン群 */}
