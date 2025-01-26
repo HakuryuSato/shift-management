@@ -19,8 +19,8 @@ export const ModalContent: React.FC = () => {
   const modalContentSelectedDate = useModalContentStore((state) =>
     state.modalContentSelectedDate
   );
-  const modalContentSelectedUserName = useModalContentStore((state) =>
-    state.modalContentSelectedUserName
+  const modalContentSelectedUser = useModalContentStore((state) =>
+    state.modalContentSelectedUser
   );
   const modalContentSelectedStartTime = useModalContentStore((state) =>
     state.modalContentSelectedStartTime
@@ -62,7 +62,7 @@ export const ModalContent: React.FC = () => {
           {/* シフト確認ならユーザー名表示 */}
           <Box display={modalMode === "confirm" ? "block" : "none"}>
             <Typography variant="h5">
-              {modalContentSelectedUserName}
+              {modalContentSelectedUser.user_name}
             </Typography>
           </Box>
 
