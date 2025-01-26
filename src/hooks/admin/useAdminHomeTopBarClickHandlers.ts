@@ -14,7 +14,7 @@ import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSl
 import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
-import { downloadShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
+import { downloadWeeklyShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
 
 export const useAdminAttendanceTopBar = () => {
   // Home
@@ -102,10 +102,15 @@ export const useAdminAttendanceTopBar = () => {
   }, [openAdminUserManagementForm]);
 
   // Excelダウンロード ---------------------------------------------------------------------------------------------------
+  const customFullCalendarStartDate = useCustomFullCalendarStore((state) => state.customFullCalendarStartDate);
+  const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate);
+  const customFullCalendarAllMembersShiftEvents = useCustomFullCalendarStore((state) => state.customFullCalendarAllMembersShiftEvents);
+
   const handleClickExcelDownload = useCallback(() => {
     if (adminHomeMode === 'SHIFT') {
+      console.log(customFullCalendarStartDate,customFullCalendarEndDate)
       // シフト
-      downloadShiftTableXlsx()
+      downloadWeeklyShiftTableXlsx(customFullCalendarStartDate, customFullCalendarEndDate, customFullCalendarAllMembersShiftEvents)
 
     } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
       // 出退勤全体
@@ -119,7 +124,7 @@ export const useAdminAttendanceTopBar = () => {
 
     // モード
     console.log("Excelダウンロード処理");
-  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminAttendanceViewEndDate, adminAttendanceViewSelectedUser?.user_name, adminHomeMode]);
+  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminAttendanceViewEndDate, adminAttendanceViewSelectedUser?.user_name, adminHomeMode, customFullCalendarStartDate, customFullCalendarEndDate, customFullCalendarAllMembersShiftEvents]);
 
 
 
