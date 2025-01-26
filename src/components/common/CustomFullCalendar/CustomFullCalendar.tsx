@@ -99,16 +99,12 @@ export function CustomFullCalendar() {
         footerToolbar={false}
         // 月や週遷移時の日付再設定
         datesSet={(dateInfo) => {
-          if (customFullCalendarRole === "admin") {
-            setCustomFullCalendarStartDate(new Date(dateInfo.start));
-            setCustomFullCalendarEndDate(new Date(dateInfo.end));
-          }
 
           const fullCalendarDate = new Date(dateInfo.start);
           if (customFullCalendarRole === "user") {
             fullCalendarDate.setDate(fullCalendarDate.getDate() + 15);
-            // setCustomFullCalendarCurrentYear(fullCalendarDate.getFullYear());
-            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth()); // バーに表示するために残す
+            // 表示されている開始日から+15することで月を判定させている。
+            setCustomFullCalendarCurrentMonth(fullCalendarDate.getMonth()); 
           }
           // }
           // カレンダーの表示開始日と終了日を取得
