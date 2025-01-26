@@ -17,7 +17,7 @@ type ShiftEvent = {
 };
 
 // メイン関数
-const downloadShiftTableXlsx = async (startDate: Date, endDate: Date, shiftEvents: any[]) => {
+export const downloadShiftTableXlsx = async (startDate: Date, endDate: Date, shiftEvents: any[]) => {
   // 表示用文字列生成 MM月DD日~MM月DD日
   const fileName = `週間シフト表_${startDate.getMonth() + 1}月${startDate.getDate()}日 ~ ${
     endDate.getMonth() + 1
@@ -167,4 +167,3 @@ const createWorkbookFromTable = (data: string[][]): ExcelJS.Workbook => {
   return workbook;
 };
 
-export default downloadShiftTableXlsx;
