@@ -11,11 +11,7 @@ export const ModalContent: React.FC = () => {
   const modalRole = useModalContainerStore((state) => state.modalRole);
   const modalMode = useModalContainerStore((state) => state.modalMode);
 
-  const {
-    handleChangeStartEndTime,
-    handleChangeSelectedUser,
-  } = useModalContent();
-
+  // State
   const modalContentSelectedDate = useModalContentStore((state) =>
     state.modalContentSelectedDate
   );
@@ -28,6 +24,13 @@ export const ModalContent: React.FC = () => {
   const modalContentSelectedEndTime = useModalContentStore((state) =>
     state.modalContentSelectedEndTime
   );
+
+  // 関数
+  const {
+    handleChangeStartEndTime,
+    handleChangeSelectedUser,
+  } = useModalContent();
+  
 
   return (
     <Box
@@ -69,8 +72,8 @@ export const ModalContent: React.FC = () => {
           {/* シフト登録ならユーザー選択表示 */}
           {
             <Box display={modalMode === "register" ? "block" : "none"}>
-            <UserDropdown />
-          </Box>
+              <UserDropdown />
+            </Box>
           }
         </>
       )}
