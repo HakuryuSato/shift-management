@@ -110,7 +110,9 @@ export const useAdminAttendanceTopBar = () => {
     if (adminHomeMode === 'SHIFT') {
       console.log(customFullCalendarStartDate,customFullCalendarEndDate)
       // シフト
-      downloadWeeklyShiftTableXlsx(customFullCalendarStartDate, customFullCalendarEndDate, customFullCalendarAllMembersShiftEvents)
+      const adjustedEndDate = new Date(customFullCalendarEndDate);
+      adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
+      downloadWeeklyShiftTableXlsx(customFullCalendarStartDate, adjustedEndDate, customFullCalendarAllMembersShiftEvents)
 
     } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
       // 出退勤全体
