@@ -235,10 +235,11 @@ export function createJSTDateFromISO(dateString: string): Date {
  * @returns フォーマットされた日付文字列
  */
 export function formatJapanDateToYearMonthDay(date: Date): string {
-  const yyyy = date.getFullYear();
-  const MM = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  return `${yyyy}年${MM}月${dd}日`;
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 }
 
 export function getJapanDateComponents(date: Date): {
