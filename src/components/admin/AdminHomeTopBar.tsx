@@ -54,17 +54,39 @@ export const AdminHomeTopBar: React.FC = () => {
           }}
         >
           {/* Prevボタン */}
-          <IconButton size="small" onClick={handleClickPrevButton}>
+          <IconButton 
+            size="small" 
+            onClick={handleClickPrevButton}
+            sx={{
+              backgroundColor: 'primary.main',
+              color: 'primary.contrastText',
+              borderRadius: '50%',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+          >
             <ArrowBackIosNewIcon />
           </IconButton>
 
           {/* タイトルテキスト */}
-          <Typography variant="h5">
+          <Typography variant="h5" sx={{ mx: 2 }}>
             {titleText}
           </Typography>
 
           {/* Nextボタン */}
-          <IconButton size="small" onClick={handleClickNextButton}>
+          <IconButton 
+            size="small" 
+            onClick={handleClickNextButton}
+            sx={{
+              backgroundColor: 'primary.main',
+              color: 'primary.contrastText',
+              borderRadius: '50%',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+          >
             <ArrowForwardIosIcon />
           </IconButton>
         </Box>
