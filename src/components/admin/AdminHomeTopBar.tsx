@@ -12,7 +12,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 
-
 export const AdminHomeTopBar: React.FC = () => {
   const {
     handleClickToShiftPage,
@@ -46,10 +45,11 @@ export const AdminHomeTopBar: React.FC = () => {
   );
 
   // モードに応じてボタンとタイトルのテキストを変更
-  let buttonText = "";
+  let leftSideButtonText = "";
   let titleText = "";
+  let downloadText = "";
   if (adminHomeMode === "SHIFT") {
-    buttonText = "出退勤の画面へ";
+    leftSideButtonText = "出退勤の画面へ";
     titleText = `${
       formatJapanDateToYearMonthDay(new Date(customFullCalendarStartDate))
     } ─ ${
@@ -57,11 +57,13 @@ export const AdminHomeTopBar: React.FC = () => {
         5,
       )
     }`;
+    downloadText = "シフト表(Excel)ダウンロード";
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
     titleText = formatJapanDateToYearMonth(adminAttendanceViewEndDate);
-    buttonText = "シフト画面へ";
+    leftSideButtonText = "シフト画面へ";
+    downloadText = "全体出勤表(Excel)ダウンロード";
   } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
-    buttonText = "戻る";
+    leftSideButtonText = "戻る";
     titleText = `${
       formatJapanDateToYearMonth(adminAttendanceViewEndDate)
     } ${adminAttendanceViewSelectedUser?.user_name}`;
@@ -81,7 +83,7 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* 左側のボタン群 */}
         <Box display="flex" alignItems="center">
           <Button sx={commonButtonStyle} onClick={handleClickToShiftPage}>
-            {buttonText}
+            {leftSideButtonText}
           </Button>
         </Box>
 
@@ -147,7 +149,7 @@ export const AdminHomeTopBar: React.FC = () => {
                 "&:hover": { backgroundColor: "darkgreen" },
               }}
             >
-              Excelダウンロード
+              {downloadText}
             </Button>
           )}
         </Box>
