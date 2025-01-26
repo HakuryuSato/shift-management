@@ -67,6 +67,7 @@ export const AdminHomeTopBar: React.FC = () => {
     titleText = `${
       formatJapanDateToYearMonth(adminAttendanceViewEndDate)
     } ${adminAttendanceViewSelectedUser?.user_name}`;
+    downloadText = "個人出勤表(Excel)ダウンロード";
   }
 
   return (
@@ -116,7 +117,7 @@ export const AdminHomeTopBar: React.FC = () => {
         {/* 右側のボタン群 */}
         <Box display="flex" alignItems="center" gap={1}>
           {/* ユーザー編集ボタン */}
-          {isVisibleAdminHomeTopBarUserEditButtons && (
+          {isVisibleAdminHomeTopBarUserEditButtons && adminHomeMode === "MONTHLY_ATTENDANCE" && (
             <>
               <Button
                 sx={commonButtonStyle}
