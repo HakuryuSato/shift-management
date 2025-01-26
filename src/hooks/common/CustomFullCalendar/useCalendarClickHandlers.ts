@@ -41,15 +41,8 @@ export const useCalendarClickHandlers = () => {
     // 各種モーダルの状態を初期化するための関数
     const initializeModalsAfterClieckedEvent = () => {
 
-        // (user かつ シフト個人画面) または 管理者 なら編集アイコンを表示
-        // 出退勤なら編集アイコン非表示
-        const shouldShowEditIcons = (customFullCalendarRole === "user" && calendarViewMode === 'PERSONAL_SHIFT')
-            || customFullCalendarRole === "admin";
-        shouldShowEditIcons ? showModalTopBarEditIcons() : hideModalTopBarEditIcons();
-
         modalContentInitialize('eventClick')
         setModalMode('confirm')
-        openModal();
     }
 
     // フルカレンダーのイベントクリック時に呼ばれる関数
@@ -60,13 +53,11 @@ export const useCalendarClickHandlers = () => {
         // フルカレStoreにクリックされたEvent情報保存 -> useEffectが実行
         setCustomFullCalendarClickedEvent(eventInfo);
 
+        showModalTopBarEditIcons()
+        openModal();
         // 選択されたイベント情報を表示
         // console.log("選択されたイベント情報:", eventInfo);
     }
-
-
-
-
 
 
     // 日付クリック  ---------------------------------------------------------------------------------------------------
@@ -87,7 +78,6 @@ export const useCalendarClickHandlers = () => {
         hideModalTopBarEditIcons()
         modalContentInitialize('dateClick')
         setModalMode('register')
-        openModal();
     }
 
 
@@ -107,11 +97,11 @@ export const useCalendarClickHandlers = () => {
             dateInfo.dateStr = formattedDate;
         }
 
-
+        hideModalTopBarEditIcons()
+        openModal()
 
         // 日付データを状態にセット
         setCustomFullCalendarClickedDate(dateInfo);
-
     };
 
 
