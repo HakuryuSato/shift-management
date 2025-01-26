@@ -39,12 +39,14 @@ export const useAdminHomeTopBarState = (adminHomeMode: string) => {
 
   if (adminHomeMode === "SHIFT") {
     leftSideButtonText = "出退勤の画面へ";
+    const startDate = new Date(customFullCalendarStartDate);
+    startDate.setDate(startDate.getDate());
+    const endDate = new Date(customFullCalendarEndDate);
+    endDate.setDate(endDate.getDate() - 1);
     titleText = `${
-      formatJapanDateToYearMonthDay(new Date(customFullCalendarStartDate))
+      formatJapanDateToYearMonthDay(startDate)
     } ─ ${
-      formatJapanDateToYearMonthDay(new Date(customFullCalendarEndDate)).slice(
-        5,
-      )
+      formatJapanDateToYearMonthDay(endDate).slice(5)
     }`;
     downloadText = "シフト表(Excel)ダウンロード";
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
