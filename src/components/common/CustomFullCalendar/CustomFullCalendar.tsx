@@ -129,7 +129,7 @@ export function CustomFullCalendar() {
           slotEventOverlap: false,
           eventOverlap: false,
           allDaySlot: true,
-          eventContent: renderEventContent, // adminロールでもイベント表示を設定
+          eventContent: renderEventContent,
         })}
         {...(customFullCalendarRole === "user" && {
           dayCellContent: (e: any) => e.dayNumberText.replace("日", ""),
