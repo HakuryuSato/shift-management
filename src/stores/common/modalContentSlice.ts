@@ -3,14 +3,14 @@ import type { User } from '@/types/User';
 
 interface ModalContentStoreState {
   modalContentSelectedDate: string,
-  modalContentSelectedUser: User,
+  modalContentSelectedUser: User | null,
   modalContentSelectedStartTime: string,
   modalContentSelectedEndTime: string,
 }
 
 export const useModalContentStore = create<ModalContentStoreState & {
   setModalContentSelectedDate: (date: string) => void;
-  setModalContentSelectedUser: (user: User) => void;
+  setModalContentSelectedUser: (user: User | null) => void;
   setModalContentSelectedStartTime: (startTime: string) => void;
   setModalContentSelectedEndTime: (endTime: string) => void;
 }>((set) => ({

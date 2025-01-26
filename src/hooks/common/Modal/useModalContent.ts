@@ -3,12 +3,15 @@ import type { User } from '@/types/User';
 import { useModalContentStore } from '@/stores/common/modalContentSlice';
 import { useCustomFullCalendarStore } from '@/stores/common/customFullCalendarSlice';
 import { useModalContainerStore } from '@/stores/common/modalContainerSlice';
+import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
 import { toJapanDateString } from '@/utils/toJapanDateString'
 import { getUserOptions, setUserOptions } from '@/utils/userOptions';
 
 
 export const useModalContent = () => {
-  const modalMode = useModalContainerStore((state) => state.modalMode)
+  const modalMode = useModalContainerStore((state) => state.modalMode);
+  const modalRole = useModalContainerStore((state) => state.modalRole);
+  const adminHomeUsersData = useAdminHomeStore((state) => state.adminHomeUsersData);
 
   const setModalContentSelectedDate = useModalContentStore((state) => state.setModalContentSelectedDate);
   const setModalContentSelectedStartTime = useModalContentStore((state) => state.setModalContentSelectedStartTime);
@@ -27,7 +30,7 @@ export const useModalContent = () => {
         // 日付、ユーザー名、開始・終了時間をフルカレイベントから取得
         const startDate = customFullCalendarClickedEvent.event.start;
         const dateStr = startDate ? toJapanDateString(startDate) : ''; // "YYYY-MM-DD"
-        const user = customFullCalendarClickedEvent.event.extendedProps.user ?? {} as User;
+        const userId = customFullCalendarClickedEvent.event.extendedProps.user_id;
         const startTime = customFullCalendarClickedEvent.event.start;
         const endTime = customFullCalendarClickedEvent.event.end;
 
@@ -38,9 +41,17 @@ export const useModalContent = () => {
         const startTimeStr = extractTime(startTime);
         const endTimeStr = extractTime(endTime);
 
+        if (modalRole === 'admin' && adminHomeUsersData) {
+          // Find user from adminHomeUsersData using userId
+          const user = adminHomeUsersData.find(user => user.user_id === userId);
+          if (user) {
+            setModalContentSelectedUser(user);
+          }
+        }
+
         // 状態を更新
         setModalContentSelectedDate(dateStr);
-        setModalContentSelectedUser(user);
+
         setModalContentSelectedStartTime(startTimeStr);
         setModalContentSelectedEndTime(endTimeStr);
       }
@@ -68,7 +79,7 @@ export const useModalContent = () => {
     setUserOptions({ start_time: newStartTime, end_time: newEndTime });
   };
 
-  const handleChangeSelectedUser = (newUser: User) => {
+  const handleChangeSelectedUser = (newUser: User | null) => {
     setModalContentSelectedUser(newUser);
   };
 

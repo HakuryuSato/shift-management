@@ -65,7 +65,7 @@ export const ModalContent: React.FC = () => {
           {/* シフト確認ならユーザー名表示 */}
           <Box display={modalMode === "confirm" ? "block" : "none"}>
             <Typography variant="h5">
-              {modalContentSelectedUser.user_name}
+              {modalContentSelectedUser?.user_name}
             </Typography>
           </Box>
 
