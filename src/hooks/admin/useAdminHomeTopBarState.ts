@@ -25,11 +25,14 @@ export const useAdminHomeTopBarState = (adminHomeMode: string) => {
   );
 
   // AdminAttendanceView関連のState
-  const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) =>
-    state.adminAttendanceViewEndDate
+  const adminAttendanceViewStartDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewStartDate
   );
-  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore((state) =>
-    state.adminAttendanceViewSelectedUser
+  const adminAttendanceViewEndDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewEndDate
+  );
+  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewSelectedUser
   );
 
   // モードに応じてボタンとタイトルのテキストを設定
@@ -50,7 +53,7 @@ export const useAdminHomeTopBarState = (adminHomeMode: string) => {
     }`;
     downloadText = "シフト表(Excel)ダウンロード";
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
-    titleText = formatJapanDateToYearMonth(adminAttendanceViewEndDate);
+    titleText = `${formatJapanDateToYearMonthDay(adminAttendanceViewStartDate)} - ${formatJapanDateToYearMonthDay(adminAttendanceViewEndDate).slice(5)}`;
     leftSideButtonText = "シフト画面へ";
     downloadText = "全体出勤表(Excel)ダウンロード";
   } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
