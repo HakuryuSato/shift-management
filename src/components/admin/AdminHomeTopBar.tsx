@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useAdminAttendanceTopBar } from "@/hooks/admin/useAdminHomeTopBarClickHandlers";
 import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
+import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 import { commonButtonStyle } from "@/styles/commonButtonStyle";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -28,14 +29,27 @@ export const AdminHomeTopBar: React.FC = () => {
     (state) => state.isVisibleAdminHomeTopBarExcelDownloadButton,
   );
 
-  // ボタンのテキストをモードに応じて変更
+  const customFullCalendarStartDate = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarStartDate
+  );
+  const customFullCalendarEndDate = useCustomFullCalendarStore(
+    (state) => state.customFullCalendarEndDate
+  );
+
+  
+  // モードに応じてボタンとタイトルのテキストを変更
   let buttonText = "";
+  let titleText = ""
   if (adminHomeMode === "SHIFT") {
     buttonText = "出退勤の画面へ";
+    titleText=`${customFullCalendarStartDate} ~ ${customFullCalendarEndDate}`
+    
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
     buttonText = "シフト画面へ";
+
   } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
     buttonText = "戻る";
+
   }
 
   return (
@@ -73,7 +87,7 @@ export const AdminHomeTopBar: React.FC = () => {
 
           {/* タイトルテキスト */}
           <Typography variant="h5">
-            {adminHomeTopBarTitleText}
+            {titleText}
           </Typography>
           
           {/* Nextボタン */}
