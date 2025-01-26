@@ -11,7 +11,7 @@ import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagem
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 
 // Utils
-import { formatJapanDateToYearMonth, getCustomDateRangeFrom26To25 } from "@/utils/common/dateUtils";
+import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthDay } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
 
@@ -31,6 +31,12 @@ export const useAdminAttendanceTopBar = () => {
   // AttendanceView
   const adminAttendanceViewEndDate = useAdminAttendanceViewStore(
     (state) => state.adminAttendanceViewEndDate
+  );
+  const adminAttendanceViewStartDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewStartDate
+  );
+  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewSelectedUser
   );
   const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewDateRange
@@ -101,15 +107,15 @@ export const useAdminAttendanceTopBar = () => {
 
       // 出退勤要約
     } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
-      downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, 'adminHomeTopBarTitleText' + '.xlsx')
+      downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, `全体出勤表_${formatJapanDateToYearMonthDay(adminAttendanceViewStartDate)} ~ ${new Date(adminAttendanceViewEndDate).toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })}.xlsx`)
       // 出退勤個人
     } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
-      downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, 'adminHomeTopBarTitleText' + '.xlsx')
+      downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, `個人出勤表_${adminAttendanceViewSelectedUser?.user_name}_${formatJapanDateToYearMonthDay(adminAttendanceViewStartDate)} ~ ${new Date(adminAttendanceViewEndDate).toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })}.xlsx`)
     }
 
     // モード
     console.log("Excelダウンロード処理");
-  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminHomeMode]);
+  }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminAttendanceViewEndDate, adminAttendanceViewSelectedUser?.user_name, adminAttendanceViewStartDate, adminHomeMode]);
 
 
 

@@ -2,7 +2,7 @@ import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import {
-  formatJapanDateToYearMonth,
+  formatJapanDateToYearMonthNoZeroPadding,
   formatJapanDateToYearMonthDay,
 } from "@/utils/common/dateUtils";
 
@@ -53,13 +53,13 @@ export const useAdminHomeTopBarState = (adminHomeMode: string) => {
     }`;
     downloadText = "シフト表(Excel)ダウンロード";
   } else if (adminHomeMode === "MONTHLY_ATTENDANCE") {
-    titleText = `${formatJapanDateToYearMonthDay(adminAttendanceViewStartDate)} - ${formatJapanDateToYearMonthDay(adminAttendanceViewEndDate).slice(5)}`;
+    titleText = formatJapanDateToYearMonthNoZeroPadding(adminAttendanceViewEndDate);
     leftSideButtonText = "シフト画面へ";
     downloadText = "全体出勤表(Excel)ダウンロード";
   } else if (adminHomeMode === "PERSONAL_ATTENDANCE") {
     leftSideButtonText = "戻る";
     titleText = `${
-      formatJapanDateToYearMonth(adminAttendanceViewEndDate)
+      formatJapanDateToYearMonthNoZeroPadding(adminAttendanceViewEndDate)
     } ${adminAttendanceViewSelectedUser?.user_name}`;
     downloadText = "個人出勤表(Excel)ダウンロード";
   }
