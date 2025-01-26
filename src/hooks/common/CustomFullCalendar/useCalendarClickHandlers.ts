@@ -88,7 +88,7 @@ export const useCalendarClickHandlers = () => {
 
     const initializeModalsAfterClieckedDate = (customFullCalendarClickedDate: DateClickArg) => {
         // イベントがあるかどうかを判定
-        console.log(customFullCalendarPersonalShiftEvents)
+        // console.log(customFullCalendarPersonalShiftEvents)
 
 
         // userかつ、個人シフトかつ、その日にイベントがない？
