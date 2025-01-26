@@ -41,6 +41,9 @@ export const AdminHomeTopBar: React.FC = () => {
   const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) =>
     state.adminAttendanceViewEndDate
   );
+  const adminAttendanceViewSelectedUser = useAdminAttendanceViewStore((state) =>
+    state.adminAttendanceViewSelectedUser
+  );
 
   // モードに応じてボタンとタイトルのテキストを変更
   let buttonText = "";
@@ -61,7 +64,7 @@ export const AdminHomeTopBar: React.FC = () => {
     buttonText = "戻る";
     titleText = `${
       formatJapanDateToYearMonth(adminAttendanceViewEndDate)
-    } ${user.user_name}`;
+    } ${adminAttendanceViewSelectedUser?.user_name}`;
   }
 
   return (
