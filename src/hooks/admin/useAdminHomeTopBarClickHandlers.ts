@@ -14,6 +14,7 @@ import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSl
 import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
+import { downloadShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
 
 export const useAdminAttendanceTopBar = () => {
   // Home
@@ -102,14 +103,17 @@ export const useAdminAttendanceTopBar = () => {
 
   // Excelダウンロード ---------------------------------------------------------------------------------------------------
   const handleClickExcelDownload = useCallback(() => {
-    // シフト
     if (adminHomeMode === 'SHIFT') {
+      // シフト
+      downloadShiftTableXlsx()
 
-      // 出退勤要約
     } else if (adminHomeMode === 'MONTHLY_ATTENDANCE') {
+      // 出退勤全体
       downloadAttendanceTableAllMembersXlsx(adminAttendanceTableAllMembersRows, `全体出勤表_${formatJapanDateToYearMonthNoZeroPadding(adminAttendanceViewEndDate)}.xlsx`)
-      // 出退勤個人
+
     } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
+      // 出退勤個人
+
       downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, `個人出勤表_${adminAttendanceViewSelectedUser?.user_name}_${formatJapanDateToYearMonthNoZeroPadding(adminAttendanceViewEndDate)}.xlsx`)
     }
 
@@ -126,13 +130,13 @@ export const useAdminAttendanceTopBar = () => {
   // 日付範囲戻る ---------------------------------------------------------------------------------------------------
   const handleClickPrevButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
-      // SHIFTモードの際の前の週への処理
+      // シフト
       const calendarApi = calendarRef?.getApi();
       if (calendarApi) {
         calendarApi.prev();
       }
     } else {
-      // 先月の日付取得
+      // 出退勤
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
     }
@@ -141,14 +145,14 @@ export const useAdminAttendanceTopBar = () => {
   // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
     if (adminHomeMode === "SHIFT") {
-      // SHIFTモードの際の次の週への処理
+      // シフト
       const calendarApi = calendarRef?.getApi();
       if (calendarApi) {
         calendarApi.next();
       }
+
     } else {
-      // ATTENDANCEモードの際の次の週への処理をここに記述
-      // 来月の日付取得
+      // 出退勤
       const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
       setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
     }
