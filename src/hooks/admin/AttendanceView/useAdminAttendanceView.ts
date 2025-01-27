@@ -4,7 +4,7 @@ import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewS
 import { fetchAttendances } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings, formatJapanDateToYearMonth } from '@/utils/common/dateUtils';
 
-// attendanceViewの開始終了日、1ヶ月の全員の出退勤データ、TopBarのタイトルテキストを設定するカスタムHook
+// attendanceViewの開始終了日、1ヶ月の全員の出退勤データ
 export function useAdminAttendanceView() {
     const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
     const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
