@@ -16,6 +16,12 @@ export const useAttendanceTableAllMembers = () => {
     const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
         (state) => state.setAdminAttendanceViewDateRange
     );
+    const adminAttendanceViewStartDate = useAdminAttendanceViewStore(
+        (state) => state.adminAttendanceViewStartDate
+    );
+    const adminAttendanceViewEndDate = useAdminAttendanceViewStore(
+        (state) => state.adminAttendanceViewEndDate
+    );
     const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
         (state) => state.adminAttendanceViewAllMembersMonthlyResult
     );
@@ -24,16 +30,23 @@ export const useAttendanceTableAllMembers = () => {
         (state) => state.setAdminAttendanceTableAllMembersRows
     );
 
-    // 初回レンダリング時に日付範囲を設定
+    // 初回レンダリング時に日付範囲を設定（既に設定されている場合はスキップ）
     useEffect(() => {
-        // 先月の26日 0時
-        const startDate = getPreviousMonthSpecificDate(26, 0, 0, 0);
-        // 今月の25日 23時59分59秒
-        const endDate = getCurrentMonthSpecificDate(25, 23, 59, 59);
+        // 現在の日付と時刻部分を除いた文字列を比較
+        const isDefaultStartDate = adminAttendanceViewStartDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+        const isDefaultEndDate = adminAttendanceViewEndDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
 
-        // 状態を更新
-        setAdminAttendanceViewDateRange(startDate, endDate);
-    }, [setAdminAttendanceViewDateRange]);
+        // 両方とも初期値の場合のみ日付範囲を設定
+        if (isDefaultStartDate && isDefaultEndDate) {
+            // 先月の26日 0時
+            const startDate = getPreviousMonthSpecificDate(26, 0, 0, 0);
+            // 今月の25日 23時59分59秒
+            const endDate = getCurrentMonthSpecificDate(25, 23, 59, 59);
+
+            // 状態を更新
+            setAdminAttendanceViewDateRange(startDate, endDate);
+        }
+    }, [adminAttendanceViewStartDate, adminAttendanceViewEndDate, setAdminAttendanceViewDateRange]);
 
 
     // adminHomeUsersData または adminAttendanceViewAllMembersMonthlyResult が更新されたときに処理を実行
