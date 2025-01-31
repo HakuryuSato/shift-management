@@ -14,7 +14,7 @@
 ![image](https://github.com/user-attachments/assets/572a648c-2b36-4c15-aa2d-ebaa3f8a972f)
 
 管理者側（PC Chrome推奨）  
-[シフト/出退勤管理アプリ(管理者側)](https://shift-management-preview.vercel.app/login?role=admin)
+[シフト/出退勤管理アプリ(管理者側)]([https://shift-management-preview.vercel.app/login?role=admin](https://shift-management-preview.vercel.app/admin_login))
 
 ## デモ用ユーザー名 / PW
 ユーザー名：demo  
