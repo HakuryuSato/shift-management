@@ -58,6 +58,10 @@
 ## インフラ構成図
 ![インフラ構成図](documents/6_インフラ構成図.png)
 
+## Reactコンポーネント構成図
+![Reactコンポーネント構成図](documents/7_1_Reactコンポーネント構成図(ユーザー).png)
+![Reactコンポーネント構成図](documents/7_2_Reactコンポーネント構成図(管理者).png)
+
 ## ER図
 ![ER図](documents/5_ER図.png)
 
