@@ -57,13 +57,20 @@ export function usePersonalAttendanceTableClickHandlers() {
           user_id: userId,
         };
 
-        // 時間外または平日普通の時間を設定
-        if (field === "regularHours") {
+        // 打刻時間の場合
+        if (field === "stampStartTime" || field === "stampEndTime") {
+          if (field === "stampStartTime") {
+            attendance.stamp_start_time = newValue;
+          } else {
+            attendance.stamp_end_time = newValue;
+          }
+        } 
+        // 勤務時間の場合
+        else if (field === "regularHours") {
           attendance.work_minutes = hoursToMinutes(newValue);
         } else if (field === "overtimeHours") {
           attendance.overtime_minutes = hoursToMinutes(newValue);
         }
-
 
 
 

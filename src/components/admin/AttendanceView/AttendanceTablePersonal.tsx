@@ -29,17 +29,43 @@ export function AttendanceTablePersonal() {
       <TableHead>
         <TableRow>
           <TableCell>日付</TableCell>
+          <TableCell>打刻時間(開始)</TableCell>
+          <TableCell>打刻時間(終了)</TableCell>
+          <TableCell>補正時間(開始-終了)</TableCell>
           <TableCell>平日普通(H)</TableCell>
           <TableCell>平日時間外(H)</TableCell>
-          <TableCell>打刻時間(開始-終了)</TableCell>
-          <TableCell>補正時間(開始-終了)</TableCell>
-          <TableCell>休憩時間</TableCell>
+          <TableCell>休憩時間(H)</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
+            <AttendanceTablePersonalEditableCell
+              value={row.stampStartTime}
+              rowIndex={index}
+              field="stampStartTime"
+              isEditing={
+                editingCell?.rowIndex === index &&
+                editingCell?.field === "stampStartTime"
+              }
+              onClick={handleClickCell}
+              onBlur={handleBlur}
+            />
+            <AttendanceTablePersonalEditableCell
+              value={row.stampEndTime}
+              rowIndex={index}
+              field="stampEndTime"
+              isEditing={
+                editingCell?.rowIndex === index &&
+                editingCell?.field === "stampEndTime"
+              }
+              onClick={handleClickCell}
+              onBlur={handleBlur}
+            />
+            <TableCell>
+              {row.adjustedStartTime} - {row.adjustedEndTime}
+            </TableCell>
             <AttendanceTablePersonalEditableCell
               value={row.regularHours}
               rowIndex={index}
@@ -62,12 +88,6 @@ export function AttendanceTablePersonal() {
               onClick={handleClickCell}
               onBlur={handleBlur}
             />
-            <TableCell>
-              {row.stampStartTime} - {row.stampEndTime}
-            </TableCell>
-            <TableCell>
-              {row.adjustedStartTime} - {row.adjustedEndTime}
-            </TableCell>
             <TableCell>{row.breakHours}</TableCell>
           </TableRow>
         ))}
