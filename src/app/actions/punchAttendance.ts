@@ -28,11 +28,12 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
     // 重複打刻チェック（stamp_startとstamp_endの差が2分以下かどうか）
     const duplicateResult = await checkDuplicatePunch(attendance, nowTime);
     if (duplicateResult) {
-      // 重複ならば
+      // 重複ならば既存のAttendanceを返す
       return duplicateResult;
     }
 
     console.log(`punchAttendance user_id=${userId} 2度目以降の打刻開始 attendance_id=${attendance.attendance_id}`);
+    // 更新したAttendanceを返す
     return await updateAttendanceWithEndTime(attendance.attendance_id, nowTime);
   }
 
@@ -45,5 +46,6 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
   });
 
   console.log(`punchAttendance user_id=${userId} 初回の打刻完了`);
+  // 初回打刻したデータを返す
   return newAttendance;
 }
