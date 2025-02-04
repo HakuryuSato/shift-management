@@ -21,14 +21,14 @@ import type { AutoShiftSettings } from '@/types/AutoShift';
 
 
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
-export async function handleServerAction<T>(action: () => Promise<T>): Promise<T | null> {
+export async function handleServerAction<T>(action: () => Promise<T>): Promise<T> {
   try {
     const data = await action();
     console.log('serverActionClient:', data)
     return data;
   } catch (error: any) {
     console.error('サーバーアクション実行中にエラーが発生しました:', error.message || error);
-    return null;
+    throw error; // エラーを再スローして上位で処理できるようにする
   }
 }
 
@@ -68,7 +68,7 @@ export async function insertUser(user: User): Promise<User | null> {
  * @param userId ユーザーID
  * @returns メッセージオブジェクトまたは null
  */
-export async function punchAttendance(userId: number): Promise<Attendance[] | null> {
+export async function punchAttendance(userId: number): Promise<Attendance[]> {
   return await handleServerAction(() => serverActionpunchAttendance(userId));
 }
 
