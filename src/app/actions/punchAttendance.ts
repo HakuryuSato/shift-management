@@ -28,8 +28,8 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
     // 重複打刻チェック（stamp_startとstamp_endの差が2分以下かどうか）
     const duplicateResult = await checkDuplicatePunch(attendance, nowTime);
     if (duplicateResult) {
-      // 重複打刻の場合はエラーを投げる
-      throw new Error("打刻終了までは1時間以上空ける必要があります。");
+      // 重複ならば既存のAttendanceを返す
+      return duplicateResult;
     }
 
     console.log(`punchAttendance user_id=${userId} 2度目以降の打刻開始 attendance_id=${attendance.attendance_id}`);
