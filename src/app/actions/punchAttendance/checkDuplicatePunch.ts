@@ -11,26 +11,15 @@ export async function checkDuplicatePunch(
   currentTime: string
 ): Promise<Attendance[] | null> {
   // stamp_start_timeが存在することは呼び出し元で確認済み
-  const startTimeStr = existingAttendance.stamp_start_time as string;
+  const startDateTime = new Date(existingAttendance.stamp_start_time as string);
+  const currentDateTime = new Date(currentTime);
   
-  // 文字列のまま比較（両方ともJST）
-  const startTimeParts = startTimeStr.split(/[- :]/);
-  const currentTimeParts = currentTime.split(/[- :]/);
+  // ミリ秒単位での差分を計算し、時間に変換
+  const timeDiffInHours = Math.abs(currentDateTime.getTime() - startDateTime.getTime()) / (1000 * 60 * 60);
   
-  // 分単位での差分を計算
-  const startMinutes = 
-    parseInt(startTimeParts[3]) * 60 + // hour
-    parseInt(startTimeParts[4]);       // minute
-  
-  const currentMinutes = 
-    parseInt(currentTimeParts[3]) * 60 + // hour
-    parseInt(currentTimeParts[4]);       // minute
-  
-  const timeDiffInMinutes = currentMinutes - startMinutes;
-  
-  // 2分以内の重複打刻の場合
-  if (timeDiffInMinutes <= 2) {
-    console.log(`2分以内の重複打刻を検知 user_id=${existingAttendance.user_id} attendance_id=${existingAttendance.attendance_id}`);
+  // 1時間以内の重複打刻の場合
+  if (timeDiffInHours < 1) {
+    console.log(`1時間以内の重複打刻を検知 user_id=${existingAttendance.user_id} attendance_id=${existingAttendance.attendance_id}`);
     return [existingAttendance];
   }
   
