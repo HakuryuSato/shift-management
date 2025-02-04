@@ -25,14 +25,14 @@ export function usePersonalAttendanceTableClickHandlers() {
     (state) => state.adminAttendanceViewSelectedUser
   );
 
-  const handleClickCell = useCallback(
+  const handleClickWorkTimeCell = useCallback(
     (rowIndex: number, field: keyof AttendanceRowPersonal) => {
       setAttendanceTablePersonalEditingCell({ rowIndex, field });
     },
     [setAttendanceTablePersonalEditingCell]
   );
 
-  const handleBlur = useCallback(
+  const handleBlurWorkTimeCell = useCallback(
     async (
       rowIndex: number,
       field: keyof AttendanceRowPersonal,
@@ -116,7 +116,7 @@ export function usePersonalAttendanceTableClickHandlers() {
 
   return {
     editingCell: AttendanceTablePersonalEditingCell,
-    handleClickCell,
-    handleBlur,
+    handleClickWorkTimeCell,
+    handleBlurWorkTimeCell,
   };
 }

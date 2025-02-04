@@ -18,8 +18,8 @@ export function AttendanceTablePersonal() {
   // ハンドラー取得
   const {
     editingCell,
-    handleClickCell,
-    handleBlur,
+    handleClickWorkTimeCell,
+    handleBlurWorkTimeCell,
   } = usePersonalAttendanceTableClickHandlers();
 
 
@@ -48,8 +48,8 @@ export function AttendanceTablePersonal() {
                 editingCell?.rowIndex === index &&
                 editingCell?.field === "regularHours"
               }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
+              onClick={handleClickWorkTimeCell}
+              onBlur={handleBlurWorkTimeCell}
             />
             <AttendanceTablePersonalEditableCell
               value={row.overtimeHours}
@@ -59,8 +59,8 @@ export function AttendanceTablePersonal() {
                 editingCell?.rowIndex === index &&
                 editingCell?.field === "overtimeHours"
               }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
+              onClick={handleClickWorkTimeCell}
+              onBlur={handleBlurWorkTimeCell}
             />
             <TableCell>
               {row.stampStartTime} - {row.stampEndTime}
