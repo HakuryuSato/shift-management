@@ -19,15 +19,16 @@ export async function punchAttendance(userId: number): Promise<Attendance[]> {
   const today = toJapanDateISOString(now);
 
   // 当日の出勤記録を取得
-  const existingAttendance = await getTodayAttendance(userId);
+  const existingAttendance = await getTodayAttendance(userId, today);
 
   // 戻り値があり、[]でなく、打刻開始があるなら
   if (existingAttendance && existingAttendance.length > 0 && existingAttendance[0].stamp_start_time) {
     const attendance = existingAttendance[0];
     
-    // 重複打刻チェック
-    const duplicateResult = checkDuplicatePunch(attendance, nowTime);
+    // 重複打刻チェック（stamp_startとstamp_endの差が2分以下かどうか）
+    const duplicateResult = await checkDuplicatePunch(attendance, nowTime);
     if (duplicateResult) {
+      // 重複ならば
       return duplicateResult;
     }
 
