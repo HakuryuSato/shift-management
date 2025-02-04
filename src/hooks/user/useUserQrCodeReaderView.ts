@@ -66,6 +66,12 @@ export function useUserQrCodeReaderView() {
 
     } catch (error) {
       console.error(`[${new Date().toISOString()}] handleScan エラー`, error);
+      if (error instanceof Error) {
+        showUserSnackBar(error.message, "error");
+      } else {
+        showUserSnackBar("エラーが発生しました", "error");
+      }
+      handleClose();
     }
   };
 
