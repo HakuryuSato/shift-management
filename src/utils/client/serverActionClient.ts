@@ -9,6 +9,7 @@ import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShif
 import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/punchAttendance';
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
 import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
+import { updateAttendanceStamp as serverActionUpdateAttendanceStamp } from '@/app/actions/updateAttendanceStamp';
 import { upsertAutoShift as serverActionUpsertAutoShift } from '@/app/actions/upsertAutoShift';
 
 // 型
@@ -89,6 +90,15 @@ export async function insertAttendance(attendanceData: Partial<Attendance>): Pro
  */
 export async function updateAttendance(attendanceData: Partial<Attendance>): Promise<Attendance[] | null> {
   return await handleServerAction(() => serverActionUpdateAttendance(attendanceData));
+}
+
+/**
+ * 打刻時間の修正と勤務時間の再計算を行うサーバーアクションを呼び出す関数
+ * @param attendance 更新する出勤データ
+ * @returns 更新された出勤データ
+ */
+export async function updateAttendanceStamp(attendance: Partial<Attendance>): Promise<Attendance> {
+  return await handleServerAction(() => serverActionUpdateAttendanceStamp(attendance));
 }
 
 
