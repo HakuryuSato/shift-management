@@ -53,7 +53,7 @@ export function AttendanceTablePersonalEditableCell({
           <TextField
             type="number"
             inputProps={{
-              step: "0.1",
+              step: "0.5",
               style: {
                 textAlign: "center",
                 padding: "0",
