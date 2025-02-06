@@ -3,6 +3,7 @@ import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/use
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalEditableCell } from "./AttendanceTablePersonalEditableCell";
+import { AttendanceTablePersonalTimeCell } from "./AttendanceTablePersonalTimeCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
@@ -20,6 +21,7 @@ export function AttendanceTablePersonal() {
     editingCell,
     handleClickWorkTimeCell,
     handleBlurWorkTimeCell,
+    handleTimeChange,
   } = usePersonalAttendanceTableClickHandlers();
 
 
@@ -29,8 +31,7 @@ export function AttendanceTablePersonal() {
       <TableHead>
         <TableRow>
           <TableCell>日付</TableCell>
-          <TableCell>打刻時間(開始)</TableCell>
-          <TableCell>打刻時間(終了)</TableCell>
+          <TableCell>打刻時間(開始-終了)</TableCell>
           <TableCell>補正時間(開始-終了)</TableCell>
           <TableCell>平日普通(H)</TableCell>
           <TableCell>平日時間外(H)</TableCell>
@@ -40,8 +41,12 @@ export function AttendanceTablePersonal() {
         {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
-            <TableCell>{row.stampStartTime}</TableCell>
-            <TableCell>{row.stampEndTime}</TableCell>
+            <AttendanceTablePersonalTimeCell
+              startTime={row.stampStartTime}
+              endTime={row.stampEndTime}
+              rowIndex={index}
+              onTimeChange={handleTimeChange}
+            />
             <TableCell>
               {row.adjustedStartTime} - {row.adjustedEndTime}
             </TableCell>
