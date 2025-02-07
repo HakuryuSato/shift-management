@@ -35,8 +35,8 @@ export function AttendanceTablePersonal() {
 
             {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
               <>
-                {/* 打刻時間(開始-終了) */}
-                <AttendanceTablePersonalStampsCell
+                打刻時間(開始-終了) */}
+                {/* <AttendanceTablePersonalStampsCell
                   startTime={row.stampStartTime}
                   endTime={row.stampEndTime}
                   rowIndex={index}
@@ -64,6 +64,7 @@ export function AttendanceTablePersonal() {
                     size="small"
                   />
                 </TableCell>
+                
                 {/* 平日時間外(H) */}
                 <TableCell>
                   <TextField
@@ -103,9 +104,9 @@ export function AttendanceTablePersonal() {
                 />
               </>
             )}
-            <AttendanceTablePersonalActionCell
+            {/* <AttendanceTablePersonalActionCell
               rowIndex={index}
-            />
+            /> */}
           </TableRow>
         ))}
       </TableBody>
