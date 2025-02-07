@@ -3,16 +3,20 @@ import { TableCell, Stack, SxProps } from "@mui/material";
 import { TimeDropdown } from "@/components/common/Modal/TimeDropdown";
 
 const tableCellSx: SxProps = {
-  padding: '2px 2px',
+  padding: '4px 8px',
   height: '20px'
 };
 
 const timeDropdownSx: SxProps = {
-  minWidth: '87px',
+  minWidth: '85px',
   '& .MuiInputBase-root': {
     height: '20px'
+  },
+  '& .MuiSelect-select': {
+    padding: '2px 2px'
   }
 };
+
 
 
 interface AttendanceTablePersonalTimeCellProps {
@@ -28,6 +32,7 @@ export function AttendanceTablePersonalTimeCell({
   rowIndex,
   onTimeChange,
 }: AttendanceTablePersonalTimeCellProps) {
+  
   const handleStartTimeChange = (newValue: string) => {
     onTimeChange(rowIndex, "stampStartTime", newValue);
   };
