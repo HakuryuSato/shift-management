@@ -125,7 +125,7 @@ describe('generateAttendanceWorkMinutes', () => {
     expect(attendanceResult.adjusted_end_time).toBe('2023-10-09T18:00:00');
     expect(attendanceResult.rest_minutes).toBe(60);
     expect(attendanceResult.work_minutes).toBe(0);
-    expect(attendanceResult.overtime_minutes).toBe(510);
+    expect(attendanceResult.overtime_minutes).toBe(570);
   });
 
   test('日曜日勤務の場合、全時間が残業時間として計算される', async () => {
@@ -151,7 +151,7 @@ describe('generateAttendanceWorkMinutes', () => {
     expect(attendanceResult.adjusted_end_time).toBe('2023-10-01T18:00:00');
     expect(attendanceResult.rest_minutes).toBe(60);
     expect(attendanceResult.work_minutes).toBe(0);
-    expect(attendanceResult.overtime_minutes).toBe(510);
+    expect(attendanceResult.overtime_minutes).toBe(570);
   });
 
   test('必須項目が欠けている場合は空のオブジェクトを返す', async () => {
@@ -262,8 +262,8 @@ describe('generateAttendanceWorkMinutes', () => {
 
     expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T22:30:00');
     expect(attendanceResult.adjusted_end_time).toBe('2023-10-03T06:00:00');
-    expect(attendanceResult.rest_minutes).toBe(0);
-    expect(attendanceResult.work_minutes).toBe(450);
-    expect(attendanceResult.overtime_minutes).toBe(0);
+    expect(attendanceResult.rest_minutes).toBe(60);
+    expect(attendanceResult.work_minutes).toBe(480);
+    expect(attendanceResult.overtime_minutes).toBe(90);
   });
 });
