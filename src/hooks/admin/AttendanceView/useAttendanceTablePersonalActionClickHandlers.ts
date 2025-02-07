@@ -1,4 +1,5 @@
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { updateAttendanceStamp, insertAttendance, updateAttendance, deleteAttendance } from "@/utils/client/serverActionClient";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
@@ -22,6 +23,11 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
   const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalTableRows,
   );
+
+  const selectedUser = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewSelectedUser
+  );
+  
 
   const handleEditClick = () => {
     // 他の行が編集中の場合、その編集状態をクリア
@@ -77,7 +83,11 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
 
         // 打刻時間が両方ある場合のみ新規登録
         if (editedRow.stampStartTime && editedRow.stampEndTime) {
+          if (!selectedUser) {
+            throw new Error('Selected user not found');
+          }
           await insertAttendance({
+            user_id: selectedUser.user_id,
             work_date: editedRow.date,
             stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
             stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
