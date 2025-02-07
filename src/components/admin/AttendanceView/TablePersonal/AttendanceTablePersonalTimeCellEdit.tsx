@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { Stack, SxProps, Select, MenuItem, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -50,8 +51,15 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   rowIndex,
   onTimeChange
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const editingCell = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingCell
+  );
+  const setEditingCell = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalEditingCell
+  );
+  
   const formattedTime = formatTime(time);
+  const isEditing = editingCell?.rowIndex === rowIndex && editingCell?.field === field;
 
   // 現在の時間値を含む選択肢を生成
   const getTimeOptions = (currentTime: string): string[] => {
@@ -82,7 +90,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   };
 
   const timeOptions = getTimeOptions(formattedTime);
-  const [selectedTime, setSelectedTime] = useState(formattedTime);
+  const [selectedTime, setSelectedTime] = React.useState(formattedTime);
 
   React.useEffect(() => {
     if (isEditing) {
@@ -92,11 +100,21 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
 
   const handleSave = (newTime: string) => {
     onTimeChange(rowIndex, field, `${newTime}:00`);
-    setIsEditing(false);
+    setEditingCell(null);
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
+    setEditingCell(null);
+  };
+
+  const handleStartEditing = () => {
+    // 他のセルが編集中の場合は自動的にキャンセル
+    if (editingCell && (editingCell.rowIndex !== rowIndex || editingCell.field !== field)) {
+      // 既存の編集をキャンセル
+      setEditingCell(null);
+    }
+    // 新しい編集セルを設定
+    setEditingCell({ rowIndex, field });
   };
 
   // 編集中
@@ -144,7 +162,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
       onChange={(e) => handleSave(e.target.value)}
       size="small"
       sx={selectSx}
-      onClick={() => setIsEditing(true)}
+      onClick={handleStartEditing}
       MenuProps={{
         PaperProps: {
           style: {
