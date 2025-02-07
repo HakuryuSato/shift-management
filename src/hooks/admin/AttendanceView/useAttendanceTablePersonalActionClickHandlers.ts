@@ -1,6 +1,7 @@
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { updateAttendanceStamp, insertAttendance, updateAttendance, deleteAttendance } from "@/utils/client/serverActionClient";
+import { useAdminAttendanceView } from "./useAdminAttendanceView";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
 const combineToISOString = (date: string, time: string): string => {
@@ -27,7 +28,8 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
   const selectedUser = useAdminAttendanceViewStore(
     (state) => state.adminAttendanceViewSelectedUser
   );
-  
+  const { mutateAttendanceResults } = useAdminAttendanceView();
+
 
   const handleEditClick = () => {
     // 他の行が編集中の場合、その編集状態をクリア
@@ -145,6 +147,7 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
     }
 
     setAttendanceTablePersonalEditingRow(null);
+    await mutateAttendanceResults();
   };
 
   const handleCancelClick = () => {
@@ -158,6 +161,7 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
     if (originalRow.attendanceId) {
       try {
         await deleteAttendance(originalRow.attendanceId);
+        await mutateAttendanceResults();
       } catch (error) {
         console.error('Error in handleDeleteClick:', error);
         throw error;
