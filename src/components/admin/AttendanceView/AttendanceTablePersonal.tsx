@@ -41,15 +41,20 @@ export function AttendanceTablePersonal() {
         {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
+
+            {/* 打刻時間(開始-終了) */}
             <AttendanceTablePersonalTimeCell
               startTime={row.stampStartTime}
               endTime={row.stampEndTime}
               rowIndex={index}
               onTimeChange={handleChangeStampTime}
             />
+            
             <TableCell>
               {row.adjustedStartTime} - {row.adjustedEndTime}
             </TableCell>
+
+            {/* 平日普通(H) */}
             <AttendanceTablePersonalEditableCell
               value={row.regularHours}
               rowIndex={index}
@@ -61,6 +66,7 @@ export function AttendanceTablePersonal() {
               onClick={handleClickWorkTimeCell}
               onBlur={handleBlurWorkTimeCell}
             />
+            {/* 平日時間外(H) */}
             <AttendanceTablePersonalEditableCell
               value={row.overtimeHours}
               rowIndex={index}
