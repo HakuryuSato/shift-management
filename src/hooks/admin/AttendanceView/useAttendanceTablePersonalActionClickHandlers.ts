@@ -86,12 +86,21 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
           if (!selectedUser) {
             throw new Error('Selected user not found');
           }
-          await insertAttendance({
+          const result = await insertAttendance({
             user_id: selectedUser.user_id,
             work_date: editedRow.date,
             stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
             stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
           });
+          
+          if (result && result[0] && result[0].attendance_id) {
+            // insertAttendance の後に updateAttendanceStamp を実行
+            await updateAttendanceStamp({
+              attendance_id: result[0].attendance_id,
+              stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
+              stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
+            });
+          }
         }
       } else {
         // 既存データの更新
