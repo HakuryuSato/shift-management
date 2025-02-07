@@ -10,6 +10,7 @@ import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/pu
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
 import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
 import { updateAttendanceStamp as serverActionUpdateAttendanceStamp } from '@/app/actions/updateAttendanceStamp';
+import { deleteAttendance as serverActionDeleteAttendance } from '@/app/actions/deleteAttendance';
 import { upsertAutoShift as serverActionUpsertAutoShift } from '@/app/actions/upsertAutoShift';
 
 // 型
@@ -106,6 +107,15 @@ export async function updateAttendance(attendanceData: Partial<Attendance>): Pro
  */
 export async function updateAttendanceStamp(attendance: Partial<Attendance>): Promise<Attendance> {
   return await handleServerAction(() => serverActionUpdateAttendanceStamp(attendance));
+}
+
+/**
+ * 出勤データを削除するサーバーアクションを呼び出す関数
+ * @param attendanceId 削除する出勤データのID
+ * @returns 削除された出勤データまたはnull
+ */
+export async function deleteAttendance(attendanceId: number): Promise<Attendance | null> {
+  return await handleServerAction(() => serverActionDeleteAttendance(attendanceId));
 }
 
 
