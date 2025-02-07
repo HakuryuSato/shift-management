@@ -1,6 +1,8 @@
 import type { User } from '@/types/User'
 
-// シフト取得APIのパラメータ型
+/**
+ * シフト取得APIのパラメータ型
+ */
 export interface GetShiftParams {
     userId?: string;
     shiftId?: string;
@@ -8,10 +10,29 @@ export interface GetShiftParams {
     filterEndDateISO: string;
 }
 
-// DBの構造と同じ型 + サバアクの送信で使用している型
+/**
+ * シフトのクエリ型（検索・フィルタリング用）
+ */
+export interface ShiftQuery {
+    user_id?: number;
+    shift_id?: number;
+    start_time?: string;  // ISO文字列
+    end_time?: string;    // ISO文字列
+    is_approved?: boolean;
+}
+
+/**
+ * シフトの基本型（DBの構造に準拠）
+ */
 export interface Shift {
     shift_id?: number;
     user_id?: number;
-    start_time: string; // ISO文字列
-    end_time?: string;
+    start_time: string;   // ISO文字列
+    end_time: string;     // ISO文字列
+    is_approved?: boolean;
 }
+
+/**
+ * シフト配列の型（単一または複数のシフト）
+ */
+export type ShiftArray = Shift | Shift[];

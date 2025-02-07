@@ -21,7 +21,7 @@ export function useCalendarShiftAllMembers() {
 
   const { data: shifts, mutate } = useSWR(
     isUserCalendarViewVisible ? `allmembers_shifts-${'*'}-${customFullCalendarStartDate}-${customFullCalendarEndDate}` : null,
-    () => fetchShifts({ startTime: toJapanISOString(getStartOfDay(customFullCalendarStartDate)), endTime: toJapanISOString(getEndOfDay(customFullCalendarEndDate)) })
+    () => fetchShifts({ start_time: toJapanISOString(getStartOfDay(customFullCalendarStartDate)), end_time: toJapanISOString(getEndOfDay(customFullCalendarEndDate)) })
   );
 
   const { data: users } = useSWR(

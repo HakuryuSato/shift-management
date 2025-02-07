@@ -1,8 +1,7 @@
-import type InterFaceShiftQuery from "@/types/InterFaceShiftQuery";
 import { AttendanceQuery, Attendance } from '@/types/Attendance';
 import type { Holiday } from "@/types/Holiday";
 import type { AutoShiftSettings } from "@/types/AutoShift";
-import type { Shift, NewShiftQuery } from "@/types/Shift";
+import type { Shift, ShiftQuery } from "@/types/Shift";
 import type { User } from "@/types/User";
 
 /*
@@ -50,9 +49,9 @@ export async function fetchUsers(): Promise<User[]> {
 // シフト関連  ---------------------------------------------------------------------------------------------------
 // シフト取得
 export async function fetchShifts(
-  params: NewShiftQuery = {}
+  params: ShiftQuery = {}
 ): Promise<Shift[]> {
-  const { user_id, startTime: start_time, endTime: end_time } = params;
+  const { user_id, start_time, end_time } = params;
   const queryParams = new URLSearchParams();
 
   if (user_id) {
