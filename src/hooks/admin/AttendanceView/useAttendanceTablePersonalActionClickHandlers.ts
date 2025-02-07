@@ -41,12 +41,17 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
     }
     // この行の編集を開始
     const rowData = AttendanceTablePersonalTableRows[rowIndex];
+    
+    // 打刻時間が空白の場合はデフォルト値を設定
+    const startTime = rowData.stampStartTime || "08:29";
+    const endTime = rowData.stampEndTime || "18:00";
+    
     setAttendanceTablePersonalEditingRow({
       rowIndex,
       rowData: {
         ...rowData,
-        stampStartTime: rowData.stampStartTime,
-        stampEndTime: rowData.stampEndTime,
+        stampStartTime: startTime,
+        stampEndTime: endTime,
         regularHours: rowData.regularHours,
         overtimeHours: rowData.overtimeHours,
       },

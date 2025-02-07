@@ -52,6 +52,10 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   field
 }) => {
   const formattedTime = formatTime(time);
+  
+  // 初期値の設定
+  const defaultTime = field === 'Start' ? "08:29" : "18:00";
+  const effectiveSelectedTime = selectedTime || defaultTime;
 
 
   // 現在の時間値を含む選択肢を生成
@@ -88,8 +92,8 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
 
   return (
     <Select
-      value={isEditing ? selectedTime : formattedTime}
-      onChange={isEditing ? (e) => onTimeSelect(e.target.value) : undefined}
+      value={isEditing ? effectiveSelectedTime : formattedTime}
+      onChange={isEditing ? (e) => onTimeSelect(e.target.value || defaultTime) : undefined}
       onClick={!isEditing ? onStartEditing : undefined}
       size="small"
       sx={selectSx}
