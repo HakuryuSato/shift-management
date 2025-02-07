@@ -35,10 +35,16 @@ export async function updateAttendanceStamp(
       overtime_minutes: workMinutesResult.overtime_minutes,
       rest_minutes: workMinutesResult.rest_minutes
     });
-    
+
     return result[0];
   } catch (error) {
-    console.error('Error generating attendance result in updateAttendanceStamp:', error);
-    throw new Error('打刻時間変更による集計でエラーが発生しました');
+    console.error('Error generating attendance result in updateAttendanceStamp:', {
+      error: error instanceof Error ? {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      } : error
+    });
+    throw error;
   }
 }
