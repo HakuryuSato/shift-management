@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import type { AttendanceRowPersonal } from "@/types/Attendance";
-import { updateAttendance, insertAttendance } from "@/utils/client/serverActionClient";
+import { updateAttendance, insertAttendance, updateAttendanceStamp } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { hoursToMinutes } from '@/utils/common/dateUtils';
 import type { Attendance } from "@/types/Attendance";
@@ -114,53 +114,62 @@ export function usePersonalAttendanceTableClickHandlers() {
     ]
   );
 
+  /**
+   * 打刻時間を変更するハンドラー
+   * @param rowIndex 行インデックス
+   * @param field 変更対象のフィールド（"stampStartTime" | "stampEndTime"）
+   * @param value 新しい時間値
+   */
   const handleChangeStampTime = useCallback(
     async (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => {
+      // 値に変更がない場合は処理を行わない
       const originalRow = AttendanceTablePersonalTableRows[rowIndex];
       const originalValue = originalRow[field];
+      if (originalValue === value) return;
 
-      if (originalValue !== value) {
-        const attendanceId = originalRow.attendanceId;
-        const userId = adminAttendanceViewSelectedUser?.user_id;
+      // ユーザーIDが存在しない場合は処理を行わない
+      const userId = adminAttendanceViewSelectedUser?.user_id;
+      if (!userId) {
+        console.error('User ID is not available for insertion.');
+        return;
+      }
 
-        if (!userId) {
-          console.error('User ID is not available for insertion.');
-          return;
-        }
+      // 打刻時間の更新用データを作成
+      const attendance: Partial<Attendance> = {
+        user_id: userId,
+        // フィールド名をDBのカラム名に変換
+        [field === "stampStartTime" ? "stamp_start_time" : "stamp_end_time"]: value
+      };
 
-        const attendance: Partial<Attendance> = {
-          user_id: userId,
-          [field]: value
-        };
+      // 既存の出退勤データの場合
+      if (originalRow.attendanceId) {
+        attendance.attendance_id = originalRow.attendanceId;
+        const updatedResult = await updateAttendanceStamp(attendance);
 
-        if (attendanceId) {
-          attendance.attendance_id = attendanceId;
-          const updatedResult = await updateAttendance(attendance);
+        // 更新成功時、テーブルの表示を更新
+        setAttendanceTablePersonalTableRows((prevRows) =>
+          prevRows.map((row, idx) =>
+            idx === rowIndex ? { ...row, [field]: value } : row
+          )
+        );
+      } else {
+        // 新規の出退勤データの場合
+        attendance.work_date = originalRow.date;
+        const insertedResult = await insertAttendance(attendance);
 
-          if (updatedResult && updatedResult.length > 0) {
-            setAttendanceTablePersonalTableRows((prevRows) =>
-              prevRows.map((row, idx) =>
-                idx === rowIndex ? { ...row, [field]: value } : row
-              )
-            );
-          }
-        } else {
-          attendance.work_date = AttendanceTablePersonalTableRows[rowIndex].date;
-          const insertedResult = await insertAttendance(attendance);
-
-          if (insertedResult && insertedResult.length > 0) {
-            setAttendanceTablePersonalTableRows((prevRows) =>
-              prevRows.map((row, idx) =>
-                idx === rowIndex
-                  ? {
-                    ...row,
-                    [field]: value,
-                    attendanceId: insertedResult[0].attendance_id,
-                  }
-                  : row
-              )
-            );
-          }
+        // 挿入成功時、テーブルの表示を更新
+        if (insertedResult && insertedResult.length > 0) {
+          setAttendanceTablePersonalTableRows((prevRows) =>
+            prevRows.map((row, idx) =>
+              idx === rowIndex
+                ? {
+                  ...row,
+                  [field]: value,
+                  attendanceId: insertedResult[0].attendance_id,
+                }
+                : row
+            )
+          );
         }
       }
     },
