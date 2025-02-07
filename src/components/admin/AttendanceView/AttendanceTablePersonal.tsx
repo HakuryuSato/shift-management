@@ -1,6 +1,6 @@
 import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
 import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
@@ -59,28 +59,41 @@ export function AttendanceTablePersonal() {
                 </TableCell>
 
                 {/* 平日普通(H) */}
-                <AttendanceTablePersonalHoursCell
-                  value={row.regularHours}
-                  rowIndex={index}
-                  field="regularHours"
-                  isEditing={
-                    editingCell?.rowIndex === index &&
-                    editingCell?.field === "regularHours"
-                  }
-                  onClick={handleClickWorkTimeCell}
-                  onBlur={handleBlurWorkTimeCell}
-                />
+                <TableCell>
+                  <TextField
+                    type="number"
+                    inputProps={{
+                      step: "0.5",
+                      style: {
+                        textAlign: "center",
+                        padding: "0",
+                        fontSize: "0.8rem",
+                      },
+                    }}
+                    value={row.regularHours}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBlurWorkTimeCell(index, "regularHours", e.target.value)}
+                    variant="standard"
+                    size="small"
+                  />
+                </TableCell>
                 {/* 平日時間外(H) */}
-                <AttendanceTablePersonalHoursCell
-                  value={row.overtimeHours}
-                  rowIndex={index}
-                  field="overtimeHours"
-                  isEditing={
-                    editingCell?.rowIndex === index &&
-                    editingCell?.field === "overtimeHours"
-                  }
-                  onClick={handleClickWorkTimeCell}
-                />
+                <TableCell>
+                  <TextField
+                    type="number"
+                    inputProps={{
+                      step: "0.5",
+                      style: {
+                        textAlign: "center",
+                        padding: "0",
+                        fontSize: "0.8rem",
+                      },
+                    }}
+                    value={row.overtimeHours}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBlurWorkTimeCell(index, "overtimeHours", e.target.value)}
+                    variant="standard"
+                    size="small"
+                  />
+                </TableCell>
               </>
             ) : (
               <>
@@ -90,8 +103,20 @@ export function AttendanceTablePersonal() {
                 <TableCell>
                   {row.adjustedStartTime} - {row.adjustedEndTime}
                 </TableCell>
-                <TableCell>{row.regularHours}</TableCell>
-                <TableCell>{row.overtimeHours}</TableCell>
+                <AttendanceTablePersonalHoursCell
+                  value={row.regularHours}
+                  rowIndex={index}
+                  field="regularHours"
+                  onClick={handleClickWorkTimeCell}
+                  onBlur={handleBlurWorkTimeCell}
+                />
+                <AttendanceTablePersonalHoursCell
+                  value={row.overtimeHours}
+                  rowIndex={index}
+                  field="overtimeHours"
+                  onClick={handleClickWorkTimeCell}
+                  onBlur={handleBlurWorkTimeCell}
+                />
               </>
             )}
             <AttendanceTablePersonalActionCell
