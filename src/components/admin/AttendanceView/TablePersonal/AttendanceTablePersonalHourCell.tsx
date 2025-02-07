@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TableCell, TextField } from "@mui/material";
 import type { AttendanceRowPersonal } from "@/types/Attendance";
+import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
 interface EditableCellProps {
   value: string;
   rowIndex: number;
   field: keyof AttendanceRowPersonal;
-  isEditing: boolean;
-  onClick: (rowIndex: number, field: keyof AttendanceRowPersonal) => void;
-  onBlur: (
+  isEditing?: boolean;
+  onClick?: (rowIndex: number, field: keyof AttendanceRowPersonal) => void;
+  onBlur?: (
     rowIndex: number,
     field: keyof AttendanceRowPersonal,
     newValue: string,
@@ -19,10 +20,17 @@ export function AttendanceTablePersonalEditableCell({
   value,
   rowIndex,
   field,
-  isEditing,
+  isEditing = false,
   onClick,
-  onBlur,
 }: EditableCellProps) {
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingRow,
+  );
+  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalEditingRow,
+  );
+
+  const isRowEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState(value);
 
@@ -41,14 +49,8 @@ export function AttendanceTablePersonalEditableCell({
   }, [isEditing, value]);
 
   return (
-    <TableCell
-      onClick={() => onClick(rowIndex, field)}
-      sx={{
-        cursor: "pointer",
-        "&:hover": { backgroundColor: "lightgrey" },
-      }}
-    >
-      {isEditing
+    <TableCell>
+      {isEditing && isRowEditing
         ? (
           <TextField
             type="number"
@@ -62,7 +64,6 @@ export function AttendanceTablePersonalEditableCell({
             }}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => onBlur(rowIndex, field, inputValue)}
             inputRef={inputRef}
             variant="standard"
             size="small"

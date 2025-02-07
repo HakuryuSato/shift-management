@@ -1,26 +1,30 @@
 import React from "react";
-import { TableCell, Stack, SxProps, IconButton } from "@mui/material";
+import { IconButton, Stack, SxProps, TableCell } from "@mui/material";
 import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
 const tableCellSx: SxProps = {
-  padding: '4px 8px',
-  height: '20px'
+  padding: "4px 8px",
+  height: "20px",
 };
 
 const iconButtonSx: SxProps = {
-  padding: '2px',
-  width: '20px',
-  height: '20px'
+  padding: "2px",
+  width: "20px",
+  height: "20px",
 };
 
 interface AttendanceTablePersonalTimeCellProps {
   startTime: string | null;
   endTime: string | null;
   rowIndex: number;
-  onTimeChange: (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => void;
+  onTimeChange: (
+    rowIndex: number,
+    field: "stampStartTime" | "stampEndTime",
+    value: string,
+  ) => void;
 }
 
 export function AttendanceTablePersonalTimeCell({
@@ -29,31 +33,20 @@ export function AttendanceTablePersonalTimeCell({
   rowIndex,
   onTimeChange,
 }: AttendanceTablePersonalTimeCellProps) {
-  const editingCell = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingCell
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingRow
   );
-  const setEditingCell = useAttendanceTablePersonalStore(
-    (state) => state.setAttendanceTablePersonalEditingCell
+  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalEditingRow
   );
 
-  const [selectedStartTime, setSelectedStartTime] = React.useState(startTime ? startTime.slice(0, 5) : '');
-  const [selectedEndTime, setSelectedEndTime] = React.useState(endTime ? endTime.slice(0, 5) : '');
-
-  const isEditing = editingCell?.rowIndex === rowIndex;
-
-  const handleSave = () => {
-    if (selectedStartTime && selectedEndTime) {
-      onTimeChange(rowIndex, "stampStartTime", `${selectedStartTime}:00`);
-      onTimeChange(rowIndex, "stampEndTime", `${selectedEndTime}:00`);
-      setEditingCell(null);
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingCell(null);
-    setSelectedStartTime(startTime ? startTime.slice(0, 5) : '');
-    setSelectedEndTime(endTime ? endTime.slice(0, 5) : '');
-  };
+  const [selectedStartTime, setSelectedStartTime] = React.useState(
+    startTime ? startTime.slice(0, 5) : "",
+  );
+  const [selectedEndTime, setSelectedEndTime] = React.useState(
+    endTime ? endTime.slice(0, 5) : "",
+  );
+  const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
 
   return (
     <TableCell sx={tableCellSx}>
@@ -64,10 +57,13 @@ export function AttendanceTablePersonalTimeCell({
           onTimeSelect={setSelectedStartTime}
           isEditing={isEditing}
           onStartEditing={() => {
-            if (editingCell && editingCell.rowIndex !== rowIndex) {
-              setEditingCell(null);
+            if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {
+              setAttendanceTablePersonalEditingRow(null);
             }
-            setEditingCell({ rowIndex, field: "stampStartTime" });
+            setAttendanceTablePersonalEditingRow({
+              rowIndex,
+              field: "stampStartTime",
+            });
           }}
         />
         <span>-</span>
@@ -77,26 +73,15 @@ export function AttendanceTablePersonalTimeCell({
           onTimeSelect={setSelectedEndTime}
           isEditing={isEditing}
           onStartEditing={() => {
-            if (editingCell && editingCell.rowIndex !== rowIndex) {
-              setEditingCell(null);
+            if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {
+              setAttendanceTablePersonalEditingRow(null);
             }
-            setEditingCell({ rowIndex, field: "stampEndTime" });
+            setAttendanceTablePersonalEditingRow({
+              rowIndex,
+              field: "stampEndTime",
+            });
           }}
         />
-        {isEditing && (
-          <Stack direction="row" spacing={0.5}>
-            <IconButton onClick={handleCancel} sx={iconButtonSx}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-            <IconButton 
-              onClick={handleSave} 
-              sx={iconButtonSx}
-              disabled={!selectedStartTime || !selectedEndTime}
-            >
-              <CheckIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        )}
       </Stack>
     </TableCell>
   );

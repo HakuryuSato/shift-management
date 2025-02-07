@@ -8,64 +8,70 @@ import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTableP
 
 interface Props {
   rowIndex: number;
-  onSave?: () => void;
-  onDelete?: () => void;
 }
 
-export function AttendanceTablePersonalActionCell({ rowIndex, onSave, onDelete }: Props) {
-  const { editingRowIndex, setEditingRowIndex, setAttendanceTablePersonalEditingCell } = useAttendanceTablePersonalStore();
-  const isEditing = editingRowIndex === rowIndex;
+export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
+
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingRow
+  );
+  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalEditingRow
+  );
+
+
+  const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
 
   const handleEditClick = () => {
     // 他の行が編集中の場合、その編集状態をクリア
-    if (editingRowIndex !== null && editingRowIndex !== rowIndex) {
-      setEditingRowIndex(null);
-      setAttendanceTablePersonalEditingCell(null);
+    if (
+      AttendanceTablePersonalEditingRow?.rowIndex !== null &&
+      AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex
+    ) {
+      setAttendanceTablePersonalEditingRow(null);
     }
     // この行の編集を開始
-    setEditingRowIndex(rowIndex);
+    setAttendanceTablePersonalEditingRow({ rowIndex });
   };
 
   const handleSaveClick = () => {
-    if (onSave) {
-      onSave();
-    }
-    setEditingRowIndex(null);
-    setAttendanceTablePersonalEditingCell(null);
+    setAttendanceTablePersonalEditingRow(null);
   };
 
   const handleCancelClick = () => {
-    setEditingRowIndex(null);
-    setAttendanceTablePersonalEditingCell(null);
+    setAttendanceTablePersonalEditingRow(null);
   };
 
   const handleDeleteClick = () => {
-    if (onDelete) {
-      onDelete();
-    }
-    setEditingRowIndex(null);
-    setAttendanceTablePersonalEditingCell(null);
+    setAttendanceTablePersonalEditingRow(null);
   };
 
   return (
     <TableCell align="center">
-      {isEditing ? (
-        <>
-          <IconButton onClick={handleSaveClick} size="small" color="primary">
-            <CheckIcon />
+      {isEditing
+        ? (
+          <>
+            <IconButton onClick={handleSaveClick} size="small" color="primary">
+              <CheckIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleCancelClick}
+              size="small"
+              color="default"
+            >
+              <CloseIcon />
+            </IconButton>
+            <IconButton onClick={handleDeleteClick} size="small" color="error">
+              <DeleteIcon />
+            </IconButton>
+          </>
+        )
+        : (
+          // 編集アイコン
+          <IconButton onClick={handleEditClick} size="small">
+            <EditIcon />
           </IconButton>
-          <IconButton onClick={handleCancelClick} size="small" color="default">
-            <CloseIcon />
-          </IconButton>
-          <IconButton onClick={handleDeleteClick} size="small" color="error">
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ) : (
-        <IconButton onClick={handleEditClick} size="small">
-          <EditIcon />
-        </IconButton>
-      )}
+        )}
     </TableCell>
   );
 }

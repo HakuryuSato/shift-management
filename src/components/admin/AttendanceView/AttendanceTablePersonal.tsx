@@ -15,9 +15,8 @@ export function AttendanceTablePersonal() {
   // storeの値を取得
   const { 
     AttendanceTablePersonalTableRows, 
-    editingRowIndex,
-    setEditingRowIndex,
-    setAttendanceTablePersonalEditingCell 
+    AttendanceTablePersonalEditingRow,
+    setAttendanceTablePersonalEditingRow
   } = useAttendanceTablePersonalStore();
 
   // ハンドラー取得
@@ -27,20 +26,6 @@ export function AttendanceTablePersonal() {
     handleBlurWorkTimeCell,
     handleChangeStampTime,
   } = usePersonalAttendanceTableClickHandlers();
-
-  const handleSave = (index: number) => {
-    // TODO: 保存処理を実装
-    console.log('Save row:', index);
-    setEditingRowIndex(null);
-    setAttendanceTablePersonalEditingCell(null);
-  };
-
-  const handleDelete = (index: number) => {
-    // TODO: 削除処理を実装
-    console.log('Delete row:', index);
-    setEditingRowIndex(null);
-    setAttendanceTablePersonalEditingCell(null);
-  };
 
   return (
     <TableStyleAttendancePersonal>
@@ -59,7 +44,7 @@ export function AttendanceTablePersonal() {
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
 
-            {editingRowIndex === index ? (
+            {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
               <>
                 {/* 打刻時間(開始-終了) */}
                 <AttendanceTablePersonalTimeCell
@@ -95,7 +80,6 @@ export function AttendanceTablePersonal() {
                     editingCell?.field === "overtimeHours"
                   }
                   onClick={handleClickWorkTimeCell}
-                  onBlur={handleBlurWorkTimeCell}
                 />
               </>
             ) : (
@@ -112,8 +96,6 @@ export function AttendanceTablePersonal() {
             )}
             <AttendanceTablePersonalActionCell
               rowIndex={index}
-              onSave={() => handleSave(index)}
-              onDelete={() => handleDelete(index)}
             />
           </TableRow>
         ))}

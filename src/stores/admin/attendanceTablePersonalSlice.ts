@@ -4,10 +4,8 @@ import type { AttendanceRowPersonal } from '@/types/Attendance';
 interface AttendanceTablePersonalStore {
   AttendanceTablePersonalTableRows: AttendanceRowPersonal[];
   setAttendanceTablePersonalTableRows: (rows: AttendanceRowPersonal[] | ((prevRows: AttendanceRowPersonal[]) => AttendanceRowPersonal[])) => void;
-  AttendanceTablePersonalEditingCell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null;
-  setAttendanceTablePersonalEditingCell: (cell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null) => void;
-  editingRowIndex: number | null;
-  setEditingRowIndex: (index: number | null) => void;
+  AttendanceTablePersonalEditingRow: { rowIndex: number; field?: keyof AttendanceRowPersonal } | null;
+  setAttendanceTablePersonalEditingRow: (row: { rowIndex: number; field?: keyof AttendanceRowPersonal } | null) => void;
 }
 
 export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalStore>((set) => ({
@@ -18,8 +16,6 @@ export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalSto
         typeof rows === 'function' ? rows(state.AttendanceTablePersonalTableRows) : rows,
     }));
   },
-  AttendanceTablePersonalEditingCell: null,
-  setAttendanceTablePersonalEditingCell: (cell) => set({ AttendanceTablePersonalEditingCell: cell }),
-  editingRowIndex: null,
-  setEditingRowIndex: (index) => set({ editingRowIndex: index }),
+  AttendanceTablePersonalEditingRow: null,
+  setAttendanceTablePersonalEditingRow: (row) => set({ AttendanceTablePersonalEditingRow: row }),
 }));
