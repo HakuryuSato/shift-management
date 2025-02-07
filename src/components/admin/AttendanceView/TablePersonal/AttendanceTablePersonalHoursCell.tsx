@@ -14,7 +14,7 @@ export function AttendanceTablePersonalHoursCell({
   rowIndex,
   field,
 }: EditableCellProps) {
-  
+  const [cellValue, setCellValue] = useState(value);
 
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalEditingRow,
@@ -26,12 +26,14 @@ export function AttendanceTablePersonalHoursCell({
   const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setCellValue(newValue);
     if (AttendanceTablePersonalEditingRow?.rowData) {
       setAttendanceTablePersonalEditingRow({
         ...AttendanceTablePersonalEditingRow,
         rowData: {
           ...AttendanceTablePersonalEditingRow.rowData,
-          [field]: event.target.value,
+          [field]: newValue,
         },
       });
     }
@@ -50,7 +52,7 @@ export function AttendanceTablePersonalHoursCell({
               fontSize: "0.8rem",
             },
           }}
-          value={value}
+          value={cellValue}
           onChange={handleChange}
           variant="standard"
           size="small"
