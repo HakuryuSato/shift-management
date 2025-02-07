@@ -18,7 +18,7 @@ export function useCalendarShiftPersonal() {
 
   const { data: shifts, mutate } = useSWR(
     isUserCalendarViewVisible ? `personal_shifts-${userId}-${customFullCalendarStartDate}-${customFullCalendarEndDate}` : null,
-    () => fetchShifts({ user_id: userId, startTime: toJapanISOString(getStartOfDay(customFullCalendarStartDate)), endTime: toJapanISOString(getEndOfDay(customFullCalendarEndDate)) })
+    () => fetchShifts({ user_id: userId, start_time: toJapanISOString(getStartOfDay(customFullCalendarStartDate)), end_time: toJapanISOString(getEndOfDay(customFullCalendarEndDate)) })
   );
 
   useEffect(() => {
