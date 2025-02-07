@@ -134,43 +134,67 @@ export function usePersonalAttendanceTableClickHandlers() {
         return;
       }
 
-      // 打刻時間の更新用データを作成
-      const attendance: Partial<Attendance> = {
-        user_id: userId,
-        // フィールド名をDBのカラム名に変換
-        [field === "stampStartTime" ? "stamp_start_time" : "stamp_end_time"]: value
-      };
+      // 両方の打刻時間を取得
+      const startTime = field === "stampStartTime" ? value : originalRow.stampStartTime;
+      const endTime = field === "stampEndTime" ? value : originalRow.stampEndTime;
 
-      // 既存の出退勤データの場合
-      if (originalRow.attendanceId) {
-        attendance.attendance_id = originalRow.attendanceId;
-        const updatedResult = await updateAttendanceStamp(attendance);
+      let attendanceId = originalRow.attendanceId;
+      let success = false;
 
-        // 更新成功時、テーブルの表示を更新
-        setAttendanceTablePersonalTableRows((prevRows) =>
-          prevRows.map((row, idx) =>
-            idx === rowIndex ? { ...row, [field]: value } : row
-          )
-        );
-      } else {
-        // 新規の出退勤データの場合
-        attendance.work_date = originalRow.date;
-        const insertedResult = await insertAttendance(attendance);
+      try {
+        // 既存の出退勤データの場合
+        if (attendanceId) {
+          // 両方の打刻時間が存在する場合のみ時間集計を実行
+          if (startTime && endTime) {
+            await updateAttendanceStamp({
+              attendance_id: attendanceId,
+              stamp_start_time: startTime,
+              stamp_end_time: endTime
+            });
+            success = true;
+          }
+        } else {
+          // 新規の出退勤データの場合
+          const initialAttendance: Partial<Attendance> = {
+            user_id: userId,
+            work_date: originalRow.date,
+            [field === "stampStartTime" ? "stamp_start_time" : "stamp_end_time"]: value
+          };
 
-        // 挿入成功時、テーブルの表示を更新
-        if (insertedResult && insertedResult.length > 0) {
+          // まず打刻時間のみで新規データを作成
+          const insertedResult = await insertAttendance(initialAttendance);
+
+          if (insertedResult && insertedResult.length > 0) {
+            attendanceId = insertedResult[0].attendance_id;
+            
+            // 両方の打刻時間が存在する場合のみ時間集計を実行
+            if (startTime && endTime) {
+              await updateAttendanceStamp({
+                attendance_id: attendanceId,
+                stamp_start_time: startTime,
+                stamp_end_time: endTime
+              });
+            }
+            success = true;
+          }
+        }
+
+        // 成功時のみテーブルの表示を更新
+        if (success) {
           setAttendanceTablePersonalTableRows((prevRows) =>
             prevRows.map((row, idx) =>
               idx === rowIndex
                 ? {
                   ...row,
                   [field]: value,
-                  attendanceId: insertedResult[0].attendance_id,
+                  ...(attendanceId && { attendanceId })
                 }
                 : row
             )
           );
         }
+      } catch (error) {
+        console.error('Error updating attendance stamp:', error);
       }
     },
     [
