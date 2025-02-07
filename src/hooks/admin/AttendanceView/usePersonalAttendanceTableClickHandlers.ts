@@ -114,9 +114,67 @@ export function usePersonalAttendanceTableClickHandlers() {
     ]
   );
 
+  const handleStampTimeChange = useCallback(
+    async (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => {
+      const originalRow = AttendanceTablePersonalTableRows[rowIndex];
+      const originalValue = originalRow[field];
+
+      if (originalValue !== value) {
+        const attendanceId = originalRow.attendanceId;
+        const userId = adminAttendanceViewSelectedUser?.user_id;
+
+        if (!userId) {
+          console.error('User ID is not available for insertion.');
+          return;
+        }
+
+        const attendance: Partial<Attendance> = {
+          user_id: userId,
+          [field]: value
+        };
+
+        if (attendanceId) {
+          attendance.attendance_id = attendanceId;
+          const updatedResult = await updateAttendance(attendance);
+
+          if (updatedResult && updatedResult.length > 0) {
+            setAttendanceTablePersonalTableRows((prevRows) =>
+              prevRows.map((row, idx) =>
+                idx === rowIndex ? { ...row, [field]: value } : row
+              )
+            );
+          }
+        } else {
+          attendance.work_date = AttendanceTablePersonalTableRows[rowIndex].date;
+          const insertedResult = await insertAttendance(attendance);
+
+          if (insertedResult && insertedResult.length > 0) {
+            setAttendanceTablePersonalTableRows((prevRows) =>
+              prevRows.map((row, idx) =>
+                idx === rowIndex
+                  ? {
+                    ...row,
+                    [field]: value,
+                    attendanceId: insertedResult[0].attendance_id,
+                  }
+                  : row
+              )
+            );
+          }
+        }
+      }
+    },
+    [
+      AttendanceTablePersonalTableRows,
+      setAttendanceTablePersonalTableRows,
+      adminAttendanceViewSelectedUser,
+    ]
+  );
+
   return {
     editingCell: AttendanceTablePersonalEditingCell,
     handleClickWorkTimeCell,
     handleBlurWorkTimeCell,
+    handleStampTimeChange,
   };
 }
