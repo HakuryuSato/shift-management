@@ -6,6 +6,8 @@ interface AttendanceTablePersonalStore {
   setAttendanceTablePersonalTableRows: (rows: AttendanceRowPersonal[] | ((prevRows: AttendanceRowPersonal[]) => AttendanceRowPersonal[])) => void;
   AttendanceTablePersonalEditingCell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null;
   setAttendanceTablePersonalEditingCell: (cell: { rowIndex: number; field: keyof AttendanceRowPersonal } | null) => void;
+  editingRowIndex: number | null;
+  setEditingRowIndex: (index: number | null) => void;
 }
 
 export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalStore>((set) => ({
@@ -18,4 +20,6 @@ export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalSto
   },
   AttendanceTablePersonalEditingCell: null,
   setAttendanceTablePersonalEditingCell: (cell) => set({ AttendanceTablePersonalEditingCell: cell }),
+  editingRowIndex: null,
+  setEditingRowIndex: (index) => set({ editingRowIndex: index }),
 }));
