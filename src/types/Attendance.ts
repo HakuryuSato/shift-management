@@ -32,8 +32,8 @@ export type AttendanceRowPersonal = {
   adjustedStartTime: string;
   adjustedEndTime: string;
   breakHours: string;
-  stampStartTime: string;
-  stampEndTime: string;
+  stampStartTime: string | null;
+  stampEndTime: string | null;
   attendanceId?: number;
 };
 
