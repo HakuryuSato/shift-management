@@ -114,7 +114,7 @@ export function usePersonalAttendanceTableClickHandlers() {
     ]
   );
 
-  const handleStampTimeChange = useCallback(
+  const handleChangeStampTime = useCallback(
     async (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => {
       const originalRow = AttendanceTablePersonalTableRows[rowIndex];
       const originalValue = originalRow[field];
@@ -175,6 +175,6 @@ export function usePersonalAttendanceTableClickHandlers() {
     editingCell: AttendanceTablePersonalEditingCell,
     handleClickWorkTimeCell,
     handleBlurWorkTimeCell,
-    handleStampTimeChange,
+    handleChangeStampTime,
   };
 }
