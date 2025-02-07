@@ -1,5 +1,5 @@
-import React from "react";
-import { IconButton, TableCell } from "@mui/material";
+import React, { useState } from "react";
+import { IconButton, TableCell, CircularProgress } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -11,6 +11,7 @@ interface Props {
 }
 
 export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
+  const [isSaving, setIsSaving] = useState(false);
   const {
     handleEditClick,
     handleSaveClick,
@@ -19,13 +20,27 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
     isEditing,
   } = useAttendanceTablePersonalActionClickHandlers(rowIndex);
 
+  const handleSaveWithLoading = async () => {
+    setIsSaving(true);
+    try {
+      await handleSaveClick();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <TableCell align="center">
       {isEditing
         ? (
           <>
-            <IconButton onClick={handleSaveClick} size="small" color="primary">
-              <CheckIcon />
+            <IconButton 
+              onClick={handleSaveWithLoading} 
+              size="small" 
+              color="primary"
+              disabled={isSaving}
+            >
+              {isSaving ? <CircularProgress size={20} /> : <CheckIcon />}
             </IconButton>
             <IconButton
               onClick={handleCancelClick}

@@ -11,10 +11,10 @@ const TIME_OPTIONS: string[] = [
 ];
 
 const selectSx: SxProps = {
-  width: '85px',
-  '& .MuiInputBase-root': {
-    height: '20px'
-  },
+  // width: '85px',
+  // '& .MuiInputBase-root': {
+  //   height: '20px'
+  // },
   '& .MuiSelect-select': {
     padding: '2px 4px',
     textAlign: 'center'
