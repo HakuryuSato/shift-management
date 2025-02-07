@@ -5,12 +5,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useModalTopBarStore } from "@/stores/common/modalTopBarSlice";
+import { useModalContainerStore } from "@/stores/common/modalContainerSlice";
+import { useCalendarViewToggleStore } from "@/stores/user/calendarViewToggleSlice";
 import { useModalTopBar } from "@/hooks/common/Modal/useModalTopBar";
 
 export const ModalTopBar: React.FC = () => {
     const isModalTopBarEditIconsVisible = useModalTopBarStore(
         (state) => state.isModalTopBarEditIconsVisible,
     );
+    const modalRole = useModalContainerStore((state) => state.modalRole);
+    const calendarViewMode = useCalendarViewToggleStore((state) => state.calendarViewMode);
     const { handleClickEditIcon, handleClickDeleteIcon, handleClickCloseIcon } =
         useModalTopBar();
 
@@ -26,8 +30,10 @@ export const ModalTopBar: React.FC = () => {
                 <CloseIcon />
             </IconButton>
 
-            {/* 編集禁止または、confirm以外なら編集と削除アイコン非表示 */}
-            {isModalTopBarEditIconsVisible && (
+            {/* 管理者、またはユーザーの個人シフトモードの場合のみ編集・削除アイコンを表示 */}
+            {isModalTopBarEditIconsVisible && 
+             (modalRole === 'admin' || 
+              (modalRole === 'user' && calendarViewMode === 'PERSONAL_SHIFT')) && (
                 <Box sx={{ display: "flex" }}>
                     <IconButton onClick={handleClickEditIcon}>
                         <EditIcon />
