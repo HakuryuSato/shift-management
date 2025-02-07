@@ -2,8 +2,8 @@ import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
-import { AttendanceTablePersonalEditableCell } from "./AttendanceTablePersonalEditableCell";
-import { AttendanceTablePersonalTimeCell } from "./AttendanceTablePersonalTimeCell";
+import { AttendanceTablePersonalEditableCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
+import { AttendanceTablePersonalTimeCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
@@ -21,7 +21,6 @@ export function AttendanceTablePersonal() {
     editingCell,
     handleClickWorkTimeCell,
     handleBlurWorkTimeCell,
-    handleTimeChange,
   } = usePersonalAttendanceTableClickHandlers();
 
 
@@ -45,7 +44,6 @@ export function AttendanceTablePersonal() {
               startTime={row.stampStartTime}
               endTime={row.stampEndTime}
               rowIndex={index}
-              onTimeChange={handleTimeChange}
             />
             <TableCell>
               {row.adjustedStartTime} - {row.adjustedEndTime}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TableCell, Stack, SxProps } from "@mui/material";
-import { AttendanceTableTimeCellEdit } from "./AttendanceTableTimeCellEdit";
+import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
 
 const tableCellSx: SxProps = {
   padding: '4px 8px',

@@ -90,6 +90,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     }
   }, [isEditing, formattedTime]);
 
+  // ローディング中
   if (isEditing) {
     return (
       <Stack direction="row" spacing={0.5} alignItems="center">
@@ -127,6 +128,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     );
   }
 
+  // ローディング完了後
   return (
     <Select
       value={formattedTime}
