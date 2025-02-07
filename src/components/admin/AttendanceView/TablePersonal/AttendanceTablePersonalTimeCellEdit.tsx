@@ -1,8 +1,5 @@
 import React from "react";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
-import { Stack, SxProps, Select, MenuItem, IconButton } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
+import { Stack, SxProps, Select, MenuItem } from "@mui/material";
 
 // 時間オプション（5:00から23:00まで30分間隔）
 const TIME_OPTIONS: string[] = [
@@ -24,12 +21,6 @@ const selectSx: SxProps = {
   }
 };
 
-const iconButtonSx: SxProps = {
-  padding: '2px',
-  width: '20px',
-  height: '20px'
-};
-
 // 時間を'HH:mm'形式にフォーマットする
 const formatTime = (time: string | null): string => {
   if (!time) return '';
@@ -40,26 +31,20 @@ const formatTime = (time: string | null): string => {
 
 interface AttendanceTableTimeCellEditProps {
   time: string | null;
-  field: "stampStartTime" | "stampEndTime";
-  rowIndex: number;
-  onTimeChange: (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => void;
+  selectedTime: string;
+  onTimeSelect: (time: string) => void;
+  isEditing: boolean;
+  onStartEditing: () => void;
 }
 
 export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditProps> = ({ 
   time,
-  field,
-  rowIndex,
-  onTimeChange
+  selectedTime,
+  onTimeSelect,
+  isEditing,
+  onStartEditing
 }) => {
-  const editingCell = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingCell
-  );
-  const setEditingCell = useAttendanceTablePersonalStore(
-    (state) => state.setAttendanceTablePersonalEditingCell
-  );
-  
   const formattedTime = formatTime(time);
-  const isEditing = editingCell?.rowIndex === rowIndex && editingCell?.field === field;
 
   // 現在の時間値を含む選択肢を生成
   const getTimeOptions = (currentTime: string): string[] => {
@@ -90,71 +75,31 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   };
 
   const timeOptions = getTimeOptions(formattedTime);
-  const [selectedTime, setSelectedTime] = React.useState(formattedTime);
-
-  const handleSave = (newTime: string) => {
-    onTimeChange(rowIndex, field, `${newTime}:00`);
-    setEditingCell(null);
-  };
-
-  const handleCancel = () => {
-    setEditingCell(null);
-    setSelectedTime(formattedTime);
-  };
-
-  const handleStartEditing = () => {
-    // 他のセルが編集中の場合は自動的にキャンセル
-    if (editingCell && (editingCell.rowIndex !== rowIndex || editingCell.field !== field)) {
-      // 既存の編集をキャンセル
-      setEditingCell(null);
-    }
-    // 新しい編集セルを設定
-    setEditingCell({ rowIndex, field });
-  };
-
-  // 編集セルが変更されたときにselectedTimeを更新
-  React.useEffect(() => {
-    if (isEditing) {
-      setSelectedTime(formattedTime);
-    }
-  }, [isEditing, formattedTime]);
 
   return (
-    <Stack direction="row" spacing={0.5} alignItems="center">
-      <Select
-        value={isEditing ? (selectedTime || formattedTime) : formattedTime}
-        onChange={isEditing ? (e) => setSelectedTime(e.target.value) : undefined}
-        onClick={!isEditing ? handleStartEditing : undefined}
-        size="small"
-        sx={selectSx}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              maxHeight: 300
-            }
+    <Select
+      value={isEditing ? selectedTime : formattedTime}
+      onChange={isEditing ? (e) => onTimeSelect(e.target.value) : undefined}
+      onClick={!isEditing ? onStartEditing : undefined}
+      size="small"
+      sx={selectSx}
+      MenuProps={{
+        PaperProps: {
+          style: {
+            maxHeight: 300
           }
-        }}
-      >
-        {timeOptions.map((timeOption) => (
-          <MenuItem 
-            key={timeOption} 
-            value={timeOption}
-            sx={!isEditing && timeOption === formattedTime ? { fontWeight: 'bold' } : {}}
-          >
-            {timeOption}
-          </MenuItem>
-        ))}
-      </Select>
-      {isEditing && (
-        <Stack direction="row" spacing={0.5}>
-          <IconButton onClick={handleCancel} sx={iconButtonSx}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-          <IconButton onClick={() => handleSave(selectedTime)} sx={iconButtonSx}>
-            <CheckIcon fontSize="small" />
-          </IconButton>
-        </Stack>
-      )}
-    </Stack>
+        }
+      }}
+    >
+      {timeOptions.map((timeOption) => (
+        <MenuItem 
+          key={timeOption} 
+          value={timeOption}
+          sx={!isEditing && timeOption === formattedTime ? { fontWeight: 'bold' } : {}}
+        >
+          {timeOption}
+        </MenuItem>
+      ))}
+    </Select>
   );
 };
