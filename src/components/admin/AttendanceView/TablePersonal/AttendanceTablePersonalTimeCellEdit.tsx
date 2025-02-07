@@ -35,6 +35,7 @@ interface AttendanceTableTimeCellEditProps {
   onTimeSelect: (time: string) => void;
   isEditing: boolean;
   onStartEditing: () => void;
+  field: 'Start' | 'End';
 }
 
 export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditProps> = ({ 
@@ -42,14 +43,27 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   selectedTime,
   onTimeSelect,
   isEditing,
-  onStartEditing
+  onStartEditing,
+  field
 }) => {
   const formattedTime = formatTime(time);
+
+  // 時間を調整する関数
+  const adjustTime = (time: string, isStart: boolean): string => {
+    if (!isStart) return time;
+    
+    const [hours, minutes] = time.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes - 1;
+    const adjustedHours = Math.floor(totalMinutes / 60);
+    const adjustedMinutes = totalMinutes % 60;
+    return `${adjustedHours.toString().padStart(2, '0')}:${adjustedMinutes.toString().padStart(2, '0')}`;
+  };
 
   // 現在の時間値を含む選択肢を生成
   const getTimeOptions = (currentTime: string): string[] => {
     if (!currentTime || TIME_OPTIONS.includes(currentTime)) {
-      return [...TIME_OPTIONS];
+      const options = [...TIME_OPTIONS];
+      return field === 'Start' ? options.map(time => adjustTime(time, true)) : options;
     }
 
     // 時間を数値に変換して比較するためのヘルパー関数
@@ -59,7 +73,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     };
 
     const currentMinutes = timeToMinutes(currentTime);
-    const allOptions = [...TIME_OPTIONS];
+    const allOptions = [...TIME_OPTIONS].map(time => field === 'Start' ? adjustTime(time, true) : time);
     
     // 適切な位置に現在の時間を挿入
     let insertIndex = allOptions.findIndex(option => 

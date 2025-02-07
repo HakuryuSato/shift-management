@@ -21,8 +21,18 @@ export function AttendanceTablePersonalStampsCell({
     (state) => state.setAttendanceTablePersonalEditingRow
   );
 
+  // 開始時間を1分マイナスした時間に調整
+  const adjustStartTime = (time: string | null): string => {
+    if (!time) return "";
+    const [hours, minutes] = time.slice(0, 5).split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes - 1;
+    const adjustedHours = Math.floor(totalMinutes / 60);
+    const adjustedMinutes = totalMinutes % 60;
+    return `${adjustedHours.toString().padStart(2, '0')}:${adjustedMinutes.toString().padStart(2, '0')}`;
+  };
+
   const [selectedStartTime, setSelectedStartTime] = React.useState(
-    startTime ? startTime.slice(0, 5) : "",
+    adjustStartTime(startTime)
   );
   const [selectedEndTime, setSelectedEndTime] = React.useState(
     endTime ? endTime.slice(0, 5) : "",
@@ -59,10 +69,11 @@ export function AttendanceTablePersonalStampsCell({
     <TableCell >
       <Stack direction="row" spacing={1} alignItems="center">
         <AttendanceTableTimeCellEdit
-          time={startTime}
+          time={adjustStartTime(startTime)}
           selectedTime={selectedStartTime}
           onTimeSelect={handleStartTimeChange}
           isEditing={isEditing}
+          field="Start"
           onStartEditing={() => {
             if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {
               setAttendanceTablePersonalEditingRow(null);
@@ -79,6 +90,7 @@ export function AttendanceTablePersonalStampsCell({
           selectedTime={selectedEndTime}
           onTimeSelect={handleEndTimeChange}
           isEditing={isEditing}
+          field="End"
           onStartEditing={() => {
             if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {
               setAttendanceTablePersonalEditingRow(null);
