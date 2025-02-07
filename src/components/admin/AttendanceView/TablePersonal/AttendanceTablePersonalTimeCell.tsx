@@ -20,18 +20,12 @@ interface AttendanceTablePersonalTimeCellProps {
   startTime: string | null;
   endTime: string | null;
   rowIndex: number;
-  onTimeChange: (
-    rowIndex: number,
-    field: "stampStartTime" | "stampEndTime",
-    value: string,
-  ) => void;
 }
 
 export function AttendanceTablePersonalStampsCell({
   startTime,
   endTime,
   rowIndex,
-  onTimeChange,
 }: AttendanceTablePersonalTimeCellProps) {
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalEditingRow

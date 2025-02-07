@@ -59,7 +59,7 @@ export function AttendanceTablePersonal() {
                       },
                     }}
                     value={row.regularHours}
-                    onChange={}
+                    // onChange={}
                     variant="standard"
                     size="small"
                   />
@@ -77,7 +77,7 @@ export function AttendanceTablePersonal() {
                       },
                     }}
                     value={row.overtimeHours}
-                    onChange={}
+                    // onChange={}
                     variant="standard"
                     size="small"
                   />

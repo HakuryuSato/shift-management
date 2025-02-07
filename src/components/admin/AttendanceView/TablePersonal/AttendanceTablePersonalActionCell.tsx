@@ -12,12 +12,15 @@ interface Props {
 
 export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
 
-  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingRow
-  );
-  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.setAttendanceTablePersonalEditingRow
-  );
+  const { 
+    AttendanceTablePersonalEditingRow,
+    setAttendanceTablePersonalEditingRow,
+    AttendanceTablePersonalTableRows 
+  } = useAttendanceTablePersonalStore((state) => ({
+    AttendanceTablePersonalEditingRow: state.AttendanceTablePersonalEditingRow,
+    setAttendanceTablePersonalEditingRow: state.setAttendanceTablePersonalEditingRow,
+    AttendanceTablePersonalTableRows: state.AttendanceTablePersonalTableRows
+  }));
 
 
   const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
@@ -31,7 +34,8 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
       setAttendanceTablePersonalEditingRow(null);
     }
     // この行の編集を開始
-    setAttendanceTablePersonalEditingRow({ rowIndex });
+    const rowData = AttendanceTablePersonalTableRows[rowIndex];
+    setAttendanceTablePersonalEditingRow({ rowIndex, rowData });
   };
 
   const handleSaveClick = () => {
