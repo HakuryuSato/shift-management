@@ -21,6 +21,7 @@ export function AttendanceTablePersonal() {
     editingCell,
     handleClickWorkTimeCell,
     handleBlurWorkTimeCell,
+    handleTimeChange,
   } = usePersonalAttendanceTableClickHandlers();
 
 
@@ -44,6 +45,7 @@ export function AttendanceTablePersonal() {
               startTime={row.stampStartTime}
               endTime={row.stampEndTime}
               rowIndex={index}
+              onTimeChange={handleTimeChange}
             />
             <TableCell>
               {row.adjustedStartTime} - {row.adjustedEndTime}
