@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
     // 翌月のシフト情報を全て取得（重複チェック用）
     const shiftsResponse = await fetch(
-      `${baseUrl}/api/shifts?start_time=${startOfMonth.toISOString()}&end_time=${endOfMonth.toISOString()}&user_id=${'*'}`
+      `${baseUrl}/api/shifts?filterStartTimeISO=${startOfMonth.toISOString()}&filterEndTimeISO=${endOfMonth.toISOString()}&user_id=${'*'}`
     );
 
     let existingShifts: ShiftQuery[] = [];
