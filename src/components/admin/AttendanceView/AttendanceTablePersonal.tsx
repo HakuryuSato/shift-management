@@ -3,7 +3,7 @@ import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/use
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
-import { AttendanceTablePersonalTimeCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
+import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
 import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
@@ -47,7 +47,7 @@ export function AttendanceTablePersonal() {
             {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
               <>
                 {/* 打刻時間(開始-終了) */}
-                <AttendanceTablePersonalTimeCell
+                <AttendanceTablePersonalStampsCell
                   startTime={row.stampStartTime}
                   endTime={row.stampEndTime}
                   rowIndex={index}

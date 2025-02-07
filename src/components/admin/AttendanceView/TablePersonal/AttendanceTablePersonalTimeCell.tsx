@@ -27,7 +27,7 @@ interface AttendanceTablePersonalTimeCellProps {
   ) => void;
 }
 
-export function AttendanceTablePersonalTimeCell({
+export function AttendanceTablePersonalStampsCell({
   startTime,
   endTime,
   rowIndex,
