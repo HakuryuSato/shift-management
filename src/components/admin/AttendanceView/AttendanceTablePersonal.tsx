@@ -2,7 +2,7 @@ import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
 import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
-import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
+import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
 import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalStampsCell";
 import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
