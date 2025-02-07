@@ -92,12 +92,6 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   const timeOptions = getTimeOptions(formattedTime);
   const [selectedTime, setSelectedTime] = React.useState(formattedTime);
 
-  React.useEffect(() => {
-    if (isEditing) {
-      setSelectedTime(formattedTime);
-    }
-  }, [isEditing, formattedTime]);
-
   const handleSave = (newTime: string) => {
     onTimeChange(rowIndex, field, `${newTime}:00`);
     setEditingCell(null);
@@ -105,6 +99,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
 
   const handleCancel = () => {
     setEditingCell(null);
+    setSelectedTime(formattedTime);
   };
 
   const handleStartEditing = () => {
@@ -117,29 +112,40 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     setEditingCell({ rowIndex, field });
   };
 
-  // 編集中
-  if (isEditing) {
-    return (
-      <Stack direction="row" spacing={0.5} alignItems="center">
-        <Select
-          value={selectedTime}
-          onChange={(e) => setSelectedTime(e.target.value)}
-          size="small"
-          sx={selectSx}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 300
-              }
+  // 編集セルが変更されたときにselectedTimeを更新
+  React.useEffect(() => {
+    if (isEditing) {
+      setSelectedTime(formattedTime);
+    }
+  }, [isEditing, formattedTime]);
+
+  return (
+    <Stack direction="row" spacing={0.5} alignItems="center">
+      <Select
+        value={isEditing ? (selectedTime || formattedTime) : formattedTime}
+        onChange={isEditing ? (e) => setSelectedTime(e.target.value) : undefined}
+        onClick={!isEditing ? handleStartEditing : undefined}
+        size="small"
+        sx={selectSx}
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 300
             }
-          }}
-        >
-          {timeOptions.map((timeOption) => (
-            <MenuItem key={timeOption} value={timeOption}>
-              {timeOption}
-            </MenuItem>
-          ))}
-        </Select>
+          }
+        }}
+      >
+        {timeOptions.map((timeOption) => (
+          <MenuItem 
+            key={timeOption} 
+            value={timeOption}
+            sx={!isEditing && timeOption === formattedTime ? { fontWeight: 'bold' } : {}}
+          >
+            {timeOption}
+          </MenuItem>
+        ))}
+      </Select>
+      {isEditing && (
         <Stack direction="row" spacing={0.5}>
           <IconButton onClick={handleCancel} sx={iconButtonSx}>
             <CloseIcon fontSize="small" />
@@ -148,35 +154,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
             <CheckIcon fontSize="small" />
           </IconButton>
         </Stack>
-      </Stack>
-    );
-  }
-
-  // 表示モード
-  return (
-    <Select
-      value={formattedTime}
-      onChange={(e) => setSelectedTime(e.target.value)}
-      size="small"
-      sx={selectSx}
-      onClick={handleStartEditing}
-      MenuProps={{
-        PaperProps: {
-          style: {
-            maxHeight: 300
-          }
-        }
-      }}
-    >
-      {timeOptions.map((timeOption) => (
-        <MenuItem 
-          key={timeOption} 
-          value={timeOption}
-          sx={timeOption === formattedTime ? { fontWeight: 'bold' } : {}}
-        >
-          {timeOption}
-        </MenuItem>
-      ))}
-    </Select>
+      )}
+    </Stack>
   );
 };
