@@ -1,5 +1,5 @@
 import React from "react";
-import { TableCell, Stack } from "@mui/material";
+import { Stack, TableCell } from "@mui/material";
 import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
@@ -15,24 +15,14 @@ export function AttendanceTablePersonalStampsCell({
   rowIndex,
 }: AttendanceTablePersonalTimeCellProps) {
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingRow
+    (state) => state.AttendanceTablePersonalEditingRow,
   );
   const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.setAttendanceTablePersonalEditingRow
+    (state) => state.setAttendanceTablePersonalEditingRow,
   );
 
-  // 開始時間を1分マイナスした時間に調整
-  const adjustStartTime = (time: string | null): string => {
-    if (!time) return "";
-    const [hours, minutes] = time.slice(0, 5).split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes - 1;
-    const adjustedHours = Math.floor(totalMinutes / 60);
-    const adjustedMinutes = totalMinutes % 60;
-    return `${adjustedHours.toString().padStart(2, '0')}:${adjustedMinutes.toString().padStart(2, '0')}`;
-  };
-
   const [selectedStartTime, setSelectedStartTime] = React.useState(
-    adjustStartTime(startTime)
+    startTime || "",
   );
   const [selectedEndTime, setSelectedEndTime] = React.useState(
     endTime ? endTime.slice(0, 5) : "",
@@ -46,8 +36,8 @@ export function AttendanceTablePersonalStampsCell({
         ...AttendanceTablePersonalEditingRow,
         rowData: {
           ...AttendanceTablePersonalEditingRow.rowData,
-          stampStartTime: newTime
-        }
+          stampStartTime: newTime,
+        },
       });
     }
   };
@@ -59,17 +49,17 @@ export function AttendanceTablePersonalStampsCell({
         ...AttendanceTablePersonalEditingRow,
         rowData: {
           ...AttendanceTablePersonalEditingRow.rowData,
-          stampEndTime: newTime
-        }
+          stampEndTime: newTime,
+        },
       });
     }
   };
 
   return (
-    <TableCell >
+    <TableCell>
       <Stack direction="row" spacing={1} alignItems="center">
         <AttendanceTableTimeCellEdit
-          time={adjustStartTime(startTime)}
+          time={startTime}
           selectedTime={selectedStartTime}
           onTimeSelect={handleStartTimeChange}
           isEditing={isEditing}
