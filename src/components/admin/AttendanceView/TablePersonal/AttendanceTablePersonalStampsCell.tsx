@@ -42,13 +42,39 @@ export function AttendanceTablePersonalStampsCell({
   );
   const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
 
+  const handleStartTimeChange = (newTime: string) => {
+    setSelectedStartTime(newTime);
+    if (AttendanceTablePersonalEditingRow?.rowData) {
+      setAttendanceTablePersonalEditingRow({
+        ...AttendanceTablePersonalEditingRow,
+        rowData: {
+          ...AttendanceTablePersonalEditingRow.rowData,
+          stampStartTime: newTime
+        }
+      });
+    }
+  };
+
+  const handleEndTimeChange = (newTime: string) => {
+    setSelectedEndTime(newTime);
+    if (AttendanceTablePersonalEditingRow?.rowData) {
+      setAttendanceTablePersonalEditingRow({
+        ...AttendanceTablePersonalEditingRow,
+        rowData: {
+          ...AttendanceTablePersonalEditingRow.rowData,
+          stampEndTime: newTime
+        }
+      });
+    }
+  };
+
   return (
     <TableCell sx={tableCellSx}>
       <Stack direction="row" spacing={1} alignItems="center">
         <AttendanceTableTimeCellEdit
           time={startTime}
           selectedTime={selectedStartTime}
-          onTimeSelect={setSelectedStartTime}
+          onTimeSelect={handleStartTimeChange}
           isEditing={isEditing}
           onStartEditing={() => {
             if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {
@@ -64,7 +90,7 @@ export function AttendanceTablePersonalStampsCell({
         <AttendanceTableTimeCellEdit
           time={endTime}
           selectedTime={selectedEndTime}
-          onTimeSelect={setSelectedEndTime}
+          onTimeSelect={handleEndTimeChange}
           isEditing={isEditing}
           onStartEditing={() => {
             if (AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex) {

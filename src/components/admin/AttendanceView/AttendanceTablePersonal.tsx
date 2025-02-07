@@ -3,9 +3,8 @@ import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/use
 import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
-import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
+import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalStampsCell";
 import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
-import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
 export function AttendanceTablePersonal() {
@@ -35,8 +34,8 @@ export function AttendanceTablePersonal() {
 
             {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
               <>
-                打刻時間(開始-終了) */}
-                {/* <AttendanceTablePersonalStampsCell
+                {/* 打刻時間(開始-終了) */}
+                <AttendanceTablePersonalStampsCell
                   startTime={row.stampStartTime}
                   endTime={row.stampEndTime}
                   rowIndex={index}
@@ -46,43 +45,16 @@ export function AttendanceTablePersonal() {
                   {row.adjustedStartTime} - {row.adjustedEndTime}
                 </TableCell>
 
-                {/* 平日普通(H) */}
-                <TableCell>
-                  <TextField
-                    type="number"
-                    inputProps={{
-                      step: "0.5",
-                      style: {
-                        textAlign: "center",
-                        padding: "0",
-                        fontSize: "0.8rem",
-                      },
-                    }}
-                    value={row.regularHours}
-                    // onChange={}
-                    variant="standard"
-                    size="small"
-                  />
-                </TableCell>
-                
-                {/* 平日時間外(H) */}
-                <TableCell>
-                  <TextField
-                    type="number"
-                    inputProps={{
-                      step: "0.5",
-                      style: {
-                        textAlign: "center",
-                        padding: "0",
-                        fontSize: "0.8rem",
-                      },
-                    }}
-                    value={row.overtimeHours}
-                    // onChange={}
-                    variant="standard"
-                    size="small"
-                  />
-                </TableCell>
+                <AttendanceTablePersonalHoursCell
+                  value={row.regularHours}
+                  rowIndex={index}
+                  field="regularHours"
+                />
+                <AttendanceTablePersonalHoursCell
+                  value={row.overtimeHours}
+                  rowIndex={index}
+                  field="overtimeHours"
+                />
               </>
             ) : (
               <>
@@ -104,9 +76,9 @@ export function AttendanceTablePersonal() {
                 />
               </>
             )}
-            {/* <AttendanceTablePersonalActionCell
+            <AttendanceTablePersonalActionCell
               rowIndex={index}
-            /> */}
+            />
           </TableRow>
         ))}
       </TableBody>
