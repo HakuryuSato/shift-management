@@ -122,10 +122,15 @@ export function usePersonalAttendanceTableClickHandlers() {
    */
   const handleChangeStampTime = useCallback(
     async (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => {
+
+
       // 値に変更がない場合は処理を行わない
       const originalRow = AttendanceTablePersonalTableRows[rowIndex];
       const originalValue = originalRow[field];
-      if (originalValue === value) return;
+      if (originalValue === value) {
+        console.log('Debug - No value change, skipping update');
+        return;
+      }
 
       // ユーザーIDが存在しない場合は処理を行わない
       const userId = adminAttendanceViewSelectedUser?.user_id;
@@ -134,9 +139,10 @@ export function usePersonalAttendanceTableClickHandlers() {
         return;
       }
 
-      // 両方の打刻時間を取得
-      const startTime = field === "stampStartTime" ? value : originalRow.stampStartTime;
-      const endTime = field === "stampEndTime" ? value : originalRow.stampEndTime;
+      // 両方の打刻時間を取得（HH:MM形式の場合はHH:MM:SSに変換）
+      const formatToHHMMSS = (time: string | null) => time?.length === 5 ? `${time}:00` : time;
+      const startTime = field === "stampStartTime" ? formatToHHMMSS(value) : formatToHHMMSS(originalRow.stampStartTime);
+      const endTime = field === "stampEndTime" ? formatToHHMMSS(value) : formatToHHMMSS(originalRow.stampEndTime);
 
       let attendanceId = originalRow.attendanceId;
       let success = false;
@@ -144,12 +150,20 @@ export function usePersonalAttendanceTableClickHandlers() {
       try {
         // 既存の出退勤データの場合
         if (attendanceId) {
+          console.log('Debug - Updating existing attendance record');
           // 両方の打刻時間が存在する場合のみ時間集計を実行
           if (startTime && endTime) {
+            console.log('Debug - Calling updateAttendanceStamp with:', {
+              attendance_id: attendanceId,
+              stamp_start_time: startTime,
+              stamp_end_time: endTime,
+              work_date: originalRow.date
+            });
             await updateAttendanceStamp({
               attendance_id: attendanceId,
               stamp_start_time: startTime,
-              stamp_end_time: endTime
+              stamp_end_time: endTime,
+              work_date: originalRow.date
             });
             success = true;
           }
@@ -172,7 +186,8 @@ export function usePersonalAttendanceTableClickHandlers() {
               await updateAttendanceStamp({
                 attendance_id: attendanceId,
                 stamp_start_time: startTime,
-                stamp_end_time: endTime
+                stamp_end_time: endTime,
+                work_date: originalRow.date
               });
             }
             success = true;
@@ -195,6 +210,13 @@ export function usePersonalAttendanceTableClickHandlers() {
         }
       } catch (error) {
         console.error('Error updating attendance stamp:', error);
+        // エラーの詳細情報をログ出力
+        if (error instanceof Error) {
+          console.error('Error details:', {
+            message: error.message,
+            stack: error.stack
+          });
+        }
       }
     },
     [
