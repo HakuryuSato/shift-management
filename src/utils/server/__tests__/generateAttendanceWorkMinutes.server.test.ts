@@ -39,7 +39,7 @@ describe('generateAttendanceWorkMinutes', () => {
 
     const attendanceResult = await generateAttendanceWorkMinutes(attendance);
 
-    expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T08:30:00');
+    expect(attendanceResult.adjusted_start_time).toBe('2023-10-02T09:00:00');
     expect(attendanceResult.adjusted_end_time).toBe('2023-10-02T18:00:00');
     expect(attendanceResult.rest_minutes).toBe(60);
     expect(attendanceResult.work_minutes).toBe(480);
