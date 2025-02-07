@@ -32,7 +32,9 @@ export function AttendanceTablePersonal() {
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
 
+
             {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
+            // 編集
               <>
                 {/* 打刻時間(開始-終了) */}
                 <AttendanceTablePersonalStampsCell
@@ -57,6 +59,7 @@ export function AttendanceTablePersonal() {
                 />
               </>
             ) : (
+              // 表示のみ
               <>
                 <TableCell>
                   {row.stampStartTime} - {row.stampEndTime}
@@ -64,16 +67,8 @@ export function AttendanceTablePersonal() {
                 <TableCell>
                   {row.adjustedStartTime} - {row.adjustedEndTime}
                 </TableCell>
-                <AttendanceTablePersonalHoursCell
-                  value={row.regularHours}
-                  rowIndex={index}
-                  field="regularHours"
-                />
-                <AttendanceTablePersonalHoursCell
-                  value={row.overtimeHours}
-                  rowIndex={index}
-                  field="overtimeHours"
-                />
+                <TableCell>{row.regularHours}</TableCell>
+                <TableCell>{row.overtimeHours}</TableCell>
               </>
             )}
             <AttendanceTablePersonalActionCell
