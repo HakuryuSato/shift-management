@@ -4,58 +4,20 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTablePersonalActionClickHandlers";
 
 interface Props {
   rowIndex: number;
 }
 
 export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
-  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingRow,
-  );
-  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.setAttendanceTablePersonalEditingRow,
-  );
-  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalTableRows,
-  );
-
-  const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
-
-  const handleEditClick = () => {
-    // 他の行が編集中の場合、その編集状態をクリア
-    if (
-      AttendanceTablePersonalEditingRow?.rowIndex !== null &&
-      AttendanceTablePersonalEditingRow?.rowIndex !== rowIndex
-    ) {
-      setAttendanceTablePersonalEditingRow(null);
-    }
-    // この行の編集を開始
-    const rowData = AttendanceTablePersonalTableRows[rowIndex];
-    setAttendanceTablePersonalEditingRow({
-      rowIndex,
-      rowData: {
-        ...rowData,
-        stampStartTime: rowData.stampStartTime,
-        stampEndTime: rowData.stampEndTime,
-        regularHours: rowData.regularHours,
-        overtimeHours: rowData.overtimeHours,
-      },
-    });
-  };
-
-  const handleSaveClick = () => {
-    setAttendanceTablePersonalEditingRow(null);
-  };
-
-  const handleCancelClick = () => {
-    setAttendanceTablePersonalEditingRow(null);
-  };
-
-  const handleDeleteClick = () => {
-    setAttendanceTablePersonalEditingRow(null);
-  };
+  const {
+    handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleDeleteClick,
+    isEditing,
+  } = useAttendanceTablePersonalActionClickHandlers(rowIndex);
 
   return (
     <TableCell align="center">
