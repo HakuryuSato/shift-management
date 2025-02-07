@@ -115,7 +115,7 @@ export function usePersonalAttendanceTableClickHandlers() {
   );
 
   /**
-   * 打刻時間を変更するハンドラー
+   * 打刻時間編集時にデータを更新する
    * @param rowIndex 行インデックス
    * @param field 変更対象のフィールド（"stampStartTime" | "stampEndTime"）
    * @param value 新しい時間値
