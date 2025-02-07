@@ -2,7 +2,7 @@ import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
-import { AttendanceTablePersonalEditableCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
+import { AttendanceTablePersonalHourCell } from "./TablePersonal/AttendanceTablePersonalHourCell";
 import { AttendanceTablePersonalTimeCell } from "./TablePersonal/AttendanceTablePersonalTimeCell";
 import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
@@ -55,7 +55,7 @@ export function AttendanceTablePersonal() {
             </TableCell>
 
             {/* 平日普通(H) */}
-            <AttendanceTablePersonalEditableCell
+            <AttendanceTablePersonalHourCell
               value={row.regularHours}
               rowIndex={index}
               field="regularHours"
@@ -67,7 +67,7 @@ export function AttendanceTablePersonal() {
               onBlur={handleBlurWorkTimeCell}
             />
             {/* 平日時間外(H) */}
-            <AttendanceTablePersonalEditableCell
+            <AttendanceTablePersonalHourCell
               value={row.overtimeHours}
               rowIndex={index}
               field="overtimeHours"
