@@ -10,6 +10,7 @@ import { punchAttendance as serverActionpunchAttendance } from '@/app/actions/pu
 import { updateAttendance as serverActionUpdateAttendance } from '@/app/actions/updateAttendance';
 import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/insertAttendance';
 import { updateAttendanceStamp as serverActionUpdateAttendanceStamp } from '@/app/actions/updateAttendanceStamp';
+import { deleteAttendance as serverActionDeleteAttendance } from '@/app/actions/deleteAttendance';
 import { upsertAutoShift as serverActionUpsertAutoShift } from '@/app/actions/upsertAutoShift';
 
 // 型
@@ -24,8 +25,15 @@ import type { AutoShiftSettings } from '@/types/AutoShift';
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T> {
   try {
+    // 開発環境でのみ関数の文字列表現をログ出力
+    if (process.env.NODE_ENV === 'development') {
+      console.log('serverActionClient sending:', action.toString());
+    }
     const data = await action();
-    console.log('serverActionClient:', data)
+    // 開発環境でのみデータをログ出力
+    if (process.env.NODE_ENV === 'development') {
+      console.log('serverActionClient received:', data);
+    }
     return data;
   } catch (error: any) {
     console.error('サーバーアクション実行中にエラーが発生しました:', error.message || error);
@@ -99,6 +107,15 @@ export async function updateAttendance(attendanceData: Partial<Attendance>): Pro
  */
 export async function updateAttendanceStamp(attendance: Partial<Attendance>): Promise<Attendance> {
   return await handleServerAction(() => serverActionUpdateAttendanceStamp(attendance));
+}
+
+/**
+ * 出勤データを削除するサーバーアクションを呼び出す関数
+ * @param attendanceId 削除する出勤データのID
+ * @returns 削除された出勤データまたはnull
+ */
+export async function deleteAttendance(attendanceId: number): Promise<Attendance | null> {
+  return await handleServerAction(() => serverActionDeleteAttendance(attendanceId));
 }
 
 

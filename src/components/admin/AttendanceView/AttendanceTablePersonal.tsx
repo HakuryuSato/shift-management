@@ -1,9 +1,10 @@
 import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
-import { AttendanceTablePersonalEditableCell } from "./AttendanceTablePersonalEditableCell";
-import { usePersonalAttendanceTableClickHandlers } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableClickHandlers";
+import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
+import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalStampsCell";
+import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
 export function AttendanceTablePersonal() {
@@ -11,84 +12,68 @@ export function AttendanceTablePersonal() {
   usePersonalAttendanceTableData();
 
   // storeの値を取得
-  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalTableRows
-  );
-
-  // ハンドラー取得
-  const {
-    editingCell,
-    handleClickCell,
-    handleBlur,
-  } = usePersonalAttendanceTableClickHandlers();
-
-
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalTableRows);
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalEditingRow);
 
   return (
     <TableStyleAttendancePersonal>
       <TableHead>
         <TableRow>
           <TableCell>日付</TableCell>
-          <TableCell>打刻時間(開始)</TableCell>
-          <TableCell>打刻時間(終了)</TableCell>
+          <TableCell>打刻時間(開始-終了)</TableCell>
           <TableCell>補正時間(開始-終了)</TableCell>
           <TableCell>平日普通(H)</TableCell>
           <TableCell>平日時間外(H)</TableCell>
-          <TableCell>休憩時間(H)</TableCell>
+          <TableCell>操作</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {AttendanceTablePersonalTableRows.map((row, index) => (
           <TableRow key={index}>
             <TableCell>{row.formattedDate}</TableCell>
-            <AttendanceTablePersonalEditableCell
-              value={row.stampStartTime}
+
+
+            {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
+            // 編集
+              <>
+                {/* 打刻時間(開始-終了) */}
+                <AttendanceTablePersonalStampsCell
+                  startTime={row.stampStartTime}
+                  endTime={row.stampEndTime}
+                  rowIndex={index}
+                />
+                
+                <TableCell>
+                  {row.adjustedStartTime} - {row.adjustedEndTime}
+                </TableCell>
+
+                <AttendanceTablePersonalHoursCell
+                  value={row.regularHours}
+                  rowIndex={index}
+                  field="regularHours"
+                />
+                <AttendanceTablePersonalHoursCell
+                  value={row.overtimeHours}
+                  rowIndex={index}
+                  field="overtimeHours"
+                />
+              </>
+            ) : (
+              // 表示のみ
+              <>
+                <TableCell>
+                  {row.stampStartTime} - {row.stampEndTime}
+                </TableCell>
+                <TableCell>
+                  {row.adjustedStartTime} - {row.adjustedEndTime}
+                </TableCell>
+                <TableCell>{row.regularHours}</TableCell>
+                <TableCell>{row.overtimeHours}</TableCell>
+              </>
+            )}
+            <AttendanceTablePersonalActionCell
               rowIndex={index}
-              field="stampStartTime"
-              isEditing={
-                editingCell?.rowIndex === index &&
-                editingCell?.field === "stampStartTime"
-              }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
             />
-            <AttendanceTablePersonalEditableCell
-              value={row.stampEndTime}
-              rowIndex={index}
-              field="stampEndTime"
-              isEditing={
-                editingCell?.rowIndex === index &&
-                editingCell?.field === "stampEndTime"
-              }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
-            />
-            <TableCell>
-              {row.adjustedStartTime} - {row.adjustedEndTime}
-            </TableCell>
-            <AttendanceTablePersonalEditableCell
-              value={row.regularHours}
-              rowIndex={index}
-              field="regularHours"
-              isEditing={
-                editingCell?.rowIndex === index &&
-                editingCell?.field === "regularHours"
-              }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
-            />
-            <AttendanceTablePersonalEditableCell
-              value={row.overtimeHours}
-              rowIndex={index}
-              field="overtimeHours"
-              isEditing={
-                editingCell?.rowIndex === index &&
-                editingCell?.field === "overtimeHours"
-              }
-              onClick={handleClickCell}
-              onBlur={handleBlur}
-            />
-            <TableCell>{row.breakHours}</TableCell>
           </TableRow>
         ))}
       </TableBody>
