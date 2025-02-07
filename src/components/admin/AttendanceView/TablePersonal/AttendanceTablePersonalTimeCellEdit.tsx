@@ -31,7 +31,7 @@ const iconButtonSx: SxProps = {
 };
 
 // 時間を'HH:mm'形式にフォーマットする
-const formatTime = (time: string): string => {
+const formatTime = (time: string | null): string => {
   if (!time) return '';
   // 'HH:mm:ss'形式の文字列から'HH:mm'を取得
   const [hours, minutes] = time.split(':');
@@ -39,7 +39,7 @@ const formatTime = (time: string): string => {
 };
 
 interface AttendanceTableTimeCellEditProps {
-  time: string;
+  time: string | null;
   field: "stampStartTime" | "stampEndTime";
   rowIndex: number;
   onTimeChange: (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => void;

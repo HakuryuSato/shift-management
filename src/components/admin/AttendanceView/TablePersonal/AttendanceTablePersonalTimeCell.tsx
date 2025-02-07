@@ -8,8 +8,8 @@ const tableCellSx: SxProps = {
 };
 
 interface AttendanceTablePersonalTimeCellProps {
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
   rowIndex: number;
   onTimeChange: (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => void;
 }
