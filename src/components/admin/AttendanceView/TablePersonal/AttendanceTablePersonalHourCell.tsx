@@ -16,7 +16,7 @@ interface EditableCellProps {
   ) => void;
 }
 
-export function AttendanceTablePersonalEditableCell({
+export function AttendanceTablePersonalHoursCell({
   value,
   rowIndex,
   field,
