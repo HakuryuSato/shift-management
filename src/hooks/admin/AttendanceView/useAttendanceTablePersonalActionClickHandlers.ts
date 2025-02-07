@@ -1,4 +1,5 @@
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
+import { updateAttendanceStamp,insertAttendance,updateAttendance } from "@/utils/client/serverActionClient";
 
 export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) => {
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
@@ -33,7 +34,70 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
     });
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
+    if (!AttendanceTablePersonalEditingRow?.rowData) return;
+
+    const editedRow = AttendanceTablePersonalEditingRow.rowData;
+    const originalRow = AttendanceTablePersonalTableRows[rowIndex];
+
+    // 変更がない場合は早期リターン
+    if (
+      editedRow.stampStartTime === originalRow.stampStartTime &&
+      editedRow.stampEndTime === originalRow.stampEndTime &&
+      editedRow.regularHours === originalRow.regularHours &&
+      editedRow.overtimeHours === originalRow.overtimeHours
+    ) {
+      setAttendanceTablePersonalEditingRow(null);
+      return;
+    }
+
+    // 新規データの場合（attendanceIdがない場合）
+    if (!originalRow.attendanceId) {
+      // 打刻時間がない場合で、勤務時間のみが入力された場合はreturn
+      if (
+        !editedRow.stampStartTime &&
+        !editedRow.stampEndTime &&
+        (editedRow.regularHours || editedRow.overtimeHours)
+      ) {
+        setAttendanceTablePersonalEditingRow(null);
+        return;
+      }
+
+      // 打刻時間がある場合は新規登録
+      if (editedRow.stampStartTime || editedRow.stampEndTime) {
+        await insertAttendance({
+          work_date: editedRow.date,
+          stamp_start_time: editedRow.stampStartTime || null,
+          stamp_end_time: editedRow.stampEndTime || null,
+        });
+      }
+    } else {
+      // 既存データの更新
+      const isStampTimeChanged =
+        editedRow.stampStartTime !== originalRow.stampStartTime ||
+        editedRow.stampEndTime !== originalRow.stampEndTime;
+
+      const isWorkHoursChanged =
+        editedRow.regularHours !== originalRow.regularHours ||
+        editedRow.overtimeHours !== originalRow.overtimeHours;
+
+      if (isStampTimeChanged) {
+        // 打刻時間が変更された場合
+        await updateAttendanceStamp({
+          attendance_id: originalRow.attendanceId,
+          stamp_start_time: editedRow.stampStartTime || null,
+          stamp_end_time: editedRow.stampEndTime || null,
+        });
+      } else if (isWorkHoursChanged) {
+        // 勤務時間が変更された場合
+        await updateAttendance({
+          attendance_id: originalRow.attendanceId,
+          work_minutes: editedRow.regularHours ? parseInt(editedRow.regularHours) * 60 : null,
+          overtime_minutes: editedRow.overtimeHours ? parseInt(editedRow.overtimeHours) * 60 : null,
+        });
+      }
+    }
+
     setAttendanceTablePersonalEditingRow(null);
   };
 
