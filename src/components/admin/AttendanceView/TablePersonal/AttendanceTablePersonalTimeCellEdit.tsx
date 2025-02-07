@@ -123,10 +123,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
       <Stack direction="row" spacing={0.5} alignItems="center">
         <Select
           value={selectedTime}
-          onChange={(e) => {
-            setSelectedTime(e.target.value);
-            handleSave(e.target.value);
-          }}
+          onChange={(e) => setSelectedTime(e.target.value)}
           size="small"
           sx={selectSx}
           MenuProps={{
@@ -159,7 +156,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
   return (
     <Select
       value={formattedTime}
-      onChange={(e) => handleSave(e.target.value)}
+      onChange={(e) => setSelectedTime(e.target.value)}
       size="small"
       sx={selectSx}
       onClick={handleStartEditing}
