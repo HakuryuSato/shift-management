@@ -88,13 +88,24 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
           stamp_start_time: editedRow.stampStartTime,
           stamp_end_time: editedRow.stampEndTime,
         });
-      } else if (isWorkHoursChanged && editedRow.regularHours && editedRow.overtimeHours) {
-        // 勤務時間が変更され、両方の時間が存在する場合
-        await updateAttendance({
+      } else if (isWorkHoursChanged && (editedRow.regularHours || editedRow.overtimeHours)) {
+        // 勤務時間が変更され、いずれかの時間が存在する場合
+        const updateData: {
+          attendance_id: number;
+          work_minutes?: number;
+          overtime_minutes?: number;
+        } = {
           attendance_id: originalRow.attendanceId,
-          work_minutes: parseInt(editedRow.regularHours) * 60,
-          overtime_minutes: parseInt(editedRow.overtimeHours) * 60,
-        });
+        };
+
+        if (editedRow.regularHours) {
+          updateData.work_minutes = parseInt(editedRow.regularHours) * 60;
+        }
+        if (editedRow.overtimeHours) {
+          updateData.overtime_minutes = parseInt(editedRow.overtimeHours) * 60;
+        }
+
+        await updateAttendance(updateData);
       }
     }
 
