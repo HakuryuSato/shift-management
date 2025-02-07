@@ -46,10 +46,10 @@ export const useModalContainer = () => {
     const customFullCalendarEndDate = useCustomFullCalendarStore((state) => state.customFullCalendarEndDate)
 
     // Multiple Shift Register
-    const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore.getState().multipleShiftRegisterDayTimes;
-    const multipleShiftRegisterIsHolidayIncluded = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsHolidayIncluded;
-    const multipleShiftRegisterIsAutoShiftEnabled = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsAutoShiftEnabled;
-    const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore.getState().multipleShiftRegisterIsCronJobsEnabled;
+    const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore((state) => state.multipleShiftRegisterDayTimes);
+    const multipleShiftRegisterIsHolidayIncluded = useMultipleShiftRegisterStore((state) => state.multipleShiftRegisterIsHolidayIncluded);
+    const multipleShiftRegisterIsAutoShiftEnabled = useMultipleShiftRegisterStore((state) => state.multipleShiftRegisterIsAutoShiftEnabled);
+    const multipleShiftRegisterIsCronJobsEnabled = useMultipleShiftRegisterStore((state) => state.multipleShiftRegisterIsCronJobsEnabled);
 
     // useSWR mutate
     const { mutateAllShifts } = useCalendarShiftAllMembers()
@@ -114,79 +114,82 @@ export const useModalContainer = () => {
                 // 再取得してIsCronJobsEnabledを更新(useMultipleShiftRegisterでuseEffect処理)
                 mutateAutoShiftSettings()
             } else { // 無効の場合
-                //送信
+                // 送信
                 await upsertAutoShift(autoShiftData)
             }
 
-            // MultipleShift用の処理 ---------------------------------------------------------------------------------------------------
+            // 自動シフト関連の操作がなければシフトをまとめて登録処理実行
+            if (!multipleShiftRegisterIsCronJobsEnabled && !multipleShiftRegisterIsAutoShiftEnabled) {
 
-            // 個人のシフトイベントを日付（YYYY-MM-DD）をキーとしたMapに変換
-            const personalShiftEventsMap = new Map<string, CustomFullCalendarEvent>();
-            customFullCalendarPersonalShiftEvents.forEach((event: CustomFullCalendarEvent) => {
-                if (!event.start) return;
-                const dateStr = event.start.split('T')[0];
-                personalShiftEventsMap.set(dateStr, event);
-            });
+                // MultipleShift用の処理 ---------------------------------------------------------------------------------------------------
 
-            // 祝日イベントを日付（YYYY-MM-DD）をキーとしたMapに変換
-            const holidayEventsMap = new Map<string, CustomFullCalendarEvent>();
-            customFullCalendarHolidayEvents.forEach((event: CustomFullCalendarEvent) => {
-                if (!event.start) return;
-                const dateStr = event.start.split('T')[0];
-                holidayEventsMap.set(dateStr, event);
-            });
+                // 個人のシフトイベントを日付（YYYY-MM-DD）をキーとしたMapに変換
+                const personalShiftEventsMap = new Map<string, CustomFullCalendarEvent>();
+                customFullCalendarPersonalShiftEvents.forEach((event: CustomFullCalendarEvent) => {
+                    if (!event.start) return;
+                    const dateStr = event.start.split('T')[0];
+                    personalShiftEventsMap.set(dateStr, event);
+                });
 
-            // AutoShiftTimeを曜日をキーとしたMapに変換
-            const autoShiftTimeMap = new Map<number, AutoShiftTime>();
-            multipleShiftRegisterDayTimes.forEach((autoShiftTime) => {
-                autoShiftTimeMap.set(autoShiftTime.day_of_week, autoShiftTime);
-            });
+                // 祝日イベントを日付（YYYY-MM-DD）をキーとしたMapに変換
+                const holidayEventsMap = new Map<string, CustomFullCalendarEvent>();
+                customFullCalendarHolidayEvents.forEach((event: CustomFullCalendarEvent) => {
+                    if (!event.start) return;
+                    const dateStr = event.start.split('T')[0];
+                    holidayEventsMap.set(dateStr, event);
+                });
 
-            // シフトを登録するためのデータを格納する配列
-            const shiftsToInsert = [];
+                // AutoShiftTimeを曜日をキーとしたMapに変換
+                const autoShiftTimeMap = new Map<number, AutoShiftTime>();
+                multipleShiftRegisterDayTimes.forEach((autoShiftTime) => {
+                    autoShiftTimeMap.set(autoShiftTime.day_of_week, autoShiftTime);
+                });
 
-            // 開始日と終了日をDateオブジェクトに変換
-            let currentDate = new Date(customFullCalendarStartDate);
-            const endDate = new Date(customFullCalendarEndDate);
+                // シフトを登録するためのデータを格納する配列
+                const shiftsToInsert = [];
 
-            // 日付範囲内をループ
-            while (currentDate <= endDate) {
-                // 日付を日本時間のYYYY-MM-DD形式で取得
-                const dateStr = toJapanDateISOString(currentDate);
-                const weekDay = currentDate.getDay(); // 0 (日曜日) - 6 (土曜日)
+                // 開始日と終了日をDateオブジェクトに変換
+                let currentDate = new Date(customFullCalendarStartDate);
+                const endDate = new Date(customFullCalendarEndDate);
 
-                // 当日のAutoShiftTimeを取得
-                const autoShiftTime = autoShiftTimeMap.get(weekDay);
+                // 日付範囲内をループ
+                while (currentDate <= endDate) {
+                    // 日付を日本時間のYYYY-MM-DD形式で取得
+                    const dateStr = toJapanDateISOString(currentDate);
+                    const weekDay = currentDate.getDay(); // 0 (日曜日) - 6 (土曜日)
 
-                // 以下の条件を満たす場合にシフトを登録
-                if (
-                    autoShiftTime &&
-                    autoShiftTime.is_enabled &&
-                    (!holidayEventsMap.has(dateStr) || multipleShiftRegisterIsHolidayIncluded) &&
-                    !personalShiftEventsMap.has(dateStr)
-                ) {
-                    // シフトデータを作成
-                    const startDateTimeStr = `${dateStr}T${autoShiftTime.start_time}:00`;
-                    const endDateTimeStr = `${dateStr}T${autoShiftTime.end_time}:00`;
+                    // 当日のAutoShiftTimeを取得
+                    const autoShiftTime = autoShiftTimeMap.get(weekDay);
 
-                    shiftsToInsert.push({
-                        user_id: userId,
-                        start_time: toJapanISOString(new Date(startDateTimeStr)),
-                        end_time: toJapanISOString(new Date(endDateTimeStr)),
-                    });
+                    // 以下の条件を満たす場合にシフトを登録
+                    if (
+                        autoShiftTime &&
+                        autoShiftTime.is_enabled &&
+                        (!holidayEventsMap.has(dateStr) || multipleShiftRegisterIsHolidayIncluded) &&
+                        !personalShiftEventsMap.has(dateStr)
+                    ) {
+                        // シフトデータを作成
+                        const startDateTimeStr = `${dateStr}T${autoShiftTime.start_time}:00`;
+                        const endDateTimeStr = `${dateStr}T${autoShiftTime.end_time}:00`;
+
+                        shiftsToInsert.push({
+                            user_id: userId,
+                            start_time: toJapanISOString(new Date(startDateTimeStr)),
+                            end_time: toJapanISOString(new Date(endDateTimeStr)),
+                        });
+                    }
+
+                    // 次の日付へ
+                    currentDate.setDate(currentDate.getDate() + 1);
                 }
 
-                // 次の日付へ
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-
-            // シフトの一括登録
-            if (shiftsToInsert.length > 0) {
-                for (const shiftData of shiftsToInsert) {
-                    await insertShift(shiftData);
+                // シフトの一括登録
+                if (shiftsToInsert.length > 0) {
+                    for (const shiftData of shiftsToInsert) {
+                        await insertShift(shiftData);
+                    }
                 }
             }
-
         }
 
         // データを再取得し変更をカレンダーに反映
