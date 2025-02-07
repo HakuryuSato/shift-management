@@ -178,7 +178,7 @@ export function usePersonalAttendanceTableClickHandlers() {
           const initialAttendance: Partial<Attendance> = {
             user_id: userId,
             work_date: originalRow.date,
-            [field === "stampStartTime" ? "stamp_start_time" : "stamp_end_time"]: value
+            [field === "stampStartTime" ? "stamp_start_time" : "stamp_end_time"]: createDateTimeString(originalRow.date, value)
           };
 
           // まず打刻時間のみで新規データを作成
