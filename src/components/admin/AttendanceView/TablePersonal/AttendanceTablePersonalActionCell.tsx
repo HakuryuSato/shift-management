@@ -11,17 +11,15 @@ interface Props {
 }
 
 export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
-
-  const { 
-    AttendanceTablePersonalEditingRow,
-    setAttendanceTablePersonalEditingRow,
-    AttendanceTablePersonalTableRows 
-  } = useAttendanceTablePersonalStore((state) => ({
-    AttendanceTablePersonalEditingRow: state.AttendanceTablePersonalEditingRow,
-    setAttendanceTablePersonalEditingRow: state.setAttendanceTablePersonalEditingRow,
-    AttendanceTablePersonalTableRows: state.AttendanceTablePersonalTableRows
-  }));
-
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingRow,
+  );
+  const setAttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.setAttendanceTablePersonalEditingRow,
+  );
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalTableRows,
+  );
 
   const isEditing = AttendanceTablePersonalEditingRow?.rowIndex === rowIndex;
 
@@ -35,7 +33,16 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
     }
     // この行の編集を開始
     const rowData = AttendanceTablePersonalTableRows[rowIndex];
-    setAttendanceTablePersonalEditingRow({ rowIndex, rowData });
+    setAttendanceTablePersonalEditingRow({
+      rowIndex,
+      rowData: {
+        ...rowData,
+        stampStartTime: rowData.stampStartTime,
+        stampEndTime: rowData.stampEndTime,
+        regularHours: rowData.regularHours,
+        overtimeHours: rowData.overtimeHours,
+      },
+    });
   };
 
   const handleSaveClick = () => {
