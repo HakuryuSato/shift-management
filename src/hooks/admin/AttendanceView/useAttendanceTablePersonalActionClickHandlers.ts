@@ -63,12 +63,12 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
         return;
       }
 
-      // 打刻時間がある場合は新規登録
-      if (editedRow.stampStartTime || editedRow.stampEndTime) {
+      // 打刻時間が両方ある場合のみ新規登録
+      if (editedRow.stampStartTime && editedRow.stampEndTime) {
         await insertAttendance({
           work_date: editedRow.date,
-          stamp_start_time: editedRow.stampStartTime || null,
-          stamp_end_time: editedRow.stampEndTime || null,
+          stamp_start_time: editedRow.stampStartTime,
+          stamp_end_time: editedRow.stampEndTime,
         });
       }
     } else {
@@ -81,19 +81,19 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
         editedRow.regularHours !== originalRow.regularHours ||
         editedRow.overtimeHours !== originalRow.overtimeHours;
 
-      if (isStampTimeChanged) {
-        // 打刻時間が変更された場合
+      if (isStampTimeChanged && editedRow.stampStartTime && editedRow.stampEndTime) {
+        // 打刻時間が変更され、両方の時間が存在する場合
         await updateAttendanceStamp({
           attendance_id: originalRow.attendanceId,
-          stamp_start_time: editedRow.stampStartTime || null,
-          stamp_end_time: editedRow.stampEndTime || null,
+          stamp_start_time: editedRow.stampStartTime,
+          stamp_end_time: editedRow.stampEndTime,
         });
-      } else if (isWorkHoursChanged) {
-        // 勤務時間が変更された場合
+      } else if (isWorkHoursChanged && editedRow.regularHours && editedRow.overtimeHours) {
+        // 勤務時間が変更され、両方の時間が存在する場合
         await updateAttendance({
           attendance_id: originalRow.attendanceId,
-          work_minutes: editedRow.regularHours ? parseInt(editedRow.regularHours) * 60 : null,
-          overtime_minutes: editedRow.overtimeHours ? parseInt(editedRow.overtimeHours) * 60 : null,
+          work_minutes: parseInt(editedRow.regularHours) * 60,
+          overtime_minutes: parseInt(editedRow.overtimeHours) * 60,
         });
       }
     }
