@@ -1,20 +1,7 @@
 import React from "react";
-import { IconButton, Stack, SxProps, TableCell } from "@mui/material";
+import { TableCell } from "@mui/material";
 import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
-
-const tableCellSx: SxProps = {
-  padding: "4px 8px",
-  height: "20px",
-};
-
-const iconButtonSx: SxProps = {
-  padding: "2px",
-  width: "20px",
-  height: "20px",
-};
 
 interface AttendanceTablePersonalTimeCellProps {
   startTime: string | null;
@@ -69,7 +56,7 @@ export function AttendanceTablePersonalStampsCell({
   };
 
   return (
-    <TableCell sx={tableCellSx}>
+    <TableCell >
       <Stack direction="row" spacing={1} alignItems="center">
         <AttendanceTableTimeCellEdit
           time={startTime}
