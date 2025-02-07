@@ -147,6 +147,12 @@ export function usePersonalAttendanceTableClickHandlers() {
       let attendanceId = originalRow.attendanceId;
       let success = false;
 
+      // 日付と時刻を結合してISO形式の文字列を作成
+      const createDateTimeString = (date: string, time: string | null) => {
+        if (!time) return null;
+        return `${date}T${time}`;
+      };
+
       try {
         // 既存の出退勤データの場合
         if (attendanceId) {
@@ -161,8 +167,8 @@ export function usePersonalAttendanceTableClickHandlers() {
             });
             await updateAttendanceStamp({
               attendance_id: attendanceId,
-              stamp_start_time: startTime,
-              stamp_end_time: endTime,
+              stamp_start_time: createDateTimeString(originalRow.date, startTime),
+              stamp_end_time: createDateTimeString(originalRow.date, endTime),
               work_date: originalRow.date
             });
             success = true;
@@ -180,13 +186,13 @@ export function usePersonalAttendanceTableClickHandlers() {
 
           if (insertedResult && insertedResult.length > 0) {
             attendanceId = insertedResult[0].attendance_id;
-            
+
             // 両方の打刻時間が存在する場合のみ時間集計を実行
             if (startTime && endTime) {
               await updateAttendanceStamp({
                 attendance_id: attendanceId,
-                stamp_start_time: startTime,
-                stamp_end_time: endTime,
+                stamp_start_time: createDateTimeString(originalRow.date, startTime),
+                stamp_end_time: createDateTimeString(originalRow.date, endTime),
                 work_date: originalRow.date
               });
             }
