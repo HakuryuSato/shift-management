@@ -16,14 +16,24 @@ export async function updateAttendanceStamp(
   }
 
   try {
+    console.log("updateAttendanceStamp: 開始")
+
     // 勤務時間や残業時間を計算
     const workMinutesResult = await generateAttendanceWorkMinutes(attendance as Attendance);
 
+    console.log("updateAttendanceStamp: generateAttendanceWorkMinutes完了")
+
     // 計算結果と打刻時間を合わせて更新
     const result = await updateAttendance({
-      ...workMinutesResult,
+      attendance_id: attendance.attendance_id,
       stamp_start_time: attendance.stamp_start_time,
       stamp_end_time: attendance.stamp_end_time,
+      work_date: attendance.work_date,
+      adjusted_start_time: workMinutesResult.adjusted_start_time,
+      adjusted_end_time: workMinutesResult.adjusted_end_time,
+      work_minutes: workMinutesResult.work_minutes,
+      overtime_minutes: workMinutesResult.overtime_minutes,
+      rest_minutes: workMinutesResult.rest_minutes
     });
     
     return result[0];
