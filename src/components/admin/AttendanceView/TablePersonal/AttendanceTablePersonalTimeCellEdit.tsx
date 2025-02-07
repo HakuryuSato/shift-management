@@ -32,25 +32,25 @@ const iconButtonSx: SxProps = {
 // 時間を'HH:mm'形式にフォーマットする
 const formatTime = (time: string): string => {
   if (!time) return '';
-  const match = time.match(/^(\d{2}):(\d{2}):(\d{2})$/);
-  return match ? `${match[1]}:${match[2]}` : time;
+  // 'HH:mm:ss'形式の文字列から'HH:mm'を取得
+  const [hours, minutes] = time.split(':');
+  return hours && minutes ? `${hours}:${minutes}` : time;
 };
 
 interface AttendanceTableTimeCellEditProps {
   time: string;
-  isEditing: boolean;
-  onEdit: () => void;
-  onSave: (newTime: string) => void;
-  onCancel: () => void;
+  field: "stampStartTime" | "stampEndTime";
+  rowIndex: number;
+  onTimeChange: (rowIndex: number, field: "stampStartTime" | "stampEndTime", value: string) => void;
 }
 
 export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditProps> = ({ 
-  time, 
-  isEditing, 
-  onEdit, 
-  onSave, 
-  onCancel 
+  time,
+  field,
+  rowIndex,
+  onTimeChange
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const formattedTime = formatTime(time);
 
   // 現在の時間値を含む選択肢を生成
@@ -90,7 +90,16 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     }
   }, [isEditing, formattedTime]);
 
-  // ローディング中
+  const handleSave = (newTime: string) => {
+    onTimeChange(rowIndex, field, `${newTime}:00`);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+  // 編集中
   if (isEditing) {
     return (
       <Stack direction="row" spacing={0.5} alignItems="center">
@@ -98,7 +107,7 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
           value={selectedTime}
           onChange={(e) => {
             setSelectedTime(e.target.value);
-            onSave(`${e.target.value}:00`);
+            handleSave(e.target.value);
           }}
           size="small"
           sx={selectSx}
@@ -117,10 +126,10 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
           ))}
         </Select>
         <Stack direction="row" spacing={0.5}>
-          <IconButton onClick={onCancel} sx={iconButtonSx}>
+          <IconButton onClick={handleCancel} sx={iconButtonSx}>
             <CloseIcon fontSize="small" />
           </IconButton>
-          <IconButton onClick={() => onSave(`${selectedTime}:00`)} sx={iconButtonSx}>
+          <IconButton onClick={() => handleSave(selectedTime)} sx={iconButtonSx}>
             <CheckIcon fontSize="small" />
           </IconButton>
         </Stack>
@@ -128,15 +137,14 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
     );
   }
 
-  // ローディング完了後
+  // 表示モード
   return (
     <Select
       value={formattedTime}
-      onChange={(e) => onSave(`${e.target.value}:00`)}
+      onChange={(e) => handleSave(e.target.value)}
       size="small"
       sx={selectSx}
-      onClick={onEdit}
-      readOnly={!isEditing}
+      onClick={() => setIsEditing(true)}
       MenuProps={{
         PaperProps: {
           style: {
