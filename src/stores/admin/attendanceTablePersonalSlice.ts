@@ -16,6 +16,7 @@ export const useAttendanceTablePersonalStore = create<AttendanceTablePersonalSto
         typeof rows === 'function' ? rows(state.AttendanceTablePersonalTableRows) : rows,
     }));
   },
+  
   AttendanceTablePersonalEditingRow: null,
   setAttendanceTablePersonalEditingRow: (row) => set({ AttendanceTablePersonalEditingRow: row }),
 }));

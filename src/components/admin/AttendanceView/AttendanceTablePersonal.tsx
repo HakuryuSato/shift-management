@@ -13,19 +13,8 @@ export function AttendanceTablePersonal() {
   usePersonalAttendanceTableData();
 
   // storeの値を取得
-  const { 
-    AttendanceTablePersonalTableRows, 
-    AttendanceTablePersonalEditingRow,
-    setAttendanceTablePersonalEditingRow
-  } = useAttendanceTablePersonalStore();
-
-  // ハンドラー取得
-  const {
-    editingCell,
-    handleClickWorkTimeCell,
-    handleBlurWorkTimeCell,
-    handleChangeStampTime,
-  } = usePersonalAttendanceTableClickHandlers();
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalTableRows);
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalEditingRow);
 
   return (
     <TableStyleAttendancePersonal>
@@ -51,7 +40,6 @@ export function AttendanceTablePersonal() {
                   startTime={row.stampStartTime}
                   endTime={row.stampEndTime}
                   rowIndex={index}
-                  onTimeChange={handleChangeStampTime}
                 />
                 
                 <TableCell>
@@ -71,7 +59,7 @@ export function AttendanceTablePersonal() {
                       },
                     }}
                     value={row.regularHours}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBlurWorkTimeCell(index, "regularHours", e.target.value)}
+                    onChange={}
                     variant="standard"
                     size="small"
                   />
@@ -89,7 +77,7 @@ export function AttendanceTablePersonal() {
                       },
                     }}
                     value={row.overtimeHours}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBlurWorkTimeCell(index, "overtimeHours", e.target.value)}
+                    onChange={}
                     variant="standard"
                     size="small"
                   />
@@ -107,15 +95,11 @@ export function AttendanceTablePersonal() {
                   value={row.regularHours}
                   rowIndex={index}
                   field="regularHours"
-                  onClick={handleClickWorkTimeCell}
-                  onBlur={handleBlurWorkTimeCell}
                 />
                 <AttendanceTablePersonalHoursCell
                   value={row.overtimeHours}
                   rowIndex={index}
                   field="overtimeHours"
-                  onClick={handleClickWorkTimeCell}
-                  onBlur={handleBlurWorkTimeCell}
                 />
               </>
             )}
