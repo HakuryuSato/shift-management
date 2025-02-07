@@ -1,5 +1,5 @@
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
-import { updateAttendanceStamp,insertAttendance,updateAttendance } from "@/utils/client/serverActionClient";
+import { updateAttendanceStamp, insertAttendance, updateAttendance, deleteAttendance } from "@/utils/client/serverActionClient";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
 const combineToISOString = (date: string, time: string): string => {
@@ -132,7 +132,19 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
     setAttendanceTablePersonalEditingRow(null);
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
+    const originalRow = AttendanceTablePersonalTableRows[rowIndex];
+    
+    // attendance_idが存在する場合のみ削除を実行
+    if (originalRow.attendanceId) {
+      try {
+        await deleteAttendance(originalRow.attendanceId);
+      } catch (error) {
+        console.error('Error in handleDeleteClick:', error);
+        throw error;
+      }
+    }
+    
     setAttendanceTablePersonalEditingRow(null);
   };
 
