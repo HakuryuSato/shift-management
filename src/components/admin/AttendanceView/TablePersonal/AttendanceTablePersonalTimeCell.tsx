@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TableCell, Stack, SxProps } from "@mui/material";
 import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
 
@@ -20,22 +20,6 @@ export function AttendanceTablePersonalTimeCell({
   rowIndex,
   onTimeChange,
 }: AttendanceTablePersonalTimeCellProps) {
-  const [editingField, setEditingField] = useState<"start" | "end" | null>(null);
-  
-  const handleStartTimeChange = (newValue: string) => {
-    onTimeChange(rowIndex, "stampStartTime", newValue);
-    setEditingField(null);
-  };
-
-  const handleEndTimeChange = (newValue: string) => {
-    onTimeChange(rowIndex, "stampEndTime", newValue);
-    setEditingField(null);
-  };
-
-  const handleCancel = () => {
-    setEditingField(null);
-  };
-
   return (
     <TableCell sx={tableCellSx}>
       <Stack 
@@ -45,18 +29,16 @@ export function AttendanceTablePersonalTimeCell({
       >
         <AttendanceTableTimeCellEdit
           time={startTime}
-          isEditing={editingField === "start"}
-          onEdit={() => setEditingField("start")}
-          onSave={handleStartTimeChange}
-          onCancel={handleCancel}
+          field="stampStartTime"
+          rowIndex={rowIndex}
+          onTimeChange={onTimeChange}
         />
         <span>-</span>
         <AttendanceTableTimeCellEdit
           time={endTime}
-          isEditing={editingField === "end"}
-          onEdit={() => setEditingField("end")}
-          onSave={handleEndTimeChange}
-          onCancel={handleCancel}
+          field="stampEndTime"
+          rowIndex={rowIndex}
+          onTimeChange={onTimeChange}
         />
       </Stack>
     </TableCell>
