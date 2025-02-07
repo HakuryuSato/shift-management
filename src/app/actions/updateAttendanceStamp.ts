@@ -28,7 +28,7 @@ export async function updateAttendanceStamp(
     
     return result[0];
   } catch (error) {
-    console.error('Error generating attendance result:', error);
+    console.error('Error generating attendance result in updateAttendanceStamp:', error);
     throw new Error('打刻時間変更による集計でエラーが発生しました');
   }
 }
