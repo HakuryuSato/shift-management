@@ -21,8 +21,6 @@
 サイトパスワード：demo  
 管理者パスワード：demo  
 
-
-
 ## デモ用出退勤打刻用QR
 ![ATTENDANCE_QR](https://github.com/user-attachments/assets/018e06c6-3f83-4142-a142-5dac9367729a)
 
@@ -86,10 +84,10 @@
 - 使い方
 
 ## 非ユーザー利用機能
-- プロダクション環境による本番環境特有の問題を未然に防ぐ仕組み
-- GitHub Actionsによるデプロイ前チェック
+- プロダクション環境テストによる本番環境特有の問題を未然に防ぐ仕組み
+- GitHub Actionsによるデプロイ前ビルドエラー検出
 
 ## セキュリティ
 - middlewareによるページのアクセス制限
-- ServerActionsによるCORS制限
 - Dependabotによるゼロデイ対策
+- HTTPSによる通信の暗号化と改ざん防止
