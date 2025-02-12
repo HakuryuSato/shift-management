@@ -6,7 +6,8 @@
 <img src="https://github.com/user-attachments/assets/12b19efc-2876-4b1a-ba4e-48b19de6ee9c" height="200" />
 <img src="https://github.com/user-attachments/assets/07945322-e13b-4c9a-bf73-94ddfd4e87c4" height="200" />
 
-本番環境同様の機能をテストいただけますが、データはデモ用となります。 
+本番環境同様の機能をテストいただけますが、データはデモ用となります。   
+詳細な設計資料は [/documents](/documents) に格納しております。
 
 ## デモ用リンク
 ユーザー側（スマホ Chrome推奨）  
