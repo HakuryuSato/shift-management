@@ -1,7 +1,7 @@
-import React from "react";
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
 import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
+import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
 import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalStampsCell";
 import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
@@ -14,6 +14,8 @@ export function AttendanceTablePersonal() {
   // storeの値を取得
   const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalTableRows);
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalEditingRow);
+  const AttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalRowStyles);
+  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidays);
 
   return (
     <TableStyleAttendancePersonal>
@@ -29,8 +31,19 @@ export function AttendanceTablePersonal() {
       </TableHead>
       <TableBody>
         {AttendanceTablePersonalTableRows.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell>{row.formattedDate}</TableCell>
+          <TableRow 
+            key={index}
+            sx={AttendanceTablePersonalRowStyles[row.formattedDate]}
+          >
+            <TableCell>
+              {row.formattedDate}
+              {holidays?.get(row.formattedDate) && (
+                <>
+                  <br />
+                  {holidays.get(row.formattedDate)?.title}
+                </>
+              )}
+            </TableCell>
 
 
             {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
