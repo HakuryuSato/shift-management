@@ -4,8 +4,8 @@ import type { User } from '@/types/User';
 import type { Holiday } from '@/types/Holiday';
 
 interface AdminAttendanceViewStore {
-  adminAttendanceViewHolidays: Holiday[] | null;
-  setAdminAttendanceViewHolidays: (holidays: Holiday[]) => void;
+  adminAttendanceViewHolidays: Map<string, Holiday> | null;
+  setAdminAttendanceViewHolidays: (holidays: Map<string, Holiday>) => void;
 
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
