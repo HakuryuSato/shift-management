@@ -4,6 +4,7 @@ import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/useAt
 import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableStyleHeader } from "@/styles/TableStyleHeader";
 
 
 export function AttendanceTableAllMembers() {
@@ -27,11 +28,11 @@ export function AttendanceTableAllMembers() {
     <TableStyleAttendanceAllMembers>
       <TableHead>
         <TableRow>
-          <TableCell>種別</TableCell>
-          <TableCell>名前</TableCell>
-          <TableCell>出勤日数</TableCell>
-          <TableCell>平日普通</TableCell>
-          <TableCell>平日時間外</TableCell>
+          <TableCell sx={TableStyleHeader}>種別</TableCell>
+          <TableCell sx={TableStyleHeader}>名前</TableCell>
+          <TableCell sx={TableStyleHeader}>出勤日数</TableCell>
+          <TableCell sx={TableStyleHeader}>平日普通</TableCell>
+          <TableCell sx={TableStyleHeader}>平日時間外</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

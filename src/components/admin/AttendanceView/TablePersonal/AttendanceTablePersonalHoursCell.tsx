@@ -49,7 +49,7 @@ export function AttendanceTablePersonalHoursCell({
             style: {
               textAlign: "center",
               padding: "0",
-              fontSize: "0.8rem",
+              fontSize: "0.9rem",
             },
           }}
           value={cellValue}

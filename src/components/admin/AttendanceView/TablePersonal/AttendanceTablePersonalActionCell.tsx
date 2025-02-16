@@ -6,6 +6,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTablePersonalActionClickHandlers";
 
+const iconButtonStyle = {
+  px: 0.5,
+  maxHeight: 5,
+  '& .MuiSvgIcon-root': {
+    fontSize: 16
+  }
+};
+
 interface Props {
   rowIndex: number;
 }
@@ -30,7 +38,7 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
   };
 
   return (
-    <TableCell align="center">
+    <TableCell align="center" sx={{ p: 0 }}>
       {isEditing
         ? (
           <>
@@ -39,24 +47,35 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
               size="small" 
               color="primary"
               disabled={isSaving}
+              sx={iconButtonStyle}
             >
-              {isSaving ? <CircularProgress size={20} /> : <CheckIcon />}
+              {isSaving ? <CircularProgress size={16} /> : <CheckIcon />}
             </IconButton>
             <IconButton
               onClick={handleCancelClick}
               size="small"
               color="default"
+              sx={iconButtonStyle}
             >
               <CloseIcon />
             </IconButton>
-            <IconButton onClick={handleDeleteClick} size="small" color="error">
+            <IconButton 
+              onClick={handleDeleteClick} 
+              size="small" 
+              color="error"
+              sx={iconButtonStyle}
+            >
               <DeleteIcon />
             </IconButton>
           </>
         )
         : (
           // 編集アイコン
-          <IconButton onClick={handleEditClick} size="small">
+          <IconButton 
+            onClick={handleEditClick} 
+            size="small"
+            sx={iconButtonStyle}
+          >
             <EditIcon />
           </IconButton>
         )}

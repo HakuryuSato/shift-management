@@ -137,10 +137,10 @@ export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) 
           };
 
           if (editedRow.regularHours) {
-            updateData.work_minutes = parseInt(editedRow.regularHours) * 60;
+            updateData.work_minutes = parseFloat(editedRow.regularHours) * 60;
           }
           if (editedRow.overtimeHours) {
-            updateData.overtime_minutes = parseInt(editedRow.overtimeHours) * 60;
+            updateData.overtime_minutes = parseFloat(editedRow.overtimeHours) * 60;
           }
 
           await updateAttendance(updateData);
