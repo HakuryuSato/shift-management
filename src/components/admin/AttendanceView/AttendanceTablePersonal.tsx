@@ -1,5 +1,11 @@
 import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
-import { TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+} from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
@@ -12,10 +18,18 @@ export function AttendanceTablePersonal() {
   usePersonalAttendanceTableData();
 
   // storeの値を取得
-  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalTableRows);
-  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalEditingRow);
-  const AttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalRowStyles);
-  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidaysMap);
+  const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalTableRows
+  );
+  const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalEditingRow
+  );
+  const AttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(
+    (state) => state.AttendanceTablePersonalRowStyles
+  );
+  const holidays = useAdminAttendanceViewStore((state) =>
+    state.adminAttendanceViewHolidaysMap
+  );
 
   return (
     <TableStyleAttendancePersonal>
@@ -31,59 +45,59 @@ export function AttendanceTablePersonal() {
       </TableHead>
       <TableBody>
         {AttendanceTablePersonalTableRows.map((row, index) => (
-          <TableRow 
+          <TableRow
             key={index}
-            sx={AttendanceTablePersonalRowStyles[row.formattedDate]}
+            sx={AttendanceTablePersonalRowStyles[row.date]}
           >
             <TableCell>
               {row.formattedDate}
               {holidays?.get(row.date) && (
                 <>
-                  <br />
-                  {holidays.get(row.date)?.title}
+                  {" "} {holidays.get(row.date)?.title}
                 </>
               )}
             </TableCell>
 
+            {AttendanceTablePersonalEditingRow?.rowIndex === index
+              ? (
+                // 編集
+                <>
+                  {/* 打刻時間(開始-終了) */}
+                  <AttendanceTablePersonalStampsCell
+                    startTime={row.stampStartTime}
+                    endTime={row.stampEndTime}
+                    rowIndex={index}
+                  />
 
-            {AttendanceTablePersonalEditingRow?.rowIndex === index ? (
-            // 編集
-              <>
-                {/* 打刻時間(開始-終了) */}
-                <AttendanceTablePersonalStampsCell
-                  startTime={row.stampStartTime}
-                  endTime={row.stampEndTime}
-                  rowIndex={index}
-                />
-                
-                <TableCell>
-                  {row.adjustedStartTime} - {row.adjustedEndTime}
-                </TableCell>
+                  <TableCell>
+                    {row.adjustedStartTime} - {row.adjustedEndTime}
+                  </TableCell>
 
-                <AttendanceTablePersonalHoursCell
-                  value={row.regularHours}
-                  rowIndex={index}
-                  field="regularHours"
-                />
-                <AttendanceTablePersonalHoursCell
-                  value={row.overtimeHours}
-                  rowIndex={index}
-                  field="overtimeHours"
-                />
-              </>
-            ) : (
-              // 表示のみ
-              <>
-                <TableCell>
-                  {row.stampStartTime} - {row.stampEndTime}
-                </TableCell>
-                <TableCell>
-                  {row.adjustedStartTime} - {row.adjustedEndTime}
-                </TableCell>
-                <TableCell>{row.regularHours}</TableCell>
-                <TableCell>{row.overtimeHours}</TableCell>
-              </>
-            )}
+                  <AttendanceTablePersonalHoursCell
+                    value={row.regularHours}
+                    rowIndex={index}
+                    field="regularHours"
+                  />
+                  <AttendanceTablePersonalHoursCell
+                    value={row.overtimeHours}
+                    rowIndex={index}
+                    field="overtimeHours"
+                  />
+                </>
+              )
+              : (
+                // 表示のみ
+                <>
+                  <TableCell>
+                    {row.stampStartTime} - {row.stampEndTime}
+                  </TableCell>
+                  <TableCell>
+                    {row.adjustedStartTime} - {row.adjustedEndTime}
+                  </TableCell>
+                  <TableCell>{row.regularHours}</TableCell>
+                  <TableCell>{row.overtimeHours}</TableCell>
+                </>
+              )}
             <AttendanceTablePersonalActionCell
               rowIndex={index}
             />
