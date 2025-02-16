@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAdminHomeStore } from '@/stores/admin/adminHomeSlice';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { useAttendanceTableAllMembersStore } from '@/stores/admin/attendanceTableAllMembersSlice';
+import type { Attendance } from '@/types/Attendance';
 
 
 import {
@@ -51,33 +52,48 @@ export const useAttendanceTableAllMembers = () => {
 
     // adminHomeUsersData または adminAttendanceViewAllMembersMonthlyResult が更新されたときに処理を実行
     useEffect(() => {
-        if (!adminHomeUsersData || !adminAttendanceViewAllMembersMonthlyResult) {
+        if (!Array.isArray(adminHomeUsersData) || !Array.isArray(adminAttendanceViewAllMembersMonthlyResult)) {
+            setAdminAttendanceTableAllMembersRows([]);
             return;
         }
-
-        // ユーザーごとにデータを集計
-        const adminAttendanceTableAllMembersRows = adminHomeUsersData.map((user) => {
-            const userResults = adminAttendanceViewAllMembersMonthlyResult.filter(
-                (result) => result.user_id === user.user_id
-            );
-
-
+    
+        // user_id をキーにまとめる
+        const resultsByUserId = adminAttendanceViewAllMembersMonthlyResult.reduce<{
+            [key: string]: Attendance[];
+        }>((acc, result) => {
+            if (result.user_id == null) return acc;
+            const key = result.user_id.toString();
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(result);
+            return acc;
+        }, {});
+    
+        const adminAttendanceTableAllMembersRows = adminHomeUsersData
+            .filter(user => 
+                user.user_id != null && 
+                user.user_name != null && 
+                user.employment_type != null
+            )
+            .map((user) => {
+                // まとめておいた配列を参照してユーザーごとに集計
+                const userResults = resultsByUserId[user.user_id!.toString()] ?? [];
+    
             const workDays = userResults.length;
-
             const totalWorkMinutes = userResults.reduce(
-                (sum, result) => sum + (result.work_minutes ?? 0),
+                (sum: number, result: Attendance) => sum + (result.work_minutes ?? 0),
                 0
             );
-
             const totalOvertimeMinutes = userResults.reduce(
-                (sum, result) => sum + (result.overtime_minutes ?? 0),
+                (sum: number, result: Attendance) => sum + (result.overtime_minutes ?? 0),
                 0
             );
-
-            // 分を時間に変換し、0.5単位で丸め、少数第一位まで表示
+    
+            // 分を時間に変換し、0.5単位で丸める
             const workHours = Math.round((totalWorkMinutes / 60) * 2) / 2;
             const overtimeHours = Math.round((totalOvertimeMinutes / 60) * 2) / 2;
-
+    
             return {
                 user,
                 workDays,
@@ -85,9 +101,15 @@ export const useAttendanceTableAllMembers = () => {
                 overtimeHours,
             };
         });
-
-        // Store にデータを保存
-        setAdminAttendanceTableAllMembersRows(adminAttendanceTableAllMembersRows);
+    
+        // employment_typeで正社員が優先されるようにソート
+        // full_timeならば1となる
+        const sortedRows = adminAttendanceTableAllMembersRows.sort((a, b) => {
+            return Number(b.user.employment_type === 'full_time') 
+                   - Number(a.user.employment_type === 'full_time');
+          });
+    
+        setAdminAttendanceTableAllMembersRows(sortedRows);
     }, [
         adminHomeUsersData,
         adminAttendanceViewAllMembersMonthlyResult,
