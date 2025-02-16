@@ -37,10 +37,10 @@ export function AttendanceTablePersonal() {
           >
             <TableCell>
               {row.formattedDate}
-              {holidays?.get(row.formattedDate) && (
+              {holidays?.get(row.date) && (
                 <>
                   <br />
-                  {holidays.get(row.formattedDate)?.title}
+                  {holidays.get(row.date)?.title}
                 </>
               )}
             </TableCell>
