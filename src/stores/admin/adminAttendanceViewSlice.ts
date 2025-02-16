@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import type { Attendance } from '@/types/Attendance';
 import type { User } from '@/types/User';
+import type { Holiday } from '@/types/Holiday';
 
 interface AdminAttendanceViewStore {
+  adminAttendanceViewHolidays: Holiday[] | null;
+  setAdminAttendanceViewHolidays: (holidays: Holiday[]) => void;
 
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
@@ -24,6 +27,8 @@ interface AdminAttendanceViewStore {
 }
 
 export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set) => ({
+  adminAttendanceViewHolidays: null,
+  setAdminAttendanceViewHolidays: (holidays) => set({ adminAttendanceViewHolidays: holidays }),
 
   adminAttendanceViewStartDate: new Date(),
   adminAttendanceViewEndDate: new Date(),
