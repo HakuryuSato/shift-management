@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, SxProps, Select, MenuItem } from "@mui/material";
+import { Stack, Select, MenuItem } from "@mui/material";
 
 // 終了時間オプション（5:00から23:00まで30分間隔）
 const END_TIME_OPTIONS: string[] = [
@@ -18,13 +18,6 @@ const START_TIME_OPTIONS: string[] = [
   "15:59", "16:29", "16:59", "17:29", "17:59", "18:29", "18:59", "19:29",
   "19:59", "20:29", "20:59", "21:29", "21:59", "22:29", "22:59"
 ];
-
-const selectSx: SxProps = {
-  '& .MuiSelect-select': {
-    padding: '0px 4px',
-    fontSize: '0.875rem',
-  },
-};
 
 // 時間を'HH:mm'形式にフォーマットする
 const formatTime = (time: string | null): string => {
@@ -96,7 +89,12 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
       onChange={isEditing ? (e) => onTimeSelect(e.target.value || defaultTime) : undefined}
       onClick={!isEditing ? onStartEditing : undefined}
       size="small"
-      sx={selectSx}
+      sx={{
+        '& .MuiSelect-select': {
+          padding: '0px 4px',
+          fontSize: '0.875rem',
+        },
+      }}
     >
       {timeOptions.map((timeOption) => (
         <MenuItem 
