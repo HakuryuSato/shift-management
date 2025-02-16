@@ -21,9 +21,9 @@ const START_TIME_OPTIONS: string[] = [
 
 const selectSx: SxProps = {
   '& .MuiSelect-select': {
-    padding: '2px 4px',
-    textAlign: 'center'
-  }
+    padding: '0px 4px',
+    fontSize: '0.875rem',
+  },
 };
 
 // 時間を'HH:mm'形式にフォーマットする
@@ -97,19 +97,11 @@ export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditPr
       onClick={!isEditing ? onStartEditing : undefined}
       size="small"
       sx={selectSx}
-      MenuProps={{
-        PaperProps: {
-          style: {
-            maxHeight: 300
-          }
-        }
-      }}
     >
       {timeOptions.map((timeOption) => (
         <MenuItem 
           key={timeOption} 
           value={timeOption}
-          sx={!isEditing && timeOption === formattedTime ? { fontWeight: 'bold' } : {}}
         >
           {timeOption}
         </MenuItem>
