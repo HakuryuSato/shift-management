@@ -4,7 +4,7 @@ import type { User } from '@/types/User';
 import type { Holiday } from '@/types/Holiday';
 
 interface AdminAttendanceViewStore {
-  adminAttendanceViewHolidays: Map<string, Holiday> | null;
+  adminAttendanceViewHolidaysMap: Map<string, Holiday> | null;
   setAdminAttendanceViewHolidays: (holidays: Map<string, Holiday>) => void;
 
   adminAttendanceViewStartDate: Date;
@@ -27,8 +27,8 @@ interface AdminAttendanceViewStore {
 }
 
 export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set) => ({
-  adminAttendanceViewHolidays: null,
-  setAdminAttendanceViewHolidays: (holidays) => set({ adminAttendanceViewHolidays: holidays }),
+  adminAttendanceViewHolidaysMap: null,
+  setAdminAttendanceViewHolidays: (holidays) => set({ adminAttendanceViewHolidaysMap: holidays }),
 
   adminAttendanceViewStartDate: new Date(),
   adminAttendanceViewEndDate: new Date(),

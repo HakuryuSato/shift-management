@@ -5,7 +5,7 @@ import { alpha } from '@mui/material';
 
 export const useAttendancePersonalStyles = () => {
   const theme = useTheme();
-  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidays);
+  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidaysMap);
   const setAttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(
     state => state.setAttendanceTablePersonalRowStyles
   );

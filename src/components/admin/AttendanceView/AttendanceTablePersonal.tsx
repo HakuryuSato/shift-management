@@ -15,7 +15,7 @@ export function AttendanceTablePersonal() {
   const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalTableRows);
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalEditingRow);
   const AttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(state => state.AttendanceTablePersonalRowStyles);
-  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidays);
+  const holidays = useAdminAttendanceViewStore(state => state.adminAttendanceViewHolidaysMap);
 
   return (
     <TableStyleAttendancePersonal>
