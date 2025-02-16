@@ -30,8 +30,9 @@ export function useAdminAttendanceView() {
         if (responseData) {
             setAdminAttendanceViewAllMembersMonthlyResult(responseData);
         }
+        updateAttendancePersonalRowStyles()
         
-    }, [adminAttendanceViewEndDate, adminAttendanceViewStartDate, responseData, setAdminAttendanceViewAllMembersMonthlyResult]);
+    }, [adminAttendanceViewEndDate, adminAttendanceViewStartDate, responseData, setAdminAttendanceViewAllMembersMonthlyResult, updateAttendancePersonalRowStyles]);
 
     return { data: responseData, error, mutateAttendanceResults: mutate };
 }
