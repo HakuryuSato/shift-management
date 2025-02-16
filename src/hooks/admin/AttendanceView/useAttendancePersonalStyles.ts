@@ -1,4 +1,5 @@
 import { useTheme } from '@mui/material/styles';
+import { useCallback } from 'react';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { useAttendanceTablePersonalStore } from '@/stores/admin/attendanceTablePersonalSlice';
 import { alpha } from '@mui/material';
@@ -14,7 +15,7 @@ export const useAttendancePersonalStyles = () => {
 
   const holidayBackgroundColor = alpha(theme.palette.error.light, 0.1);
 
-  const updateAttendancePersonalRowStyles = () => {
+  const updateAttendancePersonalRowStyles = useCallback(() => {
     // 日付の配列を生成
     const dates: string[] = [];
     const currentDate = new Date(startDate);
@@ -35,7 +36,7 @@ export const useAttendancePersonalStyles = () => {
       }
     });
     setAttendanceTablePersonalRowStyles(styles);
-  };
+  }, [startDate, endDate, holidays, holidayBackgroundColor, setAttendanceTablePersonalRowStyles]);
 
   return { updateAttendancePersonalRowStyles };
 };

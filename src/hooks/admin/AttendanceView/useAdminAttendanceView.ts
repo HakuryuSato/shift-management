@@ -29,10 +29,10 @@ export function useAdminAttendanceView() {
     useEffect(() => {
         if (responseData) {
             setAdminAttendanceViewAllMembersMonthlyResult(responseData);
+            
         }
-        updateAttendancePersonalRowStyles()
-        
-    }, [adminAttendanceViewEndDate, adminAttendanceViewStartDate, responseData, setAdminAttendanceViewAllMembersMonthlyResult, updateAttendancePersonalRowStyles]);
+        updateAttendancePersonalRowStyles();
+    }, [responseData, setAdminAttendanceViewAllMembersMonthlyResult, updateAttendancePersonalRowStyles]);
 
     return { data: responseData, error, mutateAttendanceResults: mutate };
 }
