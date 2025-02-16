@@ -15,7 +15,7 @@ export const useAttendancePersonalStyles = () => {
   const updateAttendancePersonalRowStyles = (dates: string[]) => {
     const styles: { [key: string]: { backgroundColor: string } } = {};
     dates.forEach(date => {
-      const isHoliday = holidays?.some(h => h.date === date);
+      const isHoliday = holidays?.has(date);
       const isSunday = new Date(date).getDay() === 0;
       
       if (isHoliday || isSunday) {
