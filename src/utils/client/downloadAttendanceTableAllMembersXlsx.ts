@@ -20,30 +20,18 @@ const generateAttendanceAllMembersTableData = (
 ): string[][] => {
   const result: string[][] = [];
 
-  // ヘッダー行
-  const headers = ['種別', '名前', '出勤日数', '平日普通(H)', '平日時間外(H)'];
+  // ヘッダー行 - AttendanceTableAllMembers.tsxと同じヘッダーを使用
+  const headers = ['種別', '名前', '出勤日数', '平日普通', '平日時間外'];
   result.push(headers);
 
-  // データ行
-  attendanceRows.forEach((row) => {
-    // employment_type が undefined の場合に備えてデフォルト値を設定
-    const employmentTypeValue = row.user.employment_type ?? 'unknown';
-    const employmentType =
-      employmentTypeValue === 'full_time'
-        ? '正社員'
-        : employmentTypeValue === 'part_time'
-        ? 'アルバイト'
-        : '不明';
-
-    // user_name が undefined の場合に備えてデフォルト値を設定
-    const userName = row.user.user_name ?? '';
-
+  // データ行 - AttendanceTableAllMembers.tsxと同じロジックを使用
+  attendanceRows.forEach(({ user, workDays, workHours, overtimeHours }) => {
     result.push([
-      employmentType,
-      userName,
-      row.workDays.toString(),
-      row.workHours.toFixed(1),
-      row.overtimeHours.toFixed(1),
+      user.employment_type === 'full_time' ? '正社員' : 'アルバイト',
+      user.user_name || '',
+      workDays.toString(),
+      workHours.toFixed(1),
+      overtimeHours.toFixed(1),
     ]);
   });
 
