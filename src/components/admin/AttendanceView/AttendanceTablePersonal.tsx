@@ -19,13 +19,13 @@ export function AttendanceTablePersonal() {
 
   // storeの値を取得
   const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalTableRows
+    (state) => state.AttendanceTablePersonalTableRows,
   );
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalEditingRow
+    (state) => state.AttendanceTablePersonalEditingRow,
   );
   const AttendanceTablePersonalRowStyles = useAttendanceTablePersonalStore(
-    (state) => state.AttendanceTablePersonalRowStyles
+    (state) => state.AttendanceTablePersonalRowStyles,
   );
   const holidays = useAdminAttendanceViewStore((state) =>
     state.adminAttendanceViewHolidaysMap
@@ -51,11 +51,7 @@ export function AttendanceTablePersonal() {
           >
             <TableCell>
               {row.formattedDate}
-              {holidays?.get(row.date) && (
-                <>
-                  {" "} {holidays.get(row.date)?.title}
-                </>
-              )}
+              {holidays?.get(row.date) && ` ${holidays.get(row.date)?.title}`}
             </TableCell>
 
             {AttendanceTablePersonalEditingRow?.rowIndex === index
