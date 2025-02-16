@@ -6,6 +6,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import { TableStyleHeader } from "@/styles/TableStyleHeader";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
@@ -35,12 +36,12 @@ export function AttendanceTablePersonal() {
     <TableStyleAttendancePersonal>
       <TableHead>
         <TableRow>
-          <TableCell>日付</TableCell>
-          <TableCell>打刻時間(開始-終了)</TableCell>
-          <TableCell>補正時間(開始-終了)</TableCell>
-          <TableCell>平日普通(H)</TableCell>
-          <TableCell>平日時間外(H)</TableCell>
-          <TableCell>操作</TableCell>
+          <TableCell sx={TableStyleHeader}>日付</TableCell>
+          <TableCell sx={TableStyleHeader}>打刻時間(開始-終了)</TableCell>
+          <TableCell sx={TableStyleHeader}>補正時間(開始-終了)</TableCell>
+          <TableCell sx={TableStyleHeader}>平日普通(H)</TableCell>
+          <TableCell sx={TableStyleHeader}>平日時間外(H)</TableCell>
+          <TableCell sx={TableStyleHeader}>操作</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
