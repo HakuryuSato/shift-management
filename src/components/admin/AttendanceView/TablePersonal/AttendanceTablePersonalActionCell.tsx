@@ -7,7 +7,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTablePersonalActionClickHandlers";
 
 const iconButtonStyle = {
-  p: 0.5,
+  px: 0.5,
+  maxHeight: 5,
   '& .MuiSvgIcon-root': {
     fontSize: 16
   }
