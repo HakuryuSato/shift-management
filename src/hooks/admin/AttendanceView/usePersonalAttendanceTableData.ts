@@ -70,12 +70,14 @@ export function usePersonalAttendanceTableData() {
       const formattedDate = formatDateStringToMM_DD_Day(date);
 
       // 平日普通(H)
-      const workMinutes = attendance?.work_minutes ?? 0;
-      const regularHours = Math.round((workMinutes / 60) * 2) / 2;
+      const regularHours = attendance?.work_minutes === null || attendance?.work_minutes === undefined
+        ? "-"
+        : (Math.round((attendance.work_minutes / 60) * 2) / 2).toFixed(1);
 
       // 平日時間外(H)
-      const overtimeMinutes = attendance?.overtime_minutes ?? 0;
-      const overtimeHours = Math.round((overtimeMinutes / 60) * 2) / 2;
+      const overtimeHours = attendance?.overtime_minutes === null || attendance?.overtime_minutes === undefined
+        ? "-"
+        : (Math.round((attendance.overtime_minutes / 60) * 2) / 2).toFixed(1);
 
       // 開始と終了
       const adjustedStartTime = attendance?.adjusted_start_time
@@ -87,8 +89,9 @@ export function usePersonalAttendanceTableData() {
         : '';
 
       // 休憩
-      const restMinutes = attendance?.rest_minutes ?? 0;
-      const breakHours = Math.round((restMinutes / 60) * 2) / 2;
+      const breakHours = attendance?.rest_minutes === null || attendance?.rest_minutes === undefined
+        ? "-"
+        : (Math.round((attendance.rest_minutes / 60) * 2) / 2).toFixed(1);
 
       // 打刻開始と終了
       const stampStartTime = attendance?.stamp_start_time
@@ -102,11 +105,11 @@ export function usePersonalAttendanceTableData() {
       return {
         date: dateString,
         formattedDate: formattedDate,
-        regularHours: regularHours.toFixed(1),
-        overtimeHours: overtimeHours.toFixed(1),
+        regularHours,
+        overtimeHours,
         adjustedStartTime: adjustedStartTime,
         adjustedEndTime: adjustedEndTime,
-        breakHours: breakHours.toFixed(1),
+        breakHours,
         stampStartTime: stampStartTime,
         stampEndTime: stampEndTime,
         attendanceId: attendance?.attendance_id,

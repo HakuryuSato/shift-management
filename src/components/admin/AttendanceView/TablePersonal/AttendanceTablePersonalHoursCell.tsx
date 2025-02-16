@@ -52,7 +52,7 @@ export function AttendanceTablePersonalHoursCell({
               fontSize: "0.9rem",
             },
           }}
-          value={cellValue}
+          value={cellValue === "-" ? "" : cellValue}
           onChange={handleChange}
           variant="standard"
           size="small"
