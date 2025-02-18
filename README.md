@@ -34,27 +34,28 @@
 - テスト: Jest
 - 静的解析: ESLint
 
-### フロントエンド（Nextjs）
+### インフラ
+- Vercel
+
+### フロントエンド Nextjs
 #### 主要ライブラリ
 - FullCalendar（カレンダーUI）
 - Material-UI（UI） 
 - Zustand（状態管理）
 - yudiel/react-qr-scanner（QR読み取り）
 
-### バックエンド（Nextjs + supabase）
+### バックエンド Nextjs(nodejs) + supabase
 ### データベース
 - supabase
 
 #### 主要ライブラリ
 - NextAuth（認証）
-- Holidays JP API（祝日用API）
 - exceljs（Excel生成用）
-
-### インフラ
-- Vercel
 
 #### 利用サービス
 - Cron Jobs (シフト固定ユーザーのための自動登録用)
+- Holidays JP API（祝日用API）
+
 ## インフラ構成図
 ![インフラ構成図](documents/6_インフラ構成図.png)
 
