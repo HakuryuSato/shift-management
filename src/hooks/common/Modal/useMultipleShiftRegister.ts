@@ -15,7 +15,7 @@ const defaultDayTimes: AutoShiftTime[] = Array.from({ length: 6 }, (_, index) =>
   day_of_week: index + 1,
   start_time: "08:30",
   end_time: "18:00",
-  is_enabled: true, // 土曜日のみデフォルトでtrue
+  is_enabled: true,
 }));
 
 // 秒を切り捨てて「HH:MM」形式に統一するヘルパー
