@@ -12,14 +12,14 @@ const defaultDayTimes: AutoShiftTime[] = Array.from(
     day_of_week: index + 1,
     start_time: "08:30",
     end_time: "18:00",
-    is_enabled: true,
+    is_enabled: index === 5, // 最後の要素（index 5）のみ true
   })
 );
 
 export function useMultipleShiftRegister() {
   const user_id = useUserHomeStore((state) => state.userId);
 
-  // Multiple Shift Register
+  // State群 -------------------------------------------------
   const multipleShiftRegisterDayTimes = useMultipleShiftRegisterStore(
     (state) => state.multipleShiftRegisterDayTimes
   );
@@ -56,7 +56,7 @@ export function useMultipleShiftRegister() {
   );
 
 
-  // onChange時のハンドラを作成し、ローカルストレージとグローバル状態の両方を更新
+  // 関数群 onChange時ローカルストレージとグローバル状態の両方を更新 -------------------------------------------------
   const setDayTimes = useCallback((data: AutoShiftTime[]) => {
     setMultipleShiftRegisterDayTimes(data);
     setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_dayTimes, data);
@@ -77,11 +77,13 @@ export function useMultipleShiftRegister() {
   }, [setMultipleShiftRegisterError]);
 
 
+  // Fetch  -------------------------------------------------
   const { data: autoShiftSettings, error: fetchError, mutate } = useSWR(
     user_id ? `/auto_shift_settings/${user_id}` : null,
     () => fetchAutoShiftSettings(String(user_id))
   );
 
+  // useEffect群 -------------------------------------------------
   // 初期化時にローカルストレージから値を取得して、グローバル状態を更新
   useEffect(() => {
     const storedDayTimes = getLocalStorageItem<AutoShiftTime[]>(
