@@ -115,15 +115,38 @@ export function useMultipleShiftRegister() {
       dbValue: T | undefined,
       isCron: boolean
     ): T => {
+      // 時間形式を "HH:MM" に統一する処理
+      const formatTimeValues = (value: any): any => {
+        // AutoShiftTime[] 型の場合、start_time と end_time から秒を除去
+        if (Array.isArray(value) && value.length > 0 && 'start_time' in value[0]) {
+          return value.map((item: any) => ({
+            ...item,
+            start_time: item.start_time.includes(':') 
+              ? item.start_time.slice(0, 5) // "HH:MM:SS" → "HH:MM"
+              : item.start_time,
+            end_time: item.end_time.includes(':') 
+              ? item.end_time.slice(0, 5) // "HH:MM:SS" → "HH:MM"
+              : item.end_time,
+          }));
+        }
+        return value;
+      };
+
+      // ローカルストレージから値を取得
       const localValue = getLocalStorageItem<T | null>(storageKey, null);
       if (localValue != null) {
-        return localValue;
+        return formatTimeValues(localValue);
       }
+      
+      // DBから値を取得
       if (isCron && dbValue !== undefined) {
-        setLocalStorageItem(storageKey, dbValue);
-        return dbValue;
+        const formattedValue = formatTimeValues(dbValue);
+        setLocalStorageItem(storageKey, formattedValue);
+        return formattedValue;
       }
-      return defaultValue;
+      
+      // デフォルト値を返す
+      return formatTimeValues(defaultValue);
     },
     []
   );
