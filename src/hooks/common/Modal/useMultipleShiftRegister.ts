@@ -3,18 +3,32 @@ import useSWR from "swr";
 import { fetchAutoShiftSettings } from "@/utils/client/apiClient";
 import { useUserHomeStore } from "@/stores/user/userHomeSlice";
 import type { AutoShiftSettings, AutoShiftTime } from "@/types/AutoShift";
-import { getLocalStorageItem, setLocalStorageItem, LOCAL_STORAGE_KEYS } from "@/utils/client/localStorage";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  LOCAL_STORAGE_KEYS,
+} from "@/utils/client/localStorage";
 import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
-const defaultDayTimes: AutoShiftTime[] = Array.from(
-  { length: 6 },
-  (_, index) => ({
-    day_of_week: index + 1,
-    start_time: "08:30",
-    end_time: "18:00",
-    is_enabled: index === 5, // 土曜日のみデフォルトでtrue
-  })
-);
+// デフォルトのdayTimes（分までの形式）
+const defaultDayTimes: AutoShiftTime[] = Array.from({ length: 6 }, (_, index) => ({
+  day_of_week: index + 1,
+  start_time: "08:30",
+  end_time: "18:00",
+  is_enabled: true, // 土曜日のみデフォルトでtrue
+}));
+
+// 秒を切り捨てて「HH:MM」形式に統一するヘルパー
+function trimSeconds(
+  autoShiftTimes: AutoShiftTime[] | undefined
+): AutoShiftTime[] | undefined {
+  if (!autoShiftTimes) return undefined;
+  return autoShiftTimes.map((item) => ({
+    ...item,
+    start_time: item.start_time.slice(0, 5), // "HH:MM:SS" → "HH:MM"
+    end_time: item.end_time.slice(0, 5),     // "HH:MM:SS" → "HH:MM"
+  }));
+}
 
 export function useMultipleShiftRegister() {
   const user_id = useUserHomeStore((state) => state.userId);
@@ -55,27 +69,37 @@ export function useMultipleShiftRegister() {
     (state) => state.multipleShiftRegisterIsCronJobsEnabled
   );
 
-
   // 関数群 onChange時ローカルストレージとグローバル状態の両方を更新 -------------------------------------------------
-  const setDayTimes = useCallback((data: AutoShiftTime[]) => {
-    setMultipleShiftRegisterDayTimes(data);
-    setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_dayTimes, data);
-  }, [setMultipleShiftRegisterDayTimes]);
+  const setDayTimes = useCallback(
+    (data: AutoShiftTime[]) => {
+      setMultipleShiftRegisterDayTimes(data);
+      setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_dayTimes, data);
+    },
+    [setMultipleShiftRegisterDayTimes]
+  );
 
-  const setIsHolidayIncluded = useCallback((value: boolean) => {
-    setMultipleShiftRegisterIsHolidayIncluded(value);
-    setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded, value);
-  }, [setMultipleShiftRegisterIsHolidayIncluded]);
+  const setIsHolidayIncluded = useCallback(
+    (value: boolean) => {
+      setMultipleShiftRegisterIsHolidayIncluded(value);
+      setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded, value);
+    },
+    [setMultipleShiftRegisterIsHolidayIncluded]
+  );
 
-  const setIsAutoShiftEnabled = useCallback((value: boolean) => {
-    setMultipleShiftRegisterIsAutoShiftEnabled(value);
-    setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isEnabled, value);
-  }, [setMultipleShiftRegisterIsAutoShiftEnabled]);
+  const setIsAutoShiftEnabled = useCallback(
+    (value: boolean) => {
+      setMultipleShiftRegisterIsAutoShiftEnabled(value);
+      setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isEnabled, value);
+    },
+    [setMultipleShiftRegisterIsAutoShiftEnabled]
+  );
 
-  const setError = useCallback((error: string | null) => {
-    setMultipleShiftRegisterError(error);
-  }, [setMultipleShiftRegisterError]);
-
+  const setError = useCallback(
+    (error: string | null) => {
+      setMultipleShiftRegisterError(error);
+    },
+    [setMultipleShiftRegisterError]
+  );
 
   // Fetch  -------------------------------------------------
   const { data: autoShiftSettings, error: fetchError, mutate } = useSWR(
@@ -83,86 +107,78 @@ export function useMultipleShiftRegister() {
     () => fetchAutoShiftSettings(String(user_id))
   );
 
+  // ローカルストレージ or DB or デフォルトの値を取得するヘルパー
+  const getOrSetStorageValue = useCallback(
+    <T,>(
+      storageKey: string,
+      defaultValue: T,
+      dbValue: T | undefined,
+      isCron: boolean
+    ): T => {
+      const localValue = getLocalStorageItem<T | null>(storageKey, null);
+      if (localValue != null) {
+        return localValue;
+      }
+      if (isCron && dbValue !== undefined) {
+        setLocalStorageItem(storageKey, dbValue);
+        return dbValue;
+      }
+      return defaultValue;
+    },
+    []
+  );
+
+  // DBの設定値から初期化を行う
+  const initializeSettingsFromDB = useCallback(
+    (autoShiftSettings?: AutoShiftSettings[]) => {
+      const setting = autoShiftSettings?.[0];
+      const trimmedAutoShiftTimes = trimSeconds(setting?.auto_shift_times);
+
+      const dayTimes = getOrSetStorageValue<AutoShiftTime[]>(
+        LOCAL_STORAGE_KEYS.MultipleShift_dayTimes,
+        defaultDayTimes,
+        trimmedAutoShiftTimes,
+        multipleShiftRegisterIsCronJobsEnabled
+      );
+
+      const isHolidayIncluded = getOrSetStorageValue<boolean>(
+        LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded,
+        false,
+        setting?.is_holiday_included,
+        multipleShiftRegisterIsCronJobsEnabled
+      );
+
+      const isAutoShiftEnabled = getOrSetStorageValue<boolean>(
+        LOCAL_STORAGE_KEYS.MultipleShift_isEnabled,
+        false,
+        setting?.is_enabled,
+        multipleShiftRegisterIsCronJobsEnabled
+      );
+
+      setMultipleShiftRegisterDayTimes(dayTimes);
+      setMultipleShiftRegisterIsHolidayIncluded(isHolidayIncluded);
+      setMultipleShiftRegisterIsAutoShiftEnabled(isAutoShiftEnabled);
+    },
+    [
+      getOrSetStorageValue,
+      multipleShiftRegisterIsCronJobsEnabled,
+      setMultipleShiftRegisterDayTimes,
+      setMultipleShiftRegisterIsHolidayIncluded,
+      setMultipleShiftRegisterIsAutoShiftEnabled,
+    ]
+  );
+
   // useEffect群 -------------------------------------------------
   // 初期化時にローカルストレージから値を取得して、グローバル状態を更新
   useEffect(() => {
-    // ローカルストレージに値があるかチェック
-    const hasDayTimesInStorage = !!localStorage.getItem(LOCAL_STORAGE_KEYS.MultipleShift_dayTimes);
-    const hasHolidayIncludedInStorage = !!localStorage.getItem(LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded);
-    const hasAutoShiftEnabledInStorage = !!localStorage.getItem(LOCAL_STORAGE_KEYS.MultipleShift_isEnabled);
-
-    // multipleShiftRegisterIsCronJobsEnabledがtrueかつローカルストレージに値がない場合、
-    // autoShiftSettingsから取得したデータを使用
-    if (multipleShiftRegisterIsCronJobsEnabled && autoShiftSettings && autoShiftSettings.length > 0) {
-      if (!hasDayTimesInStorage) {
-        const fetchedDayTimes = autoShiftSettings[0]?.auto_shift_times || defaultDayTimes;
-        setMultipleShiftRegisterDayTimes(fetchedDayTimes);
-        setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_dayTimes, fetchedDayTimes);
-      } else {
-        const storedDayTimes = getLocalStorageItem<AutoShiftTime[]>(
-          LOCAL_STORAGE_KEYS.MultipleShift_dayTimes,
-          defaultDayTimes
-        );
-        setMultipleShiftRegisterDayTimes(storedDayTimes);
-      }
-
-      if (!hasHolidayIncludedInStorage) {
-        const fetchedIsHolidayIncluded = autoShiftSettings[0]?.is_holiday_included || false;
-        setMultipleShiftRegisterIsHolidayIncluded(fetchedIsHolidayIncluded);
-        setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded, fetchedIsHolidayIncluded);
-      } else {
-        const storedIsHolidayIncluded = getLocalStorageItem<boolean>(
-          LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded,
-          false
-        );
-        setMultipleShiftRegisterIsHolidayIncluded(storedIsHolidayIncluded);
-      }
-
-      if (!hasAutoShiftEnabledInStorage) {
-        const fetchedIsAutoShiftEnabled = autoShiftSettings[0]?.is_enabled || false;
-        setMultipleShiftRegisterIsAutoShiftEnabled(fetchedIsAutoShiftEnabled);
-        setLocalStorageItem(LOCAL_STORAGE_KEYS.MultipleShift_isEnabled, fetchedIsAutoShiftEnabled);
-      } else {
-        const storedIsAutoShiftEnabled = getLocalStorageItem<boolean>(
-          LOCAL_STORAGE_KEYS.MultipleShift_isEnabled,
-          false
-        );
-        setMultipleShiftRegisterIsAutoShiftEnabled(storedIsAutoShiftEnabled);
-      }
-    } else {
-      // 通常の処理（ローカルストレージから取得、なければデフォルト値）
-      const storedDayTimes = getLocalStorageItem<AutoShiftTime[]>(
-        LOCAL_STORAGE_KEYS.MultipleShift_dayTimes,
-        defaultDayTimes
-      );
-      setMultipleShiftRegisterDayTimes(storedDayTimes);
-
-      const storedIsHolidayIncluded = getLocalStorageItem<boolean>(
-        LOCAL_STORAGE_KEYS.MultipleShift_isHolidayIncluded,
-        false
-      );
-      setMultipleShiftRegisterIsHolidayIncluded(storedIsHolidayIncluded);
-
-      const storedIsAutoShiftEnabled = getLocalStorageItem<boolean>(
-        LOCAL_STORAGE_KEYS.MultipleShift_isEnabled,
-        false
-      );
-      setMultipleShiftRegisterIsAutoShiftEnabled(storedIsAutoShiftEnabled);
-    }
-  }, [
-    setMultipleShiftRegisterDayTimes,
-    setMultipleShiftRegisterIsHolidayIncluded,
-    setMultipleShiftRegisterIsAutoShiftEnabled,
-    multipleShiftRegisterIsCronJobsEnabled,
-    autoShiftSettings,
-  ]);
+    initializeSettingsFromDB(autoShiftSettings);
+  }, [autoShiftSettings, initializeSettingsFromDB]);
 
   // mutateされたら自動シフト登録中かどうかを更新
   useEffect(() => {
     const isClonJobs = autoShiftSettings?.[0]?.is_enabled ?? false;
     setMultipleShiftRegisterIsCronJobsEnabled(isClonJobs);
-  }, [autoShiftSettings, multipleShiftRegisterIsCronJobsEnabled, setMultipleShiftRegisterIsCronJobsEnabled]);
-
+  }, [autoShiftSettings, setMultipleShiftRegisterIsCronJobsEnabled]);
 
   return {
     dayTimes: multipleShiftRegisterDayTimes,
