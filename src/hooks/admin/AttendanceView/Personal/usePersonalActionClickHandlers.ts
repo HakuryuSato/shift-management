@@ -14,7 +14,7 @@ const combineToISOString = (date: string, time: string): string => {
 
 };
 
-export const useAttendanceTablePersonalActionClickHandlers = (rowIndex: number) => {
+export const usePersonalActionClickHandlers = (rowIndex: number) => {
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalEditingRow,
   );

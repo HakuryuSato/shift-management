@@ -1,5 +1,5 @@
 import React from "react";
-import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/Personal/usePersonalActionClickHandlers";
+import { usePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/Personal/usePersonalActionClickHandlers";
 import { AttendanceTableActionCell } from "../common/AttendanceTableActionCell";
 
 interface Props {
@@ -13,7 +13,7 @@ export function PersonalActionCell({ rowIndex }: Props) {
     handleCancelClick,
     handleDeleteClick,
     isEditing,
-  } = useAttendanceTablePersonalActionClickHandlers(rowIndex);
+  } = usePersonalActionClickHandlers(rowIndex);
 
   return (
     <AttendanceTableActionCell
