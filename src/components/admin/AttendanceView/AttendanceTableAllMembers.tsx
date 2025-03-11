@@ -5,6 +5,8 @@ import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/Attendance
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { TableStyleHeader } from "@/styles/TableStyleHeader";
+import { AttendanceTableAllMembersEmployeeNoCell } from "./TableAllMembers/AttendanceTableAllMembersEmployeeNoCell";
+import { AttendanceTableAllMembersActionCell } from "./TableAllMembers/AttendanceTableAllMembersActionCell";
 
 export function AttendanceTableAllMembers() {
   // カスタムフックを呼び出してデータを取得
@@ -32,15 +34,17 @@ export function AttendanceTableAllMembers() {
           <TableCell sx={TableStyleHeader}>出勤日数</TableCell>
           <TableCell sx={TableStyleHeader}>平日普通</TableCell>
           <TableCell sx={TableStyleHeader}>平日時間外</TableCell>
+          <TableCell sx={TableStyleHeader}>操作</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {adminAttendanceTableAllMembersRows.map(
-          ({ user, employeeNo, employmentTypeText, workDays, workHours, overtimeHours }) => (
+          ({ user, employeeNo, employmentTypeText, workDays, workHours, overtimeHours }, index) => (
             <TableRow key={user.user_id}>
-              <TableCell>
-                {employeeNo}
-              </TableCell>
+              <AttendanceTableAllMembersEmployeeNoCell
+                employeeNo={employeeNo}
+                rowIndex={index}
+              />
 
               <TableCell>
                 <span
@@ -61,6 +65,9 @@ export function AttendanceTableAllMembers() {
               <TableCell>{workDays}</TableCell>
               <TableCell>{workHours.toFixed(1)}</TableCell>
               <TableCell>{overtimeHours.toFixed(1)}</TableCell>
+              <AttendanceTableAllMembersActionCell
+                rowIndex={index}
+              />
             </TableRow>
           ),
         )}
