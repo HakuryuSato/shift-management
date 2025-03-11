@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TableCell, TextField } from "@mui/material";
-import { useAttendanceTableAllMembersActionClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAttendanceTableAllMembersActionClickHandlers";
+import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
 
 interface Props {
   employeeNo: string;
@@ -8,21 +8,38 @@ interface Props {
 }
 
 export function AttendanceTableAllMembersEmployeeNoCell({ employeeNo, rowIndex }: Props) {
-  const {
-    handleEmployeeNoChange,
-    tempEmployeeNo,
-    isEditing,
-  } = useAttendanceTableAllMembersActionClickHandlers(rowIndex);
+  const adminAttendanceTableAllMembersEditingRow = useAttendanceTableAllMembersStore(
+    (state) => state.adminAttendanceTableAllMembersEditingRow
+  );
+  const setAdminAttendanceTableAllMembersEditingRow = useAttendanceTableAllMembersStore(
+    (state) => state.setAdminAttendanceTableAllMembersEditingRow
+  );
 
+  const isEditing = adminAttendanceTableAllMembersEditingRow?.rowIndex === rowIndex;
+  
   // 編集モードでない場合は通常のセルを表示
   if (!isEditing) {
     return <TableCell>{employeeNo}</TableCell>;
   }
 
+  const currentEmployeeNo = adminAttendanceTableAllMembersEditingRow?.rowData?.employeeNo || "";
+
+  const handleEmployeeNoChange = (value: string) => {
+    if (adminAttendanceTableAllMembersEditingRow?.rowData) {
+      setAdminAttendanceTableAllMembersEditingRow({
+        ...adminAttendanceTableAllMembersEditingRow,
+        rowData: {
+          ...adminAttendanceTableAllMembersEditingRow.rowData,
+          employeeNo: value
+        }
+      });
+    }
+  };
+
   return (
     <TableCell>
       <TextField
-        value={tempEmployeeNo}
+        value={currentEmployeeNo}
         onChange={(e) => handleEmployeeNoChange(e.target.value)}
         variant="standard"
         size="small"

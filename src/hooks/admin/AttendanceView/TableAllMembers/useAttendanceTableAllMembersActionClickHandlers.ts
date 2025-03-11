@@ -1,5 +1,4 @@
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
-import { useState } from "react";
 import { updateUser } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceView } from "../useAdminAttendanceView";
 
@@ -17,9 +16,6 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
 
   // 現在の行のデータを取得
   const currentRowData = adminAttendanceTableAllMembersRows[rowIndex];
-  const [tempEmployeeNo, setTempEmployeeNo] = useState<string>(
-    currentRowData?.employeeNo || ""
-  );
 
   const handleEditClick = () => {
     // 他の行が編集中の場合、その編集状態をクリア
@@ -32,8 +28,6 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
 
     // この行の編集を開始
     if (currentRowData) {
-      setTempEmployeeNo(currentRowData.employeeNo);
-
       setAdminAttendanceTableAllMembersEditingRow({
         rowIndex,
         rowData: {
@@ -44,12 +38,21 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
   };
 
   const handleSaveClick = async () => {
+    if (!adminAttendanceTableAllMembersEditingRow?.rowData) return;
     if (!currentRowData) return;
-    if (!tempEmployeeNo) return
+    
+    const editedEmployeeNo = adminAttendanceTableAllMembersEditingRow.rowData.employeeNo;
+    if (!editedEmployeeNo) return;
+
+    // 変更がない場合は早期リターン
+    if (editedEmployeeNo === currentRowData.employeeNo) {
+      setAdminAttendanceTableAllMembersEditingRow(null);
+      return;
+    }
 
     await updateUser({
       user_id: currentRowData.user.user_id,
-      employee_no: Number(tempEmployeeNo)
+      employee_no: Number(editedEmployeeNo)
     });
 
     // 編集状態を解除
@@ -63,16 +66,10 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
     setAdminAttendanceTableAllMembersEditingRow(null);
   };
 
-  const handleEmployeeNoChange = (value: string) => {
-    setTempEmployeeNo(value);
-  };
-
   return {
     handleEditClick,
     handleSaveClick,
     handleCancelClick,
-    handleEmployeeNoChange,
-    tempEmployeeNo,
     isEditing: adminAttendanceTableAllMembersEditingRow?.rowIndex === rowIndex,
   };
 };
