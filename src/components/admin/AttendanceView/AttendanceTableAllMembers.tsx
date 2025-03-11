@@ -1,7 +1,7 @@
 import React from "react";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
-import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/useAttendanceTableAllMembers";
-import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
+import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAttendanceTableAllMembers";
+import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import { TableCell, TableRow } from "@mui/material";
 import { AttendanceTableAllMembersEmployeeNoCell } from "./TableAllMembers/AttendanceTableAllMembersEmployeeNoCell";

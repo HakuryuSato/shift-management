@@ -1,4 +1,4 @@
-import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/usePersonalAttendanceTableData";
+import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/TablePersonal/usePersonalAttendanceTableData";
 import {
   TableCell,
   TableRow,

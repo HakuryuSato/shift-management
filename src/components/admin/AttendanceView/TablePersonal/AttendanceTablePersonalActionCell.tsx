@@ -1,5 +1,5 @@
 import React from "react";
-import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTablePersonalActionClickHandlers";
+import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/TablePersonal/useAttendanceTablePersonalActionClickHandlers";
 import { AttendanceTableActionCell } from "../common/AttendanceTableActionCell";
 
 interface Props {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { TableCell, TextField } from "@mui/material";
-import { useAttendanceTableAllMembersActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTableAllMembersActionClickHandlers";
+import { useAttendanceTableAllMembersActionClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAttendanceTableAllMembersActionClickHandlers";
 
 interface Props {
   employeeNo: string;

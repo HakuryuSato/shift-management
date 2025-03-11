@@ -1,7 +1,7 @@
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { updateAttendanceStamp, insertAttendance, updateAttendance, deleteAttendance } from "@/utils/client/serverActionClient";
-import { useAdminAttendanceView } from "./useAdminAttendanceView";
+import { useAdminAttendanceView } from "../useAdminAttendanceView";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
 const combineToISOString = (date: string, time: string): string => {
