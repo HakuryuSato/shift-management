@@ -11,9 +11,7 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
   const setAdminAttendanceTableAllMembersEditingRow = useAttendanceTableAllMembersStore(
     (state) => state.setAdminAttendanceTableAllMembersEditingRow
   );
-  const updateEmployeeNo = useAttendanceTableAllMembersStore(
-    (state) => state.updateEmployeeNo
-  );
+
 
   // 現在の行のデータを取得
   const currentRowData = adminAttendanceTableAllMembersRows[rowIndex];
@@ -58,21 +56,7 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
   };
 
   const handleSaveClick = async () => {
-    if (!adminAttendanceTableAllMembersEditingRow?.rowData) return;
-
-    try {
-      // 従業員番号を更新
-      updateEmployeeNo(rowIndex, tempEmployeeNo);
-      
-      // TODO: ここでAPIを呼び出して従業員番号を更新する処理を追加
-      // 現在は仮実装として、フロントエンドの状態のみを更新
-
-      // 編集状態を解除
-      setAdminAttendanceTableAllMembersEditingRow(null);
-    } catch (error) {
-      console.error('Error in handleSaveClick:', error);
-      throw error;
-    }
+    
   };
 
   const handleCancelClick = () => {
