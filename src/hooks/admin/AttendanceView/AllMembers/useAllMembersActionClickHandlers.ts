@@ -1,9 +1,9 @@
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
 import { updateUser } from "@/utils/client/serverActionClient";
-import { useAdminAttendanceView } from "../useAdminAttendanceView";
+import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
 
 export const useAllMembersActionClickHandlers = (rowIndex: number) => {
-  const { mutateAttendanceResults } = useAdminAttendanceView();
+  const { mutateUsers } = useAdminHomeUsersData();
   const adminAttendanceTableAllMembersRows = useAttendanceTableAllMembersStore(
     (state) => state.adminAttendanceTableAllMembersRows
   );
@@ -58,8 +58,8 @@ export const useAllMembersActionClickHandlers = (rowIndex: number) => {
     // 編集状態を解除
     setAdminAttendanceTableAllMembersEditingRow(null);
     
-    // データを再取得して表示を更新
-    await mutateAttendanceResults();
+    // ユーザーデータを再取得して表示を更新
+    await mutateUsers();
   };
 
   const handleCancelClick = () => {
