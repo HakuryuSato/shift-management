@@ -96,6 +96,10 @@ export const useAttendanceTableAllMembers = () => {
     
             return {
                 user,
+                employeeNo: user.employee_no 
+                    ? user.employee_no.toString().padStart(4, "0") 
+                    : "",
+                employmentTypeText: user.employment_type === 'full_time' ? "正社員" : "アルバイト",
                 workDays,
                 workHours,
                 overtimeHours,
