@@ -7,7 +7,7 @@ interface Props {
   rowIndex: number;
 }
 
-export function AttendanceTableAllMembersEmployeeNoCell({ employeeNo, rowIndex }: Props) {
+export function AllMembersEmployeeNoCell({ employeeNo, rowIndex }: Props) {
   const adminAttendanceTableAllMembersEditingRow = useAttendanceTableAllMembersStore(
     (state) => state.adminAttendanceTableAllMembersEditingRow
   );

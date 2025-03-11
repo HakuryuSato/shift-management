@@ -1,11 +1,11 @@
 import React from "react";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
-import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAttendanceTableAllMembers";
-import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAllMembersMonthlyTableClickHandlers";
+import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/AllMembers/useAttendanceTableAllMembers";
+import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/AllMembers/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import { TableCell, TableRow } from "@mui/material";
-import { AttendanceTableAllMembersEmployeeNoCell } from "./AllMembers/AttendanceTableAllMembersEmployeeNoCell";
-import { AttendanceTableAllMembersActionCell } from "./AllMembers/AttendanceTableAllMembersActionCell";
+import { AllMembersEmployeeNoCell } from "./AllMembers/AllMembersEmployeeNoCell";
+import { AllMembersActionCell } from "./AllMembers/AllMembersActionCell";
 import {
   CommonAttendanceTable,
   TableHeader,
@@ -47,7 +47,7 @@ export function AttendanceTableAllMembers() {
     index: number,
   ) => (
     <TableRow key={user.user_id}>
-      <AttendanceTableAllMembersEmployeeNoCell
+      <AllMembersEmployeeNoCell
         employeeNo={employeeNo}
         rowIndex={index}
       />
@@ -67,7 +67,7 @@ export function AttendanceTableAllMembers() {
       <TableCell>{workDays}</TableCell>
       <TableCell>{workHours.toFixed(1)}</TableCell>
       <TableCell>{overtimeHours.toFixed(1)}</TableCell>
-      <AttendanceTableAllMembersActionCell rowIndex={index} />
+      <AllMembersActionCell rowIndex={index} />
     </TableRow>
   );
 

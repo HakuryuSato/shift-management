@@ -1,18 +1,18 @@
 import React from "react";
-import { useAttendanceTableAllMembersActionClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAttendanceTableAllMembersActionClickHandlers";
+import { useAllMembersActionClickHandlers } from "@/hooks/admin/AttendanceView/AllMembers/useAllMembersActionClickHandlers";
 import { AttendanceTableActionCell } from "../common/AttendanceTableActionCell";
 
 interface Props {
   rowIndex: number;
 }
 
-export function AttendanceTableAllMembersActionCell({ rowIndex }: Props) {
+export function AllMembersActionCell({ rowIndex }: Props) {
   const {
     handleEditClick,
     handleSaveClick,
     handleCancelClick,
     isEditing,
-  } = useAttendanceTableAllMembersActionClickHandlers(rowIndex);
+  } = useAllMembersActionClickHandlers(rowIndex);
 
   return (
     <AttendanceTableActionCell

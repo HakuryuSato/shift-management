@@ -2,7 +2,7 @@ import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTabl
 import { updateUser } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceView } from "../useAdminAttendanceView";
 
-export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number) => {
+export const useAllMembersActionClickHandlers = (rowIndex: number) => {
   const { mutateAttendanceResults } = useAdminAttendanceView();
   const adminAttendanceTableAllMembersRows = useAttendanceTableAllMembersStore(
     (state) => state.adminAttendanceTableAllMembersRows
