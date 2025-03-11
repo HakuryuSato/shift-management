@@ -21,14 +21,15 @@ const generateAttendanceAllMembersTableData = (
   const result: string[][] = [];
 
   // ヘッダー行 - AttendanceTableAllMembers.tsxと同じヘッダーを使用
-  const headers = ['種別', '名前', '出勤日数', '平日普通', '平日時間外'];
+  const headers = ['従業員番号', '名前', '種別', '出勤日数', '平日普通', '平日時間外'];
   result.push(headers);
 
   // データ行 - AttendanceTableAllMembers.tsxと同じロジックを使用
-  attendanceRows.forEach(({ user, workDays, workHours, overtimeHours }) => {
+  attendanceRows.forEach(({ user, employeeNo, employmentTypeText, workDays, workHours, overtimeHours }) => {
     result.push([
-      user.employment_type === 'full_time' ? '正社員' : 'アルバイト',
+      employeeNo || '',
       user.user_name || '',
+      employmentTypeText || (user.employment_type === 'full_time' ? '正社員' : 'アルバイト'),
       workDays.toString(),
       workHours.toFixed(1),
       overtimeHours.toFixed(1),

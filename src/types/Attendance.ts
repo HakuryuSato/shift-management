@@ -40,6 +40,8 @@ export type AttendanceRowPersonal = {
 // 全員出退勤要約テーブルの型
 export type AttendanceRowAllMembers = {
   user: User;
+  employeeNo: string;
+  employmentTypeText: string;
   workDays: number;
   workHours: number;
   overtimeHours: number;

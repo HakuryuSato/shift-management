@@ -1,14 +1,17 @@
 import React from "react";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
-import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/useAttendanceTableAllMembers";
-import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/useAllMembersMonthlyTableClickHandlers";
+import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/AllMembers/useAttendanceTableAllMembers";
+import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/AllMembers/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import { TableStyleHeader } from "@/styles/TableStyleHeader";
-
+import { TableCell, TableRow } from "@mui/material";
+import { AllMembersEmployeeNoCell } from "./AllMembers/AllMembersEmployeeNoCell";
+import { AllMembersActionCell } from "./AllMembers/AllMembersActionCell";
+import {
+  CommonAttendanceTable,
+  TableHeader,
+} from "./common/CommonAttendanceTable";
 
 export function AttendanceTableAllMembers() {
-
   // カスタムフックを呼び出してデータを取得
   useAttendanceTableAllMembers();
 
@@ -20,48 +23,61 @@ export function AttendanceTableAllMembers() {
   // クリックハンドラーを取得
   const { handleClickUserName } = useAllMembersMonthlyTableClickHandlers();
 
-  if (!adminAttendanceTableAllMembersRows) {
-    return <div>Loading...</div>;
-  }
+  // テーブルヘッダー定義
+  const headers: TableHeader[] = [
+    { id: "employeeNo", label: "従業員番号" },
+    { id: "name", label: "名前" },
+    { id: "type", label: "種別" },
+    { id: "workDays", label: "出勤日数" },
+    { id: "workHours", label: "平日普通" },
+    { id: "overtimeHours", label: "平日時間外" },
+    { id: "actions", label: "操作" },
+  ];
+
+  // 行のレンダリング関数
+  const renderRow = (
+    {
+      user,
+      employeeNo,
+      employmentTypeText,
+      workDays,
+      workHours,
+      overtimeHours,
+    }: any,
+    index: number,
+  ) => (
+    <TableRow key={user.user_id}>
+      <AllMembersEmployeeNoCell
+        employeeNo={employeeNo}
+        rowIndex={index}
+      />
+      <TableCell>
+        <span
+          onClick={() => handleClickUserName(user)}
+          style={{
+            color: "blue",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
+        >
+          {user.user_name}
+        </span>
+      </TableCell>
+      <TableCell>{employmentTypeText}</TableCell>
+      <TableCell>{workDays}</TableCell>
+      <TableCell>{workHours.toFixed(1)}</TableCell>
+      <TableCell>{overtimeHours.toFixed(1)}</TableCell>
+      <AllMembersActionCell rowIndex={index} />
+    </TableRow>
+  );
 
   return (
-    <TableStyleAttendanceAllMembers>
-      <TableHead>
-        <TableRow>
-          <TableCell sx={TableStyleHeader}>種別</TableCell>
-          <TableCell sx={TableStyleHeader}>名前</TableCell>
-          <TableCell sx={TableStyleHeader}>出勤日数</TableCell>
-          <TableCell sx={TableStyleHeader}>平日普通</TableCell>
-          <TableCell sx={TableStyleHeader}>平日時間外</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {adminAttendanceTableAllMembersRows.map(
-          ({ user, workDays, workHours, overtimeHours }) => (
-            <TableRow key={user.user_id}>
-              <TableCell>
-                {user.employment_type === "full_time" ? "正社員" : "アルバイト"}
-              </TableCell>
-              <TableCell>
-                <span
-                  onClick={() =>
-                    handleClickUserName(user)}
-                  style={{
-                    color: "blue",
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  }}
-                >
-                  {user.user_name}
-                </span>
-              </TableCell>
-              <TableCell>{workDays}</TableCell>
-              <TableCell>{workHours.toFixed(1)}</TableCell>
-              <TableCell>{overtimeHours.toFixed(1)}</TableCell>
-            </TableRow>
-          ),
-        )}
-      </TableBody>
-    </TableStyleAttendanceAllMembers>
+    <CommonAttendanceTable
+      TableStyleComponent={TableStyleAttendanceAllMembers}
+      headers={headers}
+      rows={adminAttendanceTableAllMembersRows || []}
+      renderRow={renderRow}
+      isLoading={!adminAttendanceTableAllMembersRows}
+    />
   );
 }

@@ -3,6 +3,7 @@
 // サーバーアクション関数(サーバーアクションと同じ名称でこのクライアントから実行するため、serverAction xx でインポートしています)
 import { deleteUser as serverActionDeleteUser } from '@/app/actions/deleteUser';
 import { insertUser as serverActionInsertUser } from '@/app/actions/insertUser';
+import { updateUser as serverActionUpdateUser } from '@/app/actions/updateUser';
 import { insertShift as serverActionInsertShift } from '@/app/actions/insertShift';
 import { updateShift as serverActionUpdateShift } from '@/app/actions/updateShift';
 import { deleteShift as serverActionDeleteShift } from '@/app/actions/deleteShift';
@@ -62,6 +63,15 @@ export async function deleteUser(userName: string): Promise<any | null> {
  */
 export async function insertUser(user: User): Promise<User | null> {
   return await handleServerAction(() => serverActionInsertUser(user));
+}
+
+/**
+ * ユーザー情報を更新するサーバーアクションを呼び出す関数
+ * @param userData 更新するユーザーデータ
+ * @returns 更新されたユーザーデータまたは null
+ */
+export async function updateUser(userData: Partial<User>): Promise<User> {
+  return await handleServerAction(() => serverActionUpdateUser(userData));
 }
 
 

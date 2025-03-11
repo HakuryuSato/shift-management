@@ -96,18 +96,20 @@ export const useAttendanceTableAllMembers = () => {
     
             return {
                 user,
+                employeeNo: user.employee_no 
+                    ? user.employee_no.toString().padStart(4, "0") 
+                    : "",
+                employmentTypeText: user.employment_type === 'full_time' ? "正社員" : "アルバイト",
                 workDays,
                 workHours,
                 overtimeHours,
             };
         });
     
-        // employment_typeで正社員が優先されるようにソート
-        // full_timeならば1となる
-        const sortedRows = adminAttendanceTableAllMembersRows.sort((a, b) => {
-            return Number(b.user.employment_type === 'full_time') 
-                   - Number(a.user.employment_type === 'full_time');
-          });
+        // 従業員番号で昇順にソート（値がないものは下に表示）
+        const sortedRows = adminAttendanceTableAllMembersRows.sort((a, b) =>
+            (!a.employeeNo ? 1 : !b.employeeNo ? -1 : parseInt(a.employeeNo, 10) - parseInt(b.employeeNo, 10))
+        );
     
         setAdminAttendanceTableAllMembersRows(sortedRows);
     }, [

@@ -4,7 +4,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/useAttendanceTablePersonalActionClickHandlers";
 
 const iconButtonStyle = {
   px: 0.5,
@@ -16,24 +15,36 @@ const iconButtonStyle = {
 
 interface Props {
   rowIndex: number;
+  showDeleteButton?: boolean;
+  isEditing: boolean;
+  isSaving?: boolean;
+  onEditClick: () => void;
+  onSaveClick: () => Promise<void>;
+  onCancelClick: () => void;
+  onDeleteClick?: () => void;
 }
 
-export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
-  const [isSaving, setIsSaving] = useState(false);
-  const {
-    handleEditClick,
-    handleSaveClick,
-    handleCancelClick,
-    handleDeleteClick,
-    isEditing,
-  } = useAttendanceTablePersonalActionClickHandlers(rowIndex);
+export function AttendanceTableActionCell({
+  rowIndex,
+  showDeleteButton = false,
+  isEditing,
+  isSaving = false,
+  onEditClick,
+  onSaveClick,
+  onCancelClick,
+  onDeleteClick
+}: Props) {
+  const [localIsSaving, setLocalIsSaving] = useState(false);
+  
+  // Use either the provided isSaving state or the local one
+  const savingState = isSaving || localIsSaving;
 
   const handleSaveWithLoading = async () => {
-    setIsSaving(true);
+    setLocalIsSaving(true);
     try {
-      await handleSaveClick();
+      await onSaveClick();
     } finally {
-      setIsSaving(false);
+      setLocalIsSaving(false);
     }
   };
 
@@ -46,33 +57,35 @@ export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
               onClick={handleSaveWithLoading} 
               size="small" 
               color="primary"
-              disabled={isSaving}
+              disabled={savingState}
               sx={iconButtonStyle}
             >
-              {isSaving ? <CircularProgress size={16} /> : <CheckIcon />}
+              {savingState ? <CircularProgress size={16} /> : <CheckIcon />}
             </IconButton>
             <IconButton
-              onClick={handleCancelClick}
+              onClick={onCancelClick}
               size="small"
               color="default"
               sx={iconButtonStyle}
             >
               <CloseIcon />
             </IconButton>
-            <IconButton 
-              onClick={handleDeleteClick} 
-              size="small" 
-              color="error"
-              sx={iconButtonStyle}
-            >
-              <DeleteIcon />
-            </IconButton>
+            {showDeleteButton && onDeleteClick && (
+              <IconButton 
+                onClick={onDeleteClick} 
+                size="small" 
+                color="error"
+                sx={iconButtonStyle}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
           </>
         )
         : (
           // 編集アイコン
           <IconButton 
-            onClick={handleEditClick} 
+            onClick={onEditClick} 
             size="small"
             sx={iconButtonStyle}
           >

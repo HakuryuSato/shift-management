@@ -1,19 +1,19 @@
 import React from "react";
 import { Stack, TableCell } from "@mui/material";
-import { AttendanceTableTimeCellEdit } from "./AttendanceTablePersonalTimeCellEdit";
+import { PersonalTimeCell } from "./PersonalTimeCell";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 
-interface AttendanceTablePersonalTimeCellProps {
+interface PersonalTimeCellProps {
   startTime: string | null;
   endTime: string | null;
   rowIndex: number;
 }
 
-export function AttendanceTablePersonalStampsCell({
+export function PersonalStampsCell({
   startTime,
   endTime,
   rowIndex,
-}: AttendanceTablePersonalTimeCellProps) {
+}: PersonalTimeCellProps) {
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalEditingRow,
   );
@@ -58,7 +58,7 @@ export function AttendanceTablePersonalStampsCell({
   return (
     <TableCell>
       <Stack direction="row" spacing={1} alignItems="center">
-        <AttendanceTableTimeCellEdit
+        <PersonalTimeCell
           time={startTime}
           selectedTime={selectedStartTime}
           onTimeSelect={handleStartTimeChange}
@@ -75,7 +75,7 @@ export function AttendanceTablePersonalStampsCell({
           }}
         />
         <span>-</span>
-        <AttendanceTableTimeCellEdit
+        <PersonalTimeCell
           time={endTime}
           selectedTime={selectedEndTime}
           onTimeSelect={handleEndTimeChange}

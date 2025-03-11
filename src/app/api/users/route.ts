@@ -8,7 +8,7 @@ export async function GET() {
         return await handleSupabaseRequest(async (supabaseClient) => {
             return supabaseClient
                 .from('users')
-                .select('user_id,user_name,employment_type');
+                .select('user_id,user_name,employment_type,employee_no');
         });
     });
 }
