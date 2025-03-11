@@ -36,12 +36,10 @@ export function AttendanceTableAllMembers() {
       </TableHead>
       <TableBody>
         {adminAttendanceTableAllMembersRows.map(
-          ({ user, workDays, workHours, overtimeHours }) => (
+          ({ user, employeeNo, employmentTypeText, workDays, workHours, overtimeHours }) => (
             <TableRow key={user.user_id}>
               <TableCell>
-                {user.employee_no
-                  ? user.employee_no.toString().padStart(4, "0")
-                  : ""}
+                {employeeNo}
               </TableCell>
 
               <TableCell>
@@ -58,7 +56,7 @@ export function AttendanceTableAllMembers() {
                 </span>
               </TableCell>
               <TableCell>
-                {user.employment_type === "full_time" ? "正社員" : "アルバイト"}
+                {employmentTypeText}
               </TableCell>
               <TableCell>{workDays}</TableCell>
               <TableCell>{workHours.toFixed(1)}</TableCell>
