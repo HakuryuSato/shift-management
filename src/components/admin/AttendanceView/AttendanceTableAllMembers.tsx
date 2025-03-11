@@ -4,8 +4,8 @@ import { useAttendanceTableAllMembers } from "@/hooks/admin/AttendanceView/Table
 import { useAllMembersMonthlyTableClickHandlers } from "@/hooks/admin/AttendanceView/TableAllMembers/useAllMembersMonthlyTableClickHandlers";
 import { TableStyleAttendanceAllMembers } from "@/styles/TableStyleAttendanceAllMembers";
 import { TableCell, TableRow } from "@mui/material";
-import { AttendanceTableAllMembersEmployeeNoCell } from "./TableAllMembers/AttendanceTableAllMembersEmployeeNoCell";
-import { AttendanceTableAllMembersActionCell } from "./TableAllMembers/AttendanceTableAllMembersActionCell";
+import { AttendanceTableAllMembersEmployeeNoCell } from "./AllMembers/AttendanceTableAllMembersEmployeeNoCell";
+import { AttendanceTableAllMembersActionCell } from "./AllMembers/AttendanceTableAllMembersActionCell";
 import {
   CommonAttendanceTable,
   TableHeader,

@@ -1,12 +1,12 @@
 import React from "react";
-import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/TablePersonal/useAttendanceTablePersonalActionClickHandlers";
+import { useAttendanceTablePersonalActionClickHandlers } from "@/hooks/admin/AttendanceView/Personal/usePersonalActionClickHandlers";
 import { AttendanceTableActionCell } from "../common/AttendanceTableActionCell";
 
 interface Props {
   rowIndex: number;
 }
 
-export function AttendanceTablePersonalActionCell({ rowIndex }: Props) {
+export function PersonalActionCell({ rowIndex }: Props) {
   const {
     handleEditClick,
     handleSaveClick,

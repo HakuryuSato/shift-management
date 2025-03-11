@@ -27,7 +27,7 @@ const formatTime = (time: string | null): string => {
   return hours && minutes ? `${hours}:${minutes}` : time;
 };
 
-interface AttendanceTableTimeCellEditProps {
+interface AttendanceTableTimeCellProps {
   time: string | null;
   selectedTime: string;
   onTimeSelect: (time: string) => void;
@@ -36,7 +36,7 @@ interface AttendanceTableTimeCellEditProps {
   field: 'Start' | 'End';
 }
 
-export const AttendanceTableTimeCellEdit: React.FC<AttendanceTableTimeCellEditProps> = ({ 
+export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({ 
   time,
   selectedTime,
   onTimeSelect,

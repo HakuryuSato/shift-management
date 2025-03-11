@@ -1,13 +1,13 @@
-import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/TablePersonal/usePersonalAttendanceTableData";
+import { usePersonalAttendanceTableData } from "@/hooks/admin/AttendanceView/Personal/usePersonalAttendanceTableData";
 import {
   TableCell,
   TableRow,
 } from "@mui/material";
 import { TableStyleAttendancePersonal } from "@/styles/TableStyleAttendancePersonal";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
-import { AttendanceTablePersonalHoursCell } from "./TablePersonal/AttendanceTablePersonalHoursCell";
-import { AttendanceTablePersonalStampsCell } from "./TablePersonal/AttendanceTablePersonalStampsCell";
-import { AttendanceTablePersonalActionCell } from "./TablePersonal/AttendanceTablePersonalActionCell";
+import { PersonalHoursCell } from "./Personal/PersonalHoursCell";
+import { PersonalStampsCell } from "./Personal/PersonalStampsCell";
+import { PersonalActionCell } from "./Personal/PersonalActionCell";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { CommonAttendanceTable, TableHeader } from "./common/CommonAttendanceTable";
 
@@ -57,7 +57,7 @@ export function AttendanceTablePersonal() {
           // 編集モード
           <>
             {/* 打刻時間(開始-終了) */}
-            <AttendanceTablePersonalStampsCell
+            <PersonalStampsCell
               startTime={row.stampStartTime}
               endTime={row.stampEndTime}
               rowIndex={index}
@@ -67,12 +67,12 @@ export function AttendanceTablePersonal() {
               {row.adjustedStartTime} - {row.adjustedEndTime}
             </TableCell>
 
-            <AttendanceTablePersonalHoursCell
+            <PersonalHoursCell
               value={row.regularHours}
               rowIndex={index}
               field="regularHours"
             />
-            <AttendanceTablePersonalHoursCell
+            <PersonalHoursCell
               value={row.overtimeHours}
               rowIndex={index}
               field="overtimeHours"
@@ -92,7 +92,7 @@ export function AttendanceTablePersonal() {
           </>
         )}
         
-        <AttendanceTablePersonalActionCell
+        <PersonalActionCell
           rowIndex={index}
         />
       </TableRow>

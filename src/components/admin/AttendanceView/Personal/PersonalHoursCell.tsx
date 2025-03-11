@@ -9,7 +9,7 @@ interface EditableCellProps {
   field: keyof AttendanceRowPersonal;
 }
 
-export function AttendanceTablePersonalHoursCell({
+export function PersonalHoursCell({
   value,
   rowIndex,
   field,
