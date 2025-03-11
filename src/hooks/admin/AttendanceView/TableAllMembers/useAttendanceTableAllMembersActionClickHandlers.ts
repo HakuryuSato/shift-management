@@ -1,5 +1,6 @@
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { updateUser } from "@/utils/client/serverActionClient";
 
 export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number) => {
   const adminAttendanceTableAllMembersRows = useAttendanceTableAllMembersStore(
@@ -12,26 +13,11 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
     (state) => state.setAdminAttendanceTableAllMembersEditingRow
   );
 
-
   // 現在の行のデータを取得
   const currentRowData = adminAttendanceTableAllMembersRows[rowIndex];
   const [tempEmployeeNo, setTempEmployeeNo] = useState<string>(
     currentRowData?.employeeNo || ""
   );
-
-  // 行のデータが変更されたら、tempEmployeeNoを更新
-  useEffect(() => {
-    if (currentRowData) {
-      setTempEmployeeNo(currentRowData.employeeNo);
-    }
-  }, [currentRowData]);
-
-  // 編集状態が変わったときにtempEmployeeNoを更新
-  useEffect(() => {
-    if (adminAttendanceTableAllMembersEditingRow?.rowIndex === rowIndex && currentRowData) {
-      setTempEmployeeNo(currentRowData.employeeNo);
-    }
-  }, [adminAttendanceTableAllMembersEditingRow?.rowIndex, rowIndex, currentRowData]);
 
   const handleEditClick = () => {
     // 他の行が編集中の場合、その編集状態をクリア
@@ -41,11 +27,11 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
     ) {
       setAdminAttendanceTableAllMembersEditingRow(null);
     }
-    
+
     // この行の編集を開始
     if (currentRowData) {
       setTempEmployeeNo(currentRowData.employeeNo);
-      
+
       setAdminAttendanceTableAllMembersEditingRow({
         rowIndex,
         rowData: {
@@ -56,7 +42,17 @@ export const useAttendanceTableAllMembersActionClickHandlers = (rowIndex: number
   };
 
   const handleSaveClick = async () => {
-    
+    if (!currentRowData) return;
+    if (!tempEmployeeNo) return
+
+    await updateUser({
+      user_id: currentRowData.user.user_id,
+      employee_no: Number(tempEmployeeNo)
+    });
+
+    // 編集状態を解除
+    setAdminAttendanceTableAllMembersEditingRow(null);
+
   };
 
   const handleCancelClick = () => {
