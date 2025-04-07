@@ -6,7 +6,7 @@ export type AttendanceQuery = Partial<Pick<Attendance, 'user_id'>> & {
   endDate?: string;
 };
 
-// 新たなAttendanceテーブル
+// Attendanceテーブル
 export interface Attendance {
   attendance_id: number; // 主キー
   user_id: number; // 外部キー
