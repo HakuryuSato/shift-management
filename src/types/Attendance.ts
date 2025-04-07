@@ -19,6 +19,7 @@ export interface Attendance {
   overtime_minutes: number | null; // 残業時間 (分)
   rest_minutes: number | null; // 休憩時間 (分)
   special_event: '有給' | '振替出勤' | '振替休日' | null; // 特殊なイベント (nullable)
+  remarks?: string; // 備考欄のテキスト
   created_at?: string; // レコード作成日時
 };
 
