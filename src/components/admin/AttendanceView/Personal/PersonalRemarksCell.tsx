@@ -9,6 +9,10 @@ interface PersonalRemarksCellProps {
 
 export function PersonalRemarksCell({ value, rowIndex }: PersonalRemarksCellProps) {
   const [cellValue, setCellValue] = useState(value || "");
+  const [previousRemarks, setPreviousRemarks] = useState<string[]>(() => {
+    const storedRemarks = localStorage.getItem('previousRemarks');
+    return storedRemarks ? JSON.parse(storedRemarks) : [];
+  });
   
   const AttendanceTablePersonalEditingRow = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalEditingRow,
@@ -17,18 +21,22 @@ export function PersonalRemarksCell({ value, rowIndex }: PersonalRemarksCellProp
     (state) => state.setAttendanceTablePersonalEditingRow,
   );
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setCellValue(newValue);
-    
+  const handleBlur = () => {
     if (AttendanceTablePersonalEditingRow?.rowData) {
       setAttendanceTablePersonalEditingRow({
         ...AttendanceTablePersonalEditingRow,
         rowData: {
           ...AttendanceTablePersonalEditingRow.rowData,
-          remarks: newValue,
+          remarks: cellValue,
         },
       });
+
+      // 新しい備考を保存
+      if (cellValue && !previousRemarks.includes(cellValue)) {
+        const updatedRemarks = [...previousRemarks, cellValue];
+        setPreviousRemarks(updatedRemarks);
+        localStorage.setItem('previousRemarks', JSON.stringify(updatedRemarks));
+      }
     }
   };
 
@@ -38,16 +46,23 @@ export function PersonalRemarksCell({ value, rowIndex }: PersonalRemarksCellProp
         fullWidth
         size="small"
         value={cellValue}
+        onChange={(e) => setCellValue(e.target.value)}
+        onBlur={handleBlur}
         inputProps={{
+          list: "remarks-list",
           style: {
             textAlign: "center",
             padding: "0",
             fontSize: "0.9rem",
           },
         }}
-        onChange={handleChange}
         placeholder="備考を入力"
       />
+      <datalist id="remarks-list">
+        {previousRemarks.map((remark, index) => (
+          <option key={index} value={remark} />
+        ))}
+      </datalist>
     </TableCell>
   );
 }
