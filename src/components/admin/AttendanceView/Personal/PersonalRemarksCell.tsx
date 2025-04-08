@@ -38,6 +38,13 @@ export function PersonalRemarksCell({ value, rowIndex }: PersonalRemarksCellProp
         fullWidth
         size="small"
         value={cellValue}
+        inputProps={{
+          style: {
+            textAlign: "center",
+            padding: "0",
+            fontSize: "0.9rem",
+          },
+        }}
         onChange={handleChange}
         placeholder="備考を入力"
       />
