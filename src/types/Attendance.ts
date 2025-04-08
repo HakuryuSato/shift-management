@@ -6,7 +6,7 @@ export type AttendanceQuery = Partial<Pick<Attendance, 'user_id'>> & {
   endDate?: string;
 };
 
-// 新たなAttendanceテーブル
+// Attendanceテーブル
 export interface Attendance {
   attendance_id: number; // 主キー
   user_id: number; // 外部キー
@@ -19,6 +19,7 @@ export interface Attendance {
   overtime_minutes: number | null; // 残業時間 (分)
   rest_minutes: number | null; // 休憩時間 (分)
   special_event: '有給' | '振替出勤' | '振替休日' | null; // 特殊なイベント (nullable)
+  remarks?: string; // 備考欄のテキスト
   created_at?: string; // レコード作成日時
 };
 
@@ -35,6 +36,7 @@ export type AttendanceRowPersonal = {
   stampStartTime: string | null;
   stampEndTime: string | null;
   attendanceId?: number;
+  remarks?: string | null;
 };
 
 // 全員出退勤要約テーブルの型

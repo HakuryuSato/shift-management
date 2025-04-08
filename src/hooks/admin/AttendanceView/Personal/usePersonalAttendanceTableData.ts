@@ -102,6 +102,9 @@ export function usePersonalAttendanceTableData() {
         ? formatTimeStringToHH_MM(new Date(attendance.stamp_end_time))
         : '';
 
+      // 備考
+      const remarks = attendance?.remarks || null;
+
       return {
         date: dateString,
         formattedDate: formattedDate,
@@ -113,6 +116,7 @@ export function usePersonalAttendanceTableData() {
         stampStartTime: stampStartTime,
         stampEndTime: stampEndTime,
         attendanceId: attendance?.attendance_id,
+        remarks: remarks,
       };
     });
 
