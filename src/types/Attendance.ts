@@ -36,6 +36,7 @@ export type AttendanceRowPersonal = {
   stampStartTime: string | null;
   stampEndTime: string | null;
   attendanceId?: number;
+  remarks?: string | null;
 };
 
 // 全員出退勤要約テーブルの型
