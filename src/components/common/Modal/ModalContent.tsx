@@ -6,6 +6,7 @@ import { UserDropdown } from "./UserDropdown";
 import { useModalContent } from "@/hooks/common/Modal/useModalContent";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
 import { MultipleShiftRegister } from "./MultipleShiftRegister";
+import { ClosingDateContent } from "./ClosingDateContent";
 
 export const ModalContent: React.FC = () => {
   const modalRole = useModalContainerStore((state) => state.modalRole);
@@ -121,6 +122,13 @@ export const ModalContent: React.FC = () => {
         display={(modalMode === "multiple-register") ? "block" : "none"}
       >
         <MultipleShiftRegister />
+      </Box>
+
+      {/* 締め日変更なら */}
+      <Box
+        display={(modalMode === "closing-date") ? "block" : "none"}
+      >
+        <ClosingDateContent />
       </Box>
     </Box>
   );
