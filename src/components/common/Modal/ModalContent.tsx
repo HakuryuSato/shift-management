@@ -7,6 +7,14 @@ import { useModalContent } from "@/hooks/common/Modal/useModalContent";
 import { useModalContentStore } from "@/stores/common/modalContentSlice";
 import { MultipleShiftRegister } from "./MultipleShiftRegister";
 
+/*
+注意事項
+ModalContainer及びModalContentは、現状シフトと出退勤関連でのみ使用しています。
+ユーザーの登録削除や締日変更は別のモーダルとして実装されています。
+
+*/
+
+
 export const ModalContent: React.FC = () => {
   const modalRole = useModalContainerStore((state) => state.modalRole);
   const modalMode = useModalContainerStore((state) => state.modalMode);
