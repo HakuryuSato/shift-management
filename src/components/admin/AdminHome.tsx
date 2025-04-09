@@ -11,6 +11,7 @@ import { Box } from "@mui/material";
 // Hooks
 import { useCommonHomeInitialize } from "@/hooks/common/useCommonHomeInitialize";
 import { useAdminHomeUsersData } from "@/hooks/admin/useAdminHomeUsersData";
+import { useAdminHomeClosingDate } from "@/hooks/admin/useAdminHomeClosingDate";
 
 // Store
 import { useAdminHomeStore } from "@/stores/admin/adminHomeSlice";
@@ -19,6 +20,7 @@ export const AdminHome: React.FC = () => {
     // ユーザー情報を取得するカスタムフックを呼び出す
     useAdminHomeUsersData();
     useCommonHomeInitialize("admin");
+    useAdminHomeClosingDate();
 
     const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
 
