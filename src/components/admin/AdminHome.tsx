@@ -4,6 +4,7 @@ import { AdminAttendanceView } from "./AttendanceView/AdminAttendanceView";
 import { AdminHomeTopBar } from "./AdminHomeTopBar";
 import { ModalContainer } from "../common/Modal/ModalContainer";
 import { AdminUserManagementForm } from "./AttendanceView/AdminUserManagementForm";
+import { AdminClosingDateForm } from "./AttendanceView/AdminClosingDateForm";
 import { AdminShiftView } from "./AdminShiftView";
 import { Box } from "@mui/material";
 
@@ -25,6 +26,7 @@ export const AdminHome: React.FC = () => {
         <>
             <AdminHomeTopBar />
             <AdminUserManagementForm />
+            <AdminClosingDateForm />
             <ModalContainer />
             <Box mt={2.5}>
                 {adminHomeMode === 'SHIFT' ? <AdminShiftView /> : <AdminAttendanceView />}
