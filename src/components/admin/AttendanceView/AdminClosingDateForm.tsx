@@ -1,49 +1,82 @@
-import { Box, TextField, Typography } from "@mui/material";
-import { useAdminClosingDateFormStore } from "../../../stores/admin/adminClosingDateFormSlice";
+"use client";
+import React from "react";
+import {
+  Box,
+  Button,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useAdminClosingDateForm } from "@/hooks/admin/AttendanceView/useAdminClosingDateForm";
 
-export const AdminClosingDateForm = () => {
-  const { isVisibleAdminClosingDateForm, closeAdminClosingDateForm, adminClosingDateFormDate, setAdminClosingDateFormDate } = useAdminClosingDateFormStore();
+export function AdminClosingDateForm() {
+  const {
+    isAdminClosingDateFormVisible,
+    closingDate,
+    setClosingDate,
+    closingDateError,
+    closingDateHelperText,
+    handleClose,
+    handleSubmit,
+  } = useAdminClosingDateForm();
 
-  if (!isVisibleAdminClosingDateForm) return null;
+  if (!isAdminClosingDateFormVisible) return null;
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-      }}
-      onClick={closeAdminClosingDateForm}
+    <Modal
+      open={isAdminClosingDateFormVisible}
+      onClose={handleClose}
     >
       <Box
         sx={{
-          backgroundColor: "white",
-          padding: 2,
+          position: "absolute" as const,
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "background.paper",
           borderRadius: 1,
-          width: "300px",
+          boxShadow: 24,
+          p: 4,
+          maxWidth: 400,
+          width: "90%",
         }}
-        onClick={(e) => e.stopPropagation()}
       >
-        <Typography variant="h6" gutterBottom>
-          締め日を変更
+        <Typography variant="h6" component="h2" mb={2}>
+          締め日変更
+        </Typography>
+        <Typography variant="body1" mb={2}>
+          新しい締め日を選択してください（1日から31日まで）
         </Typography>
         <TextField
-          type="date"
-          value={adminClosingDateFormDate}
-          onChange={(e) => setAdminClosingDateFormDate(e.target.value)}
+          type="number"
+          label="締め日"
+          value={closingDate}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            if (value >= 1 && value <= 31) {
+              setClosingDate(value);
+            }
+          }}
           fullWidth
-          InputLabelProps={{
-            shrink: true,
+          margin="normal"
+          error={closingDateError}
+          helperText={closingDateHelperText}
+          inputProps={{
+            min: 1,
+            max: 31,
           }}
         />
+
+        <Box mt={4} textAlign="center">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+          >
+            変更
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Modal>
   );
-}; 
+} 
