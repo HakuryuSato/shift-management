@@ -38,7 +38,7 @@ export const useAdminClosingDateForm = () => {
       return;
     }
 
-    setAdminClosingDateFormDate(closingDate);
+    setAdminClosingDateFormDate(closingDate.toString());
     handleClose();
   }, [closingDate, setAdminClosingDateFormDate, handleClose]);
 
