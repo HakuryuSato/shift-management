@@ -29,6 +29,7 @@ export const ModalContainer: React.FC = () => {
         "multiple-register": multipleShiftRegisterIsCronJobsEnabled
             ? "解除"
             : "保存",
+        "closing-date": "変更",
     };
 
     return (
