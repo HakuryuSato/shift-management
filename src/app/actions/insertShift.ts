@@ -18,6 +18,7 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
   for (const shift of shiftArray) {
     // シフトデータが不完全な場合はスキップ
     if (!shift.user_id || !shift.start_time) {
+      console.log('Debug - スキップ：データが不完全'); // 一時的なデバッグログ
       continue;
     }
 
@@ -32,12 +33,14 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
 
     if (existingShifts.length === 0) {
       validShifts.push(shift);
+    } else { // 一時的なデバッグログ
+      console.log('Debug - スキップ：シフトが重複'); // 一時的なデバッグログ
     }
-    // 重複している場合はスキップ
   }
 
   // 有効なシフトがある場合のみ挿入を実行
   if (validShifts.length === 0) {
+    console.log('Debug - 有効なシフトがありません'); // 一時的なデバッグログ
     return [];
   }
 
