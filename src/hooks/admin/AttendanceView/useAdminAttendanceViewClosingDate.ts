@@ -15,11 +15,11 @@ export const useAdminAttendanceViewClosingDate = () => {
   const { 
     data: closingDateObj, 
     mutate: mutateClosingDate 
-  } = useSWR<ClosingDateResponse>(
+  } = useSWR<ClosingDateResponse | null>(
     'settings/closing-date',
     async () => {
       const response = await fetchSetting('closing-date');
-      return { value: response } as ClosingDateResponse;
+      return response;
     }
   );
 
