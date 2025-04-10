@@ -45,8 +45,6 @@ export function useAdminAttendanceView() {
         updateAttendancePersonalRowStyles();
     }, [responseData, setAdminAttendanceViewAllMembersMonthlyResult, updateAttendancePersonalRowStyles]);
 
-    //  ---------------------------------------------------------------------------------------------------
-
     return {
         data: responseData,
         error,
