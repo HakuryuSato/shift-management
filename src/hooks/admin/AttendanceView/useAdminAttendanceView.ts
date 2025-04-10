@@ -22,8 +22,7 @@ export function useAdminAttendanceView() {
         if (isDefaultStartDate && isDefaultEndDate) {
             const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
                 new Date(),
-                adminAttendanceViewClosingDate || 25,
-                0
+                adminAttendanceViewClosingDate
             );
             setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
         }

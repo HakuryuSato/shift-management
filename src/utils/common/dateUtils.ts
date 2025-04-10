@@ -273,3 +273,46 @@ export function getJapanDateComponents(date: Date): {
     dayOfWeek: japanDate.getUTCDay(), // 追加
   };
 }
+
+/**
+ * 指定した基準日と締め日をもとに日付範囲を取得する関数
+ * @param baseDate 基準となる日付
+ * @param closingDate 締め日（1-31）
+ * @param offsetMonths 基準月からのオフセット（省略時は0）
+ *   - 0: 現在の締め日+1日から翌月の締め日
+ *   - -1: 先月の締め日+1日から当月の締め日
+ *   - 1: 翌月の締め日+1日から翌々月の締め日
+ * @returns 指定した範囲の開始日と終了日（ローカルタイム）
+ * @throws {Error} 締め日が未設定または無効な値の場合
+ */
+export function getCustomDateRangeByClosingDate(
+  baseDate: Date,
+  closingDate: number | null,
+  offsetMonths: number = 0
+): { rangeStartDate: Date; rangeEndDate: Date } {
+  if (closingDate === null || closingDate === undefined) {
+    throw new Error('締め日が設定されていません。');
+  }
+
+  if (closingDate < 1 || closingDate > 31) {
+    throw new Error('締め日は1から31の間で指定してください。');
+  }
+
+  // 開始日: offsetMonths分前の締め日+1日
+  const rangeStartDate = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth() + offsetMonths - 1,
+    closingDate + 1,
+    0, 0, 0, 0
+  );
+
+  // 終了日: offsetMonths分の月の締め日
+  const rangeEndDate = new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth() + offsetMonths,
+    closingDate,
+    23, 59, 59, 999
+  );
+
+  return { rangeStartDate, rangeEndDate };
+}
