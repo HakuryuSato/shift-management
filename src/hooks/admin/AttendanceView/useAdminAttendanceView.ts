@@ -2,32 +2,29 @@ import { useEffect } from 'react';
 import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { fetchAttendances, fetchHolidays } from '@/utils/client/apiClient';
-import { getTimeRangeISOStrings, formatJapanDateToYearMonth, getCustomDateRangeByClosingDate } from '@/utils/common/dateUtils';
+import { getTimeRangeISOStrings, getCustomDateRangeByClosingDate } from '@/utils/common/dateUtils';
 import { useAttendancePersonalStyles } from "@/hooks/admin/AttendanceView/useAttendancePersonalStyles";
 
 // attendanceViewの開始終了日、1ヶ月の全員の出退勤データ
 export function useAdminAttendanceView() {
     const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
     const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
-    const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewDateRange);
-    const adminAttendanceViewClosingDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewClosingDate);
     const setAdminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyResult);
-    const {updateAttendancePersonalRowStyles} = useAttendancePersonalStyles();
+    const adminAttendanceViewClosingDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewClosingDate);
+    const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewDateRange);
+    const { updateAttendancePersonalRowStyles } = useAttendancePersonalStyles();
 
-    // 初期値の設定
+    // 締日から日付範囲を設定  -------------------------------------------------
     useEffect(() => {
-        const isDefaultStartDate = adminAttendanceViewStartDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
-        const isDefaultEndDate = adminAttendanceViewEndDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+        const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
+            new Date(),
+            adminAttendanceViewClosingDate
+        );
+        setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
+    }, [adminAttendanceViewClosingDate, setAdminAttendanceViewDateRange]);
 
-        if (isDefaultStartDate && isDefaultEndDate) {
-            const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
-                new Date(),
-                adminAttendanceViewClosingDate
-            );
-            setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
-        }
-    }, [adminAttendanceViewStartDate, adminAttendanceViewEndDate, adminAttendanceViewClosingDate, setAdminAttendanceViewDateRange]);
 
+    // 日付範囲から出退勤データをセット  -------------------------------------------------
     const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(
         'range',
         adminAttendanceViewStartDate,
@@ -48,5 +45,12 @@ export function useAdminAttendanceView() {
         updateAttendancePersonalRowStyles();
     }, [responseData, setAdminAttendanceViewAllMembersMonthlyResult, updateAttendancePersonalRowStyles]);
 
-    return { data: responseData, error, mutateAttendanceResults: mutate };
+    //  ---------------------------------------------------------------------------------------------------
+
+    return {
+        data: responseData,
+        error,
+        mutateAttendanceResults: mutate,
+        adminAttendanceViewClosingDate
+    };
 }
