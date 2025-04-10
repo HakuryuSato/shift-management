@@ -275,6 +275,45 @@ export function getJapanDateComponents(date: Date): {
 }
 
 /**
+ * 指定した年月の最終日を取得する
+ */
+function getLastDayOfMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+/**
+ * 指定した日付から指定月数オフセットした新しい日付を生成する
+ */
+function createDateWithMonthOffset(baseDate: Date, monthOffset: number): Date {
+  const newDate = new Date(baseDate);
+  newDate.setMonth(newDate.getMonth() + monthOffset);
+  return newDate;
+}
+
+/**
+ * 締め日に基づいて日付を設定する
+ */
+function setDateWithClosingDay(date: Date, closingDate: number, isStartDate: boolean): Date {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const lastDayOfMonth = getLastDayOfMonth(year, month);
+  
+  // 開始日の場合は締め日+1、終了日の場合は締め日をそのまま使用
+  const targetDay = Math.min(isStartDate ? closingDate + 1 : closingDate, lastDayOfMonth);
+  
+  date.setDate(targetDay);
+  // 開始日は0時0分、終了日は23時59分に設定
+  date.setHours(
+    isStartDate ? 0 : 23,
+    isStartDate ? 0 : 59,
+    isStartDate ? 0 : 59,
+    isStartDate ? 0 : 999
+  );
+  
+  return date;
+}
+
+/**
  * 指定した基準日と締め日をもとに日付範囲を取得する関数
  * @param baseDate 基準となる日付
  * @param closingDate 締め日（1-31）
@@ -287,32 +326,17 @@ export function getJapanDateComponents(date: Date): {
  */
 export function getCustomDateRangeByClosingDate(
   baseDate: Date,
-  closingDate: number | null,
+  closingDate: number,
   offsetMonths: number = 0
 ): { rangeStartDate: Date; rangeEndDate: Date } {
-  if (closingDate === null || closingDate === undefined) {
-    throw new Error('締め日が設定されていません。');
-  }
 
-  if (closingDate < 1 || closingDate > 31) {
-    throw new Error('締め日は1から31の間で指定してください。');
-  }
+  // 開始日は基準月+offsetMonths-1、終了日は基準月+offsetMonthsの日付を生成
+  const rangeStartDate = createDateWithMonthOffset(baseDate, offsetMonths - 1);
+  const rangeEndDate = createDateWithMonthOffset(baseDate, offsetMonths);
 
-  // 開始日: offsetMonths分前の締め日+1日
-  const rangeStartDate = new Date(
-    baseDate.getFullYear(),
-    baseDate.getMonth() + offsetMonths - 1,
-    closingDate + 1,
-    0, 0, 0, 0
-  );
-
-  // 終了日: offsetMonths分の月の締め日
-  const rangeEndDate = new Date(
-    baseDate.getFullYear(),
-    baseDate.getMonth() + offsetMonths,
-    closingDate,
-    23, 59, 59, 999
-  );
+  // 日付を設定
+  setDateWithClosingDay(rangeStartDate, closingDate, true);
+  setDateWithClosingDay(rangeEndDate, closingDate, false);
 
   return { rangeStartDate, rangeEndDate };
 }
