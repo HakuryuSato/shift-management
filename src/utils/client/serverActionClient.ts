@@ -26,19 +26,24 @@ import type { AutoShiftSettings } from '@/types/AutoShift';
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T> {
   try {
-    // 開発環境でのみ関数の文字列表現をログ出力
     if (process.env.NODE_ENV === 'development') {
       console.log('serverActionClient sending:', action.toString());
     }
+
     const data = await action();
-    // 開発環境でのみデータをログ出力
+
     if (process.env.NODE_ENV === 'development') {
       console.log('serverActionClient received:', data);
     }
+
+    // ------------------------------------------------- 一時的なデバッグログ開始
+    console.log('serverActionClient received:', data);
+    // ------------------------------------------------- 一時的なデバッグログ終了
+
     return data;
   } catch (error: any) {
     console.error('サーバーアクション実行中にエラーが発生しました:', error.message || error);
-    throw error; // エラーを再スローして上位で処理できるようにする
+    throw error;
   }
 }
 
@@ -146,6 +151,9 @@ export async function deleteAttendance(attendanceId: number): Promise<Attendance
  * @returns 挿入されたシフトデータまたは null
  */
 export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[] | null> {
+  // ------------------------------------------------- 一時的なデバッグログ開始
+  console.log('Debug - insertShift data:', shiftData);
+  // ------------------------------------------------- 一時的なデバッグログ終了 
   return await handleServerAction(() => serverActionInsertShift(shiftData));
 }
 
