@@ -124,6 +124,6 @@ export async function fetchAttendances(
 }
 
 // 設定関連 ---------------------------------------------------------------------------------------------------
-export async function fetchSetting(key: string): Promise<string | null> {
-  return await handleFetch<string>(`/api/settings?key=${encodeURIComponent(key)}`);
+export async function fetchSetting(key: string): Promise<{ value: string } | null> {
+  return await handleFetch<{ value: string }>(`/api/settings?key=${encodeURIComponent(key)}`);
 }
