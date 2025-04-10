@@ -26,19 +26,32 @@ import type { AutoShiftSettings } from '@/types/AutoShift';
 // サーバーアクションのエラーハンドリングを共通化する関数 -------------------------------------------------
 export async function handleServerAction<T>(action: () => Promise<T>): Promise<T> {
   try {
-    // 開発環境でのみ関数の文字列表現をログ出力
-    if (process.env.NODE_ENV === 'development') {
-      console.log('serverActionClient sending:', action.toString());
-    }
+    // 開発環境用の既存コード（一時的にコメントアウト）
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.log('serverActionClient sending:', action.toString());
+    // }
+
+    // ------------------------------------------------- 一時的なデバッグログ開始
+    console.log('serverActionClient sending:', action.toString());
+    // ------------------------------------------------- 一時的なデバッグログ終了
+
     const data = await action();
-    // 開発環境でのみデータをログ出力
-    if (process.env.NODE_ENV === 'development') {
-      console.log('serverActionClient received:', data);
-    }
+
+    // 開発環境用の既存コード（一時的にコメントアウト）
+    // if (process.env.NODE_ENV === 'development') {
+    //   console.log('serverActionClient received:', data);
+    // }
+    
+    // ------------------------------------------------- 一時的なデバッグログ開始
+    console.log('serverActionClient received:', data);
+    // ------------------------------------------------- 一時的なデバッグログ終了
+
     return data;
   } catch (error: any) {
+
+    // 既存のエラーログ
     console.error('サーバーアクション実行中にエラーが発生しました:', error.message || error);
-    throw error; // エラーを再スローして上位で処理できるようにする
+    throw error;
   }
 }
 
