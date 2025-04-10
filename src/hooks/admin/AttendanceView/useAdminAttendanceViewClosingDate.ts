@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { fetchSetting } from "@/utils/client/apiClient";
 
-export const useAdminHomeClosingDate = () => {
+export const useAdminAttendanceViewClosingDate = () => {
   const setAdminAttendanceViewClosingDate = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewClosingDate
   );
