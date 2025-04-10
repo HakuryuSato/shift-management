@@ -12,7 +12,7 @@ import { useAdminClosingDateFormStore } from "@/stores/admin/adminClosingDateFor
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 
 // Utils
-import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding, getCustomDateRangeByClosingDate } from "@/utils/common/dateUtils";
+import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding, getDateRangeByClosingDate } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
 import { downloadWeeklyShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
@@ -143,7 +143,7 @@ export const useAdminAttendanceTopBar = () => {
       }
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
+      const { rangeStartDate, rangeEndDate } = getDateRangeByClosingDate(
         adminAttendanceViewEndDate,
         adminAttendanceViewClosingDate,
         -1
@@ -162,7 +162,7 @@ export const useAdminAttendanceTopBar = () => {
       }
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
+      const { rangeStartDate, rangeEndDate } = getDateRangeByClosingDate(
         adminAttendanceViewEndDate,
         adminAttendanceViewClosingDate,
         +1
