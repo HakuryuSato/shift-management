@@ -3,7 +3,7 @@
 import type { Shift } from '@/types/Shift';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 import { getShift } from '@/utils/server/api/shifts/getShift';
-import { createJSTDateFromISO, getTimeRangeISOStrings } from '@/utils/common/dateUtils';
+import { getDayRangeFromISOString } from '@/utils/common/dateUtils';
 
 /**
  * 新しいシフトを挿入するサーバーアクション
@@ -31,10 +31,9 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
       continue;
     }
 
-    const date = createJSTDateFromISO(shift.start_time);
-    const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('day', date);
+    const { startTimeISO, endTimeISO } = getDayRangeFromISOString(shift.start_time);
     console.log('検索範囲:', { startTimeISO, endTimeISO });
-    
+
     const existingShifts = await getShift({
       userId: shift.user_id.toString(),
       filterStartDateISO: startTimeISO,
