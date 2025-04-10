@@ -23,7 +23,7 @@ export function useAdminAttendanceView() {
             new Date(),
             adminAttendanceViewClosingDate
         );
-        console.log(rangeStartDate, rangeEndDate)
+
         setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }, [adminAttendanceViewClosingDate, setAdminAttendanceViewDateRange]);
 
