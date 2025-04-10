@@ -14,7 +14,6 @@ export function useAdminAttendanceView() {
 
 
     const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(
-        'range',
         adminAttendanceViewStartDate,
         adminAttendanceViewEndDate
     );
