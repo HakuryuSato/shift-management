@@ -13,6 +13,7 @@ interface AdminAttendanceViewStore {
   setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void; // set時はRangeでStartとEndをまとめて格納する
   setAdminAttendanceViewAllMembersMonthlyResult: (data: Attendance[]) => void;
 
+  // 締め日
   adminAttendanceViewClosingDate: number | null;
   setAdminAttendanceViewClosingDate: (closingDate: number) => void;
 
