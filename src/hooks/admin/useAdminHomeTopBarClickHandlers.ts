@@ -12,7 +12,7 @@ import { useAdminClosingDateFormStore } from "@/stores/admin/adminClosingDateFor
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 
 // Utils
-import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding } from "@/utils/common/dateUtils";
+import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding, getCustomDateRangeByClosingDate } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
 import { downloadWeeklyShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
@@ -42,6 +42,9 @@ export const useAdminAttendanceTopBar = () => {
   );
   const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewDateRange
+  );
+  const adminAttendanceViewClosingDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewClosingDate
   );
 
   // AllMembers
@@ -140,10 +143,14 @@ export const useAdminAttendanceTopBar = () => {
       }
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
-      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
+      const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
+        adminAttendanceViewEndDate,
+        adminAttendanceViewClosingDate,
+        -1
+      );
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef, adminAttendanceViewClosingDate]);
 
   // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
@@ -155,10 +162,14 @@ export const useAdminAttendanceTopBar = () => {
       }
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
-      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
+      const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
+        adminAttendanceViewEndDate,
+        adminAttendanceViewClosingDate,
+        +1
+      );
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef, adminAttendanceViewClosingDate]);
 
   return {
     handleClickToShiftPage: handleClickTopLeftButton,
