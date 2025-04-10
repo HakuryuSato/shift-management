@@ -4,7 +4,10 @@ import {
   Box,
   Button,
   Modal,
-  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Typography,
 } from "@mui/material";
 import { useAdminClosingDateForm } from "@/hooks/admin/AttendanceView/useAdminClosingDateForm";
@@ -14,8 +17,6 @@ export function AdminClosingDateForm() {
     isAdminClosingDateFormVisible,
     closingDate,
     setClosingDate,
-    closingDateError,
-    closingDateHelperText,
     handleClose,
     handleSubmit,
   } = useAdminClosingDateForm();
@@ -45,27 +46,22 @@ export function AdminClosingDateForm() {
           締め日変更
         </Typography>
         <Typography variant="body1" mb={2}>
-          新しい締め日を選択してください（1日から31日まで）
+          新しい締め日を選択してください
         </Typography>
-        <TextField
-          type="number"
-          label="締め日"
-          value={closingDate}
-          onChange={(e) => {
-            const value = parseInt(e.target.value);
-            if (value >= 1 && value <= 31) {
-              setClosingDate(value);
-            }
-          }}
-          fullWidth
-          margin="normal"
-          error={closingDateError}
-          helperText={closingDateHelperText}
-          inputProps={{
-            min: 1,
-            max: 31,
-          }}
-        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel>締め日</InputLabel>
+          <Select
+            value={closingDate}
+            label="締め日"
+            onChange={(e) => setClosingDate(Number(e.target.value))}
+          >
+            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+              <MenuItem key={day} value={day}>
+                {day}日
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Box mt={4} textAlign="center">
           <Button
