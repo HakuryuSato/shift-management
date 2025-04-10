@@ -14,7 +14,7 @@ interface AdminAttendanceViewStore {
   setAdminAttendanceViewAllMembersMonthlyResult: (data: Attendance[]) => void;
 
   // 締め日
-  adminAttendanceViewClosingDate: number | null;
+  adminAttendanceViewClosingDate: number;
   setAdminAttendanceViewClosingDate: (closingDate: number) => void;
 
   isVisibleAllMembersMonthlyTable: boolean;
@@ -42,9 +42,8 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
     set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 
   // 締め日
-  adminAttendanceViewClosingDate: 25, // 注意：25日を初期値としている
-  setAdminAttendanceViewClosingDate: (closingDate) =>
-    set({ adminAttendanceViewClosingDate: closingDate }),
+  adminAttendanceViewClosingDate: 25, // デフォルト値を25日に設定
+  setAdminAttendanceViewClosingDate: (closingDate) => set({ adminAttendanceViewClosingDate: closingDate }),
 
   isVisibleAllMembersMonthlyTable: false,
   showAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: true }),
