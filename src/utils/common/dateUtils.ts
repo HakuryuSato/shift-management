@@ -290,53 +290,48 @@ function createDateWithMonthOffset(baseDate: Date, monthOffset: number): Date {
   return newDate;
 }
 
-/**
- * 締め日に基づいて日付を設定する
- */
-function setDateWithClosingDay(date: Date, closingDate: number, isStartDate: boolean): Date {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const lastDayOfMonth = getLastDayOfMonth(year, month);
-  
-  // 開始日の場合は締め日+1、終了日の場合は締め日をそのまま使用
-  const targetDay = Math.min(isStartDate ? closingDate + 1 : closingDate, lastDayOfMonth);
-  
-  date.setDate(targetDay);
-  // 開始日は0時0分、終了日は23時59分に設定
-  date.setHours(
-    isStartDate ? 0 : 23,
-    isStartDate ? 0 : 59,
-    isStartDate ? 0 : 59,
-    isStartDate ? 0 : 999
-  );
-  
-  return date;
-}
 
 /**
- * 指定した基準日と締め日をもとに日付範囲を取得する関数
- * @param baseDate 基準となる日付
- * @param closingDate 締め日（1-31）
- * @param offsetMonths 基準月からのオフセット（省略時は0）
- *   - 0: 現在の締め日+1日から翌月の締め日
- *   - -1: 先月の締め日+1日から当月の締め日
- *   - 1: 翌月の締め日+1日から翌々月の締め日
- * @returns 指定した範囲の開始日と終了日（ローカルタイム）
- * @throws {Error} 締め日が未設定または無効な値の場合
+ * 指定月（baseDate + offsetMonths）を対象に
+ *   開始 : 前月の「締め日 or 月末」+1 日 0:00
+ *   終了 : 当月の「締め日 or 月末」      23:59:59.999
+ *
+ * @param baseDate   基準日
+ * @param closingDay 締め日 1‑31（31 を「月末扱い」にしたい場合も 31 指定）
+ * @param offsetMonths 0=当月, -1=先月, 1=翌月 … 任意の整数
  */
-export function getCustomDateRangeByClosingDate(
+export function getDateRangeByClosingDate(
   baseDate: Date,
-  closingDate: number,
-  offsetMonths: number = 0
+  closingDay: number,
+  offsetMonths = 0,
 ): { rangeStartDate: Date; rangeEndDate: Date } {
+  if (closingDay < 1 || closingDay > 31) {
+    throw new Error('締め日は 1‑31 で指定してください');
+  }
 
-  // 開始日は基準月+offsetMonths-1、終了日は基準月+offsetMonthsの日付を生成
-  const rangeStartDate = createDateWithMonthOffset(baseDate, offsetMonths - 1);
-  const rangeEndDate = createDateWithMonthOffset(baseDate, offsetMonths);
+  // 対象月（offset 済み）の 1 日
+  const target = createDateWithMonthOffset(
+    new Date(baseDate.getFullYear(), baseDate.getMonth(), 1),
+    offsetMonths,
+  );
+  const y = target.getFullYear();
+  const m = target.getMonth();
 
-  // 日付を設定
-  setDateWithClosingDay(rangeStartDate, closingDate, true);
-  setDateWithClosingDay(rangeEndDate, closingDate, false);
+  /* ---------- 終了日 ---------- */
+  const endDay = Math.min(closingDay, getLastDayOfMonth(y, m));
+  const rangeEndDate = getEndOfDay(new Date(y, m, endDay));
+
+  /* ---------- 開始日（前月） ---------- */
+  const prevY = m === 0 ? y - 1 : y;
+  const prevM = (m + 11) % 12;
+  const prevLast = getLastDayOfMonth(prevY, prevM);
+
+  const startDay =
+    closingDay <= getLastDayOfMonth(y, m)
+      ? Math.min(closingDay, prevLast) + 1 // 当月に締め日がある
+      : Math.min(closingDay, prevLast);    // 当月に締め日が無い（月末扱い）
+
+  const rangeStartDate = getStartOfDay(new Date(prevY, prevM, startDay));
 
   return { rangeStartDate, rangeEndDate };
 }
