@@ -25,7 +25,7 @@ export function useCalendarAttendance() {
     (state) => state.isUserCalendarViewVisible
   );
 
-  const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('range', customFullCalendarStartDate, customFullCalendarEndDate)
+  const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(customFullCalendarStartDate, customFullCalendarEndDate)
 
   // カレンダーを表示している、かつリクエストに必要なデータが全てあるなら取得
   const { data: attendances, mutate } = useSWR(
