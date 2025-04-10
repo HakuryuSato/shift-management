@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
-import { fetchAttendances, fetchHolidays } from '@/utils/client/apiClient';
+import { fetchAttendances } from '@/utils/client/apiClient';
 import { getTimeRangeISOStrings, getCustomDateRangeByClosingDate } from '@/utils/common/dateUtils';
 import { useAttendancePersonalStyles } from "@/hooks/admin/AttendanceView/useAttendancePersonalStyles";
 
@@ -14,12 +14,16 @@ export function useAdminAttendanceView() {
     const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewDateRange);
     const { updateAttendancePersonalRowStyles } = useAttendancePersonalStyles();
 
+
+
     // 締日から日付範囲を設定  -------------------------------------------------
     useEffect(() => {
+
         const { rangeStartDate, rangeEndDate } = getCustomDateRangeByClosingDate(
             new Date(),
             adminAttendanceViewClosingDate
         );
+        console.log(rangeStartDate, rangeEndDate)
         setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }, [adminAttendanceViewClosingDate, setAdminAttendanceViewDateRange]);
 
