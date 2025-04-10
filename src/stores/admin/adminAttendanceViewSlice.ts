@@ -41,7 +41,8 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
   setAdminAttendanceViewAllMembersMonthlyResult: (data) =>
     set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 
-  adminAttendanceViewClosingDate: null, // デフォルト値
+  // 締め日
+  adminAttendanceViewClosingDate: null,
   setAdminAttendanceViewClosingDate: (closingDate) =>
     set({ adminAttendanceViewClosingDate: closingDate }),
 
