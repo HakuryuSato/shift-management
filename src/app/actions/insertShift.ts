@@ -11,19 +11,29 @@ import { createJSTDateFromISO, getTimeRangeISOStrings } from '@/utils/common/dat
  * @returns 挿入されたシフトデータ
  */
 export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> {
+  console.log('=== シフト挿入処理開始 ===');
+  console.log('入力データ:', JSON.stringify(shiftData, null, 2));
+
   const shiftArray = Array.isArray(shiftData) ? shiftData : [shiftData];
+  console.log(`処理対象シフト数: ${shiftArray.length}`);
+
   const validShifts: Shift[] = [];
 
   // 各シフトに対して重複チェック
   for (const shift of shiftArray) {
+    console.log('\n--- シフト処理開始 ---');
+    console.log('シフトデータ:', JSON.stringify(shift, null, 2));
+
     // シフトデータが不完全な場合はスキップ
     if (!shift.user_id || !shift.start_time) {
-      console.log('Debug - スキップ：データが不完全'); // 一時的なデバッグログ
+      console.log('❌ スキップ：データが不完全');
+      console.log(`user_id: ${shift.user_id}, start_time: ${shift.start_time}`);
       continue;
     }
 
     const date = createJSTDateFromISO(shift.start_time);
     const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('day', date);
+    console.log('検索範囲:', { startTimeISO, endTimeISO });
     
     const existingShifts = await getShift({
       userId: shift.user_id.toString(),
@@ -31,23 +41,35 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
       filterEndDateISO: endTimeISO
     });
 
+    console.log(`既存シフト数: ${existingShifts.length}`);
+
     if (existingShifts.length === 0) {
+      console.log('✅ 有効なシフトとして追加');
       validShifts.push(shift);
-    } else { // 一時的なデバッグログ
-      console.log('Debug - スキップ：シフトが重複'); // 一時的なデバッグログ
+    } else {
+      console.log('❌ スキップ：シフトが重複');
+      console.log('既存シフト:', JSON.stringify(existingShifts, null, 2));
     }
   }
 
   // 有効なシフトがある場合のみ挿入を実行
   if (validShifts.length === 0) {
-    console.log('Debug - 有効なシフトがありません'); // 一時的なデバッグログ
+    console.log('\n❌ 有効なシフトがありません - 処理を終了します');
     return [];
   }
 
-  return await handleSupabaseRequest<Shift[]>(async (supabase) => {
+  console.log(`\n=== 有効なシフト数: ${validShifts.length} ===`);
+  console.log('有効なシフト:', JSON.stringify(validShifts, null, 2));
+
+  const result = await handleSupabaseRequest<Shift[]>(async (supabase) => {
     return supabase
       .from('shifts')
       .insert(validShifts)
       .select();
   });
+
+  console.log('\n=== シフト挿入処理完了 ===');
+  console.log('挿入結果:', JSON.stringify(result, null, 2));
+
+  return result;
 }
