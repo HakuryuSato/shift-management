@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { fetchSetting } from "@/utils/client/apiClient";
 
@@ -7,18 +8,16 @@ export const useAdminHomeClosingDate = () => {
     (state) => state.setAdminAttendanceViewClosingDate
   );
 
-  useEffect(() => {
-    const fetchClosingDate = async () => {
-      try {
-        const closingDate = await fetchSetting("closing-date");
-        if (closingDate) {
-          setAdminAttendanceViewClosingDate(parseInt(closingDate, 10));
-        }
-      } catch (error) {
-        console.error("締め日の取得に失敗しました:", error);
-      }
-    };
+  const { data, error, mutate } = useSWR(
+    'settings/closing-date',
+    () => fetchSetting('closing-date')
+  );
 
-    fetchClosingDate();
-  }, [setAdminAttendanceViewClosingDate]);
+  useEffect(() => {
+    if (data) {
+      setAdminAttendanceViewClosingDate(parseInt(data, 10));
+    }
+  }, [data, setAdminAttendanceViewClosingDate]);
+
+  return { closingDate: data, error, mutateClosingDate: mutate };
 }; 
