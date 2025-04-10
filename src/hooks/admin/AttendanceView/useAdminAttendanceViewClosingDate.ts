@@ -24,12 +24,8 @@ export const useAdminAttendanceViewClosingDate = () => {
   );
 
   useEffect(() => {
-    if (closingDateObj?.value) {
-      const closingDateNum = parseInt(closingDateObj.value, 10);
-      if (!isNaN(closingDateNum)) {
-        setAdminAttendanceViewClosingDate(closingDateNum);
-      }
-    }
+    const n = Number(closingDateObj?.value);
+    if (Number.isInteger(n)) setAdminAttendanceViewClosingDate(n);
   }, [closingDateObj, setAdminAttendanceViewClosingDate]);
 
   return { mutateClosingDate };
