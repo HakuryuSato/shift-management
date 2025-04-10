@@ -3,21 +3,34 @@ import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { fetchSetting } from "@/utils/client/apiClient";
 
+interface ClosingDateResponse {
+  value: string;
+}
+
 export const useAdminAttendanceViewClosingDate = () => {
   const setAdminAttendanceViewClosingDate = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewClosingDate
   );
 
-  const { data, error, mutate } = useSWR(
+  const { 
+    data: closingDateObj, 
+    mutate: mutateClosingDate 
+  } = useSWR<ClosingDateResponse>(
     'settings/closing-date',
-    () => fetchSetting('closing-date')
+    async () => {
+      const response = await fetchSetting('closing-date');
+      return { value: response } as ClosingDateResponse;
+    }
   );
 
   useEffect(() => {
-    if (data) {
-      setAdminAttendanceViewClosingDate(parseInt(data, 10));
+    if (closingDateObj?.value) {
+      const closingDateNum = parseInt(closingDateObj.value, 10);
+      if (!isNaN(closingDateNum)) {
+        setAdminAttendanceViewClosingDate(closingDateNum);
+      }
     }
-  }, [data, setAdminAttendanceViewClosingDate]);
+  }, [closingDateObj, setAdminAttendanceViewClosingDate]);
 
-  return { closingDate: data, error, mutateClosingDate: mutate };
+  return { mutateClosingDate };
 }; 
