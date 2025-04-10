@@ -20,7 +20,7 @@ export const AdminHome: React.FC = () => {
     // ユーザー情報を取得するカスタムフックを呼び出す
     useAdminHomeUsersData();
     useCommonHomeInitialize("admin");
-    useAdminHomeClosingDate();
+    useAdminHomeClosingDate(); // 注意 締め日の取得はここではなくuseAdminAttendanceViewで行っている
 
     const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
 
