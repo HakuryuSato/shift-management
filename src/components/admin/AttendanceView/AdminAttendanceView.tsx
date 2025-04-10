@@ -7,9 +7,9 @@ import { useAttendanceHolidays } from "@/hooks/admin/AttendanceView/useAttendanc
 import { useAdminAttendanceViewClosingDate } from "@/hooks/admin/AttendanceView/useAdminAttendanceViewClosingDate";
 
 export const AdminAttendanceView: React.FC = () => {
+    useAdminAttendanceViewClosingDate();
     useAdminAttendanceView();
     useAttendanceHolidays();
-    useAdminAttendanceViewClosingDate();
 
     const adminHomeMode = useAdminHomeStore((state) => state.adminHomeMode);
 
