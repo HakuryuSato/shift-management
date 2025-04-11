@@ -19,7 +19,7 @@ const generateAttendancePersonalTableData = (attendanceRows: AttendanceRowPerson
   const result: string[][] = [];
 
   // ヘッダー行 - AttendanceTablePersonal.tsxと同じヘッダーを使用
-  const headers = ['日付', '打刻時間(開始-終了)', '補正時間(開始-終了)', '平日普通(H)', '平日時間外(H)'];
+  const headers = ['日付', '打刻時間(開始-終了)', '補正時間(開始-終了)', '平日普通(H)', '平日時間外(H)', '備考'];
   result.push(headers);
 
   // データ行 - AttendanceTablePersonal.tsxと同じ表示順序を使用
@@ -30,6 +30,7 @@ const generateAttendancePersonalTableData = (attendanceRows: AttendanceRowPerson
       `${row.adjustedStartTime} - ${row.adjustedEndTime}`,
       row.regularHours,
       row.overtimeHours,
+      row.remarks || '', // 備考がnullの場合は空文字を表示
     ]);
   });
 

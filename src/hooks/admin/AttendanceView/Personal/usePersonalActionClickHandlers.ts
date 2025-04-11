@@ -2,6 +2,7 @@ import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTableP
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { updateAttendanceStamp, insertAttendance, updateAttendance, deleteAttendance } from "@/utils/client/serverActionClient";
 import { useAdminAttendanceView } from "../useAdminAttendanceView";
+import { Attendance } from "@/types/Attendance";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
 const combineToISOString = (date: string, time: string): string => {
@@ -54,6 +55,7 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
         stampEndTime: endTime,
         regularHours: rowData.regularHours,
         overtimeHours: rowData.overtimeHours,
+        remarks: rowData.remarks,
       },
     });
   };
@@ -69,7 +71,8 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
       editedRow.stampStartTime === originalRow.stampStartTime &&
       editedRow.stampEndTime === originalRow.stampEndTime &&
       editedRow.regularHours === originalRow.regularHours &&
-      editedRow.overtimeHours === originalRow.overtimeHours
+      editedRow.overtimeHours === originalRow.overtimeHours &&
+      editedRow.remarks === originalRow.remarks
     ) {
       setAttendanceTablePersonalEditingRow(null);
       return;
@@ -98,6 +101,7 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
             work_date: editedRow.date,
             stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
             stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
+            remarks: editedRow.remarks || undefined,
           });
           
           if (result && result[0] && result[0].attendance_id) {
@@ -118,6 +122,8 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
         const isWorkHoursChanged =
           editedRow.regularHours !== originalRow.regularHours ||
           editedRow.overtimeHours !== originalRow.overtimeHours;
+          
+        const isRemarksChanged = editedRow.remarks !== originalRow.remarks;
 
         if (isStampTimeChanged && editedRow.stampStartTime && editedRow.stampEndTime) {
           // 打刻時間が変更され、両方の時間が存在する場合
@@ -126,13 +132,9 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
             stamp_start_time: combineToISOString(originalRow.date, editedRow.stampStartTime),
             stamp_end_time: combineToISOString(originalRow.date, editedRow.stampEndTime),
           });
-        } else if (isWorkHoursChanged && (editedRow.regularHours || editedRow.overtimeHours)) {
+        } else if ((isWorkHoursChanged && (editedRow.regularHours || editedRow.overtimeHours)) || isRemarksChanged) {
           // 勤務時間が変更され、いずれかの時間が存在する場合
-          const updateData: {
-            attendance_id: number;
-            work_minutes?: number;
-            overtime_minutes?: number;
-          } = {
+          const updateData: Partial<Attendance> = {
             attendance_id: originalRow.attendanceId,
           };
 
@@ -141,6 +143,9 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
           }
           if (editedRow.overtimeHours) {
             updateData.overtime_minutes = parseFloat(editedRow.overtimeHours) * 60;
+          }
+          if (editedRow.remarks !== originalRow.remarks) {
+            updateData.remarks = editedRow.remarks || undefined;
           }
 
           await updateAttendance(updateData);

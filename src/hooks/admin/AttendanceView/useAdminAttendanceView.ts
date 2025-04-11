@@ -15,7 +15,6 @@ export function useAdminAttendanceView() {
 
     // 日付範囲から出退勤データをセット  -------------------------------------------------
     const { startTimeISO, endTimeISO } = getTimeRangeISOStrings(
-        'range',
         adminAttendanceViewStartDate,
         adminAttendanceViewEndDate
     );

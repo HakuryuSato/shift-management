@@ -3,7 +3,7 @@
 import type { Shift } from '@/types/Shift';
 import { handleSupabaseRequest } from '@/utils/server/handleSupabaseRequest';
 import { getShift } from '@/utils/server/api/shifts/getShift';
-import { createJSTDateFromISO, getTimeRangeISOStrings } from '@/utils/common/dateUtils';
+import { getDayRangeFromISOString } from '@/utils/common/dateUtils';
 
 /**
  * 新しいシフトを挿入するサーバーアクション
@@ -21,19 +21,19 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
       continue;
     }
 
-    const date = createJSTDateFromISO(shift.start_time);
-    const { startTimeISO, endTimeISO } = getTimeRangeISOStrings('day', date);
-    
+    const { startTimeISO, endTimeISO } = getDayRangeFromISOString(shift.start_time);
+
+    // 重複しているシフトがないか取得
     const existingShifts = await getShift({
       userId: shift.user_id.toString(),
       filterStartDateISO: startTimeISO,
       filterEndDateISO: endTimeISO
     });
 
+    // 重複していない場合は有効なシフトとして追加
     if (existingShifts.length === 0) {
       validShifts.push(shift);
     }
-    // 重複している場合はスキップ
   }
 
   // 有効なシフトがある場合のみ挿入を実行
@@ -41,10 +41,11 @@ export async function insertShift(shiftData: Shift | Shift[]): Promise<Shift[]> 
     return [];
   }
 
-  return await handleSupabaseRequest<Shift[]>(async (supabase) => {
+  const result = await handleSupabaseRequest<Shift[]>(async (supabase) => {
     return supabase
       .from('shifts')
       .insert(validShifts)
       .select();
   });
+  return result;
 }

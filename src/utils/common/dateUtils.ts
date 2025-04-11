@@ -36,38 +36,13 @@ export function getEndOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
 }
 
-// monthモードは廃止予定？（全てのAPIが開始終了時間の範囲指定で取得する場合不要になる？）
+// 開始終了日のISO文字列を返す
 export function getTimeRangeISOStrings(
-  mode: 'day' | 'month' | 'range',
-  date1: Date,
-  date2?: Date
+  startDate: Date,
+  endDate: Date
 ): { startTimeISO: string; endTimeISO: string } {
-  let startDate: Date;
-  let endDate: Date;
-
-  switch (mode) {
-    case 'day':
-      startDate = getStartOfDay(date1);
-      endDate = getEndOfDay(date1);
-      break;
-    case 'month':
-      startDate = getStartOfMonth(date1);
-      endDate = getEndOfMonth(date1);
-      break;
-    case 'range':
-      if (!date2) {
-        throw new Error('範囲指定モードではdate2が必要です');
-      }
-      startDate = getStartOfDay(date1);
-      endDate = getEndOfDay(date2);
-      break;
-    default:
-      throw new Error('無効なモードです');
-  }
-
-  const startTimeISO = toJapanISOString(startDate);
-  const endTimeISO = toJapanISOString(endDate);
-
+  const startTimeISO = toJapanISOString(getStartOfDay(startDate));
+  const endTimeISO = toJapanISOString(getEndOfDay(endDate));
   return { startTimeISO, endTimeISO };
 }
 
@@ -274,6 +249,13 @@ export function getJapanDateComponents(date: Date): {
   };
 }
 
+export function getDayRangeFromISOString(isoString: string): { startTimeISO: string; endTimeISO: string } {
+  const [datePart] = isoString.split('T');
+  return {
+    startTimeISO: `${datePart}T00:00:00`,
+    endTimeISO: `${datePart}T23:59:59`
+  };
+}
 /**
  * 指定した年月の最終日を取得する
  */
