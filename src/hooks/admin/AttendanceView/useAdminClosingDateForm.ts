@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useAdminClosingDateFormStore } from "@/stores/admin/adminClosingDateFormSlice";
 import { useAdminAttendanceViewStore } from "@/stores/admin/adminAttendanceViewSlice";
 import { useAdminAttendanceViewClosingDate } from "./useAdminAttendanceViewClosingDate";
@@ -20,7 +20,15 @@ export const useAdminClosingDateForm = () => {
   const { mutateClosingDate } = useAdminAttendanceViewClosingDate();
 
   // State
-  const [closingDate, setClosingDate] = useState(adminAttendanceViewClosingDate ?? 1);
+  const [closingDate, setClosingDate] = useState(adminAttendanceViewClosingDate ?? 25);
+
+  // 締日変更モーダルが表示された時、締日をAttViewStoreから取得して更新
+  useEffect(() => {
+    console.log("useAdminClosingDateForm useEffect")
+    if (isAdminClosingDateFormVisible && adminAttendanceViewClosingDate) {
+      setClosingDate(adminAttendanceViewClosingDate);
+    }
+  }, [isAdminClosingDateFormVisible, adminAttendanceViewClosingDate]);
 
   // フォームを閉じる
   const handleClose = useCallback(() => {
@@ -41,4 +49,4 @@ export const useAdminClosingDateForm = () => {
     handleClose,
     handleSubmit,
   };
-}; 
+};
