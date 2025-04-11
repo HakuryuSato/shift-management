@@ -24,7 +24,6 @@ export const useAdminClosingDateForm = () => {
 
   // 締日変更モーダルが表示された時、締日をAttViewStoreから取得して更新
   useEffect(() => {
-    console.log("useAdminClosingDateForm useEffect")
     if (isAdminClosingDateFormVisible && adminAttendanceViewClosingDate) {
       setClosingDate(adminAttendanceViewClosingDate);
     }
