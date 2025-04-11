@@ -13,6 +13,7 @@ import { insertAttendance as serverActionInsertAttendance } from '@/app/actions/
 import { updateAttendanceStamp as serverActionUpdateAttendanceStamp } from '@/app/actions/updateAttendanceStamp';
 import { deleteAttendance as serverActionDeleteAttendance } from '@/app/actions/deleteAttendance';
 import { upsertAutoShift as serverActionUpsertAutoShift } from '@/app/actions/upsertAutoShift';
+import { updateSettings as serverActionUpdateSettings } from '@/app/actions/updateSettings';
 
 // 型
 import type { User } from '@/types/User';
@@ -189,4 +190,15 @@ export async function upsertAutoShift(
   autoShiftData: AutoShiftSettings
 ): Promise<{ message: string } | null> {
   return await handleServerAction(() => serverActionUpsertAutoShift(autoShiftData));
+}
+
+// 設定関連 ---------------------------------------------------------------------------------------------------
+/**
+ * 設定を更新するサーバーアクションを呼び出す関数
+ * @param key 設定のキー
+ * @param value 設定の値
+ * @returns 更新された設定の値
+ */
+export async function updateSettings(key: string, value: string): Promise<string> {
+  return await handleServerAction(() => serverActionUpdateSettings({ key, value }));
 }

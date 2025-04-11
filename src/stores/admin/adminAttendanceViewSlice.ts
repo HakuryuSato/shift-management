@@ -10,9 +10,12 @@ interface AdminAttendanceViewStore {
   adminAttendanceViewStartDate: Date;
   adminAttendanceViewEndDate: Date;
   adminAttendanceViewAllMembersMonthlyResult: Attendance[] | null; // 1ヶ月の全ユーザーのattendanceデータ
-  setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void;
+  setAdminAttendanceViewDateRange: (startDate: Date, endDate: Date) => void; // set時はRangeでStartとEndをまとめて格納する
   setAdminAttendanceViewAllMembersMonthlyResult: (data: Attendance[]) => void;
 
+  // 締め日
+  adminAttendanceViewClosingDate: number;
+  setAdminAttendanceViewClosingDate: (closingDate: number) => void;
 
   isVisibleAllMembersMonthlyTable: boolean;
   showAllMembersMonthlyTable: () => void;
@@ -38,6 +41,9 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
   setAdminAttendanceViewAllMembersMonthlyResult: (data) =>
     set({ adminAttendanceViewAllMembersMonthlyResult: data }),
 
+  // 締め日
+  adminAttendanceViewClosingDate: 25, // デフォルト値を25日に設定
+  setAdminAttendanceViewClosingDate: (closingDate) => set({ adminAttendanceViewClosingDate: closingDate }),
 
   isVisibleAllMembersMonthlyTable: false,
   showAllMembersMonthlyTable: () => set({ isVisibleAllMembersMonthlyTable: true }),
@@ -49,5 +55,4 @@ export const useAdminAttendanceViewStore = create<AdminAttendanceViewStore>((set
 
   adminAttendanceViewSelectedUser: null,
   setAdminAttendanceViewSelectedUser: (user) => set({ adminAttendanceViewSelectedUser: user }),
-
 }));

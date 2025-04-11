@@ -8,10 +8,11 @@ import { useAdminHomeTopBarStore } from "@/stores/admin/adminHomeTopBarSlice";
 import { useAttendanceTablePersonalStore } from "@/stores/admin/attendanceTablePersonalSlice";
 import { useAttendanceTableAllMembersStore } from "@/stores/admin/attendanceTableAllMembersSlice";
 import { useAdminUserManagementFormStore } from "@/stores/admin/adminUserManagementFormSlice";
+import { useAdminClosingDateFormStore } from "@/stores/admin/adminClosingDateFormSlice";
 import { useCustomFullCalendarStore } from "@/stores/common/customFullCalendarSlice";
 
 // Utils
-import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding } from "@/utils/common/dateUtils";
+import { getCustomDateRangeFrom26To25, formatJapanDateToYearMonthNoZeroPadding, getDateRangeByClosingDate } from "@/utils/common/dateUtils";
 import { downloadAttendanceTablePersonalXlsx } from "@/utils/client/downloadAttendanceTablePersonalXlsx";
 import { downloadAttendanceTableAllMembersXlsx } from "@/utils/client/downloadAttendanceTableAllMembersXlsx";
 import { downloadWeeklyShiftTableXlsx } from "@/utils/downloadWeeklyShiftTableXlsx";
@@ -42,23 +43,21 @@ export const useAdminAttendanceTopBar = () => {
   const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore(
     (state) => state.setAdminAttendanceViewDateRange
   );
-  // const adminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore(
-  //   (state) => state.adminAttendanceViewAllMembersMonthlyResult
-  // );
-
+  const adminAttendanceViewClosingDate = useAdminAttendanceViewStore(
+    (state) => state.adminAttendanceViewClosingDate
+  );
 
   // AllMembers
   const adminAttendanceTableAllMembersRows = useAttendanceTableAllMembersStore(
     (state) => state.adminAttendanceTableAllMembersRows
   );
 
-
   // Personal
   const AttendanceTablePersonalTableRows = useAttendanceTablePersonalStore(
     (state) => state.AttendanceTablePersonalTableRows
   );
 
-
+  
   // TopBar
   const showAdminHomeTopBarUserEditButtons = useAdminHomeTopBarStore(
     (state) => state.showAdminHomeTopBarUserEditButtons
@@ -69,9 +68,10 @@ export const useAdminAttendanceTopBar = () => {
     (state) => state.openAdminUserManagementForm
   );
 
-
-
-
+  // Closing Date Form
+  const openAdminClosingDateForm = useAdminClosingDateFormStore(
+    (state) => state.openAdminClosingDateForm
+  );
 
   // 左上のモード切替ボタン ---------------------------------------------------------------------------------------------------
   const handleClickTopLeftButton = useCallback(() => {
@@ -89,16 +89,19 @@ export const useAdminAttendanceTopBar = () => {
     }
   }, [adminHomeMode, hidePersonalAttendanceTable, setAdminHomeMode, showAdminHomeTopBarUserEditButtons, showAllMembersMonthlyTable]);
 
+  // 締め日変更
+  const handleClickChangeClosingDate = useCallback(() => {
+    openAdminClosingDateForm();
+  }, [openAdminClosingDateForm]);
+
   // ユーザー登録
   const handleClickUserRegister = useCallback(() => {
     openAdminUserManagementForm('register')
-
   }, [openAdminUserManagementForm]);
 
   // ユーザー削除
   const handleClickUserDelete = useCallback(() => {
     openAdminUserManagementForm('delete')
-
   }, [openAdminUserManagementForm]);
 
   // Excelダウンロード ---------------------------------------------------------------------------------------------------
@@ -120,16 +123,12 @@ export const useAdminAttendanceTopBar = () => {
 
     } else if (adminHomeMode === 'PERSONAL_ATTENDANCE') {
       // 出退勤個人
-
       downloadAttendanceTablePersonalXlsx(AttendanceTablePersonalTableRows, `個人出勤表_${adminAttendanceViewSelectedUser?.user_name}_${formatJapanDateToYearMonthNoZeroPadding(adminAttendanceViewEndDate)}.xlsx`)
     }
 
     // モード
     console.log("Excelダウンロード処理");
   }, [AttendanceTablePersonalTableRows, adminAttendanceTableAllMembersRows, adminAttendanceViewEndDate, adminAttendanceViewSelectedUser?.user_name, adminHomeMode, customFullCalendarStartDate, customFullCalendarEndDate, customFullCalendarAllMembersShiftEvents]);
-
-
-
 
   // Calendar
   const calendarRef = useCustomFullCalendarStore((state) => state.customFullCalendarRef);
@@ -144,10 +143,14 @@ export const useAdminAttendanceTopBar = () => {
       }
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, -1)
-      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
+      const { rangeStartDate, rangeEndDate } = getDateRangeByClosingDate(
+        adminAttendanceViewEndDate,
+        adminAttendanceViewClosingDate,
+        -1
+      );
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef, adminAttendanceViewClosingDate]);
 
   // 日付範囲進む ---------------------------------------------------------------------------------------------------
   const handleClickNextButton = useCallback(() => {
@@ -157,13 +160,16 @@ export const useAdminAttendanceTopBar = () => {
       if (calendarApi) {
         calendarApi.next();
       }
-
     } else {
       // 出退勤
-      const { rangeStartDate, rangeEndDate } = getCustomDateRangeFrom26To25(adminAttendanceViewEndDate, +1)
-      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate)
+      const { rangeStartDate, rangeEndDate } = getDateRangeByClosingDate(
+        adminAttendanceViewEndDate,
+        adminAttendanceViewClosingDate,
+        +1
+      );
+      setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
     }
-  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef]);
+  }, [adminAttendanceViewEndDate, adminHomeMode, setAdminAttendanceViewDateRange, calendarRef, adminAttendanceViewClosingDate]);
 
   return {
     handleClickToShiftPage: handleClickTopLeftButton,
@@ -172,6 +178,7 @@ export const useAdminAttendanceTopBar = () => {
     handleClickExcelDownload,
     handleClickPrevButton,
     handleClickNextButton,
+    handleClickChangeClosingDate,
     adminHomeMode,
   };
 };

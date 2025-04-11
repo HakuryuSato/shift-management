@@ -6,6 +6,13 @@ import { ModalTopBar } from "./ModalTopBar";
 import { useModalContainer } from "@/hooks/common/Modal/useModalContainer";
 import { useMultipleShiftRegisterStore } from "@/stores/common/multipleShiftRegisterSlice";
 
+/*
+注意事項
+ModalContainer及びModalContentは、現状シフトと出退勤関連でのみ使用しています。
+ユーザーの登録削除や締日変更は別のモーダルとして実装されています。
+
+*/
+
 export const ModalContainer: React.FC = () => {
     // State
     const isModalVisible = useModalContainerStore((state) =>
@@ -29,6 +36,7 @@ export const ModalContainer: React.FC = () => {
         "multiple-register": multipleShiftRegisterIsCronJobsEnabled
             ? "解除"
             : "保存",
+        "closing-date": "変更",
     };
 
     return (

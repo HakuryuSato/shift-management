@@ -256,3 +256,75 @@ export function getDayRangeFromISOString(isoString: string): { startTimeISO: str
     endTimeISO: `${datePart}T23:59:59`
   };
 }
+/**
+ * 指定した年月の最終日を取得する
+ */
+function getLastDayOfMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+/**
+ * 指定した日付から指定月数オフセットした新しい日付を生成する
+ */
+function createDateWithMonthOffset(baseDate: Date, monthOffset: number): Date {
+  const newDate = new Date(baseDate);
+  newDate.setMonth(newDate.getMonth() + monthOffset);
+  return newDate;
+}
+
+
+/** 指定年月の締め日範囲（開始0:00／終了23:59:59.999）を返す */
+function getClosingMonthRange(
+  year: number,
+  month: number,        // 0‑based
+  closingDay: number,
+): { start: Date; end: Date } {
+  const last = getLastDayOfMonth(year, month);
+
+  // 終了日は「締め日 or 月末」の小さい方
+  const endDay = Math.min(closingDay, last);
+  const end    = getEndOfDay(new Date(year, month, endDay));
+
+  // 31 など月末締め ⇒ 当月1日始まり
+  if (closingDay >= last) {
+    return { start: getStartOfDay(new Date(year, month, 1)), end };
+  }
+
+  // 通常 ⇒ 前月 (締め日+1)
+  const prevYear  = month === 0 ? year - 1 : year;
+  const prevMonth = (month + 11) % 12;
+  const prevLast  = getLastDayOfMonth(prevYear, prevMonth);
+  const startDay  = Math.min(closingDay, prevLast) + 1;
+
+  return { start: getStartOfDay(new Date(prevYear, prevMonth, startDay)), end };
+}
+
+
+/**
+ * 締め日に基づく日付範囲を返す
+ * @param baseDate     基準日
+ * @param closingDay   1‑31（31＝月末締め）
+ * @param offsetMonths 0=当月, ±n= n か月ズラす
+ */
+export function getDateRangeByClosingDate(
+  baseDate: Date,
+  closingDay: number,
+  offsetMonths = 0,
+): { rangeStartDate: Date; rangeEndDate: Date } {
+  if (closingDay < 1 || closingDay > 31)
+    throw new Error('締め日は 1‑31 で指定してください');
+
+  // 対象月 1 日
+  const target1st = createDateWithMonthOffset(
+    new Date(baseDate.getFullYear(), baseDate.getMonth(), 1),
+    offsetMonths,
+  );
+
+  const { start, end } = getClosingMonthRange(
+    target1st.getFullYear(),
+    target1st.getMonth(),
+    closingDay,
+  );
+
+  return { rangeStartDate: start, rangeEndDate: end };
+}

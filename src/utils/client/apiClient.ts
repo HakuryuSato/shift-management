@@ -122,3 +122,8 @@ export async function fetchAttendances(
     `/api/attendances?${queryParams.toString()}`
   );
 }
+
+// 設定関連 ---------------------------------------------------------------------------------------------------
+export async function fetchSetting(key: string): Promise<{ value: string } | null> {
+  return await handleFetch<{ value: string }>(`/api/settings?key=${encodeURIComponent(key)}`);
+}

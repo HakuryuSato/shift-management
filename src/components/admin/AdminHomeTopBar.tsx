@@ -14,6 +14,7 @@ export const AdminHomeTopBar: React.FC = () => {
     handleClickExcelDownload,
     handleClickPrevButton,
     handleClickNextButton,
+    handleClickChangeClosingDate,
     adminHomeMode,
   } = useAdminAttendanceTopBar();
 
@@ -93,16 +94,27 @@ export const AdminHomeTopBar: React.FC = () => {
 
         {/* 右側のボタン群 */}
         <Box display="flex" alignItems="center" gap={1}>
-          {/* ユーザー編集ボタン */}
+          
           {isVisibleAdminHomeTopBarUserEditButtons &&
             adminHomeMode === "MONTHLY_ATTENDANCE" && (
             <>
+              {/* 締め日変更 */}
+              <Button
+                sx={commonButtonStyle}
+                onClick={handleClickChangeClosingDate}
+              >
+                締め日変更
+              </Button>
+
+              {/* ユーザー登録 */}
               <Button
                 sx={commonButtonStyle}
                 onClick={handleClickUserRegister}
               >
                 ユーザー登録
               </Button>
+
+              {/* ユーザー削除 */}
               <Button
                 onClick={handleClickUserDelete}
                 sx={{
