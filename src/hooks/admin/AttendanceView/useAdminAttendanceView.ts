@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import useSWR from 'swr';
 import { useAdminAttendanceViewStore } from '@/stores/admin/adminAttendanceViewSlice';
 import { fetchAttendances } from '@/utils/client/apiClient';
-import { getTimeRangeISOStrings, getDateRangeByClosingDate } from '@/utils/common/dateUtils';
+import { getTimeRangeISOStrings } from '@/utils/common/dateUtils';
 import { useAttendancePersonalStyles } from "@/hooks/admin/AttendanceView/useAttendancePersonalStyles";
 
 // attendanceViewの開始終了日、1ヶ月の全員の出退勤データ
@@ -10,22 +10,7 @@ export function useAdminAttendanceView() {
     const adminAttendanceViewStartDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewStartDate);
     const adminAttendanceViewEndDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewEndDate);
     const setAdminAttendanceViewAllMembersMonthlyResult = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewAllMembersMonthlyResult);
-    const adminAttendanceViewClosingDate = useAdminAttendanceViewStore((state) => state.adminAttendanceViewClosingDate);
-    const setAdminAttendanceViewDateRange = useAdminAttendanceViewStore((state) => state.setAdminAttendanceViewDateRange);
     const { updateAttendancePersonalRowStyles } = useAttendancePersonalStyles();
-
-
-
-    // 締日から日付範囲を設定  -------------------------------------------------
-    useEffect(() => {
-
-        const { rangeStartDate, rangeEndDate } = getDateRangeByClosingDate(
-            new Date(),
-            adminAttendanceViewClosingDate
-        );
-
-        setAdminAttendanceViewDateRange(rangeStartDate, rangeEndDate);
-    }, [adminAttendanceViewClosingDate, setAdminAttendanceViewDateRange]);
 
 
     // 日付範囲から出退勤データをセット  -------------------------------------------------
@@ -53,6 +38,5 @@ export function useAdminAttendanceView() {
         data: responseData,
         error,
         mutateAttendanceResults: mutate,
-        adminAttendanceViewClosingDate
     };
 }
