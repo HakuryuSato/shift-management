@@ -46,9 +46,8 @@ export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({
 }) => {
   const formattedTime = formatTime(time);
   
-  // 初期値の設定
-  const defaultTime = field === 'Start' ? "08:29" : "18:00";
-  const effectiveSelectedTime = selectedTime || defaultTime;
+  // 初期値を空に設定（nullを許容）
+  const effectiveSelectedTime = selectedTime;
 
 
   // 現在の時間値を含む選択肢を生成
@@ -56,7 +55,7 @@ export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({
     const baseOptions = field === 'Start' ? START_TIME_OPTIONS : END_TIME_OPTIONS;
     
     if (!currentTime || baseOptions.includes(currentTime)) {
-      return [...baseOptions];
+      return ["", ...baseOptions]; // 空の選択肢を追加
     }
 
     // 時間を数値に変換して比較するためのヘルパー関数
@@ -66,15 +65,17 @@ export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({
     };
 
     const currentMinutes = timeToMinutes(currentTime);
-    const allOptions = [...baseOptions];
+    const allOptions = ["", ...baseOptions]; // 空の選択肢を追加
     
-    // 適切な位置に現在の時間を挿入
+    // 適切な位置に現在の時間を挿入（空の選択肢の後）
     let insertIndex = allOptions.findIndex(option => 
-      timeToMinutes(option) > currentMinutes
+      option !== "" && timeToMinutes(option) > currentMinutes
     );
     
     if (insertIndex === -1) {
       insertIndex = allOptions.length;
+    } else if (insertIndex === 0) {
+      insertIndex = 1; // 空の選択肢の後に挿入
     }
     
     allOptions.splice(insertIndex, 0, currentTime);
@@ -86,7 +87,7 @@ export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({
   return (
     <Select
       value={isEditing ? effectiveSelectedTime : formattedTime}
-      onChange={isEditing ? (e) => onTimeSelect(e.target.value || defaultTime) : undefined}
+      onChange={isEditing ? (e) => onTimeSelect(e.target.value) : undefined}
       onClick={!isEditing ? onStartEditing : undefined}
       size="small"
       sx={{
@@ -101,7 +102,7 @@ export const PersonalTimeCell: React.FC<AttendanceTableTimeCellProps> = ({
           key={timeOption} 
           value={timeOption}
         >
-          {timeOption}
+          {timeOption === "" ? <em>未設定</em> : timeOption}
         </MenuItem>
       ))}
     </Select>

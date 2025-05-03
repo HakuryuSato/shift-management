@@ -5,14 +5,17 @@ import { useAdminAttendanceView } from "../useAdminAttendanceView";
 import { Attendance } from "@/types/Attendance";
 
 // ヘルパー関数: 日付と時刻を結合してISO形式に変換
-const combineToISOString = (date: string, time: string): string => {
-    // 入力値のバリデーション
-    if (!date || !time) {
-      throw new Error('Date and time are required');
-    }
-    // 日付と時刻を組み合わせて完全な日時文字列を作成
-    return `${date}T${time}:00`;
-
+const combineToISOString = (date: string, time: string | null): string | null => {
+  // timeがnullの場合はnullを返す
+  if (!time) {
+    return null;
+  }
+  // 日付がなければエラー
+  if (!date) {
+    throw new Error('Date is required');
+  }
+  // 日付と時刻を組み合わせて完全な日時文字列を作成
+  return `${date}T${time}:00`;
 };
 
 export const usePersonalActionClickHandlers = (rowIndex: number) => {
@@ -42,17 +45,13 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
     }
     // この行の編集を開始
     const rowData = AttendanceTablePersonalTableRows[rowIndex];
-    
-    // 打刻時間が空白の場合はデフォルト値を設定
-    const startTime = rowData.stampStartTime || "08:29";
-    const endTime = rowData.stampEndTime || "18:00";
-    
+
     setAttendanceTablePersonalEditingRow({
       rowIndex,
       rowData: {
         ...rowData,
-        stampStartTime: startTime,
-        stampEndTime: endTime,
+        stampStartTime: rowData.stampStartTime,
+        stampEndTime: rowData.stampEndTime,
         regularHours: rowData.regularHours,
         overtimeHours: rowData.overtimeHours,
         remarks: rowData.remarks,
@@ -79,42 +78,39 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
     }
 
     try {
-      // 新規データの場合（attendanceIdがない場合）
+      // 新規データの場合（attendanceIdがない場合） -------------------------------------------------
       if (!originalRow.attendanceId) {
-        // 打刻時間がない場合で、勤務時間のみが入力された場合はreturn
-        if (
-          !editedRow.stampStartTime &&
-          !editedRow.stampEndTime &&
-          (editedRow.regularHours || editedRow.overtimeHours)
-        ) {
-          setAttendanceTablePersonalEditingRow(null);
-          return;
+
+        // 選択されたユーザーがなければエラー
+        if (!selectedUser) {
+          throw new Error('Selected user not found');
         }
 
-        // 打刻時間が両方ある場合のみ新規登録
-        if (editedRow.stampStartTime && editedRow.stampEndTime) {
-          if (!selectedUser) {
-            throw new Error('Selected user not found');
-          }
-          const result = await insertAttendance({
-            user_id: selectedUser.user_id,
-            work_date: editedRow.date,
-            stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
-            stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
-            remarks: editedRow.remarks || undefined,
-          });
+        // 打刻時間をISO形式に変換(なければnull)
+        const startTimeISO = combineToISOString(editedRow.date, editedRow.stampStartTime);
+        const endTimeISO = combineToISOString(editedRow.date, editedRow.stampEndTime);
+
+        // 新規登録
+        const result = await insertAttendance({
+          user_id: selectedUser.user_id,
+          work_date: editedRow.date,
+          stamp_start_time: startTimeISO,
+          stamp_end_time: endTimeISO,
+          remarks: editedRow.remarks || undefined,
+        });
+        // 登録データにattendance_idがあり、
+        // startTimeISOとendTimeISOが両方nullでなければupdateAttendanceStampを実行
+        // ※集計時間の再計算を行うためにStampを再実行している。
+        if (result?.[0]?.attendance_id && startTimeISO && endTimeISO) {
           
-          if (result && result[0] && result[0].attendance_id) {
-            // insertAttendance の後に updateAttendanceStamp を実行
             await updateAttendanceStamp({
               attendance_id: result[0].attendance_id,
-              stamp_start_time: combineToISOString(editedRow.date, editedRow.stampStartTime),
-              stamp_end_time: combineToISOString(editedRow.date, editedRow.stampEndTime),
+              stamp_start_time: startTimeISO,
+              stamp_end_time: endTimeISO,
             });
-          }
         }
       } else {
-        // 既存データの更新
+        // 既存データの更新 -------------------------------------------------
         const isStampTimeChanged =
           editedRow.stampStartTime !== originalRow.stampStartTime ||
           editedRow.stampEndTime !== originalRow.stampEndTime;
@@ -122,16 +118,30 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
         const isWorkHoursChanged =
           editedRow.regularHours !== originalRow.regularHours ||
           editedRow.overtimeHours !== originalRow.overtimeHours;
-          
+
         const isRemarksChanged = editedRow.remarks !== originalRow.remarks;
 
-        if (isStampTimeChanged && editedRow.stampStartTime && editedRow.stampEndTime) {
-          // 打刻時間が変更され、両方の時間が存在する場合
-          await updateAttendanceStamp({
-            attendance_id: originalRow.attendanceId,
-            stamp_start_time: combineToISOString(originalRow.date, editedRow.stampStartTime),
-            stamp_end_time: combineToISOString(originalRow.date, editedRow.stampEndTime),
-          });
+        if (isStampTimeChanged) {
+          // 打刻時間をISO形式に変換
+          const startTimeISO = combineToISOString(originalRow.date, editedRow.stampStartTime);
+          const endTimeISO = combineToISOString(originalRow.date, editedRow.stampEndTime);
+          
+          // 両方の時間が存在する場合のみupdateAttendanceStampで時間の集計を実行
+          if (startTimeISO && endTimeISO) {
+            await updateAttendanceStamp({
+              attendance_id: originalRow.attendanceId,
+              stamp_start_time: startTimeISO,
+              stamp_end_time: endTimeISO,
+            });
+          } else {
+            // 片方でもnullの場合はupdateAttendance
+            const updateData: Partial<Attendance> = {
+              attendance_id: originalRow.attendanceId,
+              stamp_start_time: startTimeISO,
+              stamp_end_time: endTimeISO
+            };
+            await updateAttendance(updateData);
+          }
         } else if ((isWorkHoursChanged && (editedRow.regularHours || editedRow.overtimeHours)) || isRemarksChanged) {
           // 勤務時間が変更され、いずれかの時間が存在する場合
           const updateData: Partial<Attendance> = {
@@ -166,7 +176,7 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
 
   const handleDeleteClick = async () => {
     const originalRow = AttendanceTablePersonalTableRows[rowIndex];
-    
+
     // attendance_idが存在する場合のみ削除を実行
     if (originalRow.attendanceId) {
       try {
@@ -177,7 +187,7 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
         throw error;
       }
     }
-    
+
     setAttendanceTablePersonalEditingRow(null);
   };
 

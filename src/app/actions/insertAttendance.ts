@@ -19,11 +19,6 @@ export async function insertAttendance(attendanceData: Partial<Attendance>): Pro
     throw new Error('Required fields missing: user_id and work_date are required');
   }
 
-  // 少なくとも1つの打刻時間が必要
-  if (!attendanceData.stamp_start_time && !attendanceData.stamp_end_time) {
-    throw new Error('Required fields missing: either stamp_start_time or stamp_end_time is required');
-  }
-
   return await handleSupabaseRequest<Attendance[]>(async (supabase) => {
     return supabase
       .from('attendances')
