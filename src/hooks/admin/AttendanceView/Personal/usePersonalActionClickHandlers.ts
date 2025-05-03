@@ -95,7 +95,7 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
           throw new Error('Selected user not found');
         }
 
-        // 打刻時間をISO形式に変換(nullの可能性あり)
+        // 打刻時間をISO形式に変換(なければnull)
         const startTimeISO = combineToISOString(editedRow.date, editedRow.stampStartTime);
         const endTimeISO = combineToISOString(editedRow.date, editedRow.stampEndTime);
 
