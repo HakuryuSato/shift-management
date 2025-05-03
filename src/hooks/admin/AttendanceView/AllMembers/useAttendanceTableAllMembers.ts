@@ -44,7 +44,10 @@ export const useAttendanceTableAllMembers = () => {
                 // まとめておいた配列を参照してユーザーごとに集計
                 const userResults = resultsByUserId[user.user_id!.toString()] ?? [];
 
-                const workDays = userResults.length;
+                // stamp_startと_endがある場合のみ出勤日数としてカウント
+                const workDays = userResults.filter(
+                    result => (result.stamp_start_time && result.stamp_end_time)
+                ).length;
                 const totalWorkMinutes = userResults.reduce(
                     (sum: number, result: Attendance) => sum + (result.work_minutes ?? 0),
                     0
