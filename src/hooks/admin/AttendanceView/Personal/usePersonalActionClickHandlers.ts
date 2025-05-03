@@ -80,15 +80,6 @@ export const usePersonalActionClickHandlers = (rowIndex: number) => {
     try {
       // 新規データの場合（attendanceIdがない場合） -------------------------------------------------
       if (!originalRow.attendanceId) {
-        // 打刻時間がない場合で、勤務時間のみが入力された場合はreturn
-        if (
-          !editedRow.stampStartTime &&
-          !editedRow.stampEndTime &&
-          (editedRow.regularHours || editedRow.overtimeHours)
-        ) {
-          setAttendanceTablePersonalEditingRow(null);
-          return;
-        }
 
         // 選択されたユーザーがなければエラー
         if (!selectedUser) {
